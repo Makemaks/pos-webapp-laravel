@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('setting', function (Blueprint $table) {
             $table->bigIncrements('setting_id');
             $table->bigInteger('setting_store_id')->comment('added_by'); 
+<<<<<<< HEAD
             
             $table->json('setting_logo')->nullable();
            
@@ -50,6 +51,29 @@ return new class extends Migration
             $table->json('setting_payment_gateway')->nullable();
             
            
+=======
+            $table->string('setting_logo_url')->nullable();
+           
+            $table->json('setting_stock_type')->nullable();
+            $table->json('setting_stock_category')->nullable();
+            $table->json('setting_stock_group')->nullable();
+            $table->json('setting_stock_plu')->nullable();
+            $table->json('setting_stock_allergen')->nullable();
+            $table->json('setting_stock_nutrition')->nullable();
+            $table->json('setting_stock_rate')->nullable();
+            
+            $table->json('setting_printer')->nullable();
+            
+            $table->json('setting_message_group')->nullable();
+            
+            $table->json('setting_message_notification_category')->nullable();
+            $table->json('setting_payment_gateway')->nullable();
+            $table->json('setting_country')->nullable();
+            $table->json('setting_expense_type')->nullable();
+            $table->json('setting_expense_budget')->nullable();
+            $table->json('setting_store_vat')->nullable();
+            $table->json('setting_pos')->nullable()->comment('Tills');
+>>>>>>> 8a9d0a79023167e539fee6603713f1b695fb30b7
             $table->timestamps();
         });
     }

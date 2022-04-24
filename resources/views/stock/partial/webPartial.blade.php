@@ -83,10 +83,17 @@
                                                 <select class="uk-select" name="stock_web_id">
                                                     <option selected="selected" disabled>SELECT ...</option>
                                                    
+<<<<<<< HEAD
                                                     @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $setting_stock_plu)
                                                                         
                                                             <option value="{{$key}}" >{{$setting_stock_plu['descriptor']}}</option>
                                                     @endforeach
+=======
+                                                       @foreach ($data['settingModel']->setting_stock_plu as $plu => $setting_stock_plu)
+                                                            
+                                                            <option value="{{$plu}}" >{{$setting_stock_plu}}</option>
+                                                        @endforeach
+>>>>>>> 8a9d0a79023167e539fee6603713f1b695fb30b7
                                                    
                                                 </select>
                                             </div>

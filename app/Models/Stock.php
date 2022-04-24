@@ -61,18 +61,29 @@ class Stock extends Model
             "1": {
                 "gain": "",
                 "collect": "",
+<<<<<<< HEAD
                 "default": "",
                 "set menu": "",
                 "mix & match": "",
                 "voucher_id": ""
             }
+=======
+                "default": ""
+            }
+            
+            
+>>>>>>> 8a9d0a79023167e539fee6603713f1b695fb30b7
         }',
 
         "stock_merchandise" => '{
             "case size": "",
             "non stock": "",
             "unit size": "",
+<<<<<<< HEAD
             "master plu": "",
+=======
+            "master pLU": "",
+>>>>>>> 8a9d0a79023167e539fee6603713f1b695fb30b7
             "recipe link": "",
             "crrent stock": "",
             "days to order": "",
@@ -113,11 +124,14 @@ class Stock extends Model
 
         "stock_nutrition" => '{}',
 
+<<<<<<< HEAD
         "stock_group_category_plu" => '{
             "group_id": "",
             "category_id": "",
             "plu_id": ""
         }'
+=======
+>>>>>>> 8a9d0a79023167e539fee6603713f1b695fb30b7
        
     ];
 
@@ -138,8 +152,12 @@ class Stock extends Model
         "stock_transfer" => 'array',
         "stock_termminal_flags" => 'array',
         "stock_web" => 'array',
+<<<<<<< HEAD
         "stock_nutrition" => 'array',
         "stock_group_category_plu" => 'array'
+=======
+        "stock_nutrition" => 'array'
+>>>>>>> 8a9d0a79023167e539fee6603713f1b695fb30b7
     ];
 
     public static function List($column,  $filter){

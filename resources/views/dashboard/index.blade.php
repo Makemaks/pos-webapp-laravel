@@ -19,7 +19,7 @@
     foreach ($data['orderList'] as $stockList) {
       
             if ($stockList->receipt_id) {
-                $price = json_decode($stockList->stock_cost, true)[$stockList->receipt_stock_cost_id]['amount'];
+                $price = json_decode($stockList->stock_cost, true)[$stockList->receipt_stock_cost_id]['price'];
                 $totalCostPrice = $totalCostPrice + $price;
             }
     }

@@ -13,10 +13,15 @@
             
             <div uk-grid>
                 
-                @foreach ($data['settingModel']->setting_stock_allergen as $key => $setting_stock_allergens)
+                @foreach (ConfigHelper::Allergen() as $key => $setting_stock_allergen)
                     <div>
+                        @php
+                            if(){
+                                
+                            }
+                        @endphp
                         
-                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($setting_stock_allergens)}}</label>
+                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($setting_stock_allergen)}}</label>
                         <div class="uk-form-controls">
                             <input class="uk-checkbox" type="checkbox">
                         </div>

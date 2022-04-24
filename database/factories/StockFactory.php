@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories;
+use App\Helpers\ConfigHelper;
 use App\Models\Stock;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,13 +22,14 @@ class StockFactory extends Factory
         for ($i=0; $i < 6; $i++) { 
 
             $stock_cost[$i + 1] = [
-                'amount' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 200000),
+                'price' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 200000),
                 'quantity' => $this->faker->numberBetween($min = 0, $max = 50),
                 'default' => $this->faker->numberBetween($min = 0, $max = 1),
+                'supplier_id' => $this->faker->numberBetween($min = 1, $max = 5)
             ];
 
             $stock_supplier[$i + 1] = [
-                'ref' => $this->faker->numberBetween($min = 1, $max = 5),
+                'supplier_id' => $this->faker->numberBetween($min = 1, $max = 5),
                 'code' => $this->faker->randomElement($array = array (NULL,$this->faker->numberBetween($min=20000, $max=50000))),
                 'unit cost' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
                 'case cost' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
@@ -61,7 +63,9 @@ class StockFactory extends Factory
                 "offer_id" => $this->faker->numberBetween($min = 1, $max = 5),
             ];
 
-            $stock_nutrition[$i + 1] = [$i];
+            $stock_allergen[$i + 1] = [$i];
+
+            
     
         }
 
@@ -103,6 +107,15 @@ class StockFactory extends Factory
             "category_id" => $this->faker->numberBetween($min = 1, $max = 5),
             "plu_id"  => $this->faker->numberBetween($min = 1, $max = 5)
         ];
+
+        for ($i=0; $i < count(ConfigHelper::Nutrition()); $i++) { 
+            $stock_nutrition[$i + 1] = [
+                "name" => ConfigHelper::Nutrition()[$i]['name'],
+                "value" => $this->faker->numberBetween($min = 500, $max = 5000),
+                "measurement" => ConfigHelper::Nutrition()[$i]['measurement'],
+               
+            ];
+        }
         
 
         return [
@@ -124,12 +137,14 @@ class StockFactory extends Factory
             'stock_offers' => $stock_offers,
             'stock_merchandise' => $stock_merchandise,
             'stock_transfer' => $stock_transfer,
+
             'stock_termminal_flags' => $stock_termminal_flags,
             'stock_web' => $stock_web,
+            
+
             'stock_nutrition' => $stock_nutrition,
-            'stock_allergen' => $stock_nutrition,
+            'stock_allergen' => $stock_allergen,
             'stock_group_category_plu' => $stock_group_category_plu
-          
         ];
 
     }

@@ -163,6 +163,40 @@ class ConfigHelper{
            'Discount % last item'
         ];
     }
+
+    public static function Nutrition(){
+        return [
+            ['name' => 'Energy', 'measurement' => ''],
+            ['name' => 'Fat', 'measurement' => ''], 	
+            ['name' => 'Saturate', 'measurement' => ''], 
+            ['name' => 'Carbohydrate', 'measurement' => ''], 
+            ['name' => 'Sugar', 'measurement' => ''], 	
+            ['name' => 'Protein', 'measurement' => ''], 	
+            ['name' => 'Salt', 'measurement' => ''], 
+            ['name' =>  'Portions', 'measurement' => ''] 
+        ];
+    }
+
+    public static function Allergen(){
+        return [
+            'Celery',
+            'Cereals Containing Gluten',
+            'Crustaceans',
+            'Eggs',
+            'Fish',
+            'Lupin',
+            'Milk',
+            'Molluscs',
+            'Mustard',
+            'Tree Nuts',
+            'Peanuts',
+            'Sesame Seeds',
+            'Soyabeans',
+            'Sulphur Dioxide and Sulphites',
+            'Allergen 15',
+            'Allergen 16',
+        ];
+    }
     
   
 }

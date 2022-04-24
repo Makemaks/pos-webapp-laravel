@@ -41,13 +41,13 @@
                     <td>{{$stock->stock_random_code}}</td>
                     
                     <td>
-                        @if (count($data['settingModel']->setting_stock_group_category_plu) > 0 && $stock->stock_group_category_plu['category_id'])
+                        @if ($data['settingModel']->setting_stock_group_category_plu && $stock->stock_group_category_plu['category_id'])
                             {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_group_category_plu['group_id']]['descriptor']}}
                         @endif
                     </td>
                     <td>
                         {{-- dept --}}
-                        @if (count($data['settingModel']->setting_stock_group_category_plu) > 0 && $stock->stock_group_category_plu['group_id'])
+                        @if ($data['settingModel']->setting_stock_group_category_plu && $stock->stock_group_category_plu['group_id'])
                             {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_group_category_plu['category_id']]['descriptor']}}
                         @endif
                     </td>
@@ -60,7 +60,7 @@
                         @php
                             foreach ($stock->stock_cost as $stock_cost){
                                 if ($stock_cost['default'] == 0) {
-                                    $cost = MathHelper::FloatRoundUp($stock_cost['amount'], 2);
+                                    $cost = MathHelper::FloatRoundUp($stock_cost['price'], 2);
                                 }
                             }
                            

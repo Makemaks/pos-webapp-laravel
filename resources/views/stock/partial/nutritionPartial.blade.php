@@ -11,12 +11,10 @@
         <div class="uk-card uk-card-default uk-padding">
             <h3>GENERAL</h3>
             
-            
-                
-                @foreach ($data['settingModel']->setting_stock_nutrition as $key => $setting_stock_nutritions)
+                @foreach (ConfigHelper::Nutrition() as $key => $setting_stock_nutrition)
                     <div class="uk-margin">
                         
-                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($setting_stock_nutritions)}}</label>
+                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($setting_stock_nutrition['name'])}}</label>
                         <div class="uk-form-controls">
                             <input class="uk-input" id="form-stacked-text" type="text">
                         </div>
@@ -24,7 +22,6 @@
                     </div>
                 @endforeach
                 
-           
             
             <div class="uk-margin">
                 <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>

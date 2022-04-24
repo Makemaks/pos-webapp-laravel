@@ -21,11 +21,13 @@
                             <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                                 <thead>
                                     <tr>
-                                        @if ($data['stockModel']->stock_web)
-                                            @foreach ($data['stockModel']->stock_web[1] as $key => $item)
+                                        
+                                        @foreach ($data['stockModel']->stock_web[1] as $key => $item)
+                                            @if ($key != 'offer_id')
                                                 <th>{{$key}}</th>
-                                            @endforeach
-                                        @endif
+                                            @endif
+                                        @endforeach
+                                        
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -48,8 +50,12 @@
                                                                 @endforeach
                                                             
                                                             </select>
+                                                        @elseif($key == 'default')
+                                                            <input name="{{$key}}[]" class="uk-checkbox" type="checkbox" value="{{$stock}}">
                                                         @else
-                                                                <input name="{{$key}}[]" class="uk-input" type="number" value="{{$stock}}">
+                                                                @if ($key != 'offer_id')
+                                                                    <input name="{{$key}}[]" class="uk-input" type="number" value="{{$stock}}">
+                                                                @endif
                                                         @endif
                                                     </td>
                                                     
@@ -71,8 +77,7 @@
                     <li>
                 
                         <form action="" class="uk-form-stacked">
-                         
-
+                            
                             <h3>GENERAL</h3>
                             @if ($data['stockModel']->stock_web)
                                 @foreach ($data['stockModel']->stock_web  as $stock_web_key => $stock_web)
@@ -83,17 +88,10 @@
                                                 <select class="uk-select" name="stock_web_id">
                                                     <option selected="selected" disabled>SELECT ...</option>
                                                    
-<<<<<<< HEAD
                                                     @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $setting_stock_plu)
                                                                         
                                                             <option value="{{$key}}" >{{$setting_stock_plu['descriptor']}}</option>
                                                     @endforeach
-=======
-                                                       @foreach ($data['settingModel']->setting_stock_plu as $plu => $setting_stock_plu)
-                                                            
-                                                            <option value="{{$plu}}" >{{$setting_stock_plu}}</option>
-                                                        @endforeach
->>>>>>> 8a9d0a79023167e539fee6603713f1b695fb30b7
                                                    
                                                 </select>
                                             </div>
@@ -103,6 +101,7 @@
                                                 <input class="uk-input" type="number" value="" name="{{$key}}">
                                             </div>
                                        @endif
+
                                     @endforeach
     
                                     @break

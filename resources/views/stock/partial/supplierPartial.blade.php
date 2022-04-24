@@ -18,14 +18,16 @@
     <li>
         <h3>SUPPLIERS</h3>
                   
-            <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+            <table class="uk-table uk-table-responsive uk-table-divider">
                 <thead>
                     <tr>
-                        @if ($data['stockModel']->stock_supplier)
+                        
                             @foreach ($data['stockModel']->stock_supplier[1] as $key => $item)
-                                <th>{{$key}}</th>
+                                @if ($key != 'supplier_id')
+                                    <th>{{$key}}</th>
+                                @endif
                             @endforeach
-                        @endif
+                        
                         <th></th>
                     </tr>
                 </thead>
@@ -37,24 +39,22 @@
                                 
                                 @foreach ($stockSupplier as $key => $stock)
                                     <td>
-                                        @if ($key == 'ref')
+                                        @if ($key == 'supplier_id')
                                            
-                                            @if ($stock)
-                                                <a href="{{route('company.edit', $stock)}}" class="uk-button uk-button-danger uk-border-rounded"> 
-                                                    {{$stock}}
-                                                </a>
-                                            @endif
+                                            <a href="{{route('company.edit', $stock)}}" class="uk-button uk-button-danger uk-border-rounded"> 
+                                                {{$stock}}
+                                            </a>
                                                 
                                         @elseif($key == 'default')
                                                 <input name="{{$key}}[]" class="uk-checkbox" type="checkbox" @if($stock == 0) checked @endif>
                                         @else
-                                                <input  name="{{$key}}[]" class="uk-input" type="text" value="{{$stock}}">
+                                            @if ($key != 'supplier_id')
+                                                <input  name="{{$key}}[]" class="uk-input" type="number" value="{{$stock}}">
+                                            @endif
                                         @endif
                                     </td>
                                     
                                 @endforeach
-
-                              
 
                                 <td>
                                     <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockSupplier({{$stock}})"></button>

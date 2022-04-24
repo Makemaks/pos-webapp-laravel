@@ -22,13 +22,11 @@ return new class extends Migration
             $table->mediumText('stock_random_code')->nullable();
             $table->json('stock_group_category_plu')->nullable();
             $table->text('stock_barcode');
-           
             
             $table->json('stock_cost')->nullable(); // as array
             $table->smallInteger('stock_quantity')->nullable(); // as array
             $table->json('stock_supplier')->nullable(); // as array
             $table->float('stock_rrp')->nullable(); // as array
-         
             
             $table->smallInteger('stock_alert_level')->nullable();
 

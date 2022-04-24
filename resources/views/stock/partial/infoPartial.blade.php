@@ -25,12 +25,12 @@
             
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">NAME</label>
-                <input class="uk-input" type="text" value="{{$data['stockModel']->stock_name}}">
+                <input class="uk-input" type="text" value="{{$data['stockModel']->stock_name}}" name="stock_name">
             </div>
             
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">GROUP</label>
-                <select class="uk-select" name="stock_group_id">
+                <select class="uk-select" name="group_id">
                     <option selected="selected" disabled>Select Group ...</option>
                     @if ($data['settingModel']->setting_stock_group)
                         @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $group)
@@ -48,7 +48,7 @@
         
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">DEPARTMENT</label>
-                <select class="uk-select" name="stock_category_id">
+                <select class="uk-select" name="category_id">
                     <option selected="selected" disabled>Select Category ...</option>
                     @if ($data['settingModel']->setting_stock_group_category_plu)
                         @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $category)
@@ -66,17 +66,17 @@
         
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">DESCRIPTION</label>
-                <textarea class="uk-textarea" type="text">{{$data['stockModel']->stock_description}}</textarea>
+                <textarea class="uk-textarea" type="text" name="stock_description">{{$data['stockModel']->stock_description}}</textarea>
             </div>
             
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">BRAND</label>
-                <input class="uk-input" type="text" value="{{$data['stockModel']->stock_brand}}">
+                <input class="uk-input" type="text" value="{{$data['stockModel']->stock_brand}}" name="stock_brand">
             </div>
             
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">BARCODE</label>
-                <input class="uk-input" type="text" value="{{$data['stockModel']->stock_barcode}}">
+                <input class="uk-input" type="text" value="{{$data['stockModel']->stock_barcode}}" name="stock_barcode">
             </div>
             
             
@@ -116,10 +116,11 @@
                     <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                         <thead>
                             <tr>
-                               
-                                    
+                                
                                 @foreach ($data['stockModel']->stock_cost[1] as $key => $item)
-                                    <th>{{$key}}</th>
+                                    @if ($key != 'supplier_id')
+                                        <th>{{$key}}</th>
+                                    @endif
                                 @endforeach
                                 
                                 <th></th>
@@ -135,10 +136,13 @@
                                             @foreach ($stockCost as $key => $stock)
                                                 
                                                 <td>
+                                                   
                                                     @if($key == 'default')
-                                                        <input name="stock_cost[]{{$key}}[]" class="uk-checkbox" type="checkbox" @if($stock == 0) checked @endif>
+                                                        <input name="stock_cost[]{{$key}}" class="uk-checkbox" type="checkbox" @if($stock == 0) checked @endif>
                                                     @else
-                                                        <input class="uk-input" id="form-stacked-text" type="number" value="{{$stock}}" name="stock_cost[]{{$key}}[]">
+                                                        @if ($key != 'supplier_id')
+                                                            <input class="uk-input" id="form-stacked-text" type="number" value="{{$stock}}" name="stock_cost[]{{$key}}">
+                                                        @endif
                                                     @endif
                                                 </td>
                                                 

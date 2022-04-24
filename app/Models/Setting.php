@@ -28,10 +28,6 @@ class Setting extends Model
             }
         }',
 
-        'setting_stock_allergen' => '{}',
-        'setting_stock_nutrition' => '{}',
-       
-
         'setting_stock_label' => '{
            
             "SHELF": {
@@ -133,9 +129,6 @@ class Setting extends Model
         'setting_keys' => 'array',
        
         'setting_stock_group_category_plu' => 'array',
-       
-        'setting_stock_allergen' => 'array',
-        'setting_stock_nutrition' => 'array',
         
         'setting_stock_label'  => 'array',
         'setting_stock_voucher'  => 'array',

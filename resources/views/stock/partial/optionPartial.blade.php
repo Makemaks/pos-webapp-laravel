@@ -46,7 +46,7 @@
                                                     <select class="uk-select" id="form-stacked-select">
                                                         <option value=""></option>
                                                         @foreach ($data['settingModel']->setting_stock_voucher as $item)
-                                                            <option value="">{{$item}}</option>
+                                                            <option value="">{{$item['name']}}</option>
                                                         @endforeach
                                                     </select>
                                                 @endif

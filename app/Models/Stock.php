@@ -18,15 +18,16 @@ class Stock extends Model
         'stock_store_id' => 1,
         "stock_cost" => '{
             "1": {
-                "amount": "",
+                "price": "",
                 "quantity": "",
-                "default": ""
+                "default": "",
+                "supplier_id": ""
             }
         }',
         
         "stock_supplier" => '{
             "1": {
-                "ref": "",
+                "supplier_id": "",
                 "code": "",
                 "unit cost": "",
                 "case cost": ""
@@ -53,7 +54,7 @@ class Stock extends Model
 
         "stock_recipe" => '{}',
 
-        "stock_allergen" => '{}',
+        
 
         "stock_print_exclusion" => '{}',
 
@@ -113,14 +114,11 @@ class Stock extends Model
 
         "stock_nutrition" => '{}',
 
-<<<<<<< HEAD
         "stock_group_category_plu" => '{
             "group_id": "",
             "category_id": "",
             "plu_id": ""
         }'
-=======
->>>>>>> 8a9d0a79023167e539fee6603713f1b695fb30b7
        
     ];
 
@@ -135,21 +133,27 @@ class Stock extends Model
         "stock_boolean" => 'array',
         "stock_tag" => 'array',
         "stock_recipe" => 'array',
-        "stock_allergen" => 'array',
+        
         "stock_print_exclusion" => 'array',
         "stock_merchandise" => 'array',
         "stock_transfer" => 'array',
         "stock_termminal_flags" => 'array',
         "stock_web" => 'array',
-        "stock_group_category_plu" => 'array'
+        "stock_group_category_plu" => 'array',
+        "stock_nutrition" => 'array'
     ];
+        
+    public static function List($column,  $filter){
+        return Stock::
         leftJoin('account', 'account.account_id', '=', 'stock.stock_store_id')
         ->where($column,  $filter)
         ->orderBy('stock.created_at', 'desc');
     }
 
+    
     public static function StockDefault(){
 
+        
         $stockCollection = [
             [
                 'Crop Top And Short Set',
@@ -211,4 +215,6 @@ class Stock extends Model
        
         return $stockList;
     }
+
+    
 }

@@ -67,7 +67,11 @@ class ConfigHelper{
         ];
     }
   
-    public static function TerminalFlags(){
+    public static function TerminalFlag(){
+
+        for ($i=0; $i < 15; $i++) { 
+            $flag[$i + 1] = $i + 1;
+        }
 
         return [
           
@@ -88,8 +92,8 @@ class ConfigHelper{
               'Prompt with picture',
               'Prompt Customer Verification 2',
             ],
-            'Commission Rates' => ['Rate'],
-            'Selective Itemisers' => ['Itemiser'],
+            'Commission Rates' => $flag,
+            'Selective Itemisers' => $flag,
             'Stock Control (EPOS side only)' => [
               	
                 'SEL Unit',
@@ -166,14 +170,14 @@ class ConfigHelper{
 
     public static function Nutrition(){
         return [
-            ['name' => 'Energy', 'measurement' => ''],
-            ['name' => 'Fat', 'measurement' => ''], 	
-            ['name' => 'Saturate', 'measurement' => ''], 
-            ['name' => 'Carbohydrate', 'measurement' => ''], 
-            ['name' => 'Sugar', 'measurement' => ''], 	
-            ['name' => 'Protein', 'measurement' => ''], 	
-            ['name' => 'Salt', 'measurement' => ''], 
-            ['name' =>  'Portions', 'measurement' => ''] 
+            ['name' => 'Energy', 'value' => '4934' ,'measurement' => 'kcal'],
+            ['name' => 'Fat', 'value' => '4892' ,'measurement' => 'g'], 	
+            ['name' => 'Saturate', 'value' => '4057' ,'measurement' => 'g'], 
+            ['name' => 'Carbohydrate', 'value' => '3164' ,'measurement' => 'g'], 
+            ['name' => 'Sugar', 'value' => '767' ,'measurement' => 'g'], 	
+            ['name' => 'Protein', 'value' => '1660' ,'measurement' => 'g'], 	
+            ['name' => 'Salt', 'value' => '4841' ,'measurement' => 'g'], 
+            ['name' =>  'Portions', 'value' => '2210' ,'measurement' => 'g'] 
         ];
     }
 

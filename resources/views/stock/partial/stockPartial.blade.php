@@ -10,62 +10,88 @@
   /* $companyList = Company::Contact('company_store_id',$userModel->person_user_id)->get(); */
 @endphp
 
-<div class="uk-grid-match uk-grid-small uk-child-width-1-2" uk-grid>
+<div class="uk-grid-match uk-grid-small uk-child-width-1-2@xl" uk-grid>
     <div>
         <div class="uk-card uk-card-default uk-padding">
             <h3>GENERAL</h3>
            
             <div class="uk-margin">
-                <label><input class="uk-checkbox" type="checkbox" @if ($data['stockModel']->stock_is_disabled)checked @endif> Non Stock</label>
+                <label class="uk-form-label" for="form-stacked-text">NON STOCK</label>
+                <input name="stock_merchandise[non_stock]" class="uk-checkbox" type="checkbox" @if ($data['stockModel']->stock_merchandise['non_stock'])checked @endif>
             </div>
         
+            
             <div class="uk-margin">
-                <input class="uk-input" type="number" placeholder="Minimum" value="{{$data['stockModel']->stock_name}}">
+                <label class="uk-form-label" for="form-stacked-text">{{Str::upper('master_plu')}}</label>
+                <select class="uk-select" name="stock_merchandise[stock_plu_id]">
+                    <option selected="selected" disabled>SELECT ...</option>
+                    @if ($data['settingModel']->setting_stock_group_category_plu)
+                        @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $plu)
+                            @if ($plu['type'] == 2)
+                                <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['master_plu']) selected @endif>{{$plu['description']}}</option>
+                            @endif
+                        @endforeach
+                    @endif
+                </select>
             </div>
-        
+
             <div class="uk-margin">
-                <input class="uk-input" type="number" placeholder="Maximum" value="{{$data['stockModel']->stock_name}}">
-            </div>
-        
-            <div class="uk-margin">
-                <input class="uk-input" type="number" placeholder="Days to Order" value="{{$data['stockModel']->stock_name}}">
-            </div>
-        
-            <div class="uk-margin">
-                <select class="uk-select" name="stock_plu_id">
-                    <option selected="selected" disabled>Select PLU ...</option>
-                    @if ($data['settingModel']->setting_stock_plu)
-                        @foreach (explode(",", $data['settingModel']->setting_stock_plu) as $plu)
-                            @php
-                                $selected = '';
-                                if($loop->iteration == $data['stockModel']->stock_plu){
-                                        $selected = 'selected';
-                                }
-                            @endphp
-                            <option >{{$plu}}</option>
+                <label class="uk-form-label" for="form-stacked-text">{{Str::upper('case size')}}</label>
+                <select class="uk-select" name="stock_merchandise[case_size]">
+                    <option selected="selected" disabled>SELECT ...</option>
+                    @if ($data['settingModel']->setting_stock_case_size)
+                        @foreach ($data['settingModel']->setting_stock_case_size as $key => $stock_case_size)
+                            <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['case_size']) selected @endif>{{$stock_case_size['description']}}</option>
+                            
                         @endforeach
                     @endif
                 </select>
             </div>
         
             <div class="uk-margin">
-                <input class="uk-input" type="number" placeholder="Qty" value="{{$data['stockModel']->stock_name}}">
+                <label class="uk-form-label" for="form-stacked-text">{{Str::upper('recipe link')}}</label>
+                <select class="uk-select" name="stock_merchandise[recipe_link]">
+                    <option selected="selected" disabled>SELECT ...</option>
+                    @if ($data['settingModel']->setting_stock_recipe)
+                        @foreach ($data['settingModel']->setting_stock_recipe as $key => $stock_recipe_link)
+                            <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['recipe_link']) selected @endif>{{$stock_recipe_link['name']}}</option>
+                            
+                        @endforeach
+                    @endif
+                </select>
             </div>
-        
+            
             <div class="uk-margin">
-                <input class="uk-input" type="text" placeholder="Recipe" value="{{$data['stockModel']->stock_name}}">
+                <label class="uk-form-label" for="form-stacked-text">{{Str::upper('set menu')}}</label>
+                <select class="uk-select" name="stock_merchandise[set_menu]">
+                    <option selected="selected" disabled>SELECT ...</option>
+                    @if ($data['settingModel']->setting_stock_set_menu)
+                        @foreach ($data['settingModel']->setting_stock_set_menu as $key => $stock_set_menu)
+                            <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['set_menu']) selected @endif>{{$stock_set_menu['name']}}</option>
+                            
+                        @endforeach
+                    @endif
+                </select>
             </div>
-        
-            <div class="uk-margin">
-                <input class="uk-input" type="number" placeholder="Unit Quantity" value="{{$data['stockModel']->stock_name}}">
-            </div>
-        
-            <div class="uk-margin">
-                <input class="uk-input" type="number" placeholder="Case Quantity" value="{{$data['stockModel']->stock_name}}">
-            </div>
-        
-            <div class="uk-margin">
-                <input class="uk-input" type="number" placeholder="Alert Level" value="{{$data['stockModel']->stock_alert_level}}">
+            
+            <div>
+                @php
+                    $exclude = [
+                        "non_stock","set_menu","case_size","recipe_link","stock_name","group_id","category_id","brand_id","stock_vat","stock_description","stock_quantity","master_plu"
+                    ];
+                @endphp
+               
+               
+
+                @foreach ($data['stockModel']->stock_merchandise as  $key => $stock_merchandise)
+
+                    @if (in_array($key, $exclude) == false)
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
+                            <input class="uk-input" name="stock_merchandise[{{$key}}]" type="number" value="{{$stock_merchandise}}">
+                        </div>
+                    @endif
+                @endforeach
             </div>
             
         </div>
@@ -84,6 +110,7 @@
         </div>
     </div>
 
+    
 
     <div>
         <div class="uk-card uk-card-default uk-padding">
@@ -94,7 +121,7 @@
                 <div class="uk-margin">
                     <label class="uk-form-label" for="form-stacked-text">SHEET SIZE</label>
 
-                    <select id="" class="uk-select" name="stock_plu_id">
+                    <select id="" class="uk-select" name="label_shelf">
                         <option value="" disabled selected>SELECT ...</option>
                         @foreach ( $data['settingModel']->setting_stock_label['SHELF'] as $key => $shelf_setting_stock_label)
                         
@@ -126,7 +153,7 @@
                 <div class="uk-margin">
                     <label class="uk-form-label" for="form-stacked-text">SHEET SIZE</label>
                 
-                    <select id="" class="uk-select" name="stock_plu_id">
+                    <select id="" class="uk-select" name="label_stock">
                         <option value="" disabled selected>SELECT ...</option>
                         @foreach ( $data['settingModel']->setting_stock_label['STOCK'] as $key => $shelf_setting_stock_label)
                         

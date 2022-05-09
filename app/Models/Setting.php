@@ -22,7 +22,7 @@ class Setting extends Model
        
         'setting_stock_group_category_plu' => '{
             "1": {
-                "descriptor": "",
+                "description": "",
                 "code": "",
                 "type": ""
             }
@@ -62,19 +62,7 @@ class Setting extends Model
        
         }',
 
-        'setting_stock_voucher' => '{
-            "1": {
-                "number": "",
-                "store_id": "",
-                "name": "",
-                "value": "",
-                "expiry_date": "",
-                "status": "",
-                "type": "",
-                "quantity": "",
-            }
-        }',
-
+       
         'setting_printer' => '{}',
         'setting_stock_tag_group' => '{}',
         
@@ -84,7 +72,7 @@ class Setting extends Model
         'setting_reason' => '{
             "1": {
                 "name": "",
-                "setting_stock_group_category_plu_id": ""
+                "setting_stock_group_category_id": ""
             }
         }',
 
@@ -92,7 +80,7 @@ class Setting extends Model
             "1": {
                 "name": "",
                 "rate": "",
-                "active": ""
+                "default": ""
             }
         }',
 
@@ -120,7 +108,137 @@ class Setting extends Model
         'setting_payment_gateway' => '{}', 
 
         'setting_keys' => '{}', 
-        'setting_mix_match' => '{}', 
+       
+
+        
+        
+        "setting_stock_nutrition" => '{
+           
+            "1": {
+                "name": "Energy",
+                "value": "",
+                "measurement": "kcal"
+            },
+            "2": {
+                "name": "Fat",
+                "value": "",
+                "measurement": "g"
+            },
+            "3": {
+                "name": "Saturate",
+                "value": "",
+                "measurement": "g"
+            },
+            "4": {
+                "name": "Carbohydrate",
+                "value": "",
+                "measurement": "g"
+            },
+            "5": {
+                "name": "Sugar",
+                "value": "",
+                "measurement": "g"
+            },
+            "6": {
+                "name": "Protein",
+                "value": "",
+                "measurement": "g"
+            },
+            "7": {
+                "name": "Salt",
+                "value": "",
+                "measurement": "g"
+            },
+            "8": {
+                "name": "Portions",
+                "value": "",
+                "measurement": "g"
+            }
+       
+        }',
+
+   
+        "setting_stock_allergen" => '{
+            
+            
+                "1": "Celery",
+                "2": "Cereals Containing Gluten",
+                "3": "Crustaceans",
+                "4": "Eggs",
+                "5": "Fish",
+                "6": "Lupin",
+                "7": "Milk",
+                "8": "Molluscs",
+                "9": "Mustard",
+                "10": "Tree Nuts",
+                "11": "Peanuts",
+                "12": "Sesame Seeds",
+                "13": "Soyabeans",
+                "14": "Sulphur Dioxide and Sulphites",
+                "15": "Allergen 15",
+                "16": "Allergen 16"
+        
+            
+        }',
+
+        "setting_stock_offer" => '{
+            "1": {
+                "points":{
+                    "gain": "",
+                    "collect": "",
+                },
+                "date":{
+                    "end_date": "",
+                    "start_date": "",
+                },
+                "default":{
+                    "type": "",
+                    "exception": {},
+                },
+
+                "set_menu":"",
+                "number":"",
+
+                "type": "",
+
+                "description": "",
+                "name": "",
+
+                "value":"",
+                "status":""
+                
+                "quantity": "",
+                "discount(%)": "",
+                
+                
+            }
+        }',
+
+        'setting_stock_set_menu' => '{}',
+
+        'setting_stock_recipe' => '{
+            "1": {
+                "link": null,
+                "name": "illo",
+                "default": 1
+            }
+        }',
+
+        'setting_stock_case_size' => '{
+            "1": {
+                "size": 9817,
+                "default": 1,
+                "description": "corporis"
+            }
+        }',
+        "setting_stock_tag" => '{
+            "1": {
+                "tag": "",
+                "name": "",
+                "stock_tag_group_id": ""
+            }
+        }',
+       
     ];
 
     protected $casts = [
@@ -131,7 +249,7 @@ class Setting extends Model
         'setting_stock_group_category_plu' => 'array',
         
         'setting_stock_label'  => 'array',
-        'setting_stock_voucher'  => 'array',
+        
         
         'setting_printer' => 'array',
         'setting_stock_tag_group' => 'array',
@@ -151,12 +269,19 @@ class Setting extends Model
         
 
         'setting_receipt' => 'array',
-
         'setting_payment_gateway' => 'array',
 
-        'setting_mix_match' => 'array'
         
+
+        'setting_stock_allergen' => 'array',
+        'setting_stock_nutrition' => 'array',
+        'setting_stock_offer' => 'array',
+        "setting_stock_set_menu" => 'array',
+
+        "setting_stock_recipe" => 'array',
+        "setting_stock_case_size" => 'array',
        
+        "setting_stock_tag" => 'array',
     ];
 
     public static function List($column, $filter){

@@ -20,14 +20,16 @@ return new class extends Migration
             $table->json('setting_logo')->nullable();
            
            
-            $table->json('setting_stock_group_category_plu')->nullable();
+            $table->json('setting_stock_group_category_plu')->nullable()->comment('category::group::plu::brand');
 
             $table->json('setting_stock_label')->nullable();
-            $table->json('setting_stock_voucher')->nullable();
+            
+            $table->json('setting_stock_recipe')->nullable();
+            $table->json('setting_stock_case_size')->nullable(); 
             
             $table->json('setting_printer')->nullable();
             $table->json('setting_stock_tag_group')->nullable();
-            
+            $table->json('setting_stock_tag')->nullable();
             
             $table->json('setting_message_notification_category')->nullable();
             $table->json('setting_message_group')->nullable();
@@ -43,9 +45,14 @@ return new class extends Migration
             $table->json('setting_keys')->nullable();
 
             $table->json('setting_receipt')->nullable();
-            $table->json('setting_mix_match')->nullable();
+            
             $table->json('setting_payment_gateway')->nullable();
             
+            $table->json('setting_stock_allergen')->nullable();
+            $table->json('setting_stock_nutrition')->nullable();
+            $table->json('setting_stock_offer')->nullable();
+
+            $table->json('setting_stock_set_menu')->nullable();
            
             $table->timestamps();
         });

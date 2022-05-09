@@ -44,26 +44,6 @@ class SettingFactory extends Factory
                 $this->faker->numberBetween($min=1, $max=100)
             ]; 
 
-            $setting_mix_match[$i+1] = [
-                'Descriptor' => $this->faker->word,
-                'Amount / Discount Rate(%)' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
-                'Quantity Required' => $this->faker->numberBetween($min = 1, $max = 200),
-                'Mix & Match Type' => '',
-                'Start Date' => $this->faker->dateTimeBetween($startDate = '-60 years', $endDate = '-3 years', $timezone = null),
-                'End Time' => $this->faker->dateTimeBetween($startDate = '-60 years', $endDate = '-3 years', $timezone = null),
-            ];
-
-            $setting_stock_voucher[$i+1] = [
-                "number" => $this->faker->lexify,
-                "store_id" => $this->faker->numberBetween($min = 1, $max = 200),
-                "name" => $this->faker->word,
-                "value" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
-                "expiry_date" => $this->faker->dateTimeBetween($startDate = '-60 years', $endDate = '-3 years', $timezone = null),
-                "status" =>  $this->faker->numberBetween($min = 0, $max = 1),
-                "type" =>  $this->faker->numberBetween($min = 0, $max = 1), //discount or gift card
-                "quantity" =>  $this->faker->numberBetween($min = 200, $max = 1000),
-            ];
-        
             $setting_receipt[$i+1] = [
                 "receipt header" => [ 1 => $this->faker->word],
                 "commercial message" => [ 1 => $this->faker->paragraph],
@@ -76,29 +56,92 @@ class SettingFactory extends Factory
 
             $setting_reason[$i+1] = [
                 "name" => $this->faker->word,
-                "setting_stock_group_category_plu_id" => $this->faker->numberBetween($min = 1, $max = 50)
+                "setting_stock_group_category_id" => $this->faker->numberBetween($min = 1, $max = 50)
             ];
     
             $setting_vat[$i+1] = [
                 "name" => $this->faker->word,
                 "rate" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
-                "active" => $this->faker->numberBetween($min = 0, $max = 1)
+                "default" => 1
             ];
 
             $setting_stock_group_category_plu[$i+1] = [
-                "descriptor"=> $this->faker->word,
+                "description"=> $this->faker->word,
                 "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
-                "type"=> $this->faker->numberBetween($min = 0, $max = 2)
+                "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::plu::brand
             ];
 
             $setting_stock_tag_group[$i+1] =[
-                "name" => [$this->faker->word]
+                "name" => $this->faker->word
             ];
 
             $setting_stock_printer[] = $i+1;
 
+            $setting_stock_offer[$i + 1] = [
+                "decimal" => [
+                    "gain" => $this->faker->numberBetween($min = 1, $max = 500),
+                    "collect"=> $this->faker->numberBetween($min = 1, $max = 500),
+                    'discount(%)' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
+                    "value" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
+                ],
+
+                "date" => [
+                    'end_date' => $this->faker->dateTimeBetween($startDate = '-60 years', $endDate = '-3 years', $timezone = null)->format('Y-m-d H:i:s'),
+                    'start_date' => $this->faker->dateTimeBetween($startDate = '-60 years', $endDate = '-3 years', $timezone = null)->format('Y-m-d H:i:s'),
+                ],
+
+                "default" => [
+                    'is_default' => $this->faker->numberBetween($min = 0, $max = 1),
+                    'exception' => []
+                ],
+                
+                
+                
+                "integer" => [
+                    "set_menu" => $this->faker->numberBetween($min = 1, $max = 5),
+                    'quantity' => $this->faker->numberBetween($min = 1, $max = 200),
+                ],
+
+                "boolean" => [
+                    'type' => $this->faker->numberBetween($min = 0, $max = 1), //voucher / mix and match
+                    "status" =>  1,
+                ],
+
+                "string" => [
+                    "name" => $this->faker->word,
+                    'description' => $this->faker->word,
+                    "code" => $this->faker->lexify,
+                ]
+                
+            ];
+           
+            $setting_stock_set_menu[$i + 1] = [
+                "name" => $this->faker->word
+            ];
+
+            $setting_stock_case_size[$i+1] = [
+                "description" => $this->faker->word,
+                "size" => $this->faker->numberBetween($min = 50, $max = 9999),
+                "default" => 1,
+            ];
+    
+            
+            $setting_stock_recipe[$i+1] = [
+                "name" => $this->faker->word,
+                "link" => $this->faker->randomElement($array = array (NULL,$this->faker->url)),
+                "default" => 1,
+            ];
         }
 
+        for ($i=0; $i < count(ConfigHelper::Nutrition()); $i++) { 
+            $stock_nutrition[$i + 1] = ConfigHelper::Nutrition()[$i];
+        }
+        
+        for ($i=0; $i < count(ConfigHelper::Allergen()); $i++) { 
+            $stock_allergen[$i + 1] = ConfigHelper::Allergen()[$i];
+        }
+
+        
 
         return [
             'setting_store_id' => $this->faker->numberBetween($min = 1, $max = 10),
@@ -106,12 +149,20 @@ class SettingFactory extends Factory
             'setting_payment_gateway' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
             
-            'setting_stock_voucher' => $setting_stock_voucher,
+            
 
             'setting_stock_group_category_plu'  => $setting_stock_group_category_plu,
-            'setting_mix_match' => $setting_mix_match,
            
+            'setting_vat' => $setting_vat,
+           
+            'setting_stock_nutrition' => $stock_nutrition,
+            'setting_stock_allergen' => $stock_allergen,
+            'setting_stock_offer' => $setting_stock_offer,
+            'setting_stock_set_menu' => $setting_stock_set_menu,
      
+            'setting_stock_case_size' => $setting_stock_case_size,
+            'setting_stock_recipe' => $setting_stock_recipe
+            
         ];
     }
 }

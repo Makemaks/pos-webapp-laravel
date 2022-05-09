@@ -23,9 +23,7 @@
                     <tr>
                         
                             @foreach ($data['stockModel']->stock_supplier[1] as $key => $item)
-                                @if ($key != 'supplier_id')
-                                    <th>{{$key}}</th>
-                                @endif
+                                <th>{{$key}}</th>
                             @endforeach
                         
                         <th></th>
@@ -39,17 +37,29 @@
                                 
                                 @foreach ($stockSupplier as $key => $stock)
                                     <td>
+                                      
                                         @if ($key == 'supplier_id')
                                            
-                                            <a href="{{route('company.edit', $stock)}}" class="uk-button uk-button-danger uk-border-rounded"> 
+                                            {{-- <a href="{{route('company.edit', $stock)}}" class="uk-button uk-button-danger uk-border-rounded"> 
                                                 {{$stock}}
-                                            </a>
+                                            </a> --}}
+                                           
+                                            <select class="uk-select" id="form-stacked-select" name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]">
+                                                <option value="" selected disabled>SELECT ...</option>
+                                                @foreach ($data['companyList']->where('comapny_type', 0)  as $supplier )
+                                                        
+                                                    <option value="{{$supplier->company_id}}" @if($supplier->company_id == $stock) selected @endif>
+                                                        {{$supplier->company_name}}
+                                                    </option>
+                                                        
+                                                @endforeach
+                                            </select>
                                                 
                                         @elseif($key == 'default')
-                                                <input name="{{$key}}[]" class="uk-checkbox" type="checkbox" @if($stock == 0) checked @endif>
+                                                <input name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]" class="uk-radio" type="radio" @if($stock == 0) checked @endif>
                                         @else
                                             @if ($key != 'supplier_id')
-                                                <input  name="{{$key}}[]" class="uk-input" type="number" value="{{$stock}}">
+                                                <input  name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]" class="uk-input" type="number" value="{{$stock}}">
                                             @endif
                                         @endif
                                     </td>
@@ -72,7 +82,7 @@
         <form action="" class="uk-form-stacked">
           
             @if ($data['stockModel']->stock_supplier)
-                @foreach ($data['stockModel']->stock_supplier  as $stock_supplier_key => $stock_supplier)
+                @foreach ($data['stockModel']->stock_supplier  as $keyStockSupplier => $stock_supplier)
                     
                     @foreach ($stock_supplier as $key =>$item)
                        
@@ -81,7 +91,7 @@
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
                                 <div class="uk-form-controls">
-                                    <select class="uk-select">
+                                    <select class="uk-select" name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]">
                                         <option selected disabled>SELECT ...</option>
                                         @if ($data['companyList'])
                                             @foreach ( $data['companyList'] as $key => $item)
@@ -94,7 +104,7 @@
                         @else
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                                <input class="uk-input" type="number" name="{{$item}}">
+                                <input class="uk-input" type="number" name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]">
                             </div>
                         @endif
                     @endforeach
@@ -103,14 +113,6 @@
 
                 @endforeach
             @endif
-
-           
-                
-                
-                
-
-               
-               
            
 
            <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>

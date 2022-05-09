@@ -20,7 +20,7 @@
         <li>@include('stock.partial.stockPartial')</li>
         <li>@include('stock.partial.flagPartial')</li>
         <li>@include('stock.partial.webPartial')</li>
-        <li>@include('stock.partial.allergensPartial')</li>
+        <li>@include('stock.partial.allergenPartial')</li>
         <li>@include('stock.partial.nutritionPartial')</li>
     </ul>
     

@@ -36,38 +36,50 @@
            @foreach ($data['stockList'] as $stock)
                 <tr>
                     <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$stock->stock_id}}</a></td>
-                    <td>{{$stock->stock_name}}</td>
-                    <td>{{$stock->stock_plu_id}}</td>
-                    <td>{{$stock->stock_random_code}}</td>
+                    <td>{{$stock->stock_merchandise['stock_name']}}</td>
+                    <td>{{$stock->stock_merchandise['master_plu']}}</td>
+                    <td>{{$stock->stock_merchandise['random_code']}}</td>
                     
                     <td>
-                        @if ($data['settingModel']->setting_stock_group_category_plu && $stock->stock_group_category_plu['category_id'])
-                            {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_group_category_plu['group_id']]['descriptor']}}
-                        @endif
+                       {{--  @foreach ($data['settingModel']->setting_stock_group_category_plu as $item)
+                            @if ($item['type'] == 1 && $stock->stock_merchandise['group_id'])
+                                {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['group_id']]['description']}}
+                            @endif
+                        @endforeach --}}
+                        {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['group_id']]['description']}}
                     </td>
                     <td>
                         {{-- dept --}}
-                        @if ($data['settingModel']->setting_stock_group_category_plu && $stock->stock_group_category_plu['group_id'])
-                            {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_group_category_plu['category_id']]['descriptor']}}
-                        @endif
+                       {{--  @foreach ($data['settingModel']->setting_stock_group_category_plu as $item)
+                            @if ($item['type'] == 0 && $stock->stock_merchandise['category_id'])
+                                {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['category_id']]['description']}}
+                            @endif
+                        @endforeach --}}
+                        {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['category_id']]['description']}}
                     </td>
                     <td>
-                        @if ($stock->stock_vat_id)
-                            {{$data['settingModel']->setting_store_vat[$stock->stock_vat_id]}}
-                        @endif
+                       @if ($stock->stock_merchandise['stock_vat'] == 'null')
+                            @foreach ($data['settingModel']->setting_vat as $item)
+                                @if ($item['default'] == 0)
+                                    {{$item['rate']}}
+                                @endif
+                            @endforeach
+                       @else
+                            {{$stock->stock_merchandise['stock_vat']}}
+                       @endif
+
                     </td>
                     <td>
                         @php
+                            $cost = 0;
                             foreach ($stock->stock_cost as $stock_cost){
-                                if ($stock_cost['default'] == 0) {
                                     $cost = MathHelper::FloatRoundUp($stock_cost['price'], 2);
-                                }
                             }
                            
                         @endphp
                        {{$cost}}
                     </td>
-                    <td>{{$stock->stock_quantity}}</td>
+                    <td>{{$stock->stock_merchandise['stock_quantity']}}</td>
                 </tr>
            @endforeach
         </tbody>
@@ -86,46 +98,46 @@
 
 
             <div>
-                    <div class="uk-card uk-card-default uk-card-small uk-card-body">
-                            @if ( $stock != null && $stock->stock_image != null && 
-                                Storage::disk('public')->has('uploads/'.$stock->stock_image))
-                                    <img src="{{asset('/storage/uploads/'.$stock->stock_image)}}" class="uk-image">
-                            @else
-                                <img src="{{asset('/storage/uploads/placeholder.png')}}" class="uk-image">
-                            @endif
-                        <div>
-                            <ul class="uk-iconnav uk-padding-small">
-                                <li><a href="{{route('stock.edit', $stock->stock_id)}}" class="" uk-icon="icon: pencil"></a></li>
-                                {{-- <li><a href="{{route('init.dashboard', ['stock', $stock->stock_id])}}" uk-icon="icon: history"></a></li> --}}
-                                {{-- <li><span class="uk-card-badge uk-label">{{$stock->stock_quantity}}</span></li> --}}
-                            </ul>
-                        </div>
+                <div class="uk-card uk-card-default uk-card-small uk-card-body">
+                        @if ( $stock != null && $stock->stock_image != null && 
+                            Storage::disk('public')->has('uploads/'.$stock->stock_image))
+                                <img src="{{asset('/storage/uploads/'.$stock->stock_image)}}" class="uk-image">
+                        @else
+                            <img src="{{asset('/storage/uploads/placeholder.png')}}" class="uk-image">
+                        @endif
+                    <div>
+                        <ul class="uk-iconnav uk-padding-small">
+                            <li><a href="{{route('stock.edit', $stock->stock_id)}}" class="" uk-icon="icon: pencil"></a></li>
+                            {{-- <li><a href="{{route('init.dashboard', ['stock', $stock->stock_id])}}" uk-icon="icon: history"></a></li> --}}
+                            {{-- <li><span class="uk-card-badge uk-label">{{$stock->stock_quantity}}</span></li> --}}
+                        </ul>
+                    </div>
 
-                        <a class="uk-link-reset" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_name}}', '{{$price}}')">
-                            <div class="uk-padding-small" style="background-color: #{{StringHelper::getColor()}}">
-                                
-                                <div class="uk-text-center uk-light">
-                                    <div class="uk-text-lead">{{$stock->stock_name}}</div>
-                                    <div class="uk-text-meta uk-margin-remove-top">{{$stock->stock_brand}}</div>
-                                    <div class="uk-text-lead">
-                                        {{CurrencyHelper::Currency()}}{{$price}}
-                                        {{-- @if ($schemeList->count() > 0)
-                                            <span class="uk-text-danger">*</span>
-                                        @endif --}}
-                                    </div>
+                    <a class="uk-link-reset" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_name}}', '{{$price}}')">
+                        <div class="uk-padding-small" style="background-color: #{{StringHelper::getColor()}}">
+                            
+                            <div class="uk-text-center uk-light">
+                                <div class="uk-text-lead">{{$stock->stock_name}}</div>
+                                <div class="uk-text-meta uk-margin-remove-top">{{$stock->stock_brand}}</div>
+                                <div class="uk-text-lead">
+                                    {{CurrencyHelper::Currency()}}{{$price}}
+                                    {{-- @if ($schemeList->count() > 0)
+                                        <span class="uk-text-danger">*</span>
+                                    @endif --}}
                                 </div>
                             </div>
-                        </a>
+                        </div>
+                    </a>
 
-                        @if ($route == 'home')
-                            <div class="uk-margin-top">
-                                @include('partial.controlsPartial', [
-                                    'cartValue' => $stock->stock_id,
-                                    'quantity' => 1,
-                                ])
-                            </div>
-                        @endif
-                    </div>
+                    @if ($route == 'home')
+                        <div class="uk-margin-top">
+                            @include('partial.controlsPartial', [
+                                'cartValue' => $stock->stock_id,
+                                'quantity' => 1,
+                            ])
+                        </div>
+                    @endif
+                </div>
             </div>
     
         @endforeach

@@ -20,7 +20,7 @@ class Stock extends Model
             "1": {
                 "price": "",
                 "quantity": "",
-                "default": "",
+                "default": 1,
                 "supplier_id": ""
             }
         }',
@@ -29,8 +29,8 @@ class Stock extends Model
             "1": {
                 "supplier_id": "",
                 "code": "",
-                "unit cost": "",
-                "case cost": ""
+                "unit_cost": "",
+                "case_cost": ""
               
             }
         }',
@@ -39,68 +39,51 @@ class Stock extends Model
             "rrp": "",
             "actual": "",
             "target": "",
-            "average cost": ""
+            "average_cost": ""
         }',
-
-        "stock_boolean" => '{}',
-
-        "stock_tag" => '{
-            "1": {
-                "tag": "",
-                "name": "",
-                "stock_tag_group_id": ""
-            }
-        }',
-
-        "stock_recipe" => '{}',
 
         
 
-        "stock_print_exclusion" => '{}',
-
-        "stock_offers" => '{
-            "1": {
-                "gain": "",
-                "collect": "",
-                "default": "",
-                "set menu": "",
-                "mix & match": "",
-                "voucher_id": ""
-            }
-        }',
-
         "stock_merchandise" => '{
-            "case size": "",
-            "non stock": "",
-            "unit size": "",
-            "master plu": "",
-            "recipe link": "",
-            "crrent stock": "",
-            "days to order": "",
-            "maximum stock": "",
-            "minimum stock": "",
-            "outer barcode": "",
-            "qty adjustment": ""
+            "group_id" :"",
+            "category_id":"",
+            "brand_id":"",
+
+            "random_code": "",
+            "expiration_date": "",
+            "alert_level:""
+
+            "non_stock": "",
+            "unit_size": "",
+            "recipe_link" => "",
+            "case_size" => "",
+            "master_plu": "",
+            
+            "current_stock": "",
+            "days_to_order": "",
+            "maximum_stock": "",
+            "minimum_stock": "",
+            "outer_barcode": "",
+            "qty_adjustment": "",
+            
+            
+            "stock_vat": "",
+            "stock_name": "",
+            "stock_description": "",
+            "stock_quantity": "",
+            "stock_image": "",
+            "stock_tag": "",
+            "stock_offer": ""
+            
         }',
 
-       "stock_transfer" => '{
-            "1": {
-                "date": "",
-                "type": "",
-                "price": "",
-                "user_id": "",
-                "quantity": "",
-                "stock_id": "",
-                "store_id": ""
-            }
-        }',
-
-        "stock_termminal_flags" => '{
-            "Status Flags": {},
-            "Stock Control": {},
-            "Commission Rates": {},
-            "Kitchen Printers": {},
-            "Selective Itemisers": {}
+       
+        "stock_terminal_flag" => '{
+            "status_flag": {},
+            "stock_control": {},
+            "commission_rates": {},
+            "kitchen_printers": {},
+            "selective_itemisers": {}
         }',
 
         "stock_web" => '{
@@ -112,35 +95,33 @@ class Stock extends Model
             }
         }',
 
-        "stock_nutrition" => '{}',
-
-        "stock_group_category_plu" => '{
-            "group_id": "",
-            "category_id": "",
-            "plu_id": ""
-        }'
+        'stock_allergen' => '{}',
+        'stock_nutrition' => '{}',
        
+       
+        
     ];
 
-  
-    
 
     protected $casts = [
         'stock_cost' => 'array',
         'stock_supplier' => 'array',
         'stock_gross_profit' => 'array',
-        'stock_offers' => 'array',
-        "stock_boolean" => 'array',
-        "stock_tag" => 'array',
-        "stock_recipe" => 'array',
         
-        "stock_print_exclusion" => 'array',
+        
+       
+        
+        
+        
         "stock_merchandise" => 'array',
-        "stock_transfer" => 'array',
-        "stock_termminal_flags" => 'array',
+        
+        "stock_terminal_flag" => 'array',
         "stock_web" => 'array',
-        "stock_group_category_plu" => 'array',
-        "stock_nutrition" => 'array'
+        
+        "stock_nutrition" => 'array',
+        "stock_allergen" => 'array',
+        
+
     ];
         
     public static function List($column,  $filter){
@@ -216,5 +197,13 @@ class Stock extends Model
         return $stockList;
     }
 
+    public static function OfferType(){
+       return [
+           'voucher',
+           'mix & match'
+       ];
+    }
+
+   
     
 }

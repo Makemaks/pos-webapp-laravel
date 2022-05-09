@@ -4,9 +4,10 @@
   
 @endphp
 @section('content')    
-   <form action="stock.store" method="POST">
+   <form id="stock-update" action="{{route('stock.update', $data['stockModel']->stock_id)}}" method="POST">
        @csrf
-        @include('stock.partial.createPartial')
+       @method('PATCH')
+       @include('stock.partial.createPartial')
    </form>
 
   

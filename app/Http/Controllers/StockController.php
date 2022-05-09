@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Stock;
+use App\Models\Stockroom;
 use App\Models\User;
 use App\Models\Store;
 use App\Models\Setting;
@@ -23,6 +24,8 @@ class StockController extends Controller
     private $settingModel;
     private $fileModel;
     private $companyList;
+    private $stockroomList;
+   
     
     public function Index(){
 
@@ -39,10 +42,7 @@ class StockController extends Controller
 
     public function Create(){
         $this->stockModel = new Stock();
-        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
-        ->first();
-
-        $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
+        
 
         $this->Init();
         
@@ -73,6 +73,9 @@ class StockController extends Controller
 
     public function Edit($stock){
         $this->stockModel = Stock::find($stock);
+        $this->stockroomList = Stockroom::where('stockroom_stock_id', $stock)->get();
+        
+
         $this->Init();
 
         return view('stock.edit', ['data' => $this->Data()]);  
@@ -80,8 +83,10 @@ class StockController extends Controller
 
     public function Update(Request $request, $stock){
 
-       Stock::find($stock)
-       ->update($request->except('_token', '_method'));
+        $stockArray = $request->except('_token', '_method', 'stockroom');
+
+       Stock::where('stock_id', $stock)
+       ->update($stockArray);
 
         return view('stock.edit', ['data' => $stock]);  
     }
@@ -95,6 +100,10 @@ class StockController extends Controller
     private function Init(){
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
+
+        
+
+        $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
 
         $b = Auth::user()->user_account_id;
         $a = $this->userModel->store_id;
@@ -163,7 +172,8 @@ class StockController extends Controller
             'settingModel' =>  $this->settingModel,
             'fileModel' => $this->fileModel,
             'storeList' => $this->storeList,
-            'companyList' => $this->companyList
+            'companyList' => $this->companyList,
+            'stockroomList' => $this->stockroomList
         ];
        
     }

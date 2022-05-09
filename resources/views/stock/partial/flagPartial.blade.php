@@ -4,21 +4,28 @@
 @endphp
 
 
-<div class="uk-grid-match uk-grid-small uk-child-width-1-2" uk-grid>
+<div class="uk-grid-match uk-grid-small uk-child-width-1-2@xl" uk-grid>
 
-   @foreach (ConfigHelper::TerminalFlags() as $key => $terminalFlags)
+   @foreach (ConfigHelper::TerminalFlag() as $key => $terminalFlag)
         <div>
             <div class="uk-card uk-card-default uk-padding">
                 <h3>{{Str::upper($key)}}</h3>
                 
                 <div uk-grid>
                     
-                    @foreach ($terminalFlags as $item)
+                    @foreach ($terminalFlag as $keyflag => $flag)
+                        @php
+                            $checked = "";
+                            $isflag = array_search($keyflag, $data['stockModel']->stock_terminal_flag[$key]);
+                            if($isflag){
+                                $checked = 'checked';
+                            }
+                        @endphp
                         <div>
                             <div class="uk-margin">
-                                <label class="uk-form-label" for="form-stacked-text">{{Str::upper($item)}}</label>
+                                <label class="uk-form-label" for="form-stacked-text">{{Str::upper($flag)}}</label>
                                 <div class="uk-form-controls">
-                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox" {{$checked}} value="1" name="stock_terminal_flag[{{$key}}][{{$keyflag}}]">
                                 </div>
                             </div>
                         </div>

@@ -349,4 +349,8 @@ class Setting extends Model
             'event_address_id',
         ];
     }
+
+
+
+
 }

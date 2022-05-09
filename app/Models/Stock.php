@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Helpers\MathHelper;
+
 class Stock extends Model
 {
     use HasFactory;
@@ -124,11 +126,10 @@ class Stock extends Model
 
     ];
         
-    public static function List($column,  $filter){
+    public static function List(){
+      
         return Stock::
-        leftJoin('account', 'account.account_id', '=', 'stock.stock_store_id')
-        ->where($column,  $filter)
-        ->orderBy('stock.created_at', 'desc');
+        leftJoin('store', 'store.store_id', '=', 'stock.stock_store_id');
     }
 
     
@@ -204,6 +205,35 @@ class Stock extends Model
        ];
     }
 
-   
+   public static function GroupCategoryBrandPlu($data, $type){
+
+    $totalCostPrice = 0;
+    $price = 0;
+
+        foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $value) {
+
+            if ($value['type'] == $type) {
+                $stockReceiptOrder = $data['orderList']->where('stock_merchandise->category_id', $key);
+    
+                foreach ($stockReceiptOrder as $stockList) {
+        
+                    if ($stockList->receipt_id) {
+                        $price = $stockList->stock_cost[$stockList->receipt_stock_cost_id]['price'];
+                        $totalCostPrice = $totalCostPrice + $price;
+                    }
+                }
+    
+            
+    
+                $departmentTotal[] = [
+                    'description' => $value['description'], 
+                    'Quantity' => $stockReceiptOrder->count(), 
+                    'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                ];
+            }
+        }
+
+        return $departmentTotal;
+   }
     
 }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->json('setting_logo')->nullable();
            
            
-            $table->json('setting_stock_group_category_plu')->nullable()->comment('category::group::plu::brand');
+            $table->json('setting_stock_group_category_plu')->nullable()->comment('group::category::plu::brand');
 
             $table->json('setting_stock_label')->nullable();
             

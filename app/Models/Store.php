@@ -22,8 +22,6 @@ class Store extends Model
         ->orderBy('store.store_name', 'desc');
     }
 
-    
-
     public static function Sale($column,  $filter){
         return Store::
         leftJoin('order', 'order.order_store_id', '=', 'store.store_id')

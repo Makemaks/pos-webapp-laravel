@@ -98,7 +98,11 @@ class Stock extends Model
         }',
 
         'stock_allergen' => '{}',
-        'stock_nutrition' => '{}',
+        'stock_nutrition' => '{
+            "ref": "",
+            "value": "",
+            "measurement": ""
+        }',
        
        
         
@@ -205,25 +209,26 @@ class Stock extends Model
        ];
     }
 
+    public static function OfferStatus(){
+        return [
+            'Enabled',
+            'Disabled'
+        ];
+     }
+
    public static function GroupCategoryBrandPlu($data, $type){
 
     $totalCostPrice = 0;
     $price = 0;
+    $departmentTotal = [];
 
         foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $value) {
 
             if ($value['type'] == $type) {
                 $stockReceiptOrder = $data['orderList']->where('stock_merchandise->category_id', $key);
     
-                foreach ($stockReceiptOrder as $stockList) {
-        
-                    if ($stockList->receipt_id) {
-                        $price = $stockList->stock_cost[$stockList->receipt_stock_cost_id]['price'];
-                        $totalCostPrice = $totalCostPrice + $price;
-                    }
-                }
-    
             
+                $totalCostPrice =  OrderTotal($data);
     
                 $departmentTotal[] = [
                     'description' => $value['description'], 
@@ -234,6 +239,23 @@ class Stock extends Model
         }
 
         return $departmentTotal;
+   }
+
+
+   public static function OrderTotal($data){
+
+        $price = 0;
+        $totalCostPrice = 0;
+
+        foreach ($data['orderList'] as $stockList) {
+      
+            if ($stockList->receipt_id) {
+                $price = json_decode($stockList->stock_cost, true)[$stockList->receipt_stock_cost_id]['price'];
+                $totalCostPrice = $totalCostPrice + $price;
+            }
+        }
+
+        return $totalCostPrice;
    }
     
 }

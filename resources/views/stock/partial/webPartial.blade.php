@@ -62,7 +62,7 @@
                                                             </select>
                                                         @elseif($key == 'default')
                                                            
-                                                            <input name="stock_web[{{$keyStockweb}}][{{$key}}]" class="uk-radio" type="radio" value="{{$stock}}" @if($stock == 0) checked @endif>
+                                                            <input name="stock_web[{{$key}}]" class="uk-radio" type="radio" value="{{$stock}}" @if($stock == 0) checked @endif>
                                                         @else
                                                                 @if ($key != 'offer_id' || $key != 'price')
                                                                     <input name="stock_web[{{$keyStockweb}}][{{$key}}]" class="uk-input" type="number" value="{{$stock}}">

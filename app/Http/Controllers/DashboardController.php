@@ -85,8 +85,6 @@ class DashboardController extends Controller
         return [
            
             'orderList' => $this->orderList,
-          
-          
             'storeList' => $this->storeList,
             'expenseList' => $this->expenseList,
             'settingModel' => $this->settingModel

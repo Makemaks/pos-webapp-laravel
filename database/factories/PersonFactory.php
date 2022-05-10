@@ -32,9 +32,7 @@ class PersonFactory extends Factory
             "1" => $this->faker->randomElement($array = array (NULL,$this->faker->safeEmail))
         ];
 
-        for ($i=0; $i < 10; $i++) { 
-            $person_contact_user_id[$i+1] = $this->faker->numberBetween($min=1, $max=10);
-        }
+    
 
         for ($i=0; $i < 10; $i++) { 
             $person_message_group[$i+1] = $this->faker->word;
@@ -59,8 +57,7 @@ class PersonFactory extends Factory
             'person_type' => $this->faker->numberBetween($min=0, $max=5),
             'person_name' => $person_name,
             'person_role' => $this->faker->word,
-            'person_contact_user_id' => $person_contact_user_id,
-            'person_status' => $this->faker->paragraph($nbSentences = 3, $variableNbSentences = true),      
+           
             'person_phone' => $person_phone,
             'person_email' => $person_email,
             'persontable_id' => $this->faker->numberBetween($min=1, $max=10),

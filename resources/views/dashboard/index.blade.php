@@ -10,49 +10,6 @@
     use App\Models\Stock;
     use Carbon\Carbon;
 
-    $totalCostPrice = 0;
-    $totalCash = 0;
-    $totalCredit = 0;
-    //->where('stock_cost', 'receipt.receipt_stock_cost_id')
-
-   
-   
-    foreach ($data['orderList'] as $stockList) {
-      
-            if ($stockList->receipt_id) {
-                $price = json_decode($stockList->stock_cost, true)[$stockList->receipt_stock_cost_id]['price'];
-                $totalCostPrice = $totalCostPrice + $price;
-            }
-    }
-
-    $expenseTotal = $totalCostPrice - $data['expenseList']->sum('expense_amount');
-   
-  
-
-    for ($i=1; $i < count($data['settingModel']->setting_pos); $i++) { 
-        $totalCashQuantity = $totalCash + $data['settingModel']->setting_pos[$i]['cash']['quantity'];
-        $totalCashAmount = $totalCash + $data['settingModel']->setting_pos[$i]['cash']['amount'];
-
-        $totalCreditQuantity = $totalCredit + $data['settingModel']->setting_pos[$i]['credit']['quantity'];
-        $totalCreditAmount = $totalCredit + $data['settingModel']->setting_pos[$i]['credit']['amount'];
-    }
-
-    $totaliser = [
-        'NET sales' => ['Quantity' => $data['orderList']->count(), 'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2)],
-        'GROSS Sales' => ['Quantity' => $data['expenseList']->count(), 'Total' => MathHelper::FloatRoundUp($expenseTotal, 2)],
-        'CASH in Drawer' => ['Quantity' => $totalCashQuantity, 'Total' =>  MathHelper::FloatRoundUp($totalCashAmount, 2)],
-        'CREDIT in Drawer' => ['Quantity' => $totalCreditQuantity, 'Total' =>  MathHelper::FloatRoundUp($totalCreditAmount, 2)],
-        'TOTAL in Drawer' => ['Quantity' => $totalCashQuantity+$totalCreditQuantity, 'Total' => MathHelper::FloatRoundUp($totalCashAmount + $totalCreditAmount, 2)],
-        'Discount Total' => ['Quantity' => '', 'Total' => ''],
-        'Covers' => ['Quantity' => '', 'Total' => ''],
-        'GT Net' => ['Quantity' => '', 'Total' => ''],
-        'GT All +ve' => ['Quantity' => '', 'Total' => ''],
-        'CUST VERIFY1' => ['Quantity' => '', 'Total' => ''],
-    ];
-
-    $categoryData = Stock::GroupCategoryBrandPlu($data, 1);
-
-   
 @endphp
 
 @section('content')   
@@ -64,9 +21,48 @@
             @include('dashboard.partial.datePeriodPartial')
         </div>
 
+
         {{-- first row --}}
-        <div class="uk-margin uk-child-width-expand@l" uk-grid uk-height-match>
+        <div class="uk-margin uk-child-width-1-2@l" uk-grid uk-height-match>
+
             <div>
+                
+                @php
+                        $totalCostPrice = 0;
+                        $totalCash = 0;
+                        $totalCredit = 0;
+                    
+
+                    
+                        $totalCostPrice = Stock::OrderTotal($data);
+
+                        $expenseTotal = $totalCostPrice - $data['expenseList']->sum('expense_amount');
+                    
+                    
+
+                        for ($i=1; $i < count($data['settingModel']->setting_pos); $i++) { 
+                            $totalCashQuantity = $totalCash + $data['settingModel']->setting_pos[$i]['cash']['quantity'];
+                            $totalCashAmount = $totalCash + $data['settingModel']->setting_pos[$i]['cash']['amount'];
+
+                            $totalCreditQuantity = $totalCredit + $data['settingModel']->setting_pos[$i]['credit']['quantity'];
+                            $totalCreditAmount = $totalCredit + $data['settingModel']->setting_pos[$i]['credit']['amount'];
+                        }
+
+                        $totaliser = [
+                            'NET sales' => ['Quantity' => $data['orderList']->count(), 'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2)],
+                            'GROSS Sales' => ['Quantity' => $data['expenseList']->count(), 'Total' => MathHelper::FloatRoundUp($expenseTotal, 2)],
+                            'CASH in Drawer' => ['Quantity' => $totalCashQuantity, 'Total' =>  MathHelper::FloatRoundUp($totalCashAmount, 2)],
+                            'CREDIT in Drawer' => ['Quantity' => $totalCreditQuantity, 'Total' =>  MathHelper::FloatRoundUp($totalCreditAmount, 2)],
+                            'TOTAL in Drawer' => ['Quantity' => $totalCashQuantity+$totalCreditQuantity, 'Total' => MathHelper::FloatRoundUp($totalCashAmount + $totalCreditAmount, 2)],
+                            'Discount Total' => ['Quantity' => '', 'Total' => ''],
+                            'Covers' => ['Quantity' => '', 'Total' => ''],
+                            'GT Net' => ['Quantity' => '', 'Total' => ''],
+                            'GT All +ve' => ['Quantity' => '', 'Total' => ''],
+                            'CUST VERIFY1' => ['Quantity' => '', 'Total' => ''],
+                        ];
+
+                @endphp
+
                 <div class="">
                     <p class="uk-h4">FIXED TOTAL</p>
                 </div>
@@ -94,6 +90,11 @@
 
            {{--  new column --}}
            <div>
+            
+                @php
+                      $categoryData = Stock::GroupCategoryBrandPlu($data, 1);
+                @endphp
+            
                 <div class="">
                     <p class="uk-h4">DEPARTMENT SALES TOTAL</p>
                 </div>
@@ -118,6 +119,60 @@
                 </table>
             
             </div>
+
+
+
+            <div>
+            
+                @php
+
+                    $orderList = $data['orderList'];
+                    $orderList = $orderList->groupBy('order_id');
+
+                    foreach ($orderList as $receiptList) {
+        
+                        foreach ($receiptList as $receipt) {
+                            if ($receipt->receipt_id) {
+                                $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
+                                $totalCostPrice = $totalCostPrice + $price;
+                            }
+                        }
+
+                        $array100Sale[] = [
+                                'time' => $receipt->created_at,
+                                'order_id' => $receipt->order_id,
+                                'store_id' =>  $receipt->store_name,
+                                'total' => $totalCostPrice
+                        ];
+
+                    }
+                @endphp
+
+                <div class="">
+                    <p class="uk-h4">LAST 100 SALES</p>
+                </div>
+            
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                    <thead>
+                        <tr>
+                            @foreach ($array100Sale[0] as $key => $item)
+                                <th>{{$key}}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($array100Sale as $keyArray100Sale => $itemArray100Sale)
+                            <tr>
+                                @foreach ($itemArray100Sale as $key => $item)
+                                    <td>{{$item}}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            
+            </div>
+
 
            
         </div>

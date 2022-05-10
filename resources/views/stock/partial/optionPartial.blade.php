@@ -37,7 +37,7 @@
                                            
                                         @endforeach
                                     
-                                    <th></th>
+                                    <th>Apply</th>
                                     <th></th>
                                     
                                 </tr>
@@ -84,7 +84,7 @@
                                                             @foreach ($stock as $stockkey => $stockitem)
                                                             
                                                                 @if ($stockkey == 'is_default')
-                                                                    <td><input class="uk-radio" type="radio" name="stock_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" value="{{$stockitem}}" @if($stock == 0) checked @endif></td>
+                                                                    <td><input class="uk-radio" type="radio" name="stock_offer[{{$key}}][{{$stockkey}}]" value="{{$stockitem}}" @if($stock == 0) checked @endif></td>
                                                                 
                                                                 @endif
                                                             @endforeach
@@ -92,9 +92,23 @@
 
                                                         @if($key == 'boolean')
                                                             @foreach ($stock as $stockkey => $stockitem)
-                                                            
+                                                           
                                                                 @if ($stockkey == 'status')
-                                                                    <td><input class="uk-radio" type="radio" name="stock_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" value="{{$stockitem}}" @if($stock == 0) checked @endif></td>
+                                                                
+                                                                    <td>
+                                                                        <select class="uk-select" id="form-stacked-select" name="stock_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
+                                                                            <option value="" selected disabled>SELECT ...</option>
+                                                                            @foreach (Stock::OfferStatus()  as $key_stock_offer  => $item_stock_offer)
+                                                                                    
+                                                                                <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
+                                                                                    {{$item_stock_offer}}
+                                                                                </option>
+                                                                                    
+                                                                            @endforeach
+                                                                        </select>    
+                                                                    </td>
+
+                                                                
                                                                 @else
                                                                     <td>
                                                                         <select class="uk-select" id="form-stacked-select" name="stock_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">

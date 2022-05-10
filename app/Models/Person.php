@@ -22,7 +22,7 @@ class Person extends Model
         'person_phone' => '{}',
         'person_email' => '{}',
         'person_message_notification' => '{}',
-        'person_contact_user_id' => '{}',
+        
         'person_message_group' => '{}'
     ];
 
@@ -30,7 +30,7 @@ class Person extends Model
         'person_name' => 'array',
         'person_phone' => 'array',
         'person_email' => 'array',
-        'person_contact_user_id' => 'array',
+       
         'person_message_notification' => 'array',
         'person_message_group' => 'array'
     ];

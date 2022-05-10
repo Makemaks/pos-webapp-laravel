@@ -83,10 +83,56 @@ class StockController extends Controller
 
     public function Update(Request $request, $stock){
 
-        $stockArray = $request->except('_token', '_method', 'stockroom');
+       $stockArray = $request->except('_token', '_method', 'stockroom');
 
-       Stock::where('stock_id', $stock)
-       ->update($stockArray);
+       $stockModel = Stock::find($stock)->toArray();
+
+       $a = $request->only('stock_supplier');
+
+       foreach ((array)$request['stock_supplier'] as $keystock_supplier => $stock_supplier) {
+            foreach ($stock_supplier as $key => $value) {
+                $stockModel['stock_supplier'][$keystock_supplier][$key]  = $value;
+            }
+       }
+
+       foreach ((array)$request['stock_cost'] as $keystock_cost  => $stock_cost) {
+            foreach ($stock_supplier as $key => $value) {
+                $stockModel['stock_supplier'][$keystock_cost][$key]  = $value;
+            }
+        }
+
+       foreach ((array)$request['stock_merchandise'] as $keystock_merchandise  => $stock_merchandise) {
+            $stockModel['stock_supplier'][$keystock_merchandise]  = $stock_merchandise;
+       }
+
+       foreach ((array)$request['stock_gross_profit'] as $keygross_profit  => $gross_profit) {
+            $stockModel['stock_gross_profit'][$keygross_profit]  = $gross_profit;
+       }
+
+       foreach ((array)$request['stock_allergen'] as $keystock_allergen  => $stock_allergen) {
+            $stockModel['stock_allergen'][$keystock_allergen]  = $stock_allergen;
+       }
+
+       foreach ((array)$request['stock_nutrition'] as $keystock_nutrition  => $stock_nutrition) {
+            foreach ($stock_nutrition as $key => $value) {
+                $stockModel['stock_nutrition'][$key][$stock_nutrition]  = $stock_nutrition;
+            }
+       }
+
+       foreach ((array)$request['stock_web'] as $keystock_web  => $stock_web) {
+            foreach ($stock_web as $key => $value) {
+                $stockModel['stock_web'][$keystock_web][$key]  = $value;
+            }
+       }
+
+       foreach ((array)$request['stock_terminal_flag'] as $keystock_terminal_flag  => $stock_terminal_flag) {
+            foreach ($stock_terminal_flag as $key => $value) {
+                $stockModel['stock_terminal_flag'][$keystock_terminal_flag][$key]  = $value;
+            }
+        }
+
+        $stockModel->update();
+
 
         return view('stock.edit', ['data' => $stock]);  
     }

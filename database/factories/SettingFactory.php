@@ -134,7 +134,7 @@ class SettingFactory extends Factory
         }
 
         for ($i=0; $i < count(ConfigHelper::Nutrition()); $i++) { 
-            $stock_nutrition[$i + 1] = ConfigHelper::Nutrition()[$i];
+            $stock_nutrition[$i + 1] = ConfigHelper::Nutrition()[$i]['name'];
         }
         
         for ($i=0; $i < count(ConfigHelper::Allergen()); $i++) { 

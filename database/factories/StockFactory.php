@@ -99,8 +99,8 @@ class StockFactory extends Factory
         }
        
 
-        for ($i=0; $i < rand(1, 8); $i++) { 
-            $stock_nutrition[$i + 1] = $i + 1;
+        for ($i=0; $i < count(ConfigHelper::Nutrition()); $i++) { 
+            $stock_nutrition[$i + 1] = ConfigHelper::Nutrition()[$i];
         }
         
         for ($i=0; $i < rand(1, 8); $i++) { 
@@ -110,7 +110,6 @@ class StockFactory extends Factory
         
 
         return [
-            
             
            
             'stock_cost' => $stock_cost,

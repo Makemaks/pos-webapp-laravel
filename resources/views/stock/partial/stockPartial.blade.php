@@ -17,7 +17,7 @@
            
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">NON STOCK</label>
-                <input name="stock_merchandise[non_stock]" class="uk-checkbox" type="checkbox" @if ($data['stockModel']->stock_merchandise['non_stock'])checked @endif>
+                <input name="stock_merchandise[non_stock]" value="0" class="uk-checkbox" type="checkbox" @if ($data['stockModel']->stock_merchandise['non_stock'])checked @endif>
             </div>
         
             

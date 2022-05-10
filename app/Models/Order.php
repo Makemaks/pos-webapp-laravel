@@ -19,6 +19,7 @@ class Order extends Model
         "order_store_id" => 1,
         "order_status" => 0,
         "order_store_id" => 1
+        
     ];
 
 
@@ -32,7 +33,8 @@ class Order extends Model
         ->orderBy('order.created_at', 'desc');
     }
 
-    
+
+  
 
     public static function Receipt(){
         return Order::

@@ -170,14 +170,14 @@ class ConfigHelper{
 
     public static function Nutrition(){
         return [
-            ['name' => 'Energy', 'value' => '4934' ,'measurement' => 'kcal'],
-            ['name' => 'Fat', 'value' => '4892' ,'measurement' => 'g'], 	
-            ['name' => 'Saturate', 'value' => '4057' ,'measurement' => 'g'], 
-            ['name' => 'Carbohydrate', 'value' => '3164' ,'measurement' => 'g'], 
-            ['name' => 'Sugar', 'value' => '767' ,'measurement' => 'g'], 	
-            ['name' => 'Protein', 'value' => '1660' ,'measurement' => 'g'], 	
-            ['name' => 'Salt', 'value' => '4841' ,'measurement' => 'g'], 
-            ['name' =>  'Portions', 'value' => '2210' ,'measurement' => 'g'] 
+            ['ref' => 1, 'name' => 'Energy', 'value' => '4934' ,'measurement' => 'kcal'],
+            ['ref' => 2, 'name' => 'Fat', 'value' => '4892' ,'measurement' => 'g'], 	
+            ['ref' => 3, 'name' => 'Saturate', 'value' => '4057' ,'measurement' => 'g'], 
+            ['ref' => 4, 'name' => 'Carbohydrate', 'value' => '3164' ,'measurement' => 'g'], 
+            ['ref' => 5, 'name' => 'Sugar', 'value' => '767' ,'measurement' => 'g'], 	
+            ['ref' => 6, 'name' => 'Protein', 'value' => '1660' ,'measurement' => 'g'], 	
+            ['ref' => 7, 'name' => 'Salt', 'value' => '4841' ,'measurement' => 'g'], 
+            ['ref' => 8, 'name' =>  'Portions', 'value' => '2210' ,'measurement' => 'g'] 
         ];
     }
 

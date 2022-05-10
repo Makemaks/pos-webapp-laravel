@@ -18,8 +18,8 @@ return new class extends Migration
             $table->bigInteger('order_user_id'); //employee
             $table->tinyInteger('order_status'); //cancelled/refunded
             $table->text('order_plan')->nullable();
-            $table->tinyInteger('order_type')->default(0); 
-            $table->float('order_amount_received')->nullable(); //internal, External
+            $table->tinyInteger('order_type')->default(0)->comment('Internal::External'); 
+            $table->float('order_amount_received')->nullable();
             $table->dateTime('order_shipped_at')->nullable();
             $table->bigInteger('order_store_id')->comment('added_by'); 
             $table->json('order_scheme')->nullable();

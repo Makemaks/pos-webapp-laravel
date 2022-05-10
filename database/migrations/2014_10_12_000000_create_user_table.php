@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('user_account_id');
             $table->bigInteger('user_person_id');
             $table->string('email')->unique();
-            $table->tinyInteger('user_type'); //admin, super
+            $table->tinyInteger('user_type')->comment('admin::super');
             $table->tinyInteger('user_is_disabled')->default(1);
             $table->tinyInteger('user_is_notifiable')->default(1);
             $table->tinyInteger('user_is_verified')->default(1)->comment('given accesss');                
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('user');
     }
 };

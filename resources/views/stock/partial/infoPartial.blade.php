@@ -143,10 +143,8 @@
                                                         }
                                                     @endphp
 
-                                                    {{--id="{{$keyStockCost}}"  --}}
-
                                                     @if($key == 'default')
-                                                        <input class="uk-radio" type="radio" name="stock_cost[{{$key}}]" value="{{$stock}}" @if($stock == 0) checked @endif>
+                                                        <input class="uk-radio" type="radio" name="stock_cost[{{$keyStockCost}}][{{$key}}]" value="{{$stock}}" @if($stock == 0) checked @endif>
                                                     @else
                                                         <input class="uk-input" id="form-stacked-text" type="number" value="{{$stock}}" name="stock_cost[{{$keyStockCost}}][{{$key}}]" {{$hidden}}>
                                                     @endif

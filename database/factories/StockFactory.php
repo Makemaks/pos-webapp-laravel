@@ -100,7 +100,11 @@ class StockFactory extends Factory
        
 
         for ($i=0; $i < count(ConfigHelper::Nutrition()); $i++) { 
-            $stock_nutrition[$i + 1] = ConfigHelper::Nutrition()[$i];
+            $stock_nutrition[$i + 1] = [
+                'ref' => $i+1,
+                'value' => ConfigHelper::Nutrition()[$i]['value'],
+                'measurement' => ConfigHelper::Nutrition()[$i]['measurement'],
+            ];
         }
         
         for ($i=0; $i < rand(1, 8); $i++) { 

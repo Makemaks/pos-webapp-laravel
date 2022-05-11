@@ -24,12 +24,7 @@ return new class extends Migration
             
 
             $table->json('stock_merchandise')->nullable();
-
-           
-
             $table->bigInteger('stock_store_id')->comment('added_by'); 
-            
-            
             $table->json('stock_gross_profit')->nullable();
             
             $table->json('stock_allergen')->nullable();

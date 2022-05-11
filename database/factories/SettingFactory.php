@@ -148,9 +148,6 @@ class SettingFactory extends Factory
             
             'setting_payment_gateway' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
-            
-            
-
             'setting_stock_group_category_plu'  => $setting_stock_group_category_plu,
            
             'setting_vat' => $setting_vat,

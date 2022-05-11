@@ -4,7 +4,6 @@
 @endphp
 
 
-
 <div class="uk-grid-match uk-grid-small uk-child-width-1-2@xl" uk-grid>
 
     <div>

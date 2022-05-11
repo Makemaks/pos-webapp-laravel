@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Collection;
+
 use App\Models\Stock;
 use App\Models\Stockroom;
 use App\Models\User;
@@ -87,7 +89,7 @@ class StockController extends Controller
 
        $stockModel = Stock::find($stock)->toArray();
 
-       $a = $request->only('stock_supplier');
+      
 
        foreach ((array)$request['stock_supplier'] as $keystock_supplier => $stock_supplier) {
             foreach ($stock_supplier as $key => $value) {
@@ -97,12 +99,12 @@ class StockController extends Controller
 
        foreach ((array)$request['stock_cost'] as $keystock_cost  => $stock_cost) {
             foreach ($stock_supplier as $key => $value) {
-                $stockModel['stock_supplier'][$keystock_cost][$key]  = $value;
+                $stockModel['stock_cost'][$keystock_cost][$key]  = $value;
             }
         }
 
        foreach ((array)$request['stock_merchandise'] as $keystock_merchandise  => $stock_merchandise) {
-            $stockModel['stock_supplier'][$keystock_merchandise]  = $stock_merchandise;
+            $stockModel['stock_merchandise'][$keystock_merchandise]  = $stock_merchandise;
        }
 
        foreach ((array)$request['stock_gross_profit'] as $keygross_profit  => $gross_profit) {
@@ -115,7 +117,7 @@ class StockController extends Controller
 
        foreach ((array)$request['stock_nutrition'] as $keystock_nutrition  => $stock_nutrition) {
             foreach ($stock_nutrition as $key => $value) {
-                $stockModel['stock_nutrition'][$key][$stock_nutrition]  = $stock_nutrition;
+                $stockModel['stock_nutrition'][$keystock_nutrition][$key]  = $value;
             }
        }
 
@@ -131,10 +133,15 @@ class StockController extends Controller
             }
         }
 
-        $stockModel->update();
+        
 
+        $stockModel = collect($stockModel);
+ 
+        $stockModel = $stockModel->except(['created_at', 'updated_at', 'deleted_at']);
+        $stockModel = Stock::where('stock_id', $stock)->update($stockModel->toArray());
 
-        return view('stock.edit', ['data' => $stock]);  
+        $this->Edit($stock);
+
     }
 
     public function Destroy($stock){

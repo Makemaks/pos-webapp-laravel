@@ -228,7 +228,7 @@ class Stock extends Model
                 $stockReceiptOrder = $data['orderList']->where('stock_merchandise->category_id', $key);
     
             
-                $totalCostPrice =  OrderTotal($data);
+                $totalCostPrice =  Stock::OrderTotal($data);
     
                 $departmentTotal[] = [
                     'description' => $value['description'], 

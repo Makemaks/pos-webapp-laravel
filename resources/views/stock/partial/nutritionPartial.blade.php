@@ -41,6 +41,7 @@
                                                         <td>
                                                             @if($keyStock == 'ref')
                                                                 <a class="uk-button uk-button-danger uk-border-rounded">{{$stock}}</a>
+                                                           
                                                             @elseif($keyStock == 'value')
                                                                 <input name="stock_nutrition[{{$key}}][{{$keyStock}}]" class="uk-input" type="number" value="{{$stock}}">
                                                             

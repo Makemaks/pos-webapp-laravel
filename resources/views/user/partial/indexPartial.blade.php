@@ -20,7 +20,7 @@
     </thead>
     
     <tbody>
-       
+
         @foreach ($data['userList'] as $user)
        
             <tr>

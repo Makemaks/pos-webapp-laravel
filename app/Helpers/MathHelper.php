@@ -6,7 +6,6 @@ class MathHelper{
 
     public static function FloatRoundUp(float $float, int $decimalPlace){
         return round($float, $decimalPlace);
-      
     }
 
     public static function VAT(float $vat, float $price){

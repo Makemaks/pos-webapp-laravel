@@ -20,13 +20,13 @@ return new class extends Migration
             $table->bigInteger('receipttable_id');
             $table->string('receipttable_type');
 
-            $table->tinyInteger('receipt_stock_cost_id'); //taken from product cost
+            $table->tinyInteger('receipt_stock_cost_id')->comment('stock_merchandise');
             
 
-            $table->smallInteger('receipttable_quantity')->default(1); 
-            $table->tinyInteger('receipttable_status')->default(0); //processed//cancelled/refunded
+            $table->smallInteger('receipt_quantity')->default(1); 
+            $table->tinyInteger('receipt_status')->comment('processed::cancelled::refunded')->default(0);
             $table->bigInteger('receipt_order_id')->nullable();
-            $table->bigInteger('receipt_user_id'); //customer
+            $table->bigInteger('receipt_user_id')->comment('user');
             $table->bigInteger('receipt_stock_plan_id')->nullable(); //customer
             
             

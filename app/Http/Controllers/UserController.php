@@ -31,7 +31,8 @@ class UserController extends Controller
 
       
 
-        return view('user.index', ['data' => $this->Data()]);        
+        return view('user.index', ['data' => $this->Data()]);   
+       
     }
 
     public function Create(){
@@ -41,6 +42,8 @@ class UserController extends Controller
     }
 
     public function Store(Request $request){
+
+
         User::insert($request->except('_token', '_method'));
         return view('user.index', ['data' => $this->Data()]);
     }

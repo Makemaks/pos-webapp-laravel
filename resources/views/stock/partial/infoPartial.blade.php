@@ -144,7 +144,9 @@
                                                     @endphp
 
                                                     @if($key == 'default')
-                                                        <input class="uk-radio" type="radio" name="stock_cost[{{$keyStockCost}}][{{$key}}]" value="{{$stock}}" @if($stock == 0) checked @endif>
+
+
+                                                        <input class="uk-radio" type="radio" name="default[stock_cost][{{$key}}]" value="{{$keyStockCost}}" @if($stock == 0) checked @endif>
                                                     @else
                                                         <input class="uk-input" id="form-stacked-text" type="number" value="{{$stock}}" name="stock_cost[{{$keyStockCost}}][{{$key}}]" {{$hidden}}>
                                                     @endif
@@ -169,13 +171,27 @@
                       
                        @foreach ( $data['stockModel']->stock_cost as $keyStockCost => $stockCost )
                             
-                            
+                       
                            @foreach ($stockCost as $key => $stock)
-                                @if ($key != 'default')
+                                @if($key == 'supplier_id')
+                                    <div class="uk-margin">
+                                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
+                                        <select class="uk-select" id="form-stacked-select" name="form[stock_cost][{{$key}}]">
+                                            <option value="" selected disabled>SELECT ...</option>
+                                            @foreach ($data['companyList']->where('comapny_type', 0)  as $supplier )
+                                                    
+                                                <option value="{{$supplier->company_id}}">
+                                                    {{$supplier->company_name}}
+                                                </option>
+                                                    
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @elseif ($key != 'default')
                                     <div class="uk-margin">
                                         <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
                                         <div class="uk-form-controls">
-                                            <input class="uk-input" id="form-stacked-text" type="number" value="" name="stock_cost[0][{{$key}}]">
+                                            <input class="uk-input" id="form-stacked-text" type="number" value="" name="form[stock_cost][{{$key}}]">
                                         </div>
                                     </div>
                                 @endif

@@ -56,7 +56,7 @@
                                             </select>
                                                 
                                         @elseif($key == 'default')
-                                                <input name="stock_supplier[][{{$key}}]" class="uk-radio" type="radio" @if($stock == 0) checked @endif>
+                                                <input name="default[stock_supplier][{{$key}}]" value="{{$keyStockSupplier}}" class="uk-radio" type="radio" @if($stock == 0) checked @endif>
                                         @else
                                             @if ($key != 'supplier_id')
                                                 <input  name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]" class="uk-input" type="number" value="{{$stock}}">
@@ -87,24 +87,25 @@
                     @foreach ($stock_supplier as $key =>$item)
                        
                           
-                        @if($key == 'ref')
+                       
+                        @if($key == 'supplier_id')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                                <div class="uk-form-controls">
-                                    <select class="uk-select" name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]">
-                                        <option selected disabled>SELECT ...</option>
-                                        @if ($data['companyList'])
-                                            @foreach ( $data['companyList'] as $key => $item)
-                                                <option value="{{$item->supplier_id}}" @if($item->supplier_id == $key) selected @endif>{{$item->company_name}}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </div>
+                                <select class="uk-select" id="form-stacked-select" name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]">
+                                    <option value="" selected disabled>SELECT ...</option>
+                                    @foreach ($data['companyList']->where('comapny_type', 0)  as $supplier )
+                                            
+                                        <option value="{{$supplier->company_id}}">
+                                            {{$supplier->company_name}}
+                                        </option>
+                                            
+                                    @endforeach
+                                </select>
                             </div>
-                        @else
+                        @elseif($key != 'default')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                                <input class="uk-input" type="number" name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]">
+                                <input class="uk-input" type="number" name="form[stock_supplier][{{$keyStockSupplier}}][{{$key}}]">
                             </div>
                         @endif
                     @endforeach

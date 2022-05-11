@@ -127,7 +127,7 @@
             
                 @php
 
-                    $orderList = $data['orderList';
+                    $orderList = $data['orderList'];
                     $orderList = $orderList->groupBy('order_id');
 
                     foreach ($orderList as $receiptList) {

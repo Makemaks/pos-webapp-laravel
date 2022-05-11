@@ -100,6 +100,7 @@
 
     <li>
 
+         <h3>TRANSFERS</h3>
         <form action="" class="uk-form-stacked"> 
 
             @php
@@ -114,80 +115,91 @@
             @endphp
         
             
-            <input name="stockroom_user_id" value="{{Auth::user()->user_id}}" hidden>
-            <input name="stockroom_stock_id" value="{{$data['stockModel']->stock_id}}" hidden>
+            <input name="form[stockroom][stockroom_user_id]" value="{{Auth::user()->user_id}}" hidden>
+            <input name="form[stockroom][stockroom_stock_id]" value="{{$data['stockModel']->stock_id}}" hidden>
             
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-select">REFERENCE</label>
-                <div class="uk-form-controls">
-                    <input class="uk-input" name="stockroom_reference" type="text">
-                </div>
-            </div>
-
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-select">TYPE</label>
-                <div class="uk-form-controls">
-                    <select class="uk-select" id="form-stacked-select" name="store_id" name="stockroom_type">
-                        <option value="" selected disabled>SELECT ...</option>
-                        @foreach (Stockroom::Type() as $key => $stock)
-                            <option value="{{$key}}" class="uk-input">
-                                {{$stock}}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-select">STATUS</label>
-                <div class="uk-form-controls">
-                    <select class="uk-select" id="form-stacked-select" name="store_id" name="stockroom_status">
-                        <option value="" selected disabled>SELECT ...</option>
-                        @foreach (Stockroom::Status() as $key => $stock)
-                            <option value="{{$key}}" class="uk-input">
-                                {{$stock}}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-                   
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-select">STORE</label>
-                <div class="uk-form-controls">
-                    <select class="uk-select" id="form-stacked-select" name="stockroom_store_id">
-                        <option value="" selected disabled>SELECT ...</option>
-                        @if($storeList)
-                            @foreach ($storeList as $store)
-                                <option value="{{$store->store_id}}" class="uk-input">
-                                    {{$store->store_name}}
-                                </option>
-                            @endforeach
-                        @endif
-                    </select>
-                </div>
-            </div>
-
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">QUANTITY</label>
-                <div class="uk-form-controls">
-                    <input class="uk-input" type="number" name="stockroom_quantity">
-                </div>
-            </div>
-
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">PRICE</label>
-                <div class="uk-form-controls">
-                    <input class="uk-input" type="number" name="stockroom_price">
-                </div>
-            </div>
+            @foreach ($data['stockroomList']->toArray() as $keyStockTransfer => $stockroomList)
                         
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-select">NOTE</label>
-                <div class="uk-form-controls">
-                    <textarea name="stockroom_note" class="uk-textarea" id="" cols="30" rows="10"></textarea>
-                </div>
-            </div>
+            
+                @foreach ($stockroomList as $keystock => $stock)
+                
+                       
+                        @if ($keystock == 'stockroom_reference')
+                            <div class="uk-margin">
+                                <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
+                                <input class="uk-input" type="text" name="form[stockroom][{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
+                            </div>
+                        @elseif($keystock == 'stockroom_price' || $keystock == 'stockroom_quantity')
+                            <div class="uk-margin">
+                                <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
+                                <input class="uk-input" type="number" name="form[stockroom][{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
+                            </div>
+                        @elseif($keystock == 'stockroom_store_id')
+                            <div class="uk-margin">
+                                <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
+                                <select class="uk-select" id="form-stacked-select" name="form[stockroom][{{$keyStockTransfer}}][{{$keystock}}]">
+                                    <option value="" selected disabled>SELECT ...</option>
+                                    
+                                        @foreach ($storeList as $store)
+                                            <option value="{{$store->store_id}}" class="uk-input">
+                                                {{$store->store_name}}
+                                            </option>
+                                        @endforeach
+                                    
+                                </select>
+                            </div>
+                        @elseif($keystock == 'stockroom_status')
+                            <div class="uk-margin">
+                                <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
+                                <select class="uk-select" id="form-stacked-select" name="form[stockroom][{{$keyStockTransfer}}][{{$keystock}}]">
+                                    <option value="" selected disabled>SELECT ...</option>
+                                    
+                                        @foreach (Stockroom::Status() as $store)
+                                            <option value="{{$stock}}" class="uk-input">
+                                                {{$store}}
+                                            </option>
+                                        @endforeach
+                                    
+                                </select>
+                            </div>
+                        @elseif($keystock == 'stockroom_type')
+                            <div class="uk-margin">
+                                <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
+                                <select class="uk-select" id="form-stacked-select" name="form[stockroom][{{$keyStockTransfer}}][{{$keystock}}]">
+                                    <option value="" selected disabled>SELECT ...</option>
+                                    
+                                        @foreach (Stockroom::Type() as $key => $stock)
+                                            <option value="{{$stock}}" class="uk-input">
+                                                {{$stock}}
+                                            </option>
+                                        @endforeach
+                                
+                                </select>
+                            </div>
+                        @elseif($keystock == 'stockroom_store_id')
+                            <div class="uk-margin">
+                                <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
+                                <a href="{{route('store.edit', $stock)}}" class="uk-button uk-button-danger uk-border-rounded">{{$stock}}</a>
+                            </div>
+                        @elseif($keystock == 'stockroom_note' || $keystock == 'stockroom_description')
+                            <div class="uk-margin">
+                                <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
+                                <div class="uk-form-controls">
+                                    <textarea name="form[stockroom][{{$keyStockTransfer}}][{{$keystock}}]" class="uk-textarea" id="" cols="30" rows="10"></textarea>
+                                </div>
+                            </div>
+                        @endif
+
+                        
+                        
+                @endforeach
+                            
+                @break
+            
+            @endforeach
+   
+                        
+           
             
            <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>
              

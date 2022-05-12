@@ -817,7 +817,7 @@ use Carbon\Carbon;
 
                     <thead>
                         <td>
-                            <h3>Top GP %</h3>
+                            <h5>Top GP %</h5>
                         </td>
                     </thead>
                     <thead>
@@ -839,7 +839,7 @@ use Carbon\Carbon;
 
                     <thead>
                         <td>
-                            <h3>Bottom GP %</h3>
+                            <h5>Bottom GP %</h5>
                         </td>
                     </thead>
 

@@ -22,23 +22,7 @@ use Carbon\Carbon;
         {{-- first row --}}
         <div class="uk-margin uk-child-width-1-2@l" uk-grid uk-height-match style="margin-top: 5vh !important;">
 
-            {{-- Specials Manager --}}
-            <div>
 
-                @php
-                @endphp
-
-                <div class="">
-                    <p class="uk-h4">SPECIALS MANAGER</p>
-                </div>
-                <hr>
-                <h3 style="margin-top: 10vh !important;">INSTRUCTIONS FOR USE</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla eos voluptatem recusandae doloremque
-                    magnam, quidem voluptas ut id incidunt sunt temporibus sapiente exercitationem tenetur quos nobis at
-                    earum nesciunt libero totam laudantium quae in et doloribus. Maxime voluptas iste maiores repellat
-                    laboriosam mollitia non? Excepturi quaerat laborum tenetur blanditiis incidunt!</p>
-
-            </div>
 
             {{-- fixed totals --}}
 
@@ -81,7 +65,6 @@ use Carbon\Carbon;
                 <div class="">
                     <p class="uk-h4">FIXED TOTAL</p>
                 </div>
-                <hr>
 
                 <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                     <thead>
@@ -114,7 +97,6 @@ use Carbon\Carbon;
                 <div class="">
                     <p class="uk-h4">DEPARTMENT SALES TOTAL</p>
                 </div>
-                <hr>
 
                 <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                     <thead>
@@ -147,7 +129,6 @@ use Carbon\Carbon;
                 <div class="">
                     <p class="uk-h4">GROUP SALES TOTAL</p>
                 </div>
-                <hr>
 
                 <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                     <thead>
@@ -170,38 +151,101 @@ use Carbon\Carbon;
 
             </div>
 
-            {{-- Plu 0 sales --}}
+            {{-- TOP CUSTOMERS --}}
             <div>
 
                 @php
-                    $pluData = Stock::GroupCategoryBrandPlu($data, 2);
+                    $totalCostPrice = 0;
+                    $price = 0;
+                    
+                    $customerTop = $data['customerTop'];
+                    $customerTop = $customerTop->groupBy('company_store_id');
+                    
+                    foreach ($customerTop as $receiptList) {
+                        $person = $receiptList[0]->person_name;
+                        $personName = json_decode($person);
+                        $totalCostPrice = 0;
+                        $price = 0;
+                    
+                        foreach ($receiptList as $receipt) {
+                            if ($receipt->receipt_id) {
+                                $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
+                                $totalCostPrice = $totalCostPrice + $price;
+                            }
+                        }
+                    
+                        $arraycustomerTop[] = [
+                            'Account Num' => $receipt->company_store_id,
+                            'Name' => $receipt->company_name,
+                            'total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                        ];
+                    }
                 @endphp
 
                 <div class="">
-                    <p class="uk-h4">PLU SALES TOTAL</p>
+                    <p class="uk-h4">TOP CUSTOMERS</p>
                 </div>
-                <hr>
 
                 <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                     <thead>
                         <tr>
-                            <th>Department</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
+                            @foreach ($arraycustomerTop[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($pluData as $key => $item)
+                        @foreach ($arraycustomerTop as $keyarraycustomerTop => $itemarraycustomerTop)
                             <tr>
-                                <td>{{ $item['description'] }}</td>
-                                <td>{{ $item['Quantity'] }}</td>
-                                <td>{{ $item['Total'] }}</td>
+                                @foreach ($itemarraycustomerTop as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
 
             </div>
+
+
+            {{-- Transaction Key --}}
+            <div>
+
+                @php
+                    
+                    $arraytransactionKey[] = [
+                        'Description' => '',
+                        'Quantity' => '',
+                        'Total' => '',
+                    ];
+                    
+                @endphp
+
+                <div class="">
+                    <p class="uk-h4">TRANSACTION KEY</p>
+                </div>
+
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                    <thead>
+                        <tr>
+                            @foreach ($arraytransactionKey[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($arraytransactionKey as $keyarraytransactionKey => $itemarraytransactionKey)
+                            <tr>
+                                @foreach ($itemarraytransactionKey as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+
 
             {{-- Clerk Breakdown --}}
             <div>
@@ -239,7 +283,6 @@ use Carbon\Carbon;
                 <div class="">
                     <p class="uk-h4">CLERK BREAKDOWN</p>
                 </div>
-                <hr>
 
                 <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                     <thead>
@@ -262,6 +305,45 @@ use Carbon\Carbon;
 
             </div>
 
+            {{-- FINALISE Key --}}
+            <div>
+
+                @php
+                    
+                    $arrayfinaliseKey[] = [
+                        'Description' => '',
+                        'Quantity' => '',
+                        'Total' => '',
+                    ];
+                    
+                @endphp
+
+                <div class="">
+                    <p class="uk-h4">FINALISE KEY</p>
+                </div>
+
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                    <thead>
+                        <tr>
+                            @foreach ($arrayfinaliseKey[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($arrayfinaliseKey as $keyarrayfinaliseKey => $itemarrayfinaliseKey)
+                            <tr>
+                                @foreach ($itemarrayfinaliseKey as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+
+
 
             {{-- last 100 sales --}}
             <div>
@@ -271,7 +353,8 @@ use Carbon\Carbon;
                     $totalCostPrice = 0;
                     $price = 0;
                     
-                    $orderList = $data['orderList'];
+                    $orderList = $data['orderListLimited100'];
+                    
                     $orderList = $orderList->groupBy('order_id');
                     
                     foreach ($orderList as $receiptList) {
@@ -297,7 +380,6 @@ use Carbon\Carbon;
                 <div class="">
                     <p class="uk-h4">LAST 100 SALES</p>
                 </div>
-                <hr>
 
                 <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                     <thead>
@@ -311,6 +393,137 @@ use Carbon\Carbon;
                         @foreach ($array100Sale as $keyArray100Sale => $itemArray100Sale)
                             <tr>
                                 @foreach ($itemArray100Sale as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+
+
+
+            {{-- Specials Manager --}}
+            <div>
+
+                @php
+                @endphp
+
+                <div class="">
+                    <p class="uk-h4">SPECIALS MANAGER</p>
+                </div>
+                <h6 style="">INSTRUCTIONS FOR USE</h6>
+                <p style="font-size: 12px">The Specials Manager widget is designed to allow limite access users to edit
+                    nominated fields of PLU's within defined PLU Ranges at a site level. <br> <br> To configure this widget
+                    please select a site from the Site Selecter at the top of the page and then click the settings link in
+                    the top right corner of this widget.</p>
+
+            </div>
+
+            {{-- EMPLOYEE TIME AND ATTENDANCE --}}
+
+            <div>
+
+                @php
+                    
+                    $arraytimeAndAttendance[] = [
+                        'Clerk' => '',
+                        'Date' => '',
+                        'Time' => '',
+                        'Status' => '',
+                    ];
+                    
+                @endphp
+
+                <div class="">
+                    <p class="uk-h4">EMPLOYEE TIME AND ATTENDANCE</p>
+                </div>
+
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                    <thead>
+                        <tr>
+                            @foreach ($arraytimeAndAttendance[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($arraytimeAndAttendance as $keyarraytimeAndAttendance => $itemarraytimeAndAttendance)
+                            <tr>
+                                @foreach ($itemarraytimeAndAttendance as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+
+            {{-- Plu 0 sales --}}
+            <div>
+
+                @php
+                    $pluData = Stock::GroupCategoryBrandPlu($data, 2);
+                @endphp
+
+                <div class="">
+                    <p class="uk-h4">PLU SALES TOTAL</p>
+                </div>
+
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Department</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($pluData as $key => $item)
+                            <tr>
+                                <td>{{ $item['description'] }}</td>
+                                <td>{{ $item['Quantity'] }}</td>
+                                <td>{{ $item['Total'] }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+
+            {{-- HOURLY BREAKDOWN --}}
+
+            <div>
+
+                @php
+                    
+                    $arrayhourlyBreakdown[] = [
+                        'Hour' => '',
+                        'Total' => '',
+                        'Sales' => '',
+                        'Avg. Sales' => '',
+                    ];
+                    
+                @endphp
+
+                <div class="">
+                    <p class="uk-h4">HOURLY BREAKDOWN</p>
+                </div>
+
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                    <thead>
+                        <tr>
+                            @foreach ($arrayhourlyBreakdown[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($arrayhourlyBreakdown as $keyarrayhourlyBreakdown => $itemarrayhourlyBreakdown)
+                            <tr>
+                                @foreach ($itemarrayhourlyBreakdown as $key => $item)
                                     <td>{{ $item }}</td>
                                 @endforeach
                             </tr>
@@ -357,7 +570,6 @@ use Carbon\Carbon;
                 <div class="">
                     <p class="uk-h4"> SALES BREAKDOWN BY SITE</p>
                 </div>
-                <hr>
 
                 <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                     <thead>
@@ -380,33 +592,7 @@ use Carbon\Carbon;
 
             </div>
 
-            {{-- EMPLOYEE TIME AND ATTENDANCE --}}
-
-            <div>
-
-                @php
-                    
-                @endphp
-
-                <div class="">
-                    <p class="uk-h4">EMPLOYEE TIME AND ATTENDANCE</p>
-                </div>
-                <hr>
-
-                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
-                    <thead>
-                        <tr>
-                            <th>Clerk</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-
-            </div>
+            {{-- STOCK SEARCH --}}
 
             {{-- HOURLY BREAKDOWN --}}
 
@@ -414,28 +600,337 @@ use Carbon\Carbon;
 
                 @php
                     
+                    $arraystockSearch[] = [
+                        'Stock Name' => '',
+                        'Sales' => '',
+                        'Total' => '',
+                    ];
+                    
                 @endphp
-
                 <div class="">
-                    <p class="uk-h4">HOURLY BREAKDOWN</p>
+                    <p class="uk-h4">STOCK SEARCH</p>
                 </div>
-                <hr>
 
+
+                <div class="uk-margin">
+                    <form class="uk-search uk-search-default">
+                        <a href="" class="uk-search-icon-flip" uk-search-icon></a>
+                        <input class="uk-search-input" type="search" placeholder="Search">
+                    </form>
+                </div>
                 <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                     <thead>
                         <tr>
-                            <th>Hour</th>
-                            <th>Total</th>
-                            <th>Sales</th>
-                            <th>Avg</th>
+                            @foreach ($arraystockSearch[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($arraystockSearch as $keyarraystockSearch => $itemarraystockSearch)
+                            <tr>
+                                @foreach ($itemarraystockSearch as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
 
             </div>
 
+            {{-- PENDING UPDATES --}}
+            <div>
+
+                @php
+                    
+                    $arraypendingUpdates[] = [
+                        'Site' => '',
+                        'Pending' => '',
+                        'Last Updated' => '',
+                    ];
+                    
+                @endphp
+                <div class="">
+                    <p class="uk-h4">PENDING UPDATES</p>
+                </div>
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                    <thead>
+                        <tr>
+                            @foreach ($arraypendingUpdates[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($arraypendingUpdates as $keyarraypendingUpdates => $itemarraypendingUpdates)
+                            <tr>
+                                @foreach ($itemarraypendingUpdates as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+            {{-- EAT IN EAT OUT --}}
+            <div>
+
+                @php
+                    
+                    $arrayeatInEatOut[] = [
+                        'Order Type' => '',
+                        'Quantity' => '',
+                        'Date' => '',
+                    ];
+                    
+                @endphp
+                <div class="">
+                    <p class="uk-h4">EAT IN EAT OUT</p>
+                </div>
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                    <thead>
+                        <tr>
+                            @foreach ($arrayeatInEatOut[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($arrayeatInEatOut as $keyarrayeatInEatOut => $itemarrayeatInEatOut)
+                            <tr>
+                                @foreach ($itemarrayeatInEatOut as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+
+            {{-- LAST Z READ --}}
+            <div>
+
+                @php
+                    
+                    $arrayLastZRead[] = [
+                        'Site' => '',
+                        'Last Z Read' => '',
+                    ];
+                    
+                @endphp
+                <div class="">
+                    <p class="uk-h4">LAST Z READ</p>
+                </div>
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                    <thead>
+                        <tr>
+                            @foreach ($arrayLastZRead[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($arrayLastZRead as $keyarrayLastZRead => $itemarrayLastZRead)
+                            <tr>
+                                @foreach ($itemarrayLastZRead as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+            {{-- GP SALES --}}
+            <div>
+
+                @php
+                    
+                    $orderList = $data['orderList'];
+                    $orderList = $orderList->groupBy('stock_id');
+                    
+                    // dd($orderList[2][0]);
+                    
+                    foreach ($orderList as $receiptList) {
+                        $totalCostPrice = 0;
+                        $price = 0;
+                        $totalStockNet = 0;
+                        $totalactualPrice = 0;
+                    
+                        foreach ($receiptList as $receipt) {
+                            if ($receipt->receipt_id) {
+                                $defaultPrice = json_decode($receipt->stock_cost, true);
+                                $actualPrice = json_decode($receipt->stock_gross_profit, true);
+                                $stockNameJson = json_decode($receipt->stock_merchandise, true);
+                                $stockName = $stockNameJson['stock_name'];
+                    
+                                foreach ($defaultPrice as $key => $value) {
+                                    if ($value['default'] == 0) {
+                                        $totalStockNet = $totalStockNet + $value['price'];
+                                    }
+                                }
+                    
+                                $totalactualPrice = $totalactualPrice + $actualPrice['actual'];
+                                $quantity = $receiptList->count();
+                            }
+                        }
+                    
+                        $totalGP = $totalStockNet - $totalactualPrice;
+                    
+                        $GPpercentage = ($totalGP / $quantity) * 100;
+                    
+                        $arrayGPList[] = [
+                            'Number' => $receipt->stock_id,
+                            'Descriptor' => $stockName,
+                            'Profit' => MathHelper::FloatRoundUp($totalGP, 2),
+                            'GP' => MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
+                        ];
+                    }
+                    
+                    $sortarraytopGPList = collect($arrayGPList)
+                        ->sortBy('Profit')
+                        ->reverse()
+                        ->toArray();
+                    
+                    $topGPList = array_slice($sortarraytopGPList, 0, 5);
+                    
+                    $sortarraybottomGPList = collect($arrayGPList)
+                        ->sortBy('Profit')
+                        ->toArray();
+                    
+                    $bottomGPList = array_slice($sortarraybottomGPList, 0, 5);
+                    
+                    $bottomGPListASC = collect($bottomGPList)
+                        ->sortBy('Profit')
+                        ->reverse()
+                        ->toArray();
+                    
+                @endphp
+                <div class="">
+                    <p class="uk-h4">GP SALES</p>
+                </div>
+
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+
+                    <thead>
+                        <td>
+                            <h3>Top GP %</h3>
+                        </td>
+                    </thead>
+                    <thead>
+                        <tr>
+                            @foreach ($arrayGPList[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($topGPList as $keyarrayGPList => $itemarrayGPList)
+                            <tr>
+                                @foreach ($itemarrayGPList as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+
+                    <thead>
+                        <td>
+                            <h3>Bottom GP %</h3>
+                        </td>
+                    </thead>
+
+                    <thead>
+                        <tr>
+                            @foreach ($arrayGPList[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($bottomGPListASC as $keyarrayGPList => $itemarrayGPList)
+                            <tr>
+                                @foreach ($itemarrayGPList as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+            {{-- GP OVERVIEW --}}
+            <div>
+
+                @php
+                    
+                    $orderList = $data['orderList'];
+                    $orderList = $orderList->groupBy('store_id');
+                    
+                    foreach ($orderList as $receiptList) {
+                        $totalCostPrice = 0;
+                        $price = 0;
+                        $totalStockProfit = 0;
+                        $totalactualPrice = 0;
+                    
+                        foreach ($receiptList as $receipt) {
+                            if ($receipt->receipt_id) {
+                                $defaultPrice = json_decode($receipt->stock_cost, true);
+                                $actualPrice = json_decode($receipt->stock_gross_profit, true);
+                    
+                                foreach ($defaultPrice as $key => $value) {
+                                    if ($value['default'] == 0) {
+                                        $totalStockProfit = $totalStockProfit + $value['price'];
+                                    }
+                                }
+                    
+                                $totalactualPrice = $totalactualPrice + $actualPrice['actual'];
+                    
+                                $quantity = $receiptList->count();
+                            }
+                        }
+                    
+                        // dd($totalStockProfit, $totalactualPrice, $quantity);
+                    
+                        $totalGP = $totalStockProfit - $totalactualPrice;
+                    
+                        $GPpercentage = ($totalGP / $quantity) * 100;
+                    
+                        $arrayGPOverview[] = [
+                            'GP %' => MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
+                            'Total GP' => MathHelper::FloatRoundUp($totalGP, 2),
+                        ];
+                    }
+                    
+                @endphp
+
+                <div class="">
+                    <p class="uk-h4"> GP OVERVIEW</p>
+                </div>
+
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                    <thead>
+                        <tr>
+                            @foreach ($arrayGPOverview[0] as $key => $item)
+                                <th>{{ $key }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($arrayGPOverview as $keyarrayGPOverview => $itemarrayGPOverview)
+                            <tr>
+                                @foreach ($itemarrayGPOverview as $key => $item)
+                                    <td>{{ $item }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
         </div>
 
     </div>

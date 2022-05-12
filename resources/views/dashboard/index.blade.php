@@ -19,8 +19,10 @@ use Carbon\Carbon;
             @include('dashboard.partial.datePeriodPartial')
         </div>
 
+
         {{-- first row --}}
         <div class="uk-margin uk-child-width-1-2@l" uk-grid uk-height-match style="margin-top: 5vh !important;">
+
 
 
 
@@ -87,6 +89,7 @@ use Carbon\Carbon;
 
             </div>
 
+
             {{-- category 1 sales --}}
             <div>
 
@@ -119,6 +122,7 @@ use Carbon\Carbon;
 
             </div>
 
+
             {{-- group 0 sales --}}
             <div>
 
@@ -150,6 +154,7 @@ use Carbon\Carbon;
                 </table>
 
             </div>
+
 
             {{-- TOP CUSTOMERS --}}
             <div>
@@ -208,6 +213,7 @@ use Carbon\Carbon;
             </div>
 
 
+
             {{-- Transaction Key --}}
             <div>
 
@@ -245,6 +251,7 @@ use Carbon\Carbon;
                 </table>
 
             </div>
+
 
 
             {{-- Clerk Breakdown --}}
@@ -305,6 +312,7 @@ use Carbon\Carbon;
 
             </div>
 
+
             {{-- FINALISE Key --}}
             <div>
 
@@ -342,6 +350,7 @@ use Carbon\Carbon;
                 </table>
 
             </div>
+
 
 
 
@@ -404,6 +413,7 @@ use Carbon\Carbon;
 
 
 
+
             {{-- Specials Manager --}}
             <div>
 
@@ -420,6 +430,7 @@ use Carbon\Carbon;
                     the top right corner of this widget.</p>
 
             </div>
+
 
             {{-- EMPLOYEE TIME AND ATTENDANCE --}}
 
@@ -461,6 +472,7 @@ use Carbon\Carbon;
 
             </div>
 
+
             {{-- Plu 0 sales --}}
             <div>
 
@@ -493,18 +505,69 @@ use Carbon\Carbon;
 
             </div>
 
+
             {{-- HOURLY BREAKDOWN --}}
 
             <div>
 
                 @php
                     
-                    $arrayhourlyBreakdown[] = [
-                        'Hour' => '',
-                        'Total' => '',
-                        'Sales' => '',
-                        'Avg. Sales' => '',
-                    ];
+                    $totalCostPrice = 0;
+                    $price = 0;
+                    
+                    $orderList = $data['orderListASC'];
+                    $orderList = $orderList->groupBy('order_id');
+                    
+                    foreach ($orderList as $key => $receiptList) {
+                        $totalCostPrice = 0;
+                        $price = 0;
+                    
+                        foreach ($receiptList as $receipt) {
+                            if ($receipt->receipt_id) {
+                                $defaultPrice = json_decode($receipt->stock_cost, true);
+                    
+                                foreach ($defaultPrice as $key1 => $value) {
+                                    if ($value['default'] == 0) {
+                                        $totalCostPrice = $totalCostPrice + $value['price'];
+                                    }
+                                }
+                            }
+                        }
+                    
+                        $orderList = Order::where('order_store_id', $data['userModel']->store_id)->get();
+                    
+                        foreach ($orderList as $orderArray) {
+                            if ($key == $orderArray->order_id) {
+                                $firstKey = $orderList->first();
+                                $firstOrderHour = (int) $firstKey->created_at->format('H'); // first order hour
+                                $orderHour = (int) $orderArray->created_at->format('H');
+                                $displayHour = $orderArray->created_at->format('H:i');
+                    
+                                if ($firstOrderHour == $orderHour) {
+                                    // if its first order
+                    
+                                    $tableHour = $orderHour;
+                                    $previousHour = $orderHour;
+                                    $averageSales = 0;
+                                    $averageSales = $totalCostPrice;
+                                } else {
+                                    // if its not first order
+                    
+                                    $tableHour = $orderHour - $previousHour;
+                                    $previousHour = $orderHour;
+                                    $averageSales = 0;
+                                    $averageSales = $totalCostPrice / $tableHour;
+                                }
+                    
+                                $arrayhourlyBreakdown[] = [
+                                    'Hour' => $displayHour,
+                                    'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                                    'Sales' => $receiptList->count(),
+                                    'Avg. Sales' => MathHelper::FloatRoundUp($averageSales, 2),
+                                ];
+                            }
+                        }
+                    }
                     
                 @endphp
 
@@ -532,6 +595,7 @@ use Carbon\Carbon;
                 </table>
 
             </div>
+
 
             {{-- SALES BREAKDOWN BY SITE --}}
             <div>
@@ -592,7 +656,9 @@ use Carbon\Carbon;
 
             </div>
 
+
             {{-- STOCK SEARCH --}}
+
 
             {{-- HOURLY BREAKDOWN --}}
 
@@ -639,6 +705,7 @@ use Carbon\Carbon;
 
             </div>
 
+
             {{-- PENDING UPDATES --}}
             <div>
 
@@ -674,6 +741,7 @@ use Carbon\Carbon;
                 </table>
 
             </div>
+
             {{-- EAT IN EAT OUT --}}
             <div>
 
@@ -710,6 +778,7 @@ use Carbon\Carbon;
 
             </div>
 
+
             {{-- LAST Z READ --}}
             <div>
 
@@ -744,6 +813,7 @@ use Carbon\Carbon;
                 </table>
 
             </div>
+
             {{-- GP SALES --}}
             <div>
 
@@ -862,6 +932,8 @@ use Carbon\Carbon;
                 </table>
 
             </div>
+
+
             {{-- GP OVERVIEW --}}
             <div>
 

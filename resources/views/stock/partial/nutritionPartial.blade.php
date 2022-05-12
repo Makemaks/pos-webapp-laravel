@@ -21,6 +21,7 @@
                         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                             <thead>
                                 <tr>
+                                    <th>REF</th>
                                     @if ($data['stockModel']->stock_nutrition)
                                         @foreach (ConfigHelper::Nutrition()[0] as $key => $item)
                                             <th>{{$key}}</th>
@@ -35,6 +36,9 @@
                                     @foreach ($data['stockModel']->stock_nutrition as $key => $stock_nutrition)
                                         
                                             <tr>
+                                                <td>
+                                                    <button class="uk-button uk-button-danger uk-border-rounded">{{$key}}</button>
+                                                </td>
                                                 @foreach ($stock_nutrition as $keyStock => $stock)
                                                 
                                                         <td>

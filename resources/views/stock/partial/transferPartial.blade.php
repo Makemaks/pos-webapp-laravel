@@ -21,7 +21,8 @@
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive uk-table-responsive">
             <thead>
                 <tr>
-                                
+                    <th>REF</th>
+
                     @foreach ($data['stockroomList']->toArray()[1] as $keystock => $item)
                         @if ($keystock != 'stockroom_id' && $keystock != 'stockroom_stock_id' && $keystock != 'created_at' &&	$keystock != 'updated_at')
                             <th>{{Str::after($keystock, 'stockroom_')}}</th>
@@ -37,13 +38,14 @@
                     @foreach ($data['stockroomList']->toArray() as $keyStockTransfer => $stockroomList)
                         
                         <tr>
+                           
                             @foreach ($stockroomList as $keystock => $stock)
                             
                                     @if ($keystock == 'stockroom_id')
                                         <input class="uk-input" type="text" name="stockroom[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}" hidden>
-                                       {{--  <td>
+                                       <td>
                                             <button class="uk-button uk-button-danger uk-border-rounded" onclick="">{{$stock}}</button>
-                                        </td> --}}
+                                       </td>
                                 
                                     @elseif ($keystock == 'stockroom_note' || $keystock == 'stockroom_description' || $keystock == 'stockroom_reference')
                                         <td>

@@ -21,7 +21,7 @@
             <table class="uk-table uk-table-responsive uk-table-divider">
                 <thead>
                     <tr>
-                        
+                            <th>REF</th>
                             @foreach ($data['stockModel']->stock_supplier[1] as $key => $item)
                                 <th>{{$key}}</th>
                             @endforeach
@@ -34,15 +34,13 @@
                     @if ($data['stockModel']->stock_supplier)
                         @foreach ($data['stockModel']->stock_supplier as $keyStockSupplier => $stockSupplier)
                             <tr>
-                                
+                                <td>
+                                    <button class="uk-button uk-button-danger uk-border-rounded">{{$keyStockSupplier}}</button>
+                                </td>
                                 @foreach ($stockSupplier as $key => $stock)
                                     <td>
                                       
                                         @if ($key == 'supplier_id')
-                                           
-                                            {{-- <a href="{{route('company.edit', $stock)}}" class="uk-button uk-button-danger uk-border-rounded"> 
-                                                {{$stock}}
-                                            </a> --}}
                                            
                                             <select class="uk-select" id="form-stacked-select" name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]">
                                                 <option value="" selected disabled>SELECT ...</option>
@@ -91,7 +89,7 @@
                         @if($key == 'supplier_id')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                                <select class="uk-select" id="form-stacked-select" name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]">
+                                <select class="uk-select" id="form-stacked-select" name="form[stock_supplier][{{$keyStockSupplier}}][{{$key}}]">
                                     <option value="" selected disabled>SELECT ...</option>
                                     @foreach ($data['companyList']->where('comapny_type', 0)  as $supplier )
                                             

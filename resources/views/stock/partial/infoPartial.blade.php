@@ -116,11 +116,11 @@
                     <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                         <thead>
                             <tr>
-                                
+                                <th>REF</th>
                                 @foreach ($data['stockModel']->stock_cost[1] as $key => $item)
-                                    @if ($key != 'supplier_id')
+                                   
                                         <th>{{$key}}</th>
-                                    @endif
+                                  
                                 @endforeach
                                 
                                 <th></th>
@@ -132,23 +132,20 @@
                                 @foreach ($data['stockModel']->stock_cost as $keyStockCost => $stockCost)
                     
                                         <tr>
-                                            
+                                            <td>
+                                                <button class="uk-button uk-button-danger uk-border-rounded">{{$keyStockCost}}</button>
+                                            </td>
                                             @foreach ($stockCost as $key => $stock)
                                                 
                                                 <td>
-                                                    @php
-                                                        $hidden = "";
-                                                        if($key == 'supplier_id'){
-                                                            $hidden = 'hidden';
-                                                        }
-                                                    @endphp
-
-                                                    @if($key == 'default')
-
-
+                                                   
+                                                    @if($key == 'supplier_id')
+                                                        <input class="uk-input" id="form-stacked-text" type="text" value="{{$stock}}" name="stock_cost[{{$keyStockCost}}][{{$key}}]" hidden>
+                                                        <button class="uk-button uk-button-danger uk-border-rounded">{{$keyStockCost}}</button>
+                                                    @elseif($key == 'default')
                                                         <input class="uk-radio" type="radio" name="default[stock_cost][{{$key}}]" value="{{$keyStockCost}}" @if($stock == 0) checked @endif>
                                                     @else
-                                                        <input class="uk-input" id="form-stacked-text" type="number" value="{{$stock}}" name="stock_cost[{{$keyStockCost}}][{{$key}}]" {{$hidden}}>
+                                                        <input class="uk-input" id="form-stacked-text" type="number" value="{{$stock}}" name="stock_cost[{{$keyStockCost}}][{{$key}}]">
                                                     @endif
                                                 </td>
                                                 

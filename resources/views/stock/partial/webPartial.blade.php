@@ -21,7 +21,7 @@
                             <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                                 <thead>
                                     <tr>
-                                        
+                                        <th>REF</th>
                                         @foreach ($data['stockModel']->stock_web[1] as $key => $item)
                                             <th>{{$key}}</th>
                                         @endforeach
@@ -34,7 +34,9 @@
                                     @if ($data['stockModel']->stock_web)
                                         @foreach ($data['stockModel']->stock_web as $keyStockweb => $stockweb)
                                             <tr>
-                                                
+                                                <td>
+                                                    <button class="uk-button uk-button-danger uk-border-rounded">{{$keyStockweb}}</button>
+                                                </td>
                                                 @foreach ($stockweb as $key => $stock)
                                                     <td>
                                                         @if ($key == 'plu')

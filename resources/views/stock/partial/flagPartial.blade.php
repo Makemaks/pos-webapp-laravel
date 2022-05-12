@@ -25,7 +25,7 @@
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($flag)}}</label>
                                 <div class="uk-form-controls">
-                                    <input class="uk-checkbox" type="checkbox" {{$checked}} value="{{$key}}" name="stock_terminal_flag[{{$key}}][{{$keyflag}}]">
+                                    <input class="uk-checkbox" type="checkbox" {{$checked}} value="{{$keyflag}}" name="stock_terminal_flag[{{$key}}][{{$keyflag}}]">
                                 </div>
                             </div>
                         </div>

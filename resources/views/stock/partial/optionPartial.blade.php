@@ -29,7 +29,7 @@
                                     @endphp
                                 
 
-                                    
+                                    <th>REF</th>
                                         @foreach ( $collection->except(['exception']) as $key => $item)
                                             
                                                 <th>{{$key}}</th>
@@ -48,7 +48,9 @@
                                 
                                             
                                                 <tr>
-                                                    
+                                                    <td>
+                                                        <button class="uk-button uk-button-danger uk-border-rounded">{{$keyStockoffer}}</button>
+                                                    </td>
                                                     @foreach ($itemStockoffer as $key => $stock)
                                                     
                                                         @if($key == 'integer' || $key == 'decimal')
@@ -140,7 +142,7 @@
                                                    
                                                     @endforeach    
 
-                                                    <td><input class="uk-radio" type="radio" name="stock_merchandise[stock_offer]" value="{{$keyStockoffer}}" @if($data['stockModel']->stock_merchandise['stock_offer'] == 0) checked @endif></td>
+                                                    <td><input class="uk-radio" type="radio" name="stock_merchandise[stock_offer]" value="{{$keyStockoffer}}" @if($data['stockModel']->stock_merchandise['stock_offer'] == $keyStockoffer) checked @endif></td>
                                                                 
                                                     <td>
                                                         <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockoffer({{$keyStockoffer}})"></button>
@@ -164,7 +166,7 @@
                     <form action="" class="uk-form-stacked">
                       
                         <h3>OFFERS</h3>
-                        @if ($data['stockModel']->stock_offer)
+                       
                             @foreach ($data['settingModel']->setting_stock_offer  as $keyStockoffer => $stock_offer)
                                 @foreach ($itemStockoffer as $key => $stock)
                                                         
@@ -174,7 +176,7 @@
                                             @if ($stockkey == 'set_menu')
                                                 <div class ="uk-margin">
                                                     <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                                    <select class="uk-select" id="form-stacked-select" name="setting_stock_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
+                                                    <select class="uk-select" id="form-stacked-select" name="form[setting_stock_offer][{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
                                                         <option value="" selected disabled>SELECT ...</option>
                                                         @if ($data['settingModel']->setting_stock_set_menu)
                                                             @foreach ($data['settingModel']->setting_stock_set_menu  as $key_setting_stock_set_menu  => $item_setting_stock_set_menu)
@@ -192,7 +194,7 @@
                                             @else
                                                 <div class ="uk-margin">
                                                     <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                                    <input name="setting_stock_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-input" type="number" value="{{$stockitem}}">
+                                                    <input name="form[setting_stock_offer][{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-input" type="number" value="{{$stockitem}}">
                                                 </div>
                                             @endif 
                                         @endforeach
@@ -203,16 +205,28 @@
                                         @foreach ($stock as $stockkey => $stockitem)
                                         
                                             @if ($stockkey == 'status')
-                                                <div class ="uk-margin">
+                                                            
+                                                <div class="uk-margin">
                                                     <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                                    <input class="uk-radio" type="radio" name="setting_stock_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" value="{{$stockitem}}" @if($stock == 0) checked @endif>
-                                                </div>
-                                            @else
-                                                <div class ="uk-margin">
-                                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                                    <select class="uk-select" id="form-stacked-select" name="setting_stock_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
+                                                    <select class="uk-select" id="form-stacked-select" name="form[setting_stock_offer][{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
                                                         <option value="" selected disabled>SELECT ...</option>
-                                                        @foreach (Stock::OfferType()  as $key_stock_offer  => $item_stock_offer  )
+                                                        @foreach (Stock::OfferStatus()  as $key_stock_offer  => $item_stock_offer)
+                                                                
+                                                            <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
+                                                                {{$item_stock_offer}}
+                                                            </option>
+                                                                
+                                                        @endforeach
+                                                    </select>    
+                                                </div>
+
+                                            
+                                            @else
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                    <select class="uk-select" id="form-stacked-select" name="form[setting_stock_offer][{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
+                                                        <option value="" selected disabled>SELECT ...</option>
+                                                        @foreach (Stock::OfferType()  as $key_stock_offer  => $item_stock_offer)
                                                                 
                                                             <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
                                                                 {{$item_stock_offer}}
@@ -222,6 +236,7 @@
                                                     </select>    
                                                 </div>
                                             @endif
+                                            
                                         @endforeach
                                     @endif
 
@@ -229,17 +244,24 @@
                                         @foreach ($stock as $stockkey => $stockitem)
                                             <div class ="uk-margin">
                                                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                                <input name="setting_stock_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-input" type="text" value="{{$stockitem}}">
+                                                <input name="form[setting_stock_offer][{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-input" type="text" value="{{$stockitem}}">
                                             </div>
                                         @endforeach
                                     @endif
 
                                     @if($key == 'string')
                                         @foreach ($stock as $stockkey => $stockitem)
-                                            <div class ="uk-margin">
-                                                <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                                <input name="setting_stock_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-input" type="text" value="{{$stockitem}}">
-                                            </div>
+                                           @if ($stockkey == "description")
+                                                <div class ="uk-margin">
+                                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                    <textarea name="form[setting_stock_offer][{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-textarea">{{$stockitem}}</textarea>
+                                                </div>
+                                           @else
+                                                <div class ="uk-margin">
+                                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                    <input name="form[setting_stock_offer][{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-input" type="text" value="{{$stockitem}}">
+                                                </div>
+                                           @endif
                                         @endforeach
                                     @endif
 
@@ -248,7 +270,7 @@
                                 @break
 
                             @endforeach
-                        @endif
+                       
             
                        <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>
                          

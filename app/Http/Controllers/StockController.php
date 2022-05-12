@@ -85,7 +85,7 @@ class StockController extends Controller
 
     public function Update(Request $request, $stock){
 
-       $stockArray = $request->except('_token', '_method', 'stockroom');
+       $stockArray = $request->except('_token', '_method');
 
        $stockModel = Stock::find($stock)->toArray();
 
@@ -133,15 +133,44 @@ class StockController extends Controller
             }
         }
 
-        
+       
+        //reset and save all defaults
+      
+        foreach ((array)$request['default'] as $keyDefault => $valueDefault) {
+           
+           
+            foreach ($valueDefault as $keyValueDefault => $valueValueDefault) {
+                foreach ((array) $stockModel[$keyDefault] as $key => $value) {
+                    $stockModel[$keyDefault][$key][$keyValueDefault] = 1;
+                }
+              
+            }
+            
+           
+           
+            foreach ($valueDefault as $keyValueDefault => $valueValueDefault) {
+                $stockModel[$keyDefault][$valueValueDefault][$keyValueDefault] = 0;
+            }
+        }
 
+
+          // save all checkboxes
+          $array = ['stock_merchandise'=>'non_stock'];
+          foreach ($array as $key => $value) {
+             
+              if (array_key_exists($value, $request[$key]) == false) {
+                  $stockModel[$key][$value] = 1;
+              }
+  
+          }
+
+        //convert array to collection
         $stockModel = collect($stockModel);
- 
         $stockModel = $stockModel->except(['created_at', 'updated_at', 'deleted_at']);
         $stockModel = Stock::where('stock_id', $stock)->update($stockModel->toArray());
 
-        $this->Edit($stock);
-
+       
+        return redirect()->route('stock.edit', $stock);
     }
 
     public function Destroy($stock){

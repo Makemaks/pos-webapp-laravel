@@ -55,7 +55,7 @@ class Stock extends Model
             "expiration_date": "",
             "alert_level:""
 
-            "non_stock": "",
+            "non_stock": 1,
             "unit_size": "",
             "recipe_link" => "",
             "case_size" => "",

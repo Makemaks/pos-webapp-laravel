@@ -609,8 +609,6 @@ use Carbon\Carbon;
                                     $averageSales = $totalCostPrice;
                                 }
                             }
-
-                           
                           
                             
                             $orderArray[$count] = [

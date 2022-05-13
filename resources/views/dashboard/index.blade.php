@@ -37,7 +37,7 @@ use Carbon\Carbon;
                     $totalCash = 0;
                     $totalCredit = 0;
                     
-                    $totalCostPrice = Stock::OrderTotal($data);
+                    $totalCostPrice = Stock::OrderTotal($data['orderList']);
                     
                     $expenseTotal = $totalCostPrice - $data['expenseList']->sum('expense_amount');
                     
@@ -518,7 +518,7 @@ use Carbon\Carbon;
                     $orderList = $data['orderListASC'];
                     $orderList = $orderList->groupBy('order_id');
                     
-                    foreach ($orderList as $key => $receiptList) {
+                   /*  foreach ($orderList as $key => $receiptList) {
                         $totalCostPrice = 0;
                         $price = 0;
                     
@@ -567,11 +567,67 @@ use Carbon\Carbon;
                                 ];
                             }
                         }
-                    }
+                    } */
                     
                 @endphp
 
-                <div class="">
+                  @php
+                       $count = 0;
+                       $orderArray = [];
+                  @endphp
+                   @foreach ($orderList as $key => $receiptList)
+                        @php
+                            
+                            $count++;
+                            $orderHour = 0;
+                            $averageSales = 0;
+                            $order_diff_in_days = 0;
+                           
+                            $totalCostPrice = Stock::OrderTotal($receiptList);
+                            $current_created_at = Order::find($receiptList->first()->order_id)->created_at;
+                           
+
+                            if (count($orderArray) == 0) {
+                                $averageSales = $totalCostPrice;
+                            }else{
+                               
+                                $previous_created_at = $orderArray[ $count - 1 ]['created_at'];
+                                $orderHour =  $current_created_at->diffInHours($previous_created_at);
+
+                                $current_created_at_date = Carbon::parse($current_created_at->format('m/d/Y'));
+                                $previous_created_at_date = Carbon::parse($previous_created_at->format('m/d/Y'));
+
+                                $order_diff_in_days = $current_created_at_date->diffInDays($previous_created_at_date->format('m/d/Y'));
+                               
+                                if($order_diff_in_days > 1){
+                                    $orderHour = 0;
+                                }
+
+                                if ($orderHour > 0) {
+                                    $averageSales = $totalCostPrice / $orderHour;
+                                }else{
+                                    $averageSales = $totalCostPrice;
+                                }
+                            }
+
+                           
+                          
+                            
+                            $orderArray[$count] = [
+                                'order_id' => $key,
+                                'hour' => $orderHour,
+                                'totalcostPrice' => $totalCostPrice,   
+                                'created_at' => $current_created_at,
+                                'averageSales' => $averageSales
+                            ];
+
+                           
+                        @endphp
+                        
+                   @endforeach
+                  
+
+              {{--   <div class="">
                     <p class="uk-h4">HOURLY BREAKDOWN</p>
                 </div>
 
@@ -592,7 +648,7 @@ use Carbon\Carbon;
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
+                </table> --}}
 
             </div>
 

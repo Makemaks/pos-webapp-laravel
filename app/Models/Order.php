@@ -37,8 +37,8 @@ class Order extends Model
     public static function Receipt()
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
-            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
-            ->orderBy('order.created_at', 'desc');
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id');
+           
     }
 
     public static function Account()

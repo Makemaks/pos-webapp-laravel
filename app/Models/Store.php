@@ -31,6 +31,15 @@ class Store extends Model
             ->orderBy('order.created_at', 'desc');
     }
 
+    public static function SaleASC($column,  $filter)
+    {
+        return Store::leftJoin('order', 'order.order_store_id', '=', 'store.store_id')
+            ->leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->where($column,  $filter)
+            ->orderBy('order.created_at', 'asc');
+    }
+
     public static function Order($column,  $filter)
     {
         return Store::leftJoin('order', 'order.order_store_id', '=', 'store.store_id')

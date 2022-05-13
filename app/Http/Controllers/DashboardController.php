@@ -43,6 +43,10 @@ class DashboardController extends Controller
 
         $this->orderList = Store::Sale('store_id',  $this->userModel->store_id)->get();
 
+        $this->orderListASC = Store::SaleASC('store_id',  $this->userModel->store_id)->get();
+
+        $this->orderListLimited100 = Store::Sale('store_id',  $this->userModel->store_id)->limit(100)->get();
+
         $this->clerkBreakdown = Store::Order('store_id',  $this->userModel->store_id)->get();
 
         $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->get();
@@ -93,7 +97,10 @@ class DashboardController extends Controller
 
         return [
 
+            'userModel' => $this->userModel,
             'orderList' => $this->orderList,
+            'orderListASC' => $this->orderListASC,
+            'orderListLimited100' => $this->orderListLimited100,
             'storeList' => $this->storeList,
             'customerTop' => $this->customerTop,
             'clerkBreakdown' => $this->clerkBreakdown,

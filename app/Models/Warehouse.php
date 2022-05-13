@@ -5,18 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Stockroom extends Model
+class Warehouse extends Model
 {
     use HasFactory;
 
-    protected $table = 'stockroom';
-    protected $primaryKey = 'stockroom_id';
+    protected $table = 'warehouse';
+    protected $primaryKey = 'warehouse_id';
 
     
 
     public static function List($column,  $filter){
-        return Stockroom::
-        leftJoin('stock', 'stock.stock_id', '=', 'stockroom.stockroom_stock_id')
+        return Warehouse::
+        leftJoin('stock', 'stock.stock_id', '=', 'warehouse.warehouse_stock_id')
         ->where($column,  $filter);
     }
 

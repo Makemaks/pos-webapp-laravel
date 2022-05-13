@@ -43,10 +43,11 @@ class Order extends Model
         ->orderBy('order.created_at', 'desc');
     }
 
-    public static function Account(){
+    public static function Store(){
         return Order::
         leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
         ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+        ->leftJoin('store', 'store.store_id', '=', 'order.order_store_id')
         ->orderBy('order.created_at', 'desc');
     }
 
@@ -87,6 +88,8 @@ class Order extends Model
         $weeklyPercentage = $increase / $lastWeekSale * 100;
         return MathHelper::FloatRoundUp($weeklyPercentage, 0);
     }
+
+   
 
     public static function OrderType(){
         return [

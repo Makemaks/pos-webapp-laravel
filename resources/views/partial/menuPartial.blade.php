@@ -9,51 +9,51 @@
             "product" => [],
             "stock" => [
 
-                "Stock List",
-                "Orders",
-                "Transfers",
-                "Wastages",
-                "Returns",
-                "Ins &amp; Outs",
-                "Suppliers",
-                "Case Sizes",
-                "Recipes",
-                "Start StockTake",
-                "Stock Variance",
+                "stock-list",
+                "order",
+                "transfer",
+                "wastage",
+                "return",
+                "ins-&-out",
+                "supplier",
+                "case-size",
+                "recipe",
+                "start-stocktake",
+                "stock-variance",
 
             ],
             "clerk" => [],
             "programming" => [
-                "Departments",
-                "Groups",
-                "List PLUs",
-                "Mix &amp; Match",
-                "Mix &amp; Match 2",
-                "Finalise Keys",
-                "Status Keys,",
-                "Transaction Keys",
-                "Fixed Characters",
-                "Fixed Totalisers",
-                "Keyboard Menu Levels",
-                "Keyboard Allocation",
-                "Receipt",
-                "Tags",
-                "Tag Groups",
-                "Vouchers",
-                "Reasons",
-                "Tax",
-                "Non PLUs",
-                "KP Categories",
-                "Preset Message",
-                "Price Level Scheduler",
+                "department",
+                "group",
+                "list-plu",
+                "mix-&-match",
+                "mix-&-match-2",
+                "finalise-key",
+                "status-keys,",
+                "transaction-key",
+                "fixed-character",
+                "fixed-totaliser",
+                "keyboard-menu-level",
+                "keyboard-allocation",
+                "receipt",
+                "tag",
+                "tag-group",
+                "voucher",
+                "reason",
+                "tax",
+                "non-plu",
+                "kp-categorie",
+                "preset-message",
+                "price-level-scheduler",
             ],
             "sale" => [
-                "Sales Explorer",
-				"Till Reports",
-				"Bill Reports",
+                "sale-explorer",
+                "till-report",
+                "bill-report",
             ],
             "customer" => [
-                "Customer Groups"
+                "customer-group"
             ],
             "ticket" => [],
             
@@ -110,8 +110,8 @@
                         
                             
                                 <li>
-                                    <a class="uk-link-reset" href="{{route($keyReplace.'.index')}}">
-                                        {{Str::upper($item)}}
+                                    <a class="uk-link-reset" href="{{route('menu.'.$keyReplace,['view' => $item])}}">
+                                        {{Str::upper(Str::replace('-', ' ', $item))}}
                                     </a>
                                 </li>
                                 

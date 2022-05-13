@@ -40,6 +40,8 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ContactManagerController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\WarehouseController;
 
 use App\Http\Controllers\API\ChartAPIController;
 use App\Http\Controllers\API\CartAPIController;
@@ -81,10 +83,12 @@ Route::resource('payment', PaymentController::class);
 Route::resource('account', AccountController::class);
 Route::resource('report', ReportController::class);
 Route::resource('ticket', TicketController::class);
-
+Route::resource('warehouse', WarehouseController::class);
 
 Route::get('mail/', [MailController::class,'Index'])->name('mail.index');
 Route::post('mail/send', [MailController::class,'Send'])->name('mail.send');
+
+
 
 /* Route::get('home/', [HomeController::class,'Index'])->name('home.index');
 Route::get('home/store', [HomeController::class,'Create'])->name('home.create');
@@ -123,6 +127,11 @@ Route::get('store-manager/address/store/{store}', [StoreManagerController::class
 Route::get('store-manager/branch/store/{store}', [StoreManagerController::class,'Branch'])->name('store-manager.branch');
 Route::get('store-manager/order/store/{store}', [StoreManagerController::class,'Order'])->name('store-manager.order');
  */
+
+Route::get('menu/stock/', [MenuController::class,'Stock'])->name('menu.stock');
+Route::get('menu/setting/', [MenuController::class,'Setting'])->name('menu.setting');
+Route::get('menu/order/', [MenuController::class,'Order'])->name('menu.order');
+Route::get('menu/person/', [MenuController::class,'Person '])->name('menu.person');
 
 Route::apiResources([
     'chart-api' => ChartAPIController::class,

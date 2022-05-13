@@ -17,12 +17,13 @@ return new class extends Migration
             $table->bigIncrements('order_id');
             $table->bigInteger('order_user_id')->comment('customer');
             $table->tinyInteger('order_status')->comment('cancelled::refunded'); 
-            $table->text('order_plan')->nullable();
+            $table->json('order_offer')->nullable();
             $table->tinyInteger('order_type')->default(0)->comment('Internal::External'); 
             $table->float('order_amount_received')->nullable();
             $table->dateTime('order_shipped_at')->nullable();
             $table->bigInteger('order_store_id')->comment('added_by'); 
-            $table->json('order_scheme')->nullable();
+            $table->text('order_note')->nullable();
+            $table->json('order_delivery')->nullable();
             $table->timestamps();
         });
     }

@@ -34,7 +34,7 @@
                     
 
                     
-                        $totalCostPrice = Stock::OrderTotal($data);
+                        $totalCostPrice = Stock::OrderTotal($data['orderList']);
 
                         $expenseTotal = $totalCostPrice - $data['expenseList']->sum('expense_amount');
                     

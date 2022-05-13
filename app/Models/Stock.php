@@ -228,7 +228,7 @@ class Stock extends Model
                 $stockReceiptOrder = $data['orderList']->where('stock_merchandise->category_id', $key);
     
             
-                $totalCostPrice =  Stock::OrderTotal($data);
+                $totalCostPrice =  Stock::OrderTotal($data['orderList']);
     
                 $departmentTotal[] = [
                     'description' => $value['description'], 
@@ -242,17 +242,25 @@ class Stock extends Model
    }
 
 
-   public static function OrderTotal($data){
+   public static function OrderTotal($orderList){
 
         $price = 0;
         $totalCostPrice = 0;
 
-        foreach ($data['orderList'] as $stockList) {
+        foreach ($orderList as $stockList) {
       
+        
             if ($stockList->receipt_id) {
-                $price = json_decode($stockList->stock_cost, true)[$stockList->receipt_stock_cost_id]['price'];
-                $totalCostPrice = $totalCostPrice + $price;
+               
+                if ($stockList->receipt_stock_cost_override) {
+                    $price = $stockList->receipt_stock_cost_override * $stockList->receipt_quantity;
+                } else {
+                    $price = json_decode($stockList->stock_cost, true)[$stockList->receipt_stock_cost_id]['price'] * $stockList->receipt_quantity;
+                }
+               
             }
+
+            $totalCostPrice = $totalCostPrice + $price;
         }
 
         return $totalCostPrice;

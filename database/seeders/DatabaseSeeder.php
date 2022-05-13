@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
            
-            StockroomSeeder::class,
+            warehouseSeeder::class,
             ExpenseSeeder::class,
             SettingSeeder::class,
             StockSeeder::class,

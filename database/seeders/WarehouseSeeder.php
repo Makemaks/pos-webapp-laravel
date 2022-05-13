@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Stockroom;
+use App\Models\Warehouse;
 
-class StockroomSeeder extends Seeder
+class WarehouseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,6 +15,6 @@ class StockroomSeeder extends Seeder
      */
     public function run()
     {
-        Stockroom::factory(500)->create();
+        Warehouse::factory(500)->create();
     }
 }

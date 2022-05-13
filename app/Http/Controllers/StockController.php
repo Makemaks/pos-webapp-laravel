@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Collection;
 
 use App\Models\Stock;
-use App\Models\Stockroom;
+use App\Models\Warehouse;
 use App\Models\User;
 use App\Models\Store;
 use App\Models\Setting;
@@ -26,10 +26,10 @@ class StockController extends Controller
     private $settingModel;
     private $fileModel;
     private $companyList;
-    private $stockroomList;
+    private $warehouseList;
    
     
-    public function Index(){
+    public function Index(Request $request){
 
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
@@ -39,13 +39,13 @@ class StockController extends Controller
 
         $this->Init();
         
-        return view('stock.index', ['data' => $this->Data()]);        
+        return view('stock.index', ['data' => $this->Data()]);  
+              
     }
 
     public function Create(){
         $this->stockModel = new Stock();
         
-
         $this->Init();
         
         return view('stock.create',  ['data' => $this->Data()]); 
@@ -75,7 +75,7 @@ class StockController extends Controller
 
     public function Edit($stock){
         $this->stockModel = Stock::find($stock);
-        $this->stockroomList = Stockroom::where('stockroom_stock_id', $stock)->get();
+        $this->warehouseList = Warehouse::where('warehouse_stock_id', $stock)->get();
         
 
         $this->Init();
@@ -112,7 +112,8 @@ class StockController extends Controller
        }
 
        foreach ((array)$request['stock_allergen'] as $keystock_allergen  => $stock_allergen) {
-            $stockModel['stock_allergen'][$keystock_allergen]  = $stock_allergen;
+            $stockModel['stock_allergen']  = $request['stock_allergen'];
+            break;
        }
 
        foreach ((array)$request['stock_nutrition'] as $keystock_nutrition  => $stock_nutrition) {
@@ -128,9 +129,8 @@ class StockController extends Controller
        }
 
        foreach ((array)$request['stock_terminal_flag'] as $keystock_terminal_flag  => $stock_terminal_flag) {
-            foreach ($stock_terminal_flag as $key => $value) {
-                $stockModel['stock_terminal_flag'][$keystock_terminal_flag][$key]  = $value;
-            }
+            $stockModel['stock_terminal_flag']  = $request['stock_terminal_flag'];
+            break;
         }
 
        
@@ -255,7 +255,7 @@ class StockController extends Controller
             'fileModel' => $this->fileModel,
             'storeList' => $this->storeList,
             'companyList' => $this->companyList,
-            'stockroomList' => $this->stockroomList
+            'warehouseList' => $this->warehouseList
         ];
        
     }

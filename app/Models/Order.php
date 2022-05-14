@@ -34,11 +34,11 @@ class Order extends Model
     }
 
 
-    public static function Receipt()
+    public static function Receipt($column, $filter)
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
-            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id');
-           
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->where($column,  $filter);
     }
 
     public static function Account()

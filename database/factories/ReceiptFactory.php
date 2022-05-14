@@ -21,7 +21,7 @@ class ReceiptFactory extends Factory
         return [
             'receipttable_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'receipttable_type' => $this->faker->randomElement($array = array ('Stock')),
-            
+            'receipt_warehouse_id' => $this->faker->randomElement($array = array (NULL, $this->faker->numberBetween($min = 1, $max = 10))),
             'receipt_user_id' => $this->faker->numberBetween($min = 1, $max = 2),
             'receipt_order_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'receipt_stock_cost_id' => $this->faker->numberBetween($min = 1, $max = 5),

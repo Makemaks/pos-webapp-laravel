@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('receipt', function (Blueprint $table) {
             $table->bigIncrements('receipt_id');
-            $table->bigInteger('receipt_stock_transfer_id')->nullable(); //has id if transffered
+            $table->bigInteger('receipt_warehouse_id')->nullable(); //has id if transffered
             
             $table->bigInteger('receipttable_id');
             $table->string('receipttable_type');

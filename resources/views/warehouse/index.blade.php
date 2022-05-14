@@ -7,5 +7,5 @@
         @include('warehouse.partial.indexPartial')
     </div>
 
-    @include('partial.paginationPartial', ['paginator' => $data['warehouseList']])
+    {{-- @include('partial.paginationPartial', ['paginator' => $data['warehouseList']]) --}}
 @endsection

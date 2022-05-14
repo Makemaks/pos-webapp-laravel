@@ -1,6 +1,6 @@
 
 @php
-    use App\Models\warehouse;
+    use App\Models\Warehouse;
     //use App\Models\Scheme;
   
 @endphp
@@ -8,6 +8,16 @@
 <table class="uk-table uk-table-small uk-table-divider">
     <thead>
         <tr>
+            <th>REF</th>
+            <th>note</th>
+            <th>reference</th>
+            <th>store_id</th>
+            <th>stock_id</th>
+            <th>user_id</th>
+            <th>price_override</th>
+            <th>quantity</th>
+            <th>status</th>
+            <th>type</th>
             
             <th></th>
             <th></th>
@@ -16,27 +26,21 @@
     
     <tbody>
 
-        @foreach ($data['warehouseList'] as $warehouse)
-       
+        @foreach ($data['warehouseList'] as $key => $warehouse)
+        
             <tr>
-               {{--  <td><a href="{{route('warehouse.edit', $warehouse->warehouse_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$warehouse->warehouse_id}}</a></td>
-                <td>{{ json_decode($warehouse->person_name, true)['person_firstname'] }} {{ json_decode($warehouse->person_name, true)['person_lastname'] }}</td>
-                <td>{{ $warehouse->email }}</td>
-                <td>{{ warehouse::warehouseType()[$warehouse->warehouse_type] }}</td>
-                <td>
-                    @if ($warehouse->warehouse_is_disabled == 1)
-                        <span class="uk-text-danger" uk-icon="check"></span>
-                </td> 
-                <td>                            
-                    {{$warehouse->created_at}}
-                </td> 
-                <td>
-                    @if ( Warehouse::warehouseType()[$warehouse->warehouse_type] == 'Customer')
-                            <a class="uk-button uk-button-danger uk-border-rounded" uk-icon="heart" href="{{route('init.dashboard', ['warehouse', $warehouse->warehouse_id])}}" uk-icon="icon: warehouse"></a>
-                    @endif
-                </td>     --}}
-                <td><a class="uk-button uk-button-danger uk-border-rounded" href="" uk-icon="history" title="History"></a></td>
-                <td><a class="uk-button uk-button-danger uk-border-rounded" href="" uk-icon="sign-in" title="Login"></a></td>
+                
+                <td><a href="{{route('warehouse.edit', $warehouse->warehouse_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$warehouse->warehouse_id}}</a></td>
+                <td class="uk-text-truncate">{{$warehouse->warehouse_note}}</td>
+                <td>{{ $warehouse->warehouse_reference }}</td>
+                <td><a href="{{route('store.edit', $warehouse->warehouse_store_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$warehouse->warehouse_store_id}}</a></td>
+                <td><a href="{{route('stock.edit', $warehouse->warehouse_stock_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$warehouse->warehouse_stock_id}}</a></td>
+                <td><a href="{{route('stock.edit', $warehouse->warehouse_user_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$warehouse->warehouse_user_id}}</a></td>
+                <td>{{ $warehouse->warehouse_price_override }}</td>
+                <td>{{ $warehouse->warehouse_quantity }}</td>
+                <td>{{Str::upper(Warehouse::WarehouseStatus()[$warehouse->warehouse_status])}}</td>
+                <td>{{Str::upper(Warehouse::WarehouseType()[$warehouse->warehouse_type])}}</td>
+             
             </tr>
 
         @endforeach

@@ -40,8 +40,11 @@ class MenuController extends Controller
             return redirect()->route('order.index');
 
              break;
-         case 'transfer':
-             $request->session()->flash('view', $request->view);
+         case (in_array($request->view, Warehouse::WarehouseType())):
+             
+             $view = array_search( $request->view, Warehouse::WarehouseType());
+             $request->session()->flash('view', $view);
+
              return redirect()->route('warehouse.index');
 
              break;

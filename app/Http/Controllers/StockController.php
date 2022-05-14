@@ -183,12 +183,7 @@ class StockController extends Controller
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 
-        
-
         $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
-
-        $b = Auth::user()->user_account_id;
-        $a = $this->userModel->store_id;
         
         $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
         $this->settingModel = Setting::find($this->settingModel->setting_id);
@@ -198,7 +193,7 @@ class StockController extends Controller
 
         $this->storeList = Store::List('root_store_id', $this->userModel->store_id);
         
-        $storeModel = Store::Account('store_id', $this->userModel->store_id)
+        $this->storeModel = Store::Account('store_id', $this->userModel->store_id)
         ->first();
 
         //$this->storeList->prepend($storeModel);

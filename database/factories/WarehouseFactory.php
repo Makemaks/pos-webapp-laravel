@@ -23,8 +23,9 @@ class WarehouseFactory extends Factory
                 "warehouse_user_id"=> $this->faker->numberBetween($min = 1, $max = 2),
                 "warehouse_price_override"=> $this->faker->randomElement($array = array (NULL,$this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50))),
                 "warehouse_quantity"=>  $this->faker->numberBetween($min = 1, $max = 50),
-               
-                "warehouse_type" => $this->faker->numberBetween($min = 0, $max = 2),
+                "warehouse_reference" => $this->faker->randomElement($array = array (NULL,$this->faker->word)),
+                "warehouse_note" => $this->faker->randomElement($array = array (NULL,$this->faker->sentence)),
+                "warehouse_type" => $this->faker->numberBetween($min = 0, $max = 3),
         ];
     }
 }

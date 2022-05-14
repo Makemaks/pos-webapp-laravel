@@ -12,7 +12,11 @@ class Warehouse extends Model
     protected $table = 'warehouse';
     protected $primaryKey = 'warehouse_id';
 
-    
+    public static function Store(){
+        return Warehouse::
+        leftJoin('stock', 'stock.stock_id', '=', 'warehouse.warehouse_stock_id')
+        ->leftJoin('store', 'store.store_id', '=', 'warehouse.warehouse_store_id');
+    }
 
     public static function List($column,  $filter){
         return Warehouse::
@@ -20,15 +24,18 @@ class Warehouse extends Model
         ->where($column,  $filter);
     }
 
-    public static function Status(){
-        return [];
+    public static function WarehouseStatus(){
+        return [
+            ''
+        ];
     }
 
-    public static function Type(){
+    public static function WarehouseType(){
         return [
             'return',
             'delivery',
-            'transfer'
+            'transfer',
+            'wastage'
         ];
     }
 }

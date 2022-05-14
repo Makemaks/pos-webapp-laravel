@@ -24,6 +24,7 @@ return new class extends Migration
             $table->bigInteger('order_store_id')->comment('added_by'); 
             $table->text('order_note')->nullable();
             $table->json('order_delivery')->nullable();
+            $table->json('order_discount')->nullable();
             $table->timestamps();
         });
     }

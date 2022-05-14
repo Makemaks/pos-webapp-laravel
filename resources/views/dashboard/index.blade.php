@@ -362,13 +362,14 @@ use Carbon\Carbon;
                     $totalCostPrice = 0;
                     $price = 0;
                     
-                    $orderList = $data['orderListLimited100'];
+                    $orderList = $data['orderListASC'];
                     
                     $orderList = $orderList->groupBy('order_id');
                     
                     foreach ($orderList as $receiptList) {
                         $totalCostPrice = 0;
                         $price = 0;
+                        $current_created_at = Order::find($receiptList->first()->order_id)->created_at;
                     
                         foreach ($receiptList as $receipt) {
                             if ($receipt->receipt_id) {
@@ -378,7 +379,7 @@ use Carbon\Carbon;
                         }
                     
                         $array100Sale[] = [
-                            'time' => $receipt->created_at,
+                            'time' => $current_created_at,
                             'order_id' => $receipt->order_id,
                             'store_id' => $receipt->store_name,
                             'total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
@@ -562,11 +563,15 @@ use Carbon\Carbon;
                         }
                         
                         $orderArray[$count] = [
-                            'order_id' => $key,
-                            'hour' => $current_created_at->format('H:i'),
-                            'totalcostPrice' => MathHelper::FloatRoundUp($totalCostPrice, 2),
                             'created_at' => $current_created_at,
-                            'averageSales' => MathHelper::FloatRoundUp($averageSales, 2),
+                        ];
+                        
+                        $orderArrayTable[$count] = [
+                            // 'order_id' => $key,
+                            'Hour' => $current_created_at->format('H:i'),
+                            'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                            'Sales' => $receiptList->count(),
+                            'Average Sales' => MathHelper::FloatRoundUp($averageSales, 2),
                         ];
                         
                     @endphp
@@ -585,15 +590,15 @@ use Carbon\Carbon;
                 <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                     <thead>
                         <tr>
-                            @foreach ($orderArray[$count] as $key => $item)
+                            @foreach ($orderArrayTable[$count] as $key => $item)
                                 <th>{{ $key }}</th>
                             @endforeach
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($orderArray as $keyorderArray => $itemorderArray)
+                        @foreach ($orderArrayTable as $keyorderArrayTable => $itemorderArrayTable)
                             <tr>
-                                @foreach ($itemorderArray as $key => $item)
+                                @foreach ($itemorderArrayTable as $key => $item)
                                     <td>{{ $item }}</td>
                                 @endforeach
                             </tr>

@@ -38,6 +38,7 @@ class Order extends Model
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->leftJoin('store', 'store.store_id', '=', 'order.order_store_id')
             ->where($column,  $filter);
     }
 

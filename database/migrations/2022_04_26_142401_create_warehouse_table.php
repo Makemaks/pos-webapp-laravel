@@ -20,7 +20,7 @@ return new class extends Migration
             $table->bigInteger('warehouse_store_id');
             $table->bigInteger('warehouse_stock_id');
             $table->bigInteger('warehouse_user_id');
-            $table->float('warehouse_price')->nullable();
+            $table->float('warehouse_price_override')->nullable();
             $table->bigInteger('warehouse_quantity');
             $table->smallInteger('warehouse_status');
             $table->smallInteger('warehouse_type');

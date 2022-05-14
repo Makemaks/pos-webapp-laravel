@@ -31,18 +31,25 @@ class WarehouseController extends Controller
 
    
 
-    public function Index(){
+    public function Index(Request $request){
 
-         $this->userModel = User::Account('account_id', Auth::User()->user_account_id)
-        ->first();
-       
+      
 
-        $this->warehouseList = User::Store('person_warehouse_id', $this->userModel->store_id)
-        ->paginate(20);
+       if ($request->session()->get('view') == 'transfer') {
+            $this->warehouseList =  Warehouse::where('warehouse_type', 2)->paginate(10);
+       } else {
+            $this->userModel = User::Account('account_id', Auth::User()->user_account_id)
+            ->first();
+        
 
-        $this->Init();
+            $this->warehouseList = User::Store('person_warehouse_id', $this->userModel->store_id)
+            ->paginate(20);
 
-        return view('warehouse.index', ['data' => $this->Data()]);   
+            $this->Init();
+
+            return view('warehouse.index', ['data' => $this->Data()]); 
+       }
+         
        
     }
 

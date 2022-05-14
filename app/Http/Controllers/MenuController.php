@@ -41,6 +41,7 @@ class MenuController extends Controller
 
              break;
          case 'transfer':
+             $request->session()->flash('view', $request->view);
              return redirect()->route('warehouse.index');
 
              break;
@@ -90,18 +91,20 @@ class MenuController extends Controller
       //$this->storeList->prepend($storeModel);
    }
 
-   return [
-           
-      'userModel'=> $this->userModel,
-       'categoryList' => $this->categoryList,
-       'stockList' => $this->stockList,
-       'stockModel' => $this->stockModel,
-       'settingModel' =>  $this->settingModel,
-       'fileModel' => $this->fileModel,
-       'storeList' => $this->storeList,
-       'companyList' => $this->companyList,
-       'warehouseList' => $this->warehouseList
-   ];
+   private function Data(){
+        return [
+            
+            'userModel'=> $this->userModel,
+            'categoryList' => $this->categoryList,
+            'stockList' => $this->stockList,
+            'stockModel' => $this->stockModel,
+            'settingModel' =>  $this->settingModel,
+            'fileModel' => $this->fileModel,
+            'storeList' => $this->storeList,
+            'companyList' => $this->companyList,
+            'warehouseList' => $this->warehouseList
+        ];
+   }
 
 
 }

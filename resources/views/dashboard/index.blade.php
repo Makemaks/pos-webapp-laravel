@@ -285,6 +285,7 @@ use Carbon\Carbon;
                             'total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
                         ];
                     }
+                    
                 @endphp
 
                 <div class="">
@@ -507,90 +508,87 @@ use Carbon\Carbon;
             </div>
 
 
-            {{-- HOURLY BREAKDOWN --}}
+            {{-- HOURLY BREAKDOWN , for testing Change Date to today. --}}
 
             <div>
 
                 @php
                     
                     $totalCostPrice = 0;
-                    $price = 0;
-                    $orderList = $data['orderListASC'];
+                    $orderList = $data['orderHourly'];
                     $orderList = $orderList->groupBy('order_id');
+                    
                 @endphp
 
                 @php
                     $count = 0;
                     $orderArray = [];
                 @endphp
-                @foreach ($orderList as $key => $receiptList)
-                    @php
-                        
+                @php
+                    $averageSales = 0;
+                    $nowCarbon = Carbon::now();
+                    
+                    $current_minute = $nowCarbon->setTime(0, 0, 0);
+                    
+                    $i = 0;
+                    
+                    for ($i = 0; $i < 96; $i++) {
                         $count++;
-                        $orderHour = 0;
+                    
+                        $totalCostPrice = 0;
                         $averageSales = 0;
-                        $order_diff_in_days = 0;
-                        
-                        $totalCostPrice = Stock::OrderTotal($receiptList);
-                        $current_created_at = Order::find($receiptList->first()->order_id)->created_at;
-                        
-                        if (count($orderArray) == 0) {
-                            $averageSales = $totalCostPrice;
+                        $totalQuantity = 0;
+                        if ($i == 0) {
+                            $current_minute = $nowCarbon->setTime(0, 0, 0);
+                            $price_each_order = 0;
+                            $quantity_each_order = 0;
+                            $averageSales = 0;
                         } else {
-                            $previous_created_at = $orderArray[$count - 1]['created_at'];
-                            $orderHour = $current_created_at->diffInHours($previous_created_at);
-                        
-                            $current_created_at_date = Carbon::parse($current_created_at->format('m/d/Y'));
-                            $previous_created_at_date = Carbon::parse($previous_created_at->format('m/d/Y'));
-                        
-                            $order_diff_in_days = $current_created_at_date->diffInDays($previous_created_at_date->format('m/d/Y'));
-                        
-                            $orderCurrentCreated[$count] = [
-                                'created_at' => $current_created_at_date,
-                                'previous_created_at' => $previous_created_at_date,
-                                'different_days' => $order_diff_in_days,
-                            ];
-                        
-                            if ($order_diff_in_days > 0) {
-                                $orderHour = 0;
-                            }
-                        
-                            if ($orderHour > 0) {
-                                $averageSales = $totalCostPrice / $orderHour;
-                            } else {
-                                $averageSales = $totalCostPrice;
+                            $current_minute = $current_minute->copy()->addMinutes(15);
+                            $previous_minute = $current_minute->copy()->subMinutes(15);
+                            foreach ($orderList as $key => $receiptList) {
+                                $current_order_minute = Order::find($receiptList->first()->order_id)->created_at;
+                                $current_order_minute_carbon = Carbon::createFromFormat('Y-m-d H:i:s', $current_order_minute);
+                    
+                                if ($current_order_minute_carbon->gt($previous_minute) && $current_order_minute_carbon->lt($current_minute)) {
+                                    $price_each_order = Stock::OrderTotal($receiptList);
+                                    $quantity_each_order = $receiptList->count();
+                                    $totalQuantity = $totalQuantity + $quantity_each_order;
+                                    $totalCostPrice = $totalCostPrice + $price_each_order;
+                                } else {
+                                    $price_each_order = 0;
+                                    $quantity_each_order = 0;
+                                    $averageSales = 0;
+                    
+                                    $totalQuantity = $totalQuantity + $quantity_each_order;
+                                    $totalCostPrice = $totalCostPrice + $price_each_order;
+                                }
+                    
+                                if ($totalQuantity != 0) {
+                                    $averageSales = $totalCostPrice / $totalQuantity;
+                                } else {
+                                    $averageSales = 0;
+                                }
                             }
                         }
-                        
-                        $orderArray[$count] = [
-                            'created_at' => $current_created_at,
-                        ];
-                        
-                        $orderArrayTable[$count] = [
-                            // 'order_id' => $key,
-                            'Hour' => $current_created_at->format('H:i'),
+                    
+                        $orderArrayTable[$i] = [
+                            'Hour' => $current_minute->format('H:i'),
                             'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
-                            'Sales' => $receiptList->count(),
+                            'Sales' => $totalQuantity,
                             'Average Sales' => MathHelper::FloatRoundUp($averageSales, 2),
                         ];
-                        
-                    @endphp
-                @endforeach
-
-                @php
-                    
-                    // dd($orderCurrentCreated);
+                    }
                 @endphp
-
 
                 <div class="">
                     <p class="uk-h4">HOURLY BREAKDOWN</p>
                 </div>
 
-                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive hourly">
                     <thead>
                         <tr>
-                            @foreach ($orderArrayTable[$count] as $key => $item)
+                            @foreach ($orderArrayTable[1] as $key => $item)
                                 <th>{{ $key }}</th>
                             @endforeach
                         </tr>

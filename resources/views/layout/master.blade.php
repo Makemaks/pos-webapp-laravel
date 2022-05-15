@@ -32,9 +32,22 @@ $route = Str::before(Request::route()->getName(), '.');
 <style>
     table {
         border-collapse: collapse;
+        font-size: 11px !important;
     }
 
-    table tbody {}
+    .hourly tbody {
+        display: block;
+        height: 400px;
+        overflow: auto;
+    }
+
+    .hourly thead,
+    tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        /* even columns width , fix width of table too*/
+    }
 
 </style>
 

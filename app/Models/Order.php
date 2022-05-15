@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Helpers\MathHelper;
+use Carbon\Carbon;
 
 class Order extends Model
 {
@@ -34,12 +35,17 @@ class Order extends Model
     }
 
 
-    public static function Receipt($column, $filter)
+    public static function Receipt()
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
-            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
-            ->leftJoin('store', 'store.store_id', '=', 'order.order_store_id')
-            ->where($column,  $filter);
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id');
+    }
+
+    public static function HourlyReceipt()
+    {
+        return Order::whereDate('order.created_at', Carbon::today())
+            ->leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id');
     }
 
     public static function Account()

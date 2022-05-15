@@ -43,11 +43,15 @@ class DashboardController extends Controller
 
         $this->orderList = Store::Sale('store_id',  $this->userModel->store_id)->get();
 
-        $this->orderListASC = Order::Receipt('order_store_id',  $this->userModel->store_id)
+        $this->orderHourly = Order::HourlyReceipt()
+            ->where('order_store_id',  $this->userModel->store_id)
             ->orderBy('order_id')
             ->get();
 
-        //$this->orderListASC = Store::SaleASC('store_id',  $this->userModel->store_id)->get();
+        $this->orderListASC = Order::Receipt()
+            ->where('order_store_id',  $this->userModel->store_id)
+            ->orderBy('order_id')
+            ->get();
 
         $this->orderListLimited100 = Store::Sale('store_id',  $this->userModel->store_id)->limit(100)->get();
 
@@ -102,6 +106,7 @@ class DashboardController extends Controller
         return [
 
             'userModel' => $this->userModel,
+            'orderHourly' => $this->orderHourly,
             'orderList' => $this->orderList,
             'orderListASC' => $this->orderListASC,
             'orderListLimited100' => $this->orderListLimited100,

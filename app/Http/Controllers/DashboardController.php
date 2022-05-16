@@ -17,8 +17,8 @@ use App\Models\Setting;
 
 class DashboardController extends Controller
 {
-    
-   
+
+
     private $categoryList;
     private $storeList;
     private $expenseList;
@@ -30,19 +30,24 @@ class DashboardController extends Controller
     private $cartItem = [];
     private $cartAwaitingList = [];
     private $authenticatedUser;
-   
-    
-     
-    public function Index(Request $request){
 
-       
+
+
+    public function Index(Request $request)
+    {
+
+
 
         $this->authenticatedUser = Auth::user();
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
 
         $this->orderList = Store::Sale('store_id',  $this->userModel->store_id)->get();
 
-        $this->orderListASC = Store::Sale('store_id',  $this->userModel->store_id)->get();
+        $this->orderListASC = Order::Receipt('order_store_id',  $this->userModel->store_id)
+            ->orderBy('order_id')
+            ->get();
+
+        //$this->orderListASC = Store::SaleASC('store_id',  $this->userModel->store_id)->get();
 
         $this->orderListLimited100 = Store::Sale('store_id',  $this->userModel->store_id)->limit(100)->get();
 
@@ -70,34 +75,41 @@ class DashboardController extends Controller
         return view('dashboard.index', ['data' => $this->Data()]);
     }
 
-    public function Create(){
-       
+    public function Create()
+    {
     }
 
-    public function Store(){
-       
+    public function Store()
+    {
     }
 
-    public function Edit(){
+    public function Edit()
+    {
         return view('dashboard.edit', ['data' => $this->Data()]);
     }
 
-    public function Update(){
-
+    public function Update()
+    {
     }
 
-    public function Destroy(){
-
+    public function Destroy()
+    {
     }
 
-    private function Data(){
+    private function Data()
+    {
+
         return [
-           
+
+            'userModel' => $this->userModel,
             'orderList' => $this->orderList,
+            'orderListASC' => $this->orderListASC,
+            'orderListLimited100' => $this->orderListLimited100,
             'storeList' => $this->storeList,
+            'customerTop' => $this->customerTop,
+            'clerkBreakdown' => $this->clerkBreakdown,
             'expenseList' => $this->expenseList,
             'settingModel' => $this->settingModel
         ];
     }
-    
 }

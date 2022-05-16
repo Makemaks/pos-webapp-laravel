@@ -28,6 +28,7 @@ class MenuController extends Controller
 
    public function stock(Request $request){
 
+    $request->session()->flash('view', $request->view);
      
      switch ($request->view):
          case 'stock-list':
@@ -53,11 +54,21 @@ class MenuController extends Controller
    }
 
    public function setting(Request $request){
-        $setting_stock_group = ["department", "group", "list-plu"];
+       
+        
+     
+        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+        ->first();
+    
+        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
 
         switch ($request->view):
-            case (in_array($request->view, $setting_stock_group)):
-            return redirect()->route('setting.menu.stopGroupPartial');
+            case (in_array($request->view, Setting::settingGroup())):
+            
+            $view = array_search( $request->view, Setting::settingGroup());
+            $request->session()->flash('view', $view);
+
+            return redirect()->route('setting.index');
 
                 break;
             case 'order':
@@ -67,7 +78,7 @@ class MenuController extends Controller
             case (in_array($request->view, Warehouse::WarehouseType())):
                 
                 $view = array_search( $request->view, Warehouse::WarehouseType());
-                $request->session()->flash('view', $view);
+                
 
                 return redirect()->route('warehouse.index');
 

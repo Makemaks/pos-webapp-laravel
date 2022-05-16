@@ -324,14 +324,7 @@ class Setting extends Model
         }
     }
 
-    public static function SettingClass(){
-        return [
-            'Person',
-            'stock',
-            'Project',
-            'Company',
-        ];
-    }
+
 
     public static function SettingExpertise(){
        
@@ -375,6 +368,16 @@ class Setting extends Model
             'event_address_id',
         ];
     }
+
+    public static function SettingGroup(){
+        return [
+            "category", 
+            "group", 
+            "brand"
+        ];
+    }
+
+    
 
 
 

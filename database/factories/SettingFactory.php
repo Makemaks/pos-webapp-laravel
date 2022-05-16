@@ -65,11 +65,7 @@ class SettingFactory extends Factory
                 "default" => 1
             ];
 
-            $setting_stock_group[$i+1] = [
-                "description"=> $this->faker->word,
-                "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
-                "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::plu::brand
-            ];
+            
 
             $setting_stock_tag_group[$i+1] =[
                 "name" => $this->faker->word
@@ -130,6 +126,14 @@ class SettingFactory extends Factory
                 "name" => $this->faker->word,
                 "link" => $this->faker->randomElement($array = array (NULL,$this->faker->url)),
                 "default" => 1,
+            ];
+        }
+
+        for ($i=0; $i < 20; $i++) { 
+            $setting_stock_group[$i+1] = [
+                "description"=> $this->faker->word,
+                "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
+                "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::plu::brand
             ];
         }
 

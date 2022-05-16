@@ -21,6 +21,7 @@ class StockController extends Controller
     private $userModel;
     private $stockList;
     private $storeList;
+    private $storeModel;
     private $stockModel;
     private $categoryList;
     private $settingModel;
@@ -87,87 +88,7 @@ class StockController extends Controller
 
        $stockArray = $request->except('_token', '_method');
 
-       $stockModel = Stock::find($stock)->toArray();
-
-      
-
-       foreach ((array)$request['stock_supplier'] as $keystock_supplier => $stock_supplier) {
-            foreach ($stock_supplier as $key => $value) {
-                $stockModel['stock_supplier'][$keystock_supplier][$key]  = $value;
-            }
-       }
-
-       foreach ((array)$request['stock_cost'] as $keystock_cost  => $stock_cost) {
-            foreach ($stock_supplier as $key => $value) {
-                $stockModel['stock_cost'][$keystock_cost][$key]  = $value;
-            }
-        }
-
-       foreach ((array)$request['stock_merchandise'] as $keystock_merchandise  => $stock_merchandise) {
-            $stockModel['stock_merchandise'][$keystock_merchandise]  = $stock_merchandise;
-       }
-
-       foreach ((array)$request['stock_gross_profit'] as $keygross_profit  => $gross_profit) {
-            $stockModel['stock_gross_profit'][$keygross_profit]  = $gross_profit;
-       }
-
-       foreach ((array)$request['stock_allergen'] as $keystock_allergen  => $stock_allergen) {
-            $stockModel['stock_allergen']  = $request['stock_allergen'];
-            break;
-       }
-
-       foreach ((array)$request['stock_nutrition'] as $keystock_nutrition  => $stock_nutrition) {
-            foreach ($stock_nutrition as $key => $value) {
-                $stockModel['stock_nutrition'][$keystock_nutrition][$key]  = $value;
-            }
-       }
-
-       foreach ((array)$request['stock_web'] as $keystock_web  => $stock_web) {
-            foreach ($stock_web as $key => $value) {
-                $stockModel['stock_web'][$keystock_web][$key]  = $value;
-            }
-       }
-
-       foreach ((array)$request['stock_terminal_flag'] as $keystock_terminal_flag  => $stock_terminal_flag) {
-            $stockModel['stock_terminal_flag']  = $request['stock_terminal_flag'];
-            break;
-        }
-
-       
-        //reset and save all defaults
-      
-        foreach ((array)$request['default'] as $keyDefault => $valueDefault) {
-           
-           
-            foreach ($valueDefault as $keyValueDefault => $valueValueDefault) {
-                foreach ((array) $stockModel[$keyDefault] as $key => $value) {
-                    $stockModel[$keyDefault][$key][$keyValueDefault] = 1;
-                }
-              
-            }
-            
-           
-           
-            foreach ($valueDefault as $keyValueDefault => $valueValueDefault) {
-                $stockModel[$keyDefault][$valueValueDefault][$keyValueDefault] = 0;
-            }
-        }
-
-
-          // save all checkboxes
-          $array = ['stock_merchandise'=>'non_stock'];
-          foreach ($array as $key => $value) {
-             
-              if (array_key_exists($value, $request[$key]) == false) {
-                  $stockModel[$key][$value] = 1;
-              }
-  
-          }
-
-        //convert array to collection
-        $stockModel = collect($stockModel);
-        $stockModel = $stockModel->except(['created_at', 'updated_at', 'deleted_at']);
-        $stockModel = Stock::where('stock_id', $stock)->update($stockModel->toArray());
+      Stock::where('stock_id', $stock)->update($stockArray);
 
        
         return redirect()->route('stock.edit', $stock);
@@ -246,6 +167,7 @@ class StockController extends Controller
             'categoryList' => $this->categoryList,
             'stockList' => $this->stockList,
             'stockModel' => $this->stockModel,
+            'storeModel' => $this->storeModel,
             'settingModel' =>  $this->settingModel,
             'fileModel' => $this->fileModel,
             'storeList' => $this->storeList,

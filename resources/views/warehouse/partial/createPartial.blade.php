@@ -20,7 +20,7 @@
         @endphp
     
         
-        <input name="form[warehouse][warehouse_user_id]" value="{{Auth::user()->user_id}}" hidden>
+        <input name="form[warehouse][warehouse_user_id]" value="{{$data['userModel']->user_id}}" hidden>
         <input name="form[warehouse][warehouse_stock_id]" value="{{$data['stockModel']->stock_id}}" hidden>
         
         @foreach ($data['warehouseList']->toArray() as $keyStockTransfer => $warehouseList)

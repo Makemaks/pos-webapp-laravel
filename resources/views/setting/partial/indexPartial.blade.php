@@ -23,16 +23,14 @@ use App\Models\Project;
         </tr>
     </thead>
     <tbody>
-        @php
-         $i=0;
-        @endphp
+       
         @foreach ($data['settingList'] as $setting)
             @php
                 //$addressDetails = $addressModel->Details($person);
             @endphp
             <tr>
                 <td>
-                   {{++$i}}
+                  
                 </td>
                 <td>
                    {{--  {{ Setting::Type()[$setting->setting_type]}}

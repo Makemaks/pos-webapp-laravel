@@ -72,7 +72,7 @@ class Setting extends Model
         'setting_reason' => '{
             "1": {
                 "name": "",
-                "setting_stock_group_category_id": ""
+                "description": ""
             }
         }',
 
@@ -226,9 +226,9 @@ class Setting extends Model
 
         'setting_stock_case_size' => '{
             "1": {
-                "size": 9817,
-                "default": 1,
-                "description": "corporis"
+                "size": "",
+                "default": "",
+                "description": ""
             }
         }',
 
@@ -244,11 +244,18 @@ class Setting extends Model
             "1": {
                 "name": "",
                 "type": "",
-                "api": "",
+                "key": "",
+                "value": ""
             }
         }',
 
-       
+        "setting_stock_plu" => '{
+            "1": {
+                "description": "",
+                "code": "",
+                "type": ""
+            }
+        }'
        
     ];
 
@@ -293,8 +300,8 @@ class Setting extends Model
         "setting_stock_case_size" => 'array',
        
         "setting_stock_tag" => 'array',
-
-        "setting_api" => 'array',
+        "setting_stock_plu" => 'array',
+        "setting_api" => 'array'
     ];
 
     public static function List($column, $filter){

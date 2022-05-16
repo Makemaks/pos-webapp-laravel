@@ -39,25 +39,34 @@ class DashboardController extends Controller
 
         $this->authenticatedUser = Auth::user();
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
-       
+
         $this->orderList = Store::Sale('store_id',  $this->userModel->store_id)->get();
 
-       
-                    
+        $this->orderListASC = Store::Sale('store_id',  $this->userModel->store_id)->get();
+
+        $this->orderListLimited100 = Store::Sale('store_id',  $this->userModel->store_id)->limit(100)->get();
+
+        $this->clerkBreakdown = Store::Order('store_id',  $this->userModel->store_id)->get();
+
+        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->get();
+
         $this->storeList = Store::get();
 
         //get the system owner account
         $accountList = User::Account('store_id',  $this->userModel->store_id)
-        ->where('person_type', 0)
-        ->get();
+            ->where('person_type', 0)
+            ->get();
 
         $this->expenseList = Expense::User()
-        ->whereIn('expense_user_id', $accountList->pluck('user_id'))
-        ->get();
+            ->whereIn('expense_user_id', $accountList->pluck('user_id'))
+            ->get();
 
+        // get the setting for the store only one.
         $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
 
-     
+        // get the setting for the store ALL.
+        // $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->get();
+
         return view('dashboard.index', ['data' => $this->Data()]);
     }
 

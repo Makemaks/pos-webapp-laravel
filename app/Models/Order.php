@@ -33,9 +33,6 @@ class Order extends Model
         ->orderBy('order.created_at', 'desc');
     }
 
-
-  
-
     public static function Receipt(){
         return Order::
         leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')

@@ -222,7 +222,7 @@ class Stock extends Model
     $price = 0;
     $departmentTotal = [];
 
-        foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $value) {
+        foreach ($data['settingModel']->setting_stock_group as $key => $value) {
 
             if ($value['type'] == $type) {
                 $stockReceiptOrder = $data['orderList']->where('stock_merchandise->category_id', $key);

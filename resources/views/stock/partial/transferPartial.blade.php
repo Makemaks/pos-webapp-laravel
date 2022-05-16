@@ -101,6 +101,10 @@
     </li>
 
     <li>
-            @include('warehouse.partial.createPartial')
+            <form action="">
+                @include('warehouse.partial.createPartial')
+                <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>
+         
+            </form>
     </li>
 </ul>

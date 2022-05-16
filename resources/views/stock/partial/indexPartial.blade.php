@@ -41,21 +41,21 @@
                     <td>{{$stock->stock_merchandise['random_code']}}</td>
                     
                     <td>
-                       {{--  @foreach ($data['settingModel']->setting_stock_group_category_plu as $item)
+                       {{--  @foreach ($data['settingModel']->setting_stock_group as $item)
                             @if ($item['type'] == 1 && $stock->stock_merchandise['group_id'])
-                                {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['group_id']]['description']}}
+                                {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['group_id']]['description']}}
                             @endif
                         @endforeach --}}
-                        {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['group_id']]['description']}}
+                        {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['group_id']]['description']}}
                     </td>
                     <td>
                         {{-- dept --}}
-                       {{--  @foreach ($data['settingModel']->setting_stock_group_category_plu as $item)
+                       {{--  @foreach ($data['settingModel']->setting_stock_group as $item)
                             @if ($item['type'] == 0 && $stock->stock_merchandise['category_id'])
-                                {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['category_id']]['description']}}
+                                {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['category_id']]['description']}}
                             @endif
                         @endforeach --}}
-                        {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['category_id']]['description']}}
+                        {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['category_id']]['description']}}
                     </td>
                     <td>
                        @if ($stock->stock_merchandise['stock_vat'] == 'null')

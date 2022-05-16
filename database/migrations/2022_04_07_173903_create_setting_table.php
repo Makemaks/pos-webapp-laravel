@@ -20,7 +20,9 @@ return new class extends Migration
             $table->json('setting_logo')->nullable();
            
            
-            $table->json('setting_stock_group_category_plu')->nullable()->comment('group::category::plu::brand');
+            $table->json('setting_stock_group')->nullable()->comment('group::category::brand');
+
+            $table->json('setting_stock_plu')->nullable();
 
             $table->json('setting_stock_label')->nullable();
             
@@ -53,6 +55,8 @@ return new class extends Migration
             $table->json('setting_stock_offer')->nullable();
 
             $table->json('setting_stock_set_menu')->nullable();
+
+            $table->json('setting_api')->nullable();
            
             $table->timestamps();
         });

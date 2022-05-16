@@ -32,8 +32,8 @@
                 <label class="uk-form-label" for="form-stacked-text">GROUP</label>
                 <select class="uk-select" name="stock_merchandise[group_id]">
                     <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_group_category_plu)
-                        @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $group)
+                    @if ($data['settingModel']->setting_stock_group)
+                        @foreach ($data['settingModel']->setting_stock_group as $key => $group)
                             @if ( $group['type'] == 1 )
                                 <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['group_id']) selected @endif>{{$group['description']}}</option>
                             @endif
@@ -47,8 +47,8 @@
                 <label class="uk-form-label" for="form-stacked-text">DEPARTMENT</label>
                 <select class="uk-select" name="stock_merchandise[category_id]">
                     <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_group_category_plu)
-                        @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $category)
+                    @if ($data['settingModel']->setting_stock_group)
+                        @foreach ($data['settingModel']->setting_stock_group as $key => $category)
                             @if ($category['type'] == 0)
                                 <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['category_id']) selected @endif>
                                     {{$category['description']}}
@@ -63,8 +63,8 @@
                 <label class="uk-form-label" for="form-stacked-text">PLU</label>
                 <select class="uk-select" name="stock_merchandise[master_plu]">
                     <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_group_category_plu)
-                        @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $plu)
+                    @if ($data['settingModel']->setting_stock_group)
+                        @foreach ($data['settingModel']->setting_stock_group as $key => $plu)
                             @if ($plu['type'] == 2)
                                 <option value="{{$key}}"  @if($key == $data['stockModel']->stock_merchandise['master_plu']) selected @endif>{{$plu['description']}}</option>
                             @endif
@@ -82,8 +82,8 @@
                 <label class="uk-form-label" for="form-stacked-text">BRAND</label>
                 <select class="uk-select" name="stock_merchandise[brand_id]">
                     <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_group_category_plu)
-                        @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $plu)
+                    @if ($data['settingModel']->setting_stock_group)
+                        @foreach ($data['settingModel']->setting_stock_group as $key => $plu)
                             @if ($plu['type'] == 3)
                             
                                 <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['brand_id']) selected @endif>{{$plu['description']}}</option>

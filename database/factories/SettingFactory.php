@@ -65,7 +65,7 @@ class SettingFactory extends Factory
                 "default" => 1
             ];
 
-            $setting_stock_group_category_plu[$i+1] = [
+            $setting_stock_group[$i+1] = [
                 "description"=> $this->faker->word,
                 "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
                 "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::plu::brand
@@ -148,7 +148,7 @@ class SettingFactory extends Factory
             
             'setting_payment_gateway' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
-            'setting_stock_group_category_plu'  => $setting_stock_group_category_plu,
+            'setting_stock_group'  => $setting_stock_group,
            
             'setting_vat' => $setting_vat,
            

@@ -25,8 +25,8 @@
                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper('master_plu')}}</label>
                 <select class="uk-select" name="stock_merchandise[stock_plu_id]">
                     <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_group_category_plu)
-                        @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $plu)
+                    @if ($data['settingModel']->setting_stock_group)
+                        @foreach ($data['settingModel']->setting_stock_group as $key => $plu)
                             @if ($plu['type'] == 2)
                                 <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['master_plu']) selected @endif>{{$plu['description']}}</option>
                             @endif

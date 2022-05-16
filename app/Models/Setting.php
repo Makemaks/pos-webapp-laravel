@@ -20,7 +20,7 @@ class Setting extends Model
         'setting_logo' => '{}',
         
        
-        'setting_stock_group_category_plu' => '{
+        'setting_stock_group' => '{
             "1": {
                 "description": "",
                 "code": "",
@@ -231,6 +231,7 @@ class Setting extends Model
                 "description": "corporis"
             }
         }',
+
         "setting_stock_tag" => '{
             "1": {
                 "tag": "",
@@ -238,6 +239,16 @@ class Setting extends Model
                 "stock_tag_group_id": ""
             }
         }',
+
+        "setting_api" => '{
+            "1": {
+                "name": "",
+                "type": "",
+                "api": "",
+            }
+        }',
+
+       
        
     ];
 
@@ -246,7 +257,7 @@ class Setting extends Model
         'setting_logo' => 'array',
         'setting_keys' => 'array',
        
-        'setting_stock_group_category_plu' => 'array',
+        'setting_stock_group' => 'array',
         
         'setting_stock_label'  => 'array',
         
@@ -282,6 +293,8 @@ class Setting extends Model
         "setting_stock_case_size" => 'array',
        
         "setting_stock_tag" => 'array',
+
+        "setting_api" => 'array',
     ];
 
     public static function List($column, $filter){
@@ -327,6 +340,12 @@ class Setting extends Model
         return $settingExpertiseList;
     }
 
+    public static function SettingAPI(){
+        return [
+            'system',
+            'payment'
+        ];
+    }
 
     public static function SettingPaymentGateway(){
         return [

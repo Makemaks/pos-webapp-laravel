@@ -28,9 +28,7 @@ class MenuController extends Controller
 
    public function stock(Request $request){
 
-      $a = $request->view;
-
-
+     
      switch ($request->view):
          case 'stock-list':
             return redirect()->route('stock.index');
@@ -54,8 +52,29 @@ class MenuController extends Controller
     
    }
 
-   public function programming(){
+   public function setting(Request $request){
+        $setting_stock_group = ["department", "group", "list-plu"];
 
+        switch ($request->view):
+            case (in_array($request->view, $setting_stock_group)):
+            return redirect()->route('setting.menu.stopGroupPartial');
+
+                break;
+            case 'order':
+            return redirect()->route('order.index');
+
+                break;
+            case (in_array($request->view, Warehouse::WarehouseType())):
+                
+                $view = array_search( $request->view, Warehouse::WarehouseType());
+                $request->session()->flash('view', $view);
+
+                return redirect()->route('warehouse.index');
+
+                break;
+            default:
+                echo "i is not equal to 0, 1 or 2";
+        endswitch;
     
    }
 

@@ -54,10 +54,7 @@ class SettingFactory extends Factory
                 "default" => [ 1 => $this->faker->numberBetween($min = 0, $max = 1)]
             ];
 
-            $setting_reason[$i+1] = [
-                "name" => $this->faker->word,
-                "setting_stock_group_category_id" => $this->faker->numberBetween($min = 1, $max = 50)
-            ];
+            
     
             $setting_vat[$i+1] = [
                 "name" => $this->faker->word,
@@ -123,7 +120,7 @@ class SettingFactory extends Factory
     
             
             $setting_stock_recipe[$i+1] = [
-                "name" => $this->faker->word,
+                "name" => $this->faker->sentence,
                 "link" => $this->faker->randomElement($array = array (NULL,$this->faker->url)),
                 "default" => 1,
             ];
@@ -131,10 +128,12 @@ class SettingFactory extends Factory
 
         for ($i=0; $i < 20; $i++) { 
             $setting_stock_group[$i+1] = [
-                "description"=> $this->faker->word,
+                "description"=> $this->faker->sentence,
                 "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
                 "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::plu::brand
             ];
+
+          
         }
 
         for ($i=0; $i < count(ConfigHelper::Nutrition()); $i++) { 
@@ -153,6 +152,7 @@ class SettingFactory extends Factory
             'setting_payment_gateway' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
             'setting_stock_group'  => $setting_stock_group,
+           
            
             'setting_vat' => $setting_vat,
            

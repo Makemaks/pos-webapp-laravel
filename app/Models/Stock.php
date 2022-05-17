@@ -104,7 +104,9 @@ class Stock extends Model
             "measurement": ""
         }',
 
+        
 
+        
 
     ];
 
@@ -114,11 +116,6 @@ class Stock extends Model
         'stock_supplier' => 'array',
         'stock_gross_profit' => 'array',
 
-
-
-
-
-
         "stock_merchandise" => 'array',
 
         "stock_terminal_flag" => 'array',
@@ -126,7 +123,7 @@ class Stock extends Model
 
         "stock_nutrition" => 'array',
         "stock_allergen" => 'array',
-
+       
 
     ];
 

@@ -25,6 +25,8 @@ return new class extends Migration
             $table->bigInteger('warehouse_stock_id');
             $table->bigInteger('warehouse_user_id');
             $table->text('warehouse_note')->nullable();
+            $table->json('warehouse_reason')->nullable();
+           
             $table->timestamps();
         });
     }

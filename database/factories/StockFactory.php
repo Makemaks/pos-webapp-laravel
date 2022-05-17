@@ -47,7 +47,7 @@ class StockFactory extends Factory
                 "offer_id" => $this->faker->numberBetween($min = 1, $max = 5),
             ];
 
-            
+           
         }
 
         $stock_gross_profit = [

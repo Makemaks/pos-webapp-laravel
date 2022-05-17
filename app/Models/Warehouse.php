@@ -12,6 +12,19 @@ class Warehouse extends Model
     protected $table = 'warehouse';
     protected $primaryKey = 'warehouse_id';
 
+    
+
+    protected $attributes = [
+        'warehouse_reason' => '{
+            "type": "",
+            "description": ""
+        }'
+    ];
+
+    protected $casts = [
+        "warehouse_reason" => 'array'
+    ];
+
     public static function Store(){
         return Warehouse::
         leftJoin('stock', 'stock.stock_id', '=', 'warehouse.warehouse_stock_id')

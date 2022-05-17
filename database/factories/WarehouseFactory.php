@@ -16,8 +16,17 @@ class WarehouseFactory extends Factory
      */
     public function definition()
     {
+        for ($i=0; $i < 4; $i++) { 
+            $stock_reason[$i + 1] = [
+                "type" => $this->faker->numberBetween($min = 0, $max = 4), 	
+                "description" => $this->faker->sentence,
+            ];
+        }
+
         return [
 
+
+                "warehouse_reason" => $stock_reason,
                 "warehouse_store_id" => $this->faker->numberBetween($min = 1, $max = 10),
                 "warehouse_stock_id"=> $this->faker->numberBetween($min = 1, $max = 100),
                 "warehouse_user_id"=> $this->faker->numberBetween($min = 1, $max = 2),

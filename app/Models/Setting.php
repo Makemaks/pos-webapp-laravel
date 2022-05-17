@@ -68,13 +68,6 @@ class Setting extends Model
         
         'setting_message_notification_category' => '{}',
         
-        
-        'setting_reason' => '{
-            "1": {
-                "name": "",
-                "description": ""
-            }
-        }',
 
         'setting_vat' => '{
             "1": {
@@ -249,13 +242,7 @@ class Setting extends Model
             }
         }',
 
-        "setting_stock_plu" => '{
-            "1": {
-                "description": "",
-                "code": "",
-                "type": ""
-            }
-        }'
+       
        
     ];
 
@@ -300,7 +287,7 @@ class Setting extends Model
         "setting_stock_case_size" => 'array',
        
         "setting_stock_tag" => 'array',
-        "setting_stock_plu" => 'array',
+       
         "setting_api" => 'array'
     ];
 
@@ -373,7 +360,19 @@ class Setting extends Model
         return [
             "category", 
             "group", 
-            "brand"
+            "brand",
+            "list-plu"
+        ];
+    }
+
+    public static function SettingReason(){
+        return [
+            "Delivery",
+            "Wastage",
+            "Adjustment",
+            "Transfer In",
+            "Transfer Out",
+            "Other",
         ];
     }
 

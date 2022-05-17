@@ -55,7 +55,6 @@ class MenuController extends Controller
 
    public function setting(Request $request){
        
-        
      
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
@@ -63,23 +62,34 @@ class MenuController extends Controller
         $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
 
         switch ($request->view):
-            case (in_array($request->view, Setting::settingGroup())):
+            case (in_array($request->view, Setting::SettingGroup())):
             
-            $view = array_search( $request->view, Setting::settingGroup());
-            $request->session()->flash('view', $view);
+                $view = array_search( $request->view, Setting::SettingGroup());
+                $request->session()->flash('view', $view);
+               
 
-            return redirect()->route('setting.index');
+                return view('menu.setting.group', ['data' => $this->Data()]);
 
                 break;
+          
             case 'order':
-            return redirect()->route('order.index');
+
+
+                return redirect()->route('order.index');
+                break;
+
+            
+            case 'mix-&-match':
+                $request->session()->flash($request->view, 'view');
+                
+                return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
 
                 break;
+
+
             case (in_array($request->view, Warehouse::WarehouseType())):
                 
                 $view = array_search( $request->view, Warehouse::WarehouseType());
-                
-
                 return redirect()->route('warehouse.index');
 
                 break;

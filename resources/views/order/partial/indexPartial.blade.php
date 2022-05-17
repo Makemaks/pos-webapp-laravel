@@ -23,8 +23,7 @@
       
         @foreach ($data['orderList'] as $order)
             @php
-                $orderList = Order::Receipt()
-                ->where('order_id', $order->order_id)
+                $orderList = Order::Receipt('order_id', $order->order_id)
                 ->get();
 
                 $orderTotal = Stock::OrderTotal($orderList);

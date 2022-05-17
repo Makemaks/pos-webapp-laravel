@@ -18,7 +18,7 @@
                 <li>
                     <h3>OFFERS</h3>
                               
-                        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive uk-width-auto">
+                        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive uk-width-1-2">
                             <thead>
                                 <tr>
                                                        
@@ -117,7 +117,7 @@
                                                                             @foreach (Stock::OfferType()  as $key_stock_offer  => $item_stock_offer)
                                                                                     
                                                                                 <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
-                                                                                    {{$item_stock_offer}}
+                                                                                    {{ Str::upper($item_stock_offer)}}
                                                                                 </option>
                                                                                     
                                                                             @endforeach
@@ -142,7 +142,11 @@
                                                    
                                                     @endforeach    
 
-                                                    <td><input class="uk-radio" type="radio" name="stock_merchandise[stock_offer]" value="{{$keyStockoffer}}" @if($data['stockModel']->stock_merchandise['stock_offer'] == $keyStockoffer) checked @endif></td>
+                                                    <td>
+                                                        @isset($data['stockModel'])
+                                                            <input class="uk-radio" type="radio" name="stock_merchandise[stock_offer]" value="{{$keyStockoffer}}" @if($data['stockModel']->stock_merchandise['stock_offer'] == $keyStockoffer) checked @endif>
+                                                        @endisset
+                                                    </td>
                                                                 
                                                     <td>
                                                         <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockoffer({{$keyStockoffer}})"></button>
@@ -167,7 +171,7 @@
                       
                         <h3>OFFERS</h3>
                        
-                            @foreach ($data['settingModel']->setting_stock_offer  as $keyStockoffer => $stock_offer)
+                            @foreach ($data['settingModel']->setting_stock_offer  as $keyStockoffer => $itemStockoffer)
                                 @foreach ($itemStockoffer as $key => $stock)
                                                         
                                     @if($key == 'integer' || $key == 'decimal')
@@ -229,7 +233,7 @@
                                                         @foreach (Stock::OfferType()  as $key_stock_offer  => $item_stock_offer)
                                                                 
                                                             <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
-                                                                {{$item_stock_offer}}
+                                                               {{ Str::upper($item_stock_offer)}}
                                                             </option>
                                                                 
                                                         @endforeach

@@ -33,7 +33,7 @@ return new class extends Migration
             $table->json('stock_web')->nullable();
 
             $table->json('stock_terminal_flag')->nullable();
-
+            
             $table->softDeletes();
             $table->timestamps();
         });

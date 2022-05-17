@@ -9,7 +9,7 @@ use App\Models\Project;
 @section('content')
 <div>
                             
-    <h3>{{Str::upper(Setting::SettingGroup()[Session::get('view')])}}</h3>
+    <h3>{{Str::upper(Request::get('view'))}}</h3>
     @if ($data['settingModel']->setting_stock_group)
         <table class="uk-table uk-table-divider uk-table-small uk-table-responsive">
 
@@ -24,6 +24,8 @@ use App\Models\Project;
             </thead>
 
             <tbody>
+               
+                
                 @foreach ($data['settingModel']->setting_stock_group  as $keysetting_stock_group => $setting_stock_group)
                     @if ($setting_stock_group['type'] == Session::get('view'))
                         <tr>
@@ -31,14 +33,12 @@ use App\Models\Project;
                                 <button class="uk-button uk-button-danger uk-border-rounded">{{$keysetting_stock_group}}</button>
                             </td>
                           
-                            @foreach ($setting_stock_group as $key => $value)
+                            @foreach ($setting_stock_group as $key => $value)          
 
-                               
-                                
                                     <td>
                                         @if ($key == 'code')
-                                       
-                                            <input class="uk-input" type="number" value="" name="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]" value="{{$setting_stock_group['code']}}">
+                                            
+                                            <input class="uk-input" type="number" name="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]" value="{{$value}}">
                                         @elseif ($key == 'type')
                                                         
                                             <select class="uk-select" name="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]">
@@ -46,14 +46,16 @@ use App\Models\Project;
                                             
                                                 @foreach (Setting::SettingGroup() as $key => $setting_group)
                                                         
-                                                    <option value="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]">{{Str::upper($setting_group)}}</option>
+                                                    <option @if($key == $setting_stock_group['type']) selected @endif value="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]">
+                                                        {{Str::upper($value)}}
+                                                    </option>
                                                         
                                                 @endforeach
                                             
                                             </select>
                                         @elseif ($key == 'description')
                                             
-                                                <textarea class="uk-textarea" name="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]"> {{$setting_stock_group['description']}}</textarea>
+                                                <textarea class="uk-textarea" name="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]"> {{$value}}</textarea>
                                           
                                         @endif
                                     </td>

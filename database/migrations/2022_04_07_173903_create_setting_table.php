@@ -20,9 +20,9 @@ return new class extends Migration
             $table->json('setting_logo')->nullable();
            
            
-            $table->json('setting_stock_group')->nullable()->comment('group::category::brand');
+            $table->json('setting_stock_group')->nullable()->comment('group::category::brand::plu');
 
-            $table->json('setting_stock_plu')->nullable();
+           
 
             $table->json('setting_stock_label')->nullable();
             
@@ -36,7 +36,7 @@ return new class extends Migration
             $table->json('setting_message_notification_category')->nullable();
             $table->json('setting_message_group')->nullable();
 
-            $table->json('setting_reason')->nullable();
+            
             $table->json('setting_vat')->nullable();
 
             $table->json('setting_expense_budget')->nullable();
@@ -55,7 +55,6 @@ return new class extends Migration
             $table->json('setting_stock_offer')->nullable();
 
             $table->json('setting_stock_set_menu')->nullable();
-
             $table->json('setting_api')->nullable();
            
             $table->timestamps();

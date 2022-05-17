@@ -26,7 +26,7 @@
             "programming" => [
                 "category",
                 "group",
-                "plu",
+                "list-plu",
                 "mix-&-match",
                 "mix-&-match-2",
                 "finalise-key",
@@ -38,7 +38,7 @@
                 "keyboard-allocation",
                 "receipt",
                 "tag",
-                "tag",
+                "tag-group",
                 "voucher",
                 "reason",
                 "tax",

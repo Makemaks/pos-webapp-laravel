@@ -29,15 +29,6 @@ $route = Str::before(Request::route()->getName(), '.');
     <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
 </head>
 
-<style>
-    table {
-        border-collapse: collapse;
-    }
-
-    table tbody {}
-
-</style>
-
 <body>
 
     <div class="uk-box-shadow-small">

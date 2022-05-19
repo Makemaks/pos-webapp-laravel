@@ -78,14 +78,22 @@ class MenuController extends Controller
                 return redirect()->route('order.index');
                 break;
 
-            
             case 'mix-&-match':
                 $request->session()->flash($request->view, 'view');
                 
                 return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
 
                 break;
+            case 'receipt':
+                $request->session()->flash($request->view, 'view');
 
+                if ($this->settingModel == null) {
+                    $this->settingModel = new Setting();
+                }
+                
+                return view('menu.setting.receipt', ['data' => $this->Data()]);
+
+                break;
 
             case (in_array($request->view, Warehouse::WarehouseType())):
                 

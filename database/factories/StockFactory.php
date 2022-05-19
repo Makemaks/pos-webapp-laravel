@@ -88,6 +88,7 @@ class StockFactory extends Factory
             "set_menu" => $this->faker->numberBetween($min = 1, $max = 5),
             "stock_tag" => $this->faker->numberBetween($min = 1, $max = 5),
             "stock_offer" => $this->faker->numberBetween($min = 1, $max = 5),
+            "stock_type"=> $this->faker->numberBetween($min = 0, $max = 1),
         ];
        
         for ($i=0; $i < 15 ; $i++) { 

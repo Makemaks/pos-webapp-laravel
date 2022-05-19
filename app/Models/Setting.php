@@ -87,15 +87,39 @@ class Setting extends Model
 
         'setting_receipt' => '{
             "1": {
-                "receipt header": {},
-                "commercial message": {},
-                "bottom message": {},
-                "report message": {},
-                "sig strip": {},
-                "vat number": {},
-                "default" : {}
+                "default": 1,
+                "sig strip": {
+                    "",
+                    "",
+                    "Employee / Manager RRsignature",
+                    ".......................John"
+                },
+                "vat number": "VAT No : 787655678",
+                "bottom message": {
+                    "Thank You For Your Custom",
+                    "See You Soon",
+                    "MERRY CHRISTMAS",
+                    "www.theepsomclub.com"
+                },
+                "receipt header": {
+                    "The TESTING CLUB",
+                    "Tel: 061 319SS66  VAT: GB3158927S",
+                    "41-43 Chruch Street",
+                    "Epsom KT17 4QW"
+                },
+                "report message": {
+                    "",
+                    "",
+                    "",
+                    ""
+                },
+                "commercial message": {
+                    "The Club is Open 1000-2200 Daily",
+                    "",
+                    "",
+                    ""
+                }
             }
-            
         }',
 
         'setting_payment_gateway' => '{}', 
@@ -240,7 +264,7 @@ class Setting extends Model
                 "key": "",
                 "value": ""
             }
-        }',
+        }'
 
        
        

@@ -75,7 +75,8 @@ class Stock extends Model
             "stock_quantity": "",
             "stock_image": "",
             "stock_tag": "",
-            "stock_offer": ""
+            "stock_offer": "",
+            "stock_type": "",
             
         }',
 

@@ -43,7 +43,8 @@ class OrderController extends Controller
         ->first();
 
         $todayDate = Carbon::now()->toDateTimeString();
-
+        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+        
       
 
         $this->orderList = Store::Sale('store_id',  $this->userModel->store_id)

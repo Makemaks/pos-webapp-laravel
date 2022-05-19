@@ -48,12 +48,12 @@
                 "price-level-scheduler",
             ],
             "sale" => [
-                "sale-explorer",
-                "till-report",
-                "bill-report",
+                "sale",
+                "till",
+                "bill",
             ],
             "customer" => [
-                "customer-group"
+                "customer-explorer"
             ],
             "ticket" => [],
             

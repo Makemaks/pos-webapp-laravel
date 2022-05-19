@@ -18,7 +18,8 @@ return new class extends Migration
             $table->bigInteger('order_user_id')->comment('customer');
             $table->tinyInteger('order_status')->comment('cancelled::refunded'); 
             $table->json('order_offer')->nullable();
-            $table->tinyInteger('order_type')->default(0)->comment('Internal::External'); 
+            $table->smallInteger('order_setting_pos')->nullable();
+            $table->tinyInteger('order_type')->default(0)->comment('internal::external'); 
             $table->float('order_amount_received')->nullable();
             $table->dateTime('order_shipped_at')->nullable();
             $table->bigInteger('order_store_id')->comment('added_by'); 

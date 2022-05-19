@@ -93,14 +93,33 @@ class MenuController extends Controller
                 return redirect()->route('warehouse.index');
 
                 break;
+
             default:
                 echo "i is not equal to 0, 1 or 2";
         endswitch;
     
    }
 
-   public function sale(){
+   public function order(Request $request){
 
+    $request->session()->flash($request->view, 'view');
+
+    switch ($request->view):
+        case 'sale':
+            return redirect()->route('order.index');
+            break;
+
+        case 'till':
+            return redirect()->route('order.index');
+            break;
+
+        case 'bill':
+            return redirect()->route('order.index');
+            break;
+
+        default:
+            echo "i is not equal to 0, 1 or 2";
+    endswitch;
     
    }
 

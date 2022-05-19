@@ -28,6 +28,7 @@
                 <input class="uk-input" type="text" value="{{$data['stockModel']->stock_merchandise['stock_name']}}" name="stock_merchandise[stock_name]">
             </div>
 
+            if
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">GROUP</label>
                 <select class="uk-select" name="stock_merchandise[group_id]">

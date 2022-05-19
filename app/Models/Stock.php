@@ -47,7 +47,7 @@ class Stock extends Model
 
 
         "stock_merchandise" => '{
-            "group_id" :"",
+            "group_id": "",
             "category_id":"",
             "brand_id":"",
 
@@ -116,16 +116,11 @@ class Stock extends Model
         'stock_cost' => 'array',
         'stock_supplier' => 'array',
         'stock_gross_profit' => 'array',
-
         "stock_merchandise" => 'array',
-
         "stock_terminal_flag" => 'array',
         "stock_web" => 'array',
-
         "stock_nutrition" => 'array',
         "stock_allergen" => 'array',
-       
-
     ];
 
     public static function List()

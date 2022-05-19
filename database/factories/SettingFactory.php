@@ -45,13 +45,38 @@ class SettingFactory extends Factory
             ]; 
 
             $setting_receipt[$i+1] = [
-                "receipt header" => [ 1 => $this->faker->word],
-                "commercial message" => [ 1 => $this->faker->paragraph],
-                "bottom message" => [ 1 => $this->faker->paragraph],
-                "report message" => [ 1 => $this->faker->paragraph],
-                "sig strip" => [ 1 => $this->faker->word],
-                "vat number" => [ 1 => $this->faker->numberBetween($min = 1111, $max = 9999)],
-                "default" => [ 1 => $this->faker->numberBetween($min = 0, $max = 1)]
+                "receipt header" => [ 
+                    "The TESTING CLUB",
+                    "Tel: 061 319SS66  VAT: GB3158927S",
+                    "41-43 Chruch Street",
+                    "Epsom KT17 4QW",
+                ],
+                "commercial message" => [ 
+                    "The Club is Open 1000-2200 Daily",
+                    "",
+                    "",
+                    "",
+                ],
+                "bottom message" => [ 
+                    "Thank You For Your Custom",
+                    "See You Soon",
+                    "MERRY CHRISTMAS",
+                    "www.theepsomclub.com",
+                ],
+                "report message" => [ 
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                "sig strip" => [ 
+                    "",
+                    "",
+                    "Employee / Manager RRsignature",
+                    ".......................John",
+                ],
+                "vat number" => "VAT No : 787655678",
+                "default" => $this->faker->numberBetween($min = 0, $max = 1)
             ];
 
             
@@ -162,7 +187,8 @@ class SettingFactory extends Factory
             'setting_stock_set_menu' => $setting_stock_set_menu,
      
             'setting_stock_case_size' => $setting_stock_case_size,
-            'setting_stock_recipe' => $setting_stock_recipe
+            'setting_stock_recipe' => $setting_stock_recipe,
+            'setting_receipt' => $setting_receipt
             
         ];
     }

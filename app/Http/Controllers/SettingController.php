@@ -20,7 +20,6 @@ class SettingController extends Controller
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 
-
         //$setting_stock_group = ["category", "group", "plu"];
         //$setting_stock_group_key = array_search( $request->session()->get('view'), $setting_stock_group);
 
@@ -29,7 +28,6 @@ class SettingController extends Controller
             $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)
             ->first();
             $request->session()->keep('view');
-            
 
             return view('menu.setting.group', ['data' => $this->Data()]);
         } else {

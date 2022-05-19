@@ -5,6 +5,8 @@
     use App\Models\Receipt;
     use App\Helpers\ControllerHelper;
 
+    $route = Str::before(Request::route()->getName(), '.');
+
    if (Auth::check()) {
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
@@ -42,16 +44,23 @@
                         <h3 class="uk-margin-remove-bottom" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->company_name}}</h3>
                         <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->store_name}}</p>
                     @endisset --}}
-                    <select name="" id="" class="uk-select">
-                        <option value="" selected disabled></option>
-                        
-                        @isset($storeList)
-                            @foreach ($storeList as $store)
-                                <option value="" @if($store->store_id == $storeModel->store_id) selected  @endif>{{$store->store_name}} - {{$store->store_id}} - {{$storeModel->store_id}}</option>
-                            @endforeach
-                        @endisset
-                        
-                    </select>
+                    
+                    @if ($route && Auth::check())
+                        <form action="{{route($route.'.index')}}">
+                            @csrf
+                            <select name="store-form" class="uk-select" onchange="this.form.submit()">
+                                <option selected disabled></option>
+                                
+                                @isset($storeList)
+                                    @foreach ($storeList as $store)
+                                        <option value="{{$store->store_id}}" @if($store->store_id == $storeModel->store_id) selected  @endif>{{$store->store_name}} - {{$store->store_id}} - {{$storeModel->store_id}}</option>
+                                    @endforeach
+                                @endisset
+                                
+                            </select>
+                        </form>
+                    @endif
+                    
                 </div>
             </div>
         </div>

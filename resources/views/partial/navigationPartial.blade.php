@@ -46,19 +46,21 @@
                     @endisset --}}
                     
                     @if ($route && Auth::check())
-                        <form action="{{route($route.'.index')}}">
-                            @csrf
-                            <select name="store-form" class="uk-select" onchange="this.form.submit()">
-                                <option selected disabled></option>
-                                
-                                @isset($storeList)
-                                    @foreach ($storeList as $store)
-                                        <option value="{{$store->store_id}}" @if($store->store_id == $storeModel->store_id) selected  @endif>{{$store->store_name}} - {{$store->store_id}} - {{$storeModel->store_id}}</option>
-                                    @endforeach
-                                @endisset
-                                
-                            </select>
-                        </form>
+                        @if ($route != 'menu')
+                            <form action="{{route($route.'.index')}}">
+                                @csrf
+                                <select name="store-form" class="uk-select" onchange="this.form.submit()">
+                                    <option selected disabled></option>
+                                    
+                                    @isset($storeList)
+                                        @foreach ($storeList as $store)
+                                            <option value="{{$store->store_id}}" @if($store->store_id == $storeModel->store_id) selected  @endif>{{$store->store_name}} - {{$store->store_id}} - {{$storeModel->store_id}}</option>
+                                        @endforeach
+                                    @endisset
+                                    
+                                </select>
+                            </form>
+                        @endif
                     @endif
                     
                 </div>

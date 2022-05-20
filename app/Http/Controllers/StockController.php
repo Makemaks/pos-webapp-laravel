@@ -46,8 +46,6 @@ class StockController extends Controller
 
     public function Create(){
         $this->stockModel = new Stock();
-        
-        dd($this->stockModel->stock_merchandise);
 
         $this->Init();
         

@@ -25,10 +25,10 @@
             
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">NAME</label>
-                <input class="uk-input" type="text" value="{{$data['stockModel']->stock_merchandise['stock_name']}}" name="stock_merchandise[stock_name]">
+                <input class="uk-input" type="text" value="{{ $data['stockModel']->stock_merchandise['stock_name'] or '' }}" name="stock_merchandise[stock_name]">
             </div>
 
-            if
+          
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">GROUP</label>
                 <select class="uk-select" name="stock_merchandise[group_id]">
@@ -36,7 +36,7 @@
                     @if ($data['settingModel']->setting_stock_group)
                         @foreach ($data['settingModel']->setting_stock_group as $key => $group)
                             @if ( $group['type'] == 1 )
-                                <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['group_id']) selected @endif>{{$group['description']}}</option>
+                                <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['group_id'] ) selected @endif>{{$group['description']}}</option>
                             @endif
                         @endforeach
                     @endif

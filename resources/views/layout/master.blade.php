@@ -35,14 +35,14 @@ $route = Str::before(Request::route()->getName(), '.');
         font-size: 11px !important;
     }
 
-    .hourly tbody {
+    .scroll tbody {
         display: block;
-        height: 400px;
+        height: 300px;
         overflow: auto;
     }
 
-    .hourly thead,
-    tbody tr {
+    .scroll thead,
+    .scroll tbody tr {
         display: table;
         width: 100%;
         table-layout: fixed;

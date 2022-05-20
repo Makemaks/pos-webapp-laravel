@@ -25,8 +25,19 @@ class Store extends Model
     public static function Sale($column,  $filter)
     {
         return Store::leftJoin('order', 'order.order_store_id', '=', 'store.store_id')
+            ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
             ->leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->where($column,  $filter)
+            ->orderBy('order.created_at', 'desc');
+    }
+
+    public static function Setting($column,  $filter)
+    {
+        return Store::leftJoin('order', 'order.order_store_id', '=', 'store.store_id')
+            ->leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->leftJoin('setting', 'setting.setting_store_id', '=', 'store.store_id')
             ->where($column,  $filter)
             ->orderBy('order.created_at', 'desc');
     }
@@ -39,6 +50,7 @@ class Store extends Model
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
             ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id')
+            ->leftJoin('setting', 'setting.setting_store_id', '=', 'store.store_id')
             ->where($column,  $filter)
             ->orderBy('order.created_at', 'desc');
     }

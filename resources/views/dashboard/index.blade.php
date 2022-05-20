@@ -166,25 +166,34 @@ use Carbon\Carbon;
                     $customerTop = $data['customerTop'];
                     $customerTop = $customerTop->groupBy('company_store_id');
                     
-                    foreach ($customerTop as $receiptList) {
-                        $person = $receiptList[0]->person_name;
-                        $personName = json_decode($person);
-                        $totalCostPrice = 0;
-                        $price = 0;
+                    if (count($customerTop) > 0) {
+                        foreach ($customerTop as $receiptList) {
+                            $person = $receiptList[0]->person_name;
+                            $personName = json_decode($person);
+                            $totalCostPrice = 0;
+                            $price = 0;
                     
-                        foreach ($receiptList as $receipt) {
-                            if ($receipt->receipt_id) {
-                                $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
-                                $totalCostPrice = $totalCostPrice + $price;
+                            foreach ($receiptList as $receipt) {
+                                if ($receipt->receipt_id) {
+                                    $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
+                                    $totalCostPrice = $totalCostPrice + $price;
+                                }
                             }
-                        }
                     
+                            $arraycustomerTop[] = [
+                                'Account Num' => $receipt->company_store_id,
+                                'Name' => $receipt->company_name,
+                                'total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                            ];
+                        }
+                    } else {
                         $arraycustomerTop[] = [
-                            'Account Num' => $receipt->company_store_id,
-                            'Name' => $receipt->company_name,
-                            'total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                            'Account Num' => '',
+                            'Name' => '',
+                            'total' => '',
                         ];
                     }
+                    
                 @endphp
 
                 <div class="">
@@ -264,28 +273,33 @@ use Carbon\Carbon;
                     $clerkBreakdown = $data['clerkBreakdown'];
                     $clerkBreakdown = $clerkBreakdown->groupBy('user_id');
                     
-                    // dd($clerkBreakdown[2][0]->person_name, $clerkBreakdown[1][0]->person_name);
+                    if (count($clerkBreakdown) > 0) {
+                        foreach ($clerkBreakdown as $receiptList) {
+                            $person = $receiptList[0]->person_name;
+                            $personName = json_decode($person);
+                            $totalCostPrice = 0;
+                            $price = 0;
                     
-                    foreach ($clerkBreakdown as $receiptList) {
-                        $person = $receiptList[0]->person_name;
-                        $personName = json_decode($person);
-                        $totalCostPrice = 0;
-                        $price = 0;
-                    
-                        foreach ($receiptList as $receipt) {
-                            if ($receipt->receipt_id) {
-                                $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
-                                $totalCostPrice = $totalCostPrice + $price;
+                            foreach ($receiptList as $receipt) {
+                                if ($receipt->receipt_id) {
+                                    $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
+                                    $totalCostPrice = $totalCostPrice + $price;
+                                }
                             }
-                        }
                     
+                            $arrayclerkBreakdown[] = [
+                                'Number' => $receipt->receipt_user_id,
+                                'Name' => $personName->person_firstname,
+                                'total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                            ];
+                        }
+                    } else {
                         $arrayclerkBreakdown[] = [
-                            'Number' => $receipt->receipt_user_id,
-                            'Name' => $personName->person_preferred_name,
-                            'total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                            'Number' => '',
+                            'Name' => '',
+                            'total' => '',
                         ];
                     }
-                    
                 @endphp
 
                 <div class="">
@@ -316,14 +330,62 @@ use Carbon\Carbon;
 
             {{-- FINALISE Key --}}
             <div>
+                @php
+                @endphp
 
                 @php
                     
-                    $arrayfinaliseKey[] = [
-                        'Description' => '',
-                        'Quantity' => '',
-                        'Total' => '',
-                    ];
+                    $setting_model = $data['settingModel'];
+                    $orderList = $data['orderList'];
+                    $orderList = $orderList->groupBy('order_id');
+                    
+                    foreach ($setting_model->setting_key_type as $key => $setting) {
+                        $table[$key] = [
+                            'name' => $setting,
+                            'quantity' => 0,
+                            'total' => 0,
+                            // 'value' => 0,
+                        ];
+                    }
+                    
+                    foreach ($orderList as $key => $order) {
+                        $order_finalise_key_value = json_decode($order->first()->order_finalise_key, true);
+                    
+                        foreach ($order_finalise_key_value as $key => $order_key) {
+                            // $order_key['ref'] => 2,2,3,7,4
+                            foreach ($setting_model->setting_key as $settingKey => $value) {
+                                if (array_key_exists($value['setting_key_type'], $table) && $order_key['ref'] == $settingKey && $value['value'] != null) {
+                                    //
+                    
+                                    $table[$value['setting_key_type']]['total'] = $order_key['total'] + $table[$value['setting_key_type']]['total'];
+                                    $table[$value['setting_key_type']]['quantity'] = $table[$value['setting_key_type']]['quantity'] + 1;
+                    
+                                    // $table[$value['setting_key_type']]['total'] = $order_key['total'] + $table[$value['setting_key_type']]['total'];
+                                    // $table[$value['setting_key_type']]['quantity'] = $table[$value['setting_key_type']]['total'] / $value['value'] + $table[$value['setting_key_type']]['quantity'];
+                                }
+                    
+                                if (array_key_exists($value['setting_key_type'], $table) && $order_key['ref'] == $settingKey && $value['setting_key_type'] == 2) {
+                                    // IF ITS CREDIT
+                    
+                                    $table[$value['setting_key_type']]['total'] = $order_key['total'] + $table[$value['setting_key_type']]['total'];
+                                    $table[$value['setting_key_type']]['quantity'] = $table[$value['setting_key_type']]['quantity'] + 1;
+                    
+                                    // calculate like CASH OR
+                    
+                                    // do something
+                                }
+                    
+                                if (array_key_exists($value['setting_key_type'], $table) && $order_key['ref'] == $settingKey && $value['setting_key_type'] == 7) {
+                                    // IF ITS VOUCHER
+                    
+                                    $table[$value['setting_key_type']]['total'] = $table[$value['setting_key_type']]['total'] - $order_key['total'];
+                                    $table[$value['setting_key_type']]['quantity'] = $table[$value['setting_key_type']]['quantity'] + 1;
+                    
+                                    // take away voucher as a value voucher
+                                }
+                            }
+                        }
+                    }
                     
                 @endphp
 
@@ -334,15 +396,15 @@ use Carbon\Carbon;
                 <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                     <thead>
                         <tr>
-                            @foreach ($arrayfinaliseKey[0] as $key => $item)
+                            @foreach ($table[1] as $key => $item)
                                 <th>{{ $key }}</th>
                             @endforeach
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($arrayfinaliseKey as $keyarrayfinaliseKey => $itemarrayfinaliseKey)
+                        @foreach ($table as $keytable => $itemtable)
                             <tr>
-                                @foreach ($itemarrayfinaliseKey as $key => $item)
+                                @foreach ($itemtable as $key => $item)
                                     <td>{{ $item }}</td>
                                 @endforeach
                             </tr>
@@ -367,23 +429,30 @@ use Carbon\Carbon;
                     
                     $orderList = $orderList->groupBy('order_id');
                     
-                    foreach ($orderList as $receiptList) {
-                        $totalCostPrice = 0;
-                        $price = 0;
-                        $current_created_at = Order::find($receiptList->first()->order_id)->created_at;
+                    if (count($orderList) > 0) {
+                        foreach ($orderList as $receiptList) {
+                            $totalCostPrice = 0;
+                            $price = 0;
+                            $current_created_at = Order::find($receiptList->first()->order_id)->created_at;
                     
-                        foreach ($receiptList as $receipt) {
-                            if ($receipt->receipt_id) {
-                                $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
-                                $totalCostPrice = $totalCostPrice + $price;
+                            foreach ($receiptList as $receipt) {
+                                if ($receipt->receipt_id) {
+                                    $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
+                                    $totalCostPrice = $totalCostPrice + $price;
+                                }
                             }
-                        }
                     
+                            $array100Sale[] = [
+                                'time' => $current_created_at,
+                                'order_id' => $receipt->order_id,
+                                'total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                            ];
+                        }
+                    } else {
                         $array100Sale[] = [
-                            'time' => $current_created_at,
-                            'order_id' => $receipt->order_id,
-                            'store_id' => $receipt->store_name,
-                            'total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                            'time' => '',
+                            'order_id' => '',
+                            'total' => '',
                         ];
                     }
                 @endphp
@@ -420,16 +489,94 @@ use Carbon\Carbon;
             <div>
 
                 @php
+                    
+                    $orderList = $data['orderSettingList'];
+                    
+                    $orderList = $orderList->groupBy('stock_id');
+                    
+                    if (count($orderList) > 0) {
+                        foreach ($orderList as $stockId => $receiptList) {
+                            $totalCostPrice = 0;
+                            $price = 0;
+                    
+                            foreach ($receiptList as $key => $receipt) {
+                                if ($receipt->receipt_id) {
+                                    // product name
+                                    $stockNameJson = json_decode($receipt->stock_merchandise, true);
+                                    $stockName = $stockNameJson['stock_name'];
+                    
+                                    // category name
+                                    $category_id = json_decode($receipt->stock_merchandise, true)['category_id'];
+                                    $setting_stock_group_category_plu = json_decode($receipt->setting_stock_group_category_plu, true);
+                                    $kpcat = $setting_stock_group_category_plu[$category_id]['description'];
+                    
+                                    // price 1 and 2
+                                    $stock_cost = json_decode($receipt->stock_cost, true);
+                                    $price_1 = $stock_cost[1]['price'];
+                                    $price_2 = $stock_cost[2]['price'];
+                                }
+                            }
+                    
+                            $arraySpecialsManager[] = [
+                                'PLU' => $stockId,
+                                'NAME' => $stockName,
+                                'PRICE1L1' => MathHelper::FloatRoundUp($price_1, 2),
+                                'PRICE2L2' => MathHelper::FloatRoundUp($price_2, 2),
+                                'KPCAT' => $kpcat,
+                            ];
+                        }
+                    
+                        $arraySpecialsManager = collect($arraySpecialsManager)
+                            ->sortBy('PLU')
+                            ->toArray();
+                    } else {
+                        $arraySpecialsManager[] = [
+                            'PLU' => '',
+                            'NAME' => '',
+                            'PRICE1L1' => '',
+                            'PRICE2L2' => '',
+                            'KPCAT' => '',
+                        ];
+                    
+                        // dd($arraySpecialsManager);
+                    }
                 @endphp
 
-                <div class="">
-                    <p class="uk-h4">SPECIALS MANAGER</p>
-                </div>
-                <h6 style="">INSTRUCTIONS FOR USE</h6>
-                <p style="font-size: 12px">The Specials Manager widget is designed to allow limite access users to edit
-                    nominated fields of PLU's within defined PLU Ranges at a site level. <br> <br> To configure this widget
-                    please select a site from the Site Selecter at the top of the page and then click the settings link in
-                    the top right corner of this widget.</p>
+                @if ($arraySpecialsManager[0]['PLU'] !== '')
+                    <div class="">
+                        <p class="uk-h4">SPECIALS MANAGER</p>
+                    </div>
+
+                    <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                        <thead>
+                            <tr>
+                                @foreach ($arraySpecialsManager[0] as $key => $item)
+                                    <th>{{ $key }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($arraySpecialsManager as $keyarraySpecialsManager => $itemarraySpecialsManager)
+                                <tr>
+                                    @foreach ($itemarraySpecialsManager as $key => $item)
+                                        <td>{{ $item }}</td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <div class="">
+                        <p class="uk-h4">SPECIALS MANAGER</p>
+                    </div>
+                    <h6 style="">INSTRUCTIONS FOR USE</h6>
+                    <p style="font-size: 12px">The Specials Manager widget is designed to allow limited access users to edit
+                        nominated fields of PLU's within defined PLU Ranges at a site level. <br> <br> To configure this
+                        widget
+                        please select a site from the Site Selecter at the top of the page and then click the settings link
+                        in
+                        the top right corner of this widget.</p>
+                @endif
 
             </div>
 
@@ -508,7 +655,7 @@ use Carbon\Carbon;
             </div>
 
 
-            {{-- HOURLY BREAKDOWN , for testing Change Date to today. --}}
+            {{-- HOURLY BREAKDOWN --}}
 
             <div>
 
@@ -518,74 +665,81 @@ use Carbon\Carbon;
                     $orderList = $data['orderHourly'];
                     $orderList = $orderList->groupBy('order_id');
                     
-                @endphp
-
-                @php
-                    $count = 0;
-                    $orderArray = [];
-                @endphp
-                @php
-                    $averageSales = 0;
-                    $nowCarbon = Carbon::now();
+                    if (count($orderList) > 0) {
+                        $count = 0;
+                        $orderArray = [];
                     
-                    $current_minute = $nowCarbon->setTime(0, 0, 0);
-                    
-                    $i = 0;
-                    
-                    for ($i = 0; $i < 96; $i++) {
-                        $count++;
-                    
-                        $totalCostPrice = 0;
                         $averageSales = 0;
-                        $totalQuantity = 0;
-                        if ($i == 0) {
-                            $current_minute = $nowCarbon->setTime(0, 0, 0);
-                            $price_each_order = 0;
-                            $quantity_each_order = 0;
+                        $nowCarbon = Carbon::now();
+                    
+                        $current_minute = $nowCarbon->setTime(0, 0, 0);
+                    
+                        $i = 0;
+                    
+                        for ($i = 0; $i < 96; $i++) {
+                            $count++;
+                    
+                            $totalCostPrice = 0;
                             $averageSales = 0;
-                        } else {
-                            $current_minute = $current_minute->copy()->addMinutes(15);
-                            $previous_minute = $current_minute->copy()->subMinutes(15);
-                            foreach ($orderList as $key => $receiptList) {
-                                $current_order_minute = Order::find($receiptList->first()->order_id)->created_at;
-                                $current_order_minute_carbon = Carbon::createFromFormat('Y-m-d H:i:s', $current_order_minute);
+                            $totalQuantity = 0;
+                            if ($i == 0) {
+                                $current_minute = Carbon::now()->setTime(0, 0, 0);
+                                $price_each_order = 0;
+                                $quantity_each_order = 0;
+                                $averageSales = 0;
+                            } else {
+                                $current_minute = $current_minute->copy()->addMinutes(15);
+                                $previous_minute = $current_minute->copy()->subMinutes(15);
                     
-                                if ($current_order_minute_carbon->gt($previous_minute) && $current_order_minute_carbon->lt($current_minute)) {
-                                    $price_each_order = Stock::OrderTotal($receiptList);
-                                    $quantity_each_order = $receiptList->count();
-                                    $totalQuantity = $totalQuantity + $quantity_each_order;
-                                    $totalCostPrice = $totalCostPrice + $price_each_order;
-                                } else {
-                                    $price_each_order = 0;
-                                    $quantity_each_order = 0;
-                                    $averageSales = 0;
+                                foreach ($orderList as $key => $receiptList) {
+                                    $current_order_minute = Order::find($receiptList->first()->order_id)->created_at->format('H:i');
                     
-                                    $totalQuantity = $totalQuantity + $quantity_each_order;
-                                    $totalCostPrice = $totalCostPrice + $price_each_order;
-                                }
+                                    $current_order_minute_carbon = Carbon::parse($current_order_minute);
                     
-                                if ($totalQuantity != 0) {
-                                    $averageSales = $totalCostPrice / $totalQuantity;
-                                } else {
-                                    $averageSales = 0;
+                                    if ($current_order_minute_carbon->gte($previous_minute) && $current_order_minute_carbon->lt($current_minute)) {
+                                        $price_each_order = Stock::OrderTotal($receiptList);
+                                        $quantity_each_order = $receiptList->count();
+                                        $totalQuantity = $totalQuantity + $quantity_each_order;
+                                        $totalCostPrice = $totalCostPrice + $price_each_order;
+                                    } else {
+                                        $price_each_order = 0;
+                                        $quantity_each_order = 0;
+                                        $averageSales = 0;
+                    
+                                        $totalQuantity = $totalQuantity + $quantity_each_order;
+                                        $totalCostPrice = $totalCostPrice + $price_each_order;
+                                    }
+                    
+                                    if ($totalQuantity != 0) {
+                                        $averageSales = $totalCostPrice / $totalQuantity;
+                                    } else {
+                                        $averageSales = 0;
+                                    }
                                 }
                             }
-                        }
                     
-                        $orderArrayTable[$i] = [
-                            'Hour' => $current_minute->format('H:i'),
-                            'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
-                            'Sales' => $totalQuantity,
-                            'Average Sales' => MathHelper::FloatRoundUp($averageSales, 2),
+                            $orderArrayTable[$i] = [
+                                'Hour' => $current_minute->format('H:i'),
+                                'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                                'Sales' => $totalQuantity,
+                                'Average Sales' => MathHelper::FloatRoundUp($averageSales, 2),
+                            ];
+                        }
+                    } else {
+                        $orderArrayTable[1] = [
+                            'Hour' => '',
+                            'Total' => '',
+                            'Sales' => '',
+                            'Average Sales' => '',
                         ];
                     }
                 @endphp
 
                 <div class="">
-                    <p class="uk-h4">HOURLY BREAKDOWN</p>
+                    <p class="uk-h4">HOURLY BREAKDOWN (by today)</p>
                 </div>
 
-                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive hourly">
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
                     <thead>
                         <tr>
                             @foreach ($orderArrayTable[1] as $key => $item)
@@ -617,25 +771,34 @@ use Carbon\Carbon;
                     $orderList = $data['orderList'];
                     $orderList = $orderList->groupBy('store_id');
                     
-                    foreach ($orderList as $receiptList) {
-                        $totalCostPrice = 0;
-                        $price = 0;
-                        $i = 0;
+                    if (count($orderList) > 0) {
+                        foreach ($orderList as $receiptList) {
+                            $totalCostPrice = 0;
+                            $price = 0;
+                            $i = 0;
                     
-                        foreach ($receiptList as $receipt) {
-                            if ($receipt->receipt_id) {
-                                $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
-                                $totalCostPrice = $totalCostPrice + $price;
+                            foreach ($receiptList as $receipt) {
+                                if ($receipt->receipt_id) {
+                                    $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
+                                    $totalCostPrice = $totalCostPrice + $price;
                     
-                                $i++;
+                                    $i++;
+                                }
                             }
-                        }
                     
+                            $arraySiteBreakdown[] = [
+                                'Number' => $receipt->store_id,
+                                'Site' => $receipt->store_name,
+                                'Sales' => $receiptList->count(),
+                                'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                            ];
+                        }
+                    } else {
                         $arraySiteBreakdown[] = [
-                            'Number' => $receipt->store_id,
-                            'Site' => $receipt->store_name,
-                            'Sales' => $receiptList->count(),
-                            'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                            'Number' => '',
+                            'Site' => '',
+                            'Sales' => '',
+                            'Total' => '',
                         ];
                     }
                     
@@ -668,19 +831,38 @@ use Carbon\Carbon;
 
 
             {{-- STOCK SEARCH --}}
-
-
-            {{-- HOURLY BREAKDOWN --}}
-
             <div>
 
                 @php
                     
-                    $arraystockSearch[] = [
-                        'Stock Name' => '',
-                        'Sales' => '',
-                        'Total' => '',
-                    ];
+                    $stockList = $data['orderList'];
+                    $stockList = $stockList->groupBy('stock_id');
+                    
+                    if (count($stockList) > 0) {
+                        foreach ($stockList as $key => $receiptList) {
+                            foreach ($receiptList as $receipt) {
+                                if ($receipt->receipt_id) {
+                                    $stockNameJson = json_decode($receipt->stock_merchandise, true);
+                                    $stockName = $stockNameJson['stock_name'];
+                    
+                                    $totalCostPrice = Stock::OrderTotal($receiptList);
+                                    $quantity_each_stock = $receiptList->count();
+                                }
+                            }
+                    
+                            $arraystockSearch[] = [
+                                'Stock Name' => $stockName,
+                                'Sales' => $quantity_each_stock,
+                                'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                            ];
+                        }
+                    } else {
+                        $arraystockSearch[] = [
+                            'Stock Name' => '',
+                            'Sales' => '',
+                            'Total' => '',
+                        ];
+                    }
                     
                 @endphp
                 <div class="">
@@ -694,7 +876,7 @@ use Carbon\Carbon;
                         <input class="uk-search-input" type="search" placeholder="Search">
                     </form>
                 </div>
-                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
                     <thead>
                         <tr>
                             @foreach ($arraystockSearch[0] as $key => $item)
@@ -756,13 +938,42 @@ use Carbon\Carbon;
             <div>
 
                 @php
+                    $totalCostPrice = 0;
+                    $price = 0;
                     
-                    $arrayeatInEatOut[] = [
-                        'Order Type' => '',
-                        'Quantity' => '',
-                        'Date' => '',
-                    ];
+                    $orderList = $data['eat_in_eat_out']->groupBy(function ($item) {
+                        return $item->created_at->format('d-m-Y');
+                    });
                     
+                    if (count($orderList) > 0) {
+                        // by dates
+                        foreach ($orderList as $key => $receiptList) {
+                            $receiptList = $receiptList->groupBy('order_type');
+                    
+                            // by order_type
+                            foreach ($receiptList as $type => $value) {
+                                if ($type == 0) {
+                                    $arrayeatInEatOut[] = [
+                                        'Date' => $key,
+                                        'Name' => 'Eat In',
+                                        'Quantity' => $receiptList[0]->count(),
+                                    ];
+                                } else {
+                                    $arrayeatInEatOut[] = [
+                                        'Date' => $key,
+                                        'Name' => 'Eat Out',
+                                        'Quantity' => $receiptList[1]->count(),
+                                    ];
+                                }
+                            }
+                        }
+                    } else {
+                        $arrayeatInEatOut[] = [
+                            'Date' => '',
+                            'Name' => '',
+                            'Quantity' => '',
+                        ];
+                    }
                 @endphp
                 <div class="">
                     <p class="uk-h4">EAT IN EAT OUT</p>
@@ -832,61 +1043,86 @@ use Carbon\Carbon;
                     $orderList = $data['orderList'];
                     $orderList = $orderList->groupBy('stock_id');
                     
-                    // dd($orderList[2][0]);
+                    if (count($orderList) > 0) {
+                        foreach ($orderList as $receiptList) {
+                            $totalCostPrice = 0;
+                            $price = 0;
+                            $totalStockNet = 0;
+                            $totalactualPrice = 0;
                     
-                    foreach ($orderList as $receiptList) {
-                        $totalCostPrice = 0;
-                        $price = 0;
-                        $totalStockNet = 0;
-                        $totalactualPrice = 0;
+                            foreach ($receiptList as $receipt) {
+                                if ($receipt->receipt_id) {
+                                    $defaultPrice = json_decode($receipt->stock_cost, true);
+                                    $actualPrice = json_decode($receipt->stock_gross_profit, true);
+                                    $stockNameJson = json_decode($receipt->stock_merchandise, true);
+                                    $stockName = $stockNameJson['stock_name'];
                     
-                        foreach ($receiptList as $receipt) {
-                            if ($receipt->receipt_id) {
-                                $defaultPrice = json_decode($receipt->stock_cost, true);
-                                $actualPrice = json_decode($receipt->stock_gross_profit, true);
-                                $stockNameJson = json_decode($receipt->stock_merchandise, true);
-                                $stockName = $stockNameJson['stock_name'];
-                    
-                                foreach ($defaultPrice as $key => $value) {
-                                    if ($value['default'] == 0) {
-                                        $totalStockNet = $totalStockNet + $value['price'];
+                                    foreach ($defaultPrice as $key => $value) {
+                                        if ($value['default'] == 0) {
+                                            $totalStockNet = $totalStockNet + $value['price'];
+                                        }
                                     }
-                                }
                     
-                                $totalactualPrice = $totalactualPrice + $actualPrice['actual'];
-                                $quantity = $receiptList->count();
+                                    $totalactualPrice = $totalactualPrice + $actualPrice['actual'];
+                                    $quantity = $receiptList->count();
+                                }
                             }
+                    
+                            $totalGP = $totalStockNet - $totalactualPrice;
+                    
+                            $GPpercentage = ($totalGP / $quantity) * 100;
+                    
+                            $arrayGPList[] = [
+                                'Number' => $receipt->stock_id,
+                                'Descriptor' => $stockName,
+                                'Profit' => MathHelper::FloatRoundUp($totalGP, 2),
+                                'GP' => MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
+                            ];
                         }
                     
-                        $totalGP = $totalStockNet - $totalactualPrice;
+                        $sortarraytopGPList = collect($arrayGPList)
+                            ->sortBy('Profit')
+                            ->reverse()
+                            ->toArray();
                     
-                        $GPpercentage = ($totalGP / $quantity) * 100;
+                        $topGPList = array_slice($sortarraytopGPList, 0, 5);
                     
+                        $sortarraybottomGPList = collect($arrayGPList)
+                            ->sortBy('Profit')
+                            ->toArray();
+                    
+                        $bottomGPList = array_slice($sortarraybottomGPList, 0, 5);
+                    
+                        $bottomGPListASC = collect($bottomGPList)
+                            ->sortBy('Profit')
+                            ->reverse()
+                            ->toArray();
+                    } else {
                         $arrayGPList[] = [
-                            'Number' => $receipt->stock_id,
-                            'Descriptor' => $stockName,
-                            'Profit' => MathHelper::FloatRoundUp($totalGP, 2),
-                            'GP' => MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
+                            'Number' => '',
+                            'Descriptor' => '',
+                            'Profit' => '',
+                            'GP' => '',
+                        ];
+                        $topGPList[] = [
+                            'Number' => '',
+                            'Descriptor' => '',
+                            'Profit' => '',
+                            'GP' => '',
+                        ];
+                        $bottomGPList[] = [
+                            'Number' => '',
+                            'Descriptor' => '',
+                            'Profit' => '',
+                            'GP' => '',
+                        ];
+                        $bottomGPListASC[] = [
+                            'Number' => '',
+                            'Descriptor' => '',
+                            'Profit' => '',
+                            'GP' => '',
                         ];
                     }
-                    
-                    $sortarraytopGPList = collect($arrayGPList)
-                        ->sortBy('Profit')
-                        ->reverse()
-                        ->toArray();
-                    
-                    $topGPList = array_slice($sortarraytopGPList, 0, 5);
-                    
-                    $sortarraybottomGPList = collect($arrayGPList)
-                        ->sortBy('Profit')
-                        ->toArray();
-                    
-                    $bottomGPList = array_slice($sortarraybottomGPList, 0, 5);
-                    
-                    $bottomGPListASC = collect($bottomGPList)
-                        ->sortBy('Profit')
-                        ->reverse()
-                        ->toArray();
                     
                 @endphp
                 <div class="">
@@ -952,41 +1188,47 @@ use Carbon\Carbon;
                     $orderList = $data['orderList'];
                     $orderList = $orderList->groupBy('store_id');
                     
-                    foreach ($orderList as $receiptList) {
-                        $totalCostPrice = 0;
-                        $price = 0;
-                        $totalStockProfit = 0;
-                        $totalactualPrice = 0;
+                    if (count($orderList) > 0) {
+                        foreach ($orderList as $receiptList) {
+                            $totalCostPrice = 0;
+                            $price = 0;
+                            $totalStockProfit = 0;
+                            $totalactualPrice = 0;
                     
-                        foreach ($receiptList as $receipt) {
-                            if ($receipt->receipt_id) {
-                                $defaultPrice = json_decode($receipt->stock_cost, true);
-                                $actualPrice = json_decode($receipt->stock_gross_profit, true);
+                            foreach ($receiptList as $receipt) {
+                                if ($receipt->receipt_id) {
+                                    $defaultPrice = json_decode($receipt->stock_cost, true);
+                                    $actualPrice = json_decode($receipt->stock_gross_profit, true);
                     
-                                foreach ($defaultPrice as $key => $value) {
-                                    if ($value['default'] == 0) {
-                                        $totalStockProfit = $totalStockProfit + $value['price'];
+                                    foreach ($defaultPrice as $key => $value) {
+                                        if ($value['default'] == 0) {
+                                            $totalStockProfit = $totalStockProfit + $value['price'];
+                                        }
                                     }
+                    
+                                    $totalactualPrice = $totalactualPrice + $actualPrice['actual'];
+                    
+                                    $quantity = $receiptList->count();
                                 }
-                    
-                                $totalactualPrice = $totalactualPrice + $actualPrice['actual'];
-                    
-                                $quantity = $receiptList->count();
                             }
+                    
+                            // dd($totalStockProfit, $totalactualPrice, $quantity);
+                    
+                            $totalGP = $totalStockProfit - $totalactualPrice;
+                    
+                            $GPpercentage = ($totalGP / $quantity) * 100;
+                    
+                            $arrayGPOverview[] = [
+                                'GP %' => MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
+                                'Total GP' => MathHelper::FloatRoundUp($totalGP, 2),
+                            ];
                         }
-                    
-                        // dd($totalStockProfit, $totalactualPrice, $quantity);
-                    
-                        $totalGP = $totalStockProfit - $totalactualPrice;
-                    
-                        $GPpercentage = ($totalGP / $quantity) * 100;
-                    
+                    } else {
                         $arrayGPOverview[] = [
-                            'GP %' => MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
-                            'Total GP' => MathHelper::FloatRoundUp($totalGP, 2),
+                            'GP %' => '',
+                            'Total GP' => '',
                         ];
                     }
-                    
                 @endphp
 
                 <div class="">

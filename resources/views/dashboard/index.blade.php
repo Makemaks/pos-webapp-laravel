@@ -344,9 +344,13 @@ use Carbon\Carbon;
                             'name' => $setting,
                             'quantity' => 0,
                             'total' => 0,
-                            // 'value' => 0,
                         ];
                     }
+                    
+                    $quantity20 = 0;
+                    $total20 = 0;
+                    $key20 = 0;
+                    $key20 = count($table) + 1;
                     
                     foreach ($orderList as $key => $order) {
                         $order_finalise_key_value = json_decode($order->first()->order_finalise_key, true);
@@ -360,8 +364,16 @@ use Carbon\Carbon;
                                     $table[$value['setting_key_type']]['total'] = $order_key['total'] + $table[$value['setting_key_type']]['total'];
                                     $table[$value['setting_key_type']]['quantity'] = $table[$value['setting_key_type']]['quantity'] + 1;
                     
-                                    // $table[$value['setting_key_type']]['total'] = $order_key['total'] + $table[$value['setting_key_type']]['total'];
-                                    // $table[$value['setting_key_type']]['quantity'] = $table[$value['setting_key_type']]['total'] / $value['value'] + $table[$value['setting_key_type']]['quantity'];
+                                    if ($value['value'] == 20) {
+                                        $quantity20 = $order_key['total'] / $value['value'] + $quantity20;
+                                        $total20 = $total20 + $order_key['total'];
+                    
+                                        $table[$key20] = [
+                                            'name' => '20 Pound',
+                                            'quantity' => MathHelper::FloatRoundUp($quantity20, 0),
+                                            'total' => $total20,
+                                        ];
+                                    }
                                 }
                     
                                 if (array_key_exists($value['setting_key_type'], $table) && $order_key['ref'] == $settingKey && $value['setting_key_type'] == 2) {
@@ -369,19 +381,11 @@ use Carbon\Carbon;
                     
                                     $table[$value['setting_key_type']]['total'] = $order_key['total'] + $table[$value['setting_key_type']]['total'];
                                     $table[$value['setting_key_type']]['quantity'] = $table[$value['setting_key_type']]['quantity'] + 1;
-                    
-                                    // calculate like CASH OR
-                    
-                                    // do something
                                 }
                     
-                                if (array_key_exists($value['setting_key_type'], $table) && $order_key['ref'] == $settingKey && $value['setting_key_type'] == 7) {
+                                if (array_key_exists($value['setting_key_type'], $table) && $order_key['ref'] == $settingKey && $value['setting_key_type'] == 3) {
                                     // IF ITS VOUCHER
-                    
-                                    $table[$value['setting_key_type']]['total'] = $table[$value['setting_key_type']]['total'] - $order_key['total'];
-                                    $table[$value['setting_key_type']]['quantity'] = $table[$value['setting_key_type']]['quantity'] + 1;
-                    
-                                    // take away voucher as a value voucher
+                                    // take away user voucher credit
                                 }
                             }
                         }
@@ -587,12 +591,28 @@ use Carbon\Carbon;
 
                 @php
                     
-                    $arraytimeAndAttendance[] = [
-                        'Clerk' => '',
-                        'Date' => '',
-                        'Time' => '',
-                        'Status' => '',
-                    ];
+                    $orderList = $data['orderList'];
+                    $orderList = $orderList->groupBy('user_id');
+                    
+                    foreach ($orderList as $userId => $receiptList) {
+                        $clerkName = json_decode($receiptList[0]->person_name, true)['person_firstname'];
+                        $attendance = json_decode($receiptList[0]->attendance, true);
+                        $attendance_status = end($attendance)['status'];
+                        if ($attendance_status == 0) {
+                            $attendance_status = 'Clocked in';
+                        } else {
+                            $attendance_status = 'Clocked out';
+                        }
+                        $attendance_date = Carbon::parse(end($attendance)['at'])->format('d/m/Y');
+                        $attendance_time = Carbon::parse(end($attendance)['at'])->format('H:i:s');
+                    
+                        $arraytimeAndAttendance[$userId] = [
+                            'Clerk' => $clerkName,
+                            'Date' => $attendance_date,
+                            'Time' => $attendance_time,
+                            'Status' => $attendance_status,
+                        ];
+                    }
                     
                 @endphp
 
@@ -603,16 +623,17 @@ use Carbon\Carbon;
                 <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                     <thead>
                         <tr>
-                            @foreach ($arraytimeAndAttendance[0] as $key => $item)
+                            @foreach (array_values($arraytimeAndAttendance)[0] as $key => $item)
                                 <th>{{ $key }}</th>
                             @endforeach
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($arraytimeAndAttendance as $keyarraytimeAndAttendance => $itemarraytimeAndAttendance)
-                            <tr>
+                            <tr
+                                @if ($itemarraytimeAndAttendance['Status'] === 'Clocked in') class="uk-text-success" @else class="uk-background-muted" @endif>
                                 @foreach ($itemarraytimeAndAttendance as $key => $item)
-                                    <td>{{ $item }}</td>
+                                    <td> {{ $item }}</td>
                                 @endforeach
                             </tr>
                         @endforeach

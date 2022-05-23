@@ -21,11 +21,12 @@ return new class extends Migration
             $table->tinyInteger('user_type')->comment('admin::super');
             $table->tinyInteger('user_is_disabled')->default(1);
             $table->tinyInteger('user_is_notifiable')->default(1);
-            $table->tinyInteger('user_is_verified')->default(1)->comment('given accesss');                
+            $table->tinyInteger('user_is_verified')->default(1)->comment('given accesss');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('user_avatar')->nullable();
             $table->string('password');
             $table->dateTime('user_last_login_at')->nullable();
+            $table->json('attendance')->nullable()->comment('clocked_in::clocked_out');
             $table->rememberToken();
             $table->timestamps();
         });

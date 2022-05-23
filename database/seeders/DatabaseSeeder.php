@@ -15,26 +15,27 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-           
+
+            EmployementSeeder::class,
+            StockSeeder::class,
             StockroomSeeder::class,
             ExpenseSeeder::class,
             SettingSeeder::class,
-            StockSeeder::class,
-          
+
             UserSeeder::class,
-           
+
             ReceiptSeeder::class,
-          
-          
+
+
             AccountSeeder::class,
-            AddressSeeder::class, 
-            CompanySeeder::class, 
-            OrderSeeder::class, 
+            AddressSeeder::class,
+            CompanySeeder::class,
+            OrderSeeder::class,
             PersonSeeder::class,
-            
-            StoreSeeder::class, 
-            
-           
-       ]);
+
+            StoreSeeder::class,
+
+
+        ]);
     }
 }

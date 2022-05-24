@@ -75,7 +75,7 @@ class ConfigHelper{
 
         return [
           
-            'Status Flags' => [
+            'status_flag' => [
               'Enable Zero Price Sale',
               'Do not print on receipts or bills',
               'PLU is Negative Price',
@@ -92,9 +92,9 @@ class ConfigHelper{
               'Prompt with picture',
               'Prompt Customer Verification 2',
             ],
-            'Commission Rates' => $flag,
-            'Selective Itemisers' => $flag,
-            'Stock Control (EPOS side only)' => [
+            'commission_rate' => $flag,
+            'selective_itemiser' => $flag,
+            'stock_control' => [
               	
                 'SEL Unit',
                 'SEL Quantity',

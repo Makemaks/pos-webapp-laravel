@@ -4,7 +4,7 @@
   
 @endphp
 @section('content')    
-   <form id="stock-update" action="{{route('stock.store')}}" method="POST">
+   <form id="stock-store" action="{{route('stock.store')}}" method="POST">
        @csrf
         @include('stock.partial.createPartial')
    </form>

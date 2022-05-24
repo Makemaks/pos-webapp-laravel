@@ -83,9 +83,9 @@ class Stock extends Model
         "stock_terminal_flag" => '{
             "status_flag": {},
             "stock_control": {},
-            "commission_rates": {},
-            "kitchen_printers": {},
-            "selective_itemisers": {}
+            "commission_rate": {},
+            "kitchen_printer": {},
+            "selective_itemiser": {}
         }',
 
         "stock_web" => '{
@@ -220,12 +220,13 @@ class Stock extends Model
 
         foreach ($data['settingModel']->setting_stock_group as $key => $value) {
 
+         
+
             if ($value['type'] == $type) {
                 $stockReceiptOrder = $data['orderList']->where('stock_merchandise->category_id', $key);
 
 
                 $totalCostPrice =  Stock::OrderTotal($data['orderList']);
-
 
                 $i = 0;
 
@@ -234,7 +235,7 @@ class Stock extends Model
 
                     $category_id = json_decode($orderList->stock_merchandise, true);
 
-                    if ($category_id['category_id'] == $key) {
+                    if ($category_id['category_id'] == $key && array_key_exists($key, json_decode($orderList->stock_cost, true))) {
 
                         $price = json_decode($orderList->stock_cost, true)[$key]['price'];
                         $totalCostPrice = $totalCostPrice + $price;
@@ -261,7 +262,15 @@ class Stock extends Model
         $price = 0;
         $totalCostPrice = 0;
 
+       
+        
         foreach ($orderList as $stockList) {
+
+            if ($stockList->receipt_id == 500) {
+                $a = $stockList->receipt_id;
+
+            }
+
             if ($stockList->receipt_id) {
                
                 if ($stockList->receipt_stock_cost_override) {

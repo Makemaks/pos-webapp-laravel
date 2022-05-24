@@ -39,7 +39,8 @@ class Warehouse extends Model
 
     public static function WarehouseStatus(){
         return [
-            ''
+            'FIFO',
+            'Average Cost Price',
         ];
     }
 

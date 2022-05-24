@@ -46,7 +46,8 @@ class StockController extends Controller
 
     public function Create(){
         $this->stockModel = new Stock();
-
+        $a = $this->stockModel->stock_merchandise;
+        
         $this->Init();
         
         return view('stock.create',  ['data' => $this->Data()]); 
@@ -54,14 +55,16 @@ class StockController extends Controller
 
     public function Store(Request $request){
         
-        $this->validate($request, [
+      /*   $this->validate($request, [
            
             'file' => 'required_if:content_file_url,null | max:1024000 |mimes:xls,xlsx,csv',   
 
         ], [
             'required' => 'This field is required',
             'required_if' => 'This field is required'
-        ]);
+        ]); */
+
+        $a = $request->except('_token', '_method');
 
         if ($request->has('file')) {
             
@@ -76,6 +79,9 @@ class StockController extends Controller
 
     public function Edit($stock){
         $this->stockModel = Stock::find($stock);
+
+        
+
         $this->warehouseList = Warehouse::where('warehouse_stock_id', $stock)->get();
         
 
@@ -139,7 +145,7 @@ class StockController extends Controller
          $stockModel = collect($stockModel);
   
          $stockModel = $stockModel->except(['created_at', 'updated_at', 'deleted_at']);
-         $stockModel = Stock::where('stock_id', $stock)->update($stockModel->toArray());
+         Stock::where('stock_id', $stock)->update($stockModel->toArray());
  
          return redirect()->route('stock.edit', $stock);
  

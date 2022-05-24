@@ -36,7 +36,7 @@
             </div>
         @elseif($action == 'store')
             <div class="uk-navbar-item">
-                <button type="submit" form="{{$route}}-update" class="uk-border-rounded uk-button uk-button-default uk-text-primary" uk-icon="push"></button>
+                <button type="submit" form="{{$route}}-store" class="uk-border-rounded uk-button uk-button-default uk-text-primary" uk-icon="file"></button>
             </div>
         @elseif($action == 'update')
             <div class="uk-navbar-item">
@@ -46,6 +46,8 @@
                 <button uk-toggle="target: #modal-{{Request::route($route)}}" class="uk-border-rounded uk-button uk-button-default uk-text-danger" uk-icon="trash"></button>
             </div>
         @endif
+
+       
 @endif
 
 

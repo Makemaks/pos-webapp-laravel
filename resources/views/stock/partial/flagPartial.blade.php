@@ -16,7 +16,12 @@
                     @foreach ($terminalFlag as $keyflag => $flag)
                         @php
                             $checked = "";
-                            $isflag = array_search($keyflag, $data['stockModel']->stock_terminal_flag[$key]);
+                            if (isset($data['stockModel']->stock_terminal_flag)) {
+                                $isflag = array_search($keyflag, $data['stockModel']->stock_terminal_flag[$key]);
+                            }
+
+                            
+
                             if($isflag){
                                 $checked = 'checked';
                             }

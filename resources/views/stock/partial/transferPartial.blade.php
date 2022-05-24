@@ -23,11 +23,13 @@
                 <tr>
                     <th>REF</th>
 
-                    @foreach ($data['warehouseList']->toArray()[1] as $keystock => $item)
-                        @if ($keystock != 'warehouse_id' && $keystock != 'warehouse_stock_id' && $keystock != 'created_at' &&	$keystock != 'updated_at')
-                            <th>{{Str::after($keystock, 'warehouse_')}}</th>
-                        @endif
-                    @endforeach
+                        @isset($data['warehouseList'])
+                            @foreach ($data['warehouseList']->toArray()[1] as $keystock => $item)
+                                @if ($keystock != 'warehouse_id' && $keystock != 'warehouse_stock_id' && $keystock != 'created_at' &&	$keystock != 'updated_at')
+                                    <th>{{Str::after($keystock, 'warehouse_')}}</th>
+                                @endif
+                            @endforeach
+                        @endisset
                     
                     <th></th>
                 </tr>
@@ -35,66 +37,68 @@
             <tbody>
             
                 
-                    @foreach ($data['warehouseList']->toArray() as $keyStockTransfer => $warehouseList)
-                        
-                        <tr>
-                           
-                            @foreach ($warehouseList as $keystock => $stock)
+                    @isset($data['warehouseList'])
+                        @foreach ($data['warehouseList']->toArray() as $keyStockTransfer => $warehouseList)
                             
-                                    @if ($keystock == 'warehouse_id')
-                                        <input class="uk-input" type="text" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}" hidden>
-                                       <td>
-                                            <button class="uk-button uk-button-danger uk-border-rounded" onclick="">{{$stock}}</button>
-                                       </td>
+                            <tr>
+                            
+                                @foreach ($warehouseList as $keystock => $stock)
                                 
-                                    @elseif ($keystock == 'warehouse_note' || $keystock == 'warehouse_description' || $keystock == 'warehouse_reference')
+                                        @if ($keystock == 'warehouse_id')
+                                            <input class="uk-input" type="text" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}" hidden>
                                         <td>
-                                            <input class="uk-input" type="text" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
+                                                <button class="uk-button uk-button-danger uk-border-rounded" onclick="">{{$stock}}</button>
                                         </td>
-                                    @elseif($keystock == 'warehouse_price' || $keystock == 'warehouse_quantity')
-                                        <td>
-                                            <input class="uk-input" type="number" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
-                                        </td>
-                                    @elseif($keystock == 'warehouse_status')
-                                        <td>
-                                            <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
-                                                <option value="" selected disabled>SELECT ...</option>
+                                    
+                                        @elseif ($keystock == 'warehouse_note' || $keystock == 'warehouse_description' || $keystock == 'warehouse_reference')
+                                            <td>
+                                                <input class="uk-input" type="text" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
+                                            </td>
+                                        @elseif($keystock == 'warehouse_price' || $keystock == 'warehouse_quantity')
+                                            <td>
+                                                <input class="uk-input" type="number" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
+                                            </td>
+                                        @elseif($keystock == 'warehouse_status')
+                                            <td>
+                                                <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
+                                                    <option value="" selected disabled>SELECT ...</option>
+                                                    
+                                                        @foreach (Warehouse::WarehouseStatus() as $store)
+                                                            <option value="{{$stock}}" class="uk-input">
+                                                                {{$store}}
+                                                            </option>
+                                                        @endforeach
+                                                    
+                                                </select>
+                                            </td>
+                                        @elseif($keystock == 'warehouse_type')
+                                            <td>
+                                                <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
+                                                    <option value="" selected disabled>SELECT ...</option>
+                                                    
+                                                        @foreach (Warehouse::WarehouseType() as $key => $stock)
+                                                            <option value="{{$stock}}" class="uk-input">
+                                                                {{$stock}}
+                                                            </option>
+                                                        @endforeach
                                                 
-                                                    @foreach (Warehouse::WarehouseStatus() as $store)
-                                                        <option value="{{$stock}}" class="uk-input">
-                                                            {{$store}}
-                                                        </option>
-                                                    @endforeach
-                                                
-                                            </select>
-                                        </td>
-                                    @elseif($keystock == 'warehouse_type')
-                                        <td>
-                                            <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
-                                                <option value="" selected disabled>SELECT ...</option>
-                                                
-                                                    @foreach (Warehouse::WarehouseType() as $key => $stock)
-                                                        <option value="{{$stock}}" class="uk-input">
-                                                            {{$stock}}
-                                                        </option>
-                                                    @endforeach
-                                            
-                                            </select>
-                                        </td>
-                                    @elseif($keystock == 'warehouse_store_id' || $keystock == 'warehouse_user_id')
-                                        <td>
-                                            <a href="{{route('store.edit', $stock)}}" class="uk-button uk-button-danger uk-border-rounded">{{$stock}}</a>
-                                        </td>
-                                    @endif
+                                                </select>
+                                            </td>
+                                        @elseif($keystock == 'warehouse_store_id' || $keystock == 'warehouse_user_id')
+                                            <td>
+                                                <a href="{{route('store.edit', $stock)}}" class="uk-button uk-button-danger uk-border-rounded">{{$stock}}</a>
+                                            </td>
+                                        @endif
 
-                                    
-                                    
-                            @endforeach
-                            <td>
-                                <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockTransfer({{$stock}})"></button>
-                            </td>
-                        </tr>    
-                    @endforeach
+                                        
+                                        
+                                    @endforeach
+                                <td>
+                                    <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockTransfer({{$stock}})"></button>
+                                </td>
+                            </tr>    
+                        @endforeach
+                    @endisset
                
             </tbody>
         </table>

@@ -31,7 +31,7 @@
                 </thead>
                 <tbody>
                    
-                    @if ($data['stockModel']->stock_supplier)
+                    @if ($data['stockModel']->stock_supplier && $data['stockModel']->stock_id)
                         @foreach ($data['stockModel']->stock_supplier as $keyStockSupplier => $stockSupplier)
                             <tr>
                                 <td>
@@ -89,7 +89,7 @@
                         @if($key == 'supplier_id')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                                <select class="uk-select" id="form-stacked-select" name="form[stock_supplier][{{$keyStockSupplier}}][{{$key}}]">
+                                <select class="uk-select" id="form-stacked-select" name="form[stock_supplier][{{$key}}]">
                                     <option value="" selected disabled>SELECT ...</option>
                                     @foreach ($data['companyList']->where('comapny_type', 0)  as $supplier )
                                             
@@ -103,7 +103,7 @@
                         @elseif($key != 'default')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                                <input class="uk-input" type="number" name="form[stock_supplier][{{$keyStockSupplier}}][{{$key}}]">
+                                <input class="uk-input" type="number" name="form[stock_supplier][{{$key}}]">
                             </div>
                         @endif
                     @endforeach

@@ -1,8 +1,7 @@
 @extends('layout.master')
 
 
-@section('content')  
-
+@section('content')
     <div>
         @include('user.partial.indexPartial')
     </div>

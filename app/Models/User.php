@@ -40,7 +40,6 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'attendance' => 'array',
     ];
 
     protected $table = 'user';
@@ -49,12 +48,6 @@ class User extends Authenticatable
     protected $attributes = [
 
         "user_account_id" => 1,
-        'attendance' => '{
-            "1": {
-                "status": "",
-                "at": ""
-            }
-        }',
 
     ];
 
@@ -74,9 +67,15 @@ class User extends Authenticatable
             ->where($column, $filter);
     }
 
+    public static function Employment()
+    {
+        // user , person , employment
+    }
+
     public static function Person($column, $filter)
     {
         return User::leftJoin('person', 'person.person_id', 'user.user_person_id')
+            ->leftjoin('employment', 'employment.employment_user_id', 'user.user_id')
             ->where($column, $filter);
     }
 

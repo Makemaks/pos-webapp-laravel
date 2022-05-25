@@ -9,101 +9,109 @@ use Illuminate\Support\Str;
 class ConfigHelper
 {
 
-    public static function EmployementFunction()
+    public static function EmploymentFunction()
     {
 
         return [
-            "No Sale",
-            "New Check and Old Check Key",
-            "Split Check",
-            "Credit Card Capture",
-            "Item Correct",
-            "Check Transfer",
-            "Deposit",
-            "House Bon",
-            "Void",
-            "+ Amount",
-            "Pay Account",
-            "View Open Checks",
-            "Cancel",
-            "- Amount",
-            "Customer Enquiry",
-            "Edit Check Text",
-            "Refund",
-            "+%",
-            "Hot Card Button",
-            "CASH2 Key",
-            "Price Shift",
-            "-%",
-            "Customer Transfer",
-            "Minimise TouchPoint",
-            "Price Level Shift",
-            "Exchange Points",
-            "Service Charge Key",
-            "Menu Shift 2",
-            "Menu Level Shift",
-            "Suspend and Resume",
-            "View Customer Detail",
-            "Media Exchange",
-            "View Active Clerk List",
-            "Paid Out",
-            "Remote Journal View",
-            "Launch Batch",
-            "New Check Key",
-            "Received on Account",
-            "Global Eat In/Take Out",
-            "Points Adjustment",
-            "Old Check Key",
-            "Temporary Price Change",
-            "Edit Customer",
-            "Customer Biometrics"
+            "Allowed Function" => [
+                "No Sale",
+                "New Check and Old Check Key",
+                "Split Check",
+                "Credit Card Capture",
+                "Item Correct",
+                "Check Transfer",
+                "Deposit",
+                "House Bon",
+                "Void",
+                "+ Amount",
+                "Pay Account",
+                "View Open Checks",
+                "Cancel",
+                "- Amount",
+                "Customer Enquiry",
+                "Edit Check Text",
+                "Refund",
+                "+%",
+                "Hot Card Button",
+                "CASH2 Key",
+                "Price Shift",
+                "-%",
+                "Customer Transfer",
+                "Minimise TouchPoint",
+                "Price Level Shift",
+                "Exchange Points",
+                "Service Charge Key",
+                "Menu Shift 2",
+                "Menu Level Shift",
+                "Suspend and Resume",
+                "View Customer Detail",
+                "Media Exchange",
+                "View Active Clerk List",
+                "Paid Out",
+                "Remote Journal View",
+                "Launch Batch",
+                "New Check Key",
+                "Received on Account",
+                "Global Eat In/Take Out",
+                "Points Adjustment",
+                "Old Check Key",
+                "Temporary Price Change",
+                "Edit Customer",
+                "Customer Biometrics"
+            ],
         ];
     }
 
-    public static function EmployementMode()
+    public static function EmploymentMode()
     {
         return [
-            "Reg Mode",
-            "Refund Mode",
-            "X Mode",
-            "Z Mode",
-            "Manager Functions",
-            "Program 1",
-            "Program 2",
-            "Program 3",
-            "Program 4",
-            "Program 5",
-            "Program 6",
+            "Allowed Modes" => [
+                "Reg Mode",
+                "Refund Mode",
+                "X Mode",
+                "Z Mode",
+                "Manager Functions",
+                "Program 1",
+                "Program 2",
+                "Program 3",
+                "Program 4",
+                "Program 5",
+                "Program 6",
+            ],
         ];
     }
 
-    public static function EmployementEmployeeJob()
+    public static function EmploymentEmployeeJob()
     {
 
         return [
-            "Promt to clocked in at sign on",
-            "Compulsory clocked in"
+            "Employee Job" => [
+                "Promt to clocked in at sign on",
+                "Compulsory clocked in"
+            ],
         ];
     }
 
-    public static function EmployementUserControl()
+    public static function EmploymentUserControl()
     {
         return [
-            "Use 2nd Drawer?",
-            "User is Manager",
-            "User is Trainee",
-            "Allowed to open other clerk's checks?",
-            "Allowed to correct items from checks?",
-            "Defaults to floor plan at sign on?",
-            "Last item error correct only?",
-            "Compulsory order number entry",
-            "Compulsory number of covers entry",
-            "Compulsory check number",
-            "Compulsory customer?",
-            "Prompt for customer number",
-            "Prompt for Eat In/Take Out",
-            "Sign off clerk at close of sale?",
-            "Non Turnover? {TMS/PLU sales only}"
+            "User Control" => [
+                "Use 2nd Drawer?",
+                "User is Manager",
+                "User is Trainee",
+                "Allowed to open other clerk's checks?",
+                "Allowed to correct items from checks?",
+                "Defaults to floor plan at sign on?",
+                "Last item error correct only?",
+                "Compulsory order number entry",
+                "Compulsory number of covers entry",
+                "Compulsory check number",
+                "Compulsory customer?",
+                "Prompt for customer number",
+                "Prompt for Eat In/Take Out",
+                "Sign off clerk at close of sale?",
+                "Non Turnover? {TMS/PLU sales only}"
+            ],
         ];
     }
 

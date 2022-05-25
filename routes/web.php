@@ -18,7 +18,7 @@ use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InitController;
-use App\Http\Controllers\CompanyController;
+// use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
@@ -58,33 +58,34 @@ Route::get('login', [AuthenticationController::class, 'Login'])->name('authentic
 Route::get('forgot-password', [AuthenticationController::class, 'ForgotPassword'])->name('authentication.forgot-password');
 Route::get('reset-password/{id}', [AuthenticationController::class, 'ResetPassword'])->name('authentication.reset-password');
 Route::get('logout', [AuthenticationController::class, 'Logout'])->name('authentication.logout');
+Route::get('clocked-out', [AuthenticationController::class, 'ClockedOut'])->name('authentication.clockedout');
 Route::get('register', [AuthenticationController::class, 'Register'])->name('authentication.register');
 Route::get('admin-store/{store}', [AuthenticationController::class, 'adminStore'])->name('authentication.admin-store');
 
 
 Route::resource('home', HomeController::class);
 Route::resource('user', UserController::class);
-Route::resource('company', CompanyController::class);
-Route::resource('address', AddressController::class);
+// Route::resource('company', CompanyController::class);
+// Route::resource('address', AddressController::class);
 Route::resource('person', PersonController::class);
-Route::resource('store', StoreController::class);
+// Route::resource('store', StoreController::class);
 Route::resource('order', OrderController::class);
 Route::resource('stock', StockController::class);
-Route::resource('activity', ActivityController::class);
-Route::resource('subscription', SubscriptionController::class);
+// Route::resource('activity', ActivityController::class);
+// Route::resource('subscription', SubscriptionController::class);
 Route::resource('setting', SettingController::class);
 Route::resource('dashboard', DashboardController::class);
-Route::resource('reservation', ReservationController::class);
-Route::resource('scheme', SchemeController::class);
-Route::resource('plan', PlanController::class);
-Route::resource('payment', PaymentController::class);
-Route::resource('account', AccountController::class);
+// Route::resource('reservation', ReservationController::class);
+// Route::resource('scheme', SchemeController::class);
+// Route::resource('plan', PlanController::class);
+// Route::resource('payment', PaymentController::class);
+// Route::resource('account', AccountController::class);
 Route::resource('report', ReportController::class);
 Route::resource('ticket', TicketController::class);
 
 
-Route::get('mail/', [MailController::class,'Index'])->name('mail.index');
-Route::post('mail/send', [MailController::class,'Send'])->name('mail.send');
+// Route::get('mail/', [MailController::class, 'Index'])->name('mail.index');
+// Route::post('mail/send', [MailController::class, 'Send'])->name('mail.send');
 
 /* Route::get('home/', [HomeController::class,'Index'])->name('home.index');
 Route::get('home/store', [HomeController::class,'Create'])->name('home.create');
@@ -124,12 +125,12 @@ Route::get('store-manager/branch/store/{store}', [StoreManagerController::class,
 Route::get('store-manager/order/store/{store}', [StoreManagerController::class,'Order'])->name('store-manager.order');
  */
 
-Route::apiResources([
-    'chart-api' => ChartAPIController::class,
-    'cart-api' => CartAPIController::class,
-    'scheme-api' => SchemeAPIController::class,
-    'order-api' => OrderAPIController::class,
-]);
+// Route::apiResources([
+//     'chart-api' => ChartAPIController::class,
+//     'cart-api' => CartAPIController::class,
+//     'scheme-api' => SchemeAPIController::class,
+//     'order-api' => OrderAPIController::class,
+// ]);
 
 /* Route::get('order-manager/checkout/', [OrderManagerController::class, 'Checkout'])->name('order-manager.checkout');
 Route::post('order-manager/checkin', [OrderManagerController::class, 'Checkin'])->name('order-manager.checkin');

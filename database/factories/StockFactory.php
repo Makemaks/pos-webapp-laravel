@@ -97,7 +97,6 @@ class StockFactory extends Factory
             $stock_terminal_flag[$key] = $this->faker->shuffle($flag);
         }
 
-
         for ($i = 0; $i < count(ConfigHelper::Nutrition()); $i++) {
             $stock_nutrition[$i + 1] = ConfigHelper::Nutrition()[$i];
         }

@@ -18,12 +18,6 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        for ($i = 0; $i < 5; $i++) {
-            $attendance[$i + 1] = [
-                "status" => $this->faker->numberBetween($min = 0, $max = 1),
-                "at" => now(),
-            ];
-        }
         return [
             'user_account_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'user_person_id' => $this->faker->unique(true)->numberBetween(1, 10),
@@ -33,7 +27,6 @@ class UserFactory extends Factory
             'email' => $this->faker->safeEmail,
             'email_verified_at' => now(),
             'password' => bcrypt('test1234'), // password
-            'attendance' => $attendance,
             'remember_token' => Str::random(10),
 
         ];

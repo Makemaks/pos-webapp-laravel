@@ -37,7 +37,7 @@ $route = Str::before(Request::route()->getName(), '.');
 
     .scroll tbody {
         display: block;
-        height: 300px;
+        height: 440px;
         overflow: auto;
     }
 

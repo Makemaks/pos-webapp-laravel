@@ -1,75 +1,116 @@
 <?php
+
 namespace App\Helpers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-class ConfigHelper{
+class ConfigHelper
+{
 
+    public static function EmployementFunction()
+    {
 
-    public static function Setup(){
         return [
-             
-              'Modes'=>[
-                  "Reg Mode",
-                  "Refund Mode",
-                  "X Mode",
-                  "Z Mode",
-                  "Manager Functions",
-                ],
-              'Function' => [
-                "No Sale",
-                "New Check/Old Check Key",
-                "Split Check",
-                "Credit Card Capture",
-                "Item Correct",
-                "Check Transfer",
-                "Deposit",
-                "House Bon",
-                "Void",
-                "+ Amount",
-                "Pay Account",
-                "View Open Checks",
-                "Cancel",
-                "- Amount",
-                "Customer Enquiry",
-                "Edit Check Text",
-                "Refund",
-                "+%",
-                "Hot Card Button",
-                "CASH2 Key",
-                "Price Shift",
-                "-%",
-                "Customer Transfer",
-                "Minimise TouchPoint",
-                "Price Level Shift",
-                "Exchange Points",
-                "Service Charge Key",
-                "Menu Shift 2",
-                "Menu Level Shift",
-                "Suspend/Resume",
-                "View Customer Detail",
-                "Media Exchange",
-                "View Active Clerk List",
-                "Paid Out",
-                "Remote Journal View",
-                "Launch Batch",
-                "New Check Key",
-                "Received on Account",
-                "Global Eat In/Take Out",
-                "Points Adjustment",
-                "Old Check Key",
-                "Temporary Price Change",
-                "Edit Customer",
-                "Customer Biometrics"
-            ]
+            "No Sale",
+            "New Check and Old Check Key",
+            "Split Check",
+            "Credit Card Capture",
+            "Item Correct",
+            "Check Transfer",
+            "Deposit",
+            "House Bon",
+            "Void",
+            "+ Amount",
+            "Pay Account",
+            "View Open Checks",
+            "Cancel",
+            "- Amount",
+            "Customer Enquiry",
+            "Edit Check Text",
+            "Refund",
+            "+%",
+            "Hot Card Button",
+            "CASH2 Key",
+            "Price Shift",
+            "-%",
+            "Customer Transfer",
+            "Minimise TouchPoint",
+            "Price Level Shift",
+            "Exchange Points",
+            "Service Charge Key",
+            "Menu Shift 2",
+            "Menu Level Shift",
+            "Suspend and Resume",
+            "View Customer Detail",
+            "Media Exchange",
+            "View Active Clerk List",
+            "Paid Out",
+            "Remote Journal View",
+            "Launch Batch",
+            "New Check Key",
+            "Received on Account",
+            "Global Eat In/Take Out",
+            "Points Adjustment",
+            "Old Check Key",
+            "Temporary Price Change",
+            "Edit Customer",
+            "Customer Biometrics"
         ];
     }
-  
-    public static function TerminalFlag(){
 
-        for ($i=0; $i < 15; $i++) { 
+    public static function EmployementMode()
+    {
+        return [
+            "Reg Mode",
+            "Refund Mode",
+            "X Mode",
+            "Z Mode",
+            "Manager Functions",
+            "Program 1",
+            "Program 2",
+            "Program 3",
+            "Program 4",
+            "Program 5",
+            "Program 6",
+        ];
+    }
+
+    public static function EmployementEmployeeJob()
+    {
+
+        return [
+            "Promt to clocked in at sign on",
+            "Compulsory clocked in"
+        ];
+    }
+
+    public static function EmployementUserControl()
+    {
+        return [
+            "Use 2nd Drawer?",
+            "User is Manager",
+            "User is Trainee",
+            "Allowed to open other clerk's checks?",
+            "Allowed to correct items from checks?",
+            "Defaults to floor plan at sign on?",
+            "Last item error correct only?",
+            "Compulsory order number entry",
+            "Compulsory number of covers entry",
+            "Compulsory check number",
+            "Compulsory customer?",
+            "Prompt for customer number",
+            "Prompt for Eat In/Take Out",
+            "Sign off clerk at close of sale?",
+            "Non Turnover? {TMS/PLU sales only}"
+        ];
+    }
+
+    public static function TerminalFlag()
+    {
+
+        for ($i = 0; $i < 15; $i++) {
             $flag[$i + 1] = $i + 1;
         }
 
@@ -104,13 +145,14 @@ class ConfigHelper{
                 'Inhibit sales when below minimum stock',
                 'Display stock quantity on keyboard'
             ]
-          
+
         ];
     }
 
 
     //label (Location 	Facings 	Qty of Type 	Type ) )
-    public static function Labels(){
+    public static function Labels()
+    {
         return [
 
             'SHELF' => [
@@ -129,9 +171,7 @@ class ConfigHelper{
 
                 ],
 
-                "CUSTOM TEMPLATES" => [
-                    
-                ],
+                "CUSTOM TEMPLATES" => [],
             ],
 
             'STOCK' => [
@@ -139,36 +179,36 @@ class ConfigHelper{
                     "DK-1201" => "DK-1201 - 90mm x 29mm",
                     "DK-22210" => "DK-22210 - 100mm x 29mm",
                     "DK-11204" => "DK-11204 - 54mm x 17mm",
-                    "SLP-MRL" =>"SLP-MRL - 51mm x 28mm",
+                    "SLP-MRL" => "SLP-MRL - 51mm x 28mm",
                     "SRP-770II 38x25" => "SRP-770II 38x25 - 38mm x 25mm",
                     "SRP-770II 45x35" => "SRP-770II 45x35 - 45mm x 35mm",
                     "DK-1201 (Allergens)" => "DK-1201 (Allergens) - 90mm x 29mm",
                     "DK-1201 (Alternative Text)" => "DK-1201 (Alternative Text) - 90mm x 29mm",
                 ],
 
-                "CUSTOM TEMPLATES" => [
-                    
-                ],
-               
+                "CUSTOM TEMPLATES" => [],
+
             ],
-            
+
 
         ];
     }
 
-    public static function MixMatchType(){
+    public static function MixMatchType()
+    {
         return [
-           'Discount amount',
-           'Discount %',
-           'Set Price',
-           'Discount amount cheapest',
-           'Discount % cheapest',
-           'Discount amount last item',
-           'Discount % last item'
+            'Discount amount',
+            'Discount %',
+            'Set Price',
+            'Discount amount cheapest',
+            'Discount % cheapest',
+            'Discount amount last item',
+            'Discount % last item'
         ];
     }
 
-    public static function Nutrition(){
+    public static function Nutrition()
+    {
         return [
             ['name' => 'Energy', 'value' => '4934' ,'measurement' => 'kcal'],
             ['name' => 'Fat', 'value' => '4892' ,'measurement' => 'g'], 	
@@ -181,7 +221,8 @@ class ConfigHelper{
         ];
     }
 
-    public static function Allergen(){
+    public static function Allergen()
+    {
         return [
             'Celery',
             'Cereals Containing Gluten',
@@ -207,5 +248,3 @@ class ConfigHelper{
     
   
 }
-
-

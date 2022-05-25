@@ -223,10 +223,6 @@ class Stock extends Model
          
 
             if ($value['type'] == $type) {
-                $stockReceiptOrder = $data['orderList']->where('stock_merchandise->category_id', $key);
-
-
-                $totalCostPrice =  Stock::OrderTotal($data['orderList']);
 
                 $i = 0;
 
@@ -237,7 +233,8 @@ class Stock extends Model
 
                     if ($category_id['category_id'] == $key && array_key_exists($key, json_decode($orderList->stock_cost, true))) {
 
-                        $price = json_decode($orderList->stock_cost, true)[$key]['price'];
+                        $price = json_decode($orderList->stock_cost, true)[$category_id['category_id']]['price'];
+
                         $totalCostPrice = $totalCostPrice + $price;
 
                         $i++;

@@ -50,8 +50,8 @@ class MenuController extends Controller
          
          case 'ins-&-out':
 
-             $view = array_search( $request->view );
-             $request->session()->flash('view', $view);
+          
+             $request->session()->flash('view',  $request->view);
 
              return redirect()->route('warehouse.index');
 
@@ -60,7 +60,7 @@ class MenuController extends Controller
         case 'case-sizes':
 
             $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
-            $request->session()->flash('view', $view);
+            $request->session()->flash('view',  $request->view);
 
             return redirect()->route('setting.index');
 
@@ -69,7 +69,7 @@ class MenuController extends Controller
         case 'recipes':
 
             $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
-            $request->session()->flash('view', $view);
+            $request->session()->flash('view', $request->view);
 
             return redirect()->route('setting.index');
 
@@ -78,7 +78,7 @@ class MenuController extends Controller
         case 'stock-variance':
 
             $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
-            $request->session()->flash('view', $view);
+            $request->session()->flash('view', $request->view);
 
             return redirect()->route('setting.index');
 

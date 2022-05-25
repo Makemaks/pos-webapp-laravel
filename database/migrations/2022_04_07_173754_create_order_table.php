@@ -26,6 +26,7 @@ return new class extends Migration
             $table->text('order_note')->nullable();
             $table->json('order_delivery')->nullable();
             $table->json('order_discount')->nullable();
+            $table->json('order_finalise_key')->nullable();
             $table->timestamps();
         });
     }

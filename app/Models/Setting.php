@@ -16,7 +16,7 @@ class Setting extends Model
 
     //creates default value
     protected $attributes = [
-        
+
         'setting_logo' => '{}',
         
        
@@ -62,12 +62,19 @@ class Setting extends Model
        
         }',
 
-       
+
         'setting_printer' => '{}',
         'setting_stock_tag_group' => '{}',
-        
+
         'setting_message_notification_category' => '{}',
-        
+
+
+        'setting_reason' => '{
+            "1": {
+                "name": "",
+                "setting_stock_group": ""
+            }
+        }',
 
         'setting_vat' => '{
             "1": {
@@ -77,13 +84,13 @@ class Setting extends Model
             }
         }',
 
-        
+
         'setting_expense_budget' => '{}',
         'setting_expense_type' => '{}',
 
-       
+
         'setting_pos' => '{"name":"","cash":"0","credit":"0"}',
-        
+
 
         'setting_receipt' => '{
             "1": {
@@ -122,13 +129,7 @@ class Setting extends Model
             }
         }',
 
-        'setting_payment_gateway' => '{}', 
 
-        'setting_keys' => '{}', 
-       
-
-        
-        
         "setting_stock_nutrition" => '{
            
             "1": {
@@ -174,7 +175,7 @@ class Setting extends Model
        
         }',
 
-   
+
         "setting_stock_allergen" => '{
             
             
@@ -264,43 +265,49 @@ class Setting extends Model
                 "key": "",
                 "value": ""
             }
-        }'
+        }',
 
-       
-       
+        'setting_key' => '{
+            "1": {
+                "type": "",
+                "description": "",
+                "value": "",
+                "setting_key_type": ""
+            }
+        }',
+
+        'setting_key_type' => '{}'
+
     ];
 
     protected $casts = [
 
         'setting_logo' => 'array',
-        'setting_keys' => 'array',
        
+
         'setting_stock_group' => 'array',
         
         'setting_stock_label'  => 'array',
-        
-        
+
+
         'setting_printer' => 'array',
         'setting_stock_tag_group' => 'array',
 
         'setting_message_notification_category' => 'array',
-        'setting_message_group' => 'array',
+        //'setting_message_group' => 'array',
 
-       
+
         'setting_reason' => 'array',
         'setting_vat' => 'array',
 
-        
+
         'setting_expense_budget' => 'array',
         'setting_expense_type' => 'array',
-        
+
         'setting_pos' => 'array',
-        
 
         'setting_receipt' => 'array',
-        'setting_payment_gateway' => 'array',
-
-        
+      
 
         'setting_stock_allergen' => 'array',
         'setting_stock_nutrition' => 'array',
@@ -309,38 +316,57 @@ class Setting extends Model
 
         "setting_stock_recipe" => 'array',
         "setting_stock_case_size" => 'array',
-       
+
         "setting_stock_tag" => 'array',
        
-        "setting_api" => 'array'
+        "setting_api" => 'array',
+
+        'setting_key' => 'array',
+        'setting_key_type' => 'array'
     ];
 
-    public static function List($column, $filter){
 
-        return Setting::
-        leftJoin('store', 'store.store_id', '=', 'setting.setting_store_id');
-       
+
+    public static function SettingKeyType()
+    {
+        //  0 , 1 , 2
+        return ['finalise', 'status', 'transaction'];
     }
 
-    public static function Account($column, $filter){
+    public static function List($column, $filter)
+    {
 
-        $setting = Setting::
-        where($column, $filter)
-        ->first();
+        return Setting::leftJoin('store', 'store.store_id', '=', 'setting.setting_store_id');
+    }
 
-        if($setting){
+    public static function Account($column, $filter)
+    {
+
+        $setting = Setting::where($column, $filter)
+            ->first();
+
+        if ($setting) {
             return $setting;
-        }else{
+        } else {
             return new Setting();
         }
     }
 
+    public static function SettingClass()
+    {
+        return [
+            'Person',
+            'stock',
+            'Project',
+            'Company',
+        ];
+    }
+
+    public static function SettingExpertise()
+    {
 
 
-    public static function SettingExpertise(){
-       
-
-        foreach ( Expertise::ExpertiseType() as $expertise) {
+        foreach (Expertise::ExpertiseType() as $expertise) {
             $settingExpertiseList[] = [
                 'expertise_name' => $expertise,
                 'expertise_image' => NULL,
@@ -358,7 +384,8 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingPaymentGateway(){
+    public static function SettingPaymentGateway()
+    {
         return [
             'stripe',
             'apple',
@@ -366,13 +393,15 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingPaymentGatewayAPI(){
+    public static function SettingPaymentGatewayAPI()
+    {
         return [
             ['name' => 'stripe', 'key' => '', 'secret' => ''],
         ];
     }
 
-    public static function SettingEventLoactaion(){
+    public static function SettingEventLoactaion()
+    {
         return [
             'event_location_name',
             'event_room',

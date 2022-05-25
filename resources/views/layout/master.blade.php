@@ -29,6 +29,28 @@ $route = Str::before(Request::route()->getName(), '.');
     <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
 </head>
 
+<style>
+    table {
+        border-collapse: collapse;
+        /* font-size: 11px !important; */
+    }
+
+    .scroll tbody {
+        display: block;
+        height: 300px;
+        overflow: auto;
+    }
+
+    .scroll thead,
+    .scroll tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        /* even columns width , fix width of table too*/
+    }
+
+</style>
+
 <body>
 
     <div class="uk-box-shadow-small">

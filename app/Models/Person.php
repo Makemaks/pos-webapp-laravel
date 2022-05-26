@@ -23,7 +23,14 @@ class Person extends Model
         'person_email' => '{}',
         'person_message_notification' => '{}',
         
-        'person_message_group' => '{}'
+        'person_message_group' => '{}',
+        'person_blacklist' => '{
+            "1": {
+                "type": "",
+                "reason": "",
+              
+            }
+        }',
     ];
 
     protected $casts = [
@@ -128,5 +135,13 @@ class Person extends Model
        
         return $person_id_list;
    
+    }
+
+    public static function PersonBlacklistType(){
+        return [
+            'Low',
+            'Medium',
+            'High'
+        ];
     }
 }

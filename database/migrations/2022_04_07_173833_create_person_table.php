@@ -22,16 +22,14 @@ return new class extends Migration
 
             $table->json('person_name')->comment('person_firstname::person_lastname::person_preferred_name');
             $table->datetime('person_dob')->nullable();
-            $table->tinyInteger('person_type')->nullable()->comment('Employee::Non-Employee');
+            $table->tinyInteger('person_type')->nullable()->comment('Employee::Non-Employee::Customer');
            
-
-          
             $table->string('person_role')->nullable();
             $table->json('person_email')->nullable();
             $table->json('person_phone')->nullable();
             
             $table->json('person_message_notification')->nullable()->comment('user_id, person_message_group => message_group');
-           
+            $table->json('person_blacklist')->nullable();
             $table->json('person_message_group')->nullable()->comment('create message group');
             $table->timestamps();
         });

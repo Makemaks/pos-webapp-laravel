@@ -175,7 +175,7 @@ class DashboardController extends Controller
 
         $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
 
-        // PDF Filter Condition
+        // If its export PDF / CSV
         if ($request->fileName) {
 
             // If PDF
@@ -204,7 +204,7 @@ class DashboardController extends Controller
                     'ended_at' => $ended_at,
                     'user_id' => $user_id,
                 ]);
-            } else {
+            } elseif ($request->started_at && $request->ended_at) {
 
                 // if period/date range only
 

@@ -75,21 +75,19 @@ if (count($orderList) > 0) {
                     @endforeach
                 </tbody>
             </table>
+            @include('document.button')
         @else
-            <div class="">
-                <p class="uk-h4">SPECIALS MANAGER</p>
-            </div>
-            <h6 style="">INSTRUCTIONS FOR USE</h6>
-            <p style="font-size: 12px">The Specials Manager widget is designed to allow limited access users to
-                edit
-                nominated fields of PLU's within defined PLU Ranges at a site level. <br> <br> To configure this
-                widget
-                please select a site from the Site Selecter at the top of the page and then click the settings
-                link
-                in
-                the top right corner of this widget.</p>
+            <div class="uk-card uk-card-default uk-card-body" style="height: 730px">
+                <h3 class="uk-card-title">SPECIALS MANAGER</h3>
+                <h6 style="">INSTRUCTIONS FOR USE</h6>
+                <p style="font-size: 12px">The Specials Manager widget is designed to allow limited access users to
+                    edit
+                    nominated fields of PLU's within defined PLU Ranges at a site level. <br> <br> To configure this
+                    widget
+                    please select a site from the Site Selecter at the top of the page and then click the settings
+                    link
+                    in
+                    the top right corner of this widget.</p>
     @endif
-
-    @include('document.button')
 </div>
 </div>

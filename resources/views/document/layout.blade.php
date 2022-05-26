@@ -16,6 +16,10 @@
         font-size: 11px !important;
     }
 
+    .search-form {
+        display: none;
+    }
+
     .button-pdf {
         display: none;
     }

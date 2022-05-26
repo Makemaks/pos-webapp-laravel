@@ -49,6 +49,20 @@ $route = Str::before(Request::route()->getName(), '.');
         /* even columns width , fix width of table too*/
     }
 
+    .scroll-search tbody {
+        display: block;
+        height: 380px;
+        overflow: auto;
+    }
+
+    .scroll-search thead,
+    .scroll-search tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        /* even columns width , fix width of table too*/
+    }
+
 </style>
 
 <body>

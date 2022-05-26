@@ -34,15 +34,13 @@ if (count($stockList) > 0) {
 <div>
     <div class="uk-card uk-card-default uk-card-body" style="height: 730px">
         <h3 class="uk-card-title">STOCK SEARCH</h3>
-
-
-        <div class="uk-margin">
+        <div class="uk-margin search-form">
             <form class="uk-search uk-search-default">
                 <a href="" class="uk-search-icon-flip" uk-search-icon></a>
                 <input class="uk-search-input" type="search" placeholder="Search">
             </form>
         </div>
-        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll scroll">
+        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll-search">
             <thead>
                 <tr>
                     @foreach ($arraystockSearch[0] as $key => $item)

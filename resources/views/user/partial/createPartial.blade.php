@@ -7,6 +7,7 @@ $action = Str::after(Request::route()->getName(), '.');
 
         <legend class="uk-legend"></legend>
 
+
         <div class="uk-margin uk-text-center">
             <img class="uk-border-rounded" src="{{ $data['userModel']->user_image }}" width="200" height="200">
             <div class="uk-margin" uk-margin>
@@ -30,6 +31,8 @@ $action = Str::after(Request::route()->getName(), '.');
                 @endif
             </div> --}}
         </div>
+
+        <h3>CLERK</h3>
 
         @include('person.partial.createPartial')
 
@@ -59,6 +62,7 @@ $action = Str::after(Request::route()->getName(), '.');
         @error('passoword')
             <div class="uk-text-danger">{{ $message }}</div>
         @enderror
+
         {{-- <div class="uk-margin">
             <button type="button" class="uk-button uk-button-default" onclick="generatePassword()">Generate</button>
             <button type="button" class="uk-button uk-button-default" onclick="showPassword(this)">Show</button>

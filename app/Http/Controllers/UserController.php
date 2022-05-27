@@ -77,7 +77,35 @@ class UserController extends Controller
         $requestEmployment['Allowed Modes'] = $request->Allowed_Modes;
         $requestEmployment['Employee Job'] = $request->Employee_Job;
         $requestEmployment['User Control'] = $request->User_Control;
+
+        $requestGeneral = [];
+        $requestGeneral['ibutton'] = $request->ibutton;
+        $requestGeneral['secret_number'] = $request->secret_number;
+        $requestGeneral['ni_number'] = $request->ni_number;
+
+        $requestLevel = [];
+        $requestLevel['default_menu_level'] = $request->default_menu_level;
+        $requestLevel['default_price_level'] = $request->default_price_level;
+        $requestLevel['default_floorplan_level'] = $request->default_floorplan_level;
+
+        $requestCommision = [];
+        $requestCommision['rate_1'] = $request->rate_1;
+        $requestCommision['rate_2'] = $request->rate_2;
+        $requestCommision['rate_3'] = $request->rate_3;
+        $requestCommision['rate_4'] = $request->rate_4;
+
+        $requestUserPay = [];
+        $requestUserPay['pay_rate'] = $request->pay_rate;
+        $requestUserPay['from_date'] = $request->from_date;
+        $requestUserPay['to_date'] = $request->to_date;
+        $requestUserPay['start_hour'] = $request->start_hour;
+        $requestUserPay['end_hour'] = $request->end_hour;
+
         $employment->employment_setup = $requestEmployment;
+        $employment->employment_general = $requestGeneral;
+        $employment->employment_level_default = $requestLevel;
+        $employment->employment_commision = $requestCommision;
+        $employment->employment_user_pay = $requestUserPay;
 
         $employment->save();
 
@@ -124,7 +152,35 @@ class UserController extends Controller
         $requestEmployment['Allowed Modes'] = $request->Allowed_Modes;
         $requestEmployment['Employee Job'] = $request->Employee_Job;
         $requestEmployment['User Control'] = $request->User_Control;
+
+        $requestGeneral = [];
+        $requestGeneral['ibutton'] = $request->ibutton;
+        $requestGeneral['secret_number'] = $request->secret_number;
+        $requestGeneral['ni_number'] = $request->ni_number;
+
+        $requestLevel = [];
+        $requestLevel['default_menu_level'] = $request->default_menu_level;
+        $requestLevel['default_price_level'] = $request->default_price_level;
+        $requestLevel['default_floorplan_level'] = $request->default_floorplan_level;
+
+        $requestCommision = [];
+        $requestCommision['rate_1'] = $request->rate_1;
+        $requestCommision['rate_2'] = $request->rate_2;
+        $requestCommision['rate_3'] = $request->rate_3;
+        $requestCommision['rate_4'] = $request->rate_4;
+
+        $requestUserPay = [];
+        $requestUserPay['pay_rate'] = $request->pay_rate;
+        $requestUserPay['from_date'] = $request->from_date;
+        $requestUserPay['to_date'] = $request->to_date;
+        $requestUserPay['start_hour'] = $request->start_hour;
+        $requestUserPay['end_hour'] = $request->end_hour;
+
         $employment->employment_setup = array_merge($employment->employment_setup, $requestEmployment);
+        $employment->employment_general = array_merge($employment->employment_general, $requestGeneral);
+        $employment->employment_level_default = array_merge($employment->employment_level_default, $requestLevel);
+        $employment->employment_commision = array_merge($employment->employment_commision, $requestCommision);
+        $employment->employment_user_pay = array_merge($employment->employment_user_pay, $requestUserPay);
 
         $employment->save();
 

@@ -115,6 +115,84 @@ class ConfigHelper
         ];
     }
 
+    public static function EmploymentKey()
+    {
+        return [
+            'ibutton' => 'iButton',
+            'secret_number' => 'Secret Number',
+            'ni_number' => 'NI Number',
+            'default_menu_level' => 'Default Menu Level',
+            'default_price_level' => 'Default Price Level',
+            'default_floorplan_level' => 'Default Floorplan Level',
+            'pay_rate' => 'Pay Rate',
+            'from_date' => 'From Date',
+            'to_date' => 'To Date',
+            'start_hour' => 'Start Hour',
+            'end_hour' => 'End Hour',
+            'rate_1' => 'Rate 1',
+            'rate_2' => 'Rate 2',
+            'rate_3' => 'Rate 3',
+            'rate_4' => 'Rate 4',
+        ];
+    }
+
+    public static function EmploymentTable()
+    {
+        return [
+            'employment_general' => 'General',
+            'employment_level_default' => 'Level Default',
+            'employment_commision' => 'Commision',
+            'employment_user_pay' => 'User Pay'
+        ];
+    }
+
+    public static function EmploymentEachTable()
+    {
+        return [
+            'employment_general' => [
+                'ibutton',
+                'secret_number',
+                'ni_number',
+            ],
+            'employment_level_default' => [
+                'default_menu_level',
+                'default_price_level',
+                'default_floorplan_level',
+            ],
+            'employment_commision' => [
+                'rate_1',
+                'rate_2',
+                'rate_3',
+                'rate_4',
+            ],
+            'employment_user_pay' => [
+                'pay_rate',
+                'from_date',
+                'to_date',
+                'start_hour',
+                'end_hour',
+            ]
+        ];
+    }
+
+
+
+    public static function default_menu_level()
+    {
+        return [
+            "Drinks",
+            "Food"
+        ];
+    }
+
+    public static function default_price_level()
+    {
+        return [
+            "Level 1",
+            "Level 2"
+        ];
+    }
+
     public static function TerminalFlag()
     {
 

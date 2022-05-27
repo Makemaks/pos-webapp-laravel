@@ -25,10 +25,10 @@ class Employment extends Model
             "default_floorplan_level" => "",
         }',
         "employment_commision" => '{
-            "1" => "",
-            "2" => "",
-            "3" => "",
-            "4" => "",
+            "rate_1" => "",
+            "rate_2" => "",
+            "rate_3" => "",
+            "rate_4" => "",
         }',
         "employment_setup" => '{
             "Allowed Function" => "{}",

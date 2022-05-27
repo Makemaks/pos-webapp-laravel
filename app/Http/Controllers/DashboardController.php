@@ -41,125 +41,25 @@ class DashboardController extends Controller
     public function Index(Request $request)
     {
 
+        $datePeriod = Store::DatePeriod($request);
 
-        // put in session for first 3 if statements. 
-        $user_id = null;
-        $started_at = '0000-00-00 00:00:00';
-        $ended_at = Carbon::now()->toDateTimeString();
+        $this->userModel = $datePeriod['userModel'];
 
-        $this->authenticatedUser = Auth::user();
+        $this->clerkBreakdownOption = $datePeriod['clerkBreakdownOption'];
 
-        if ($request->user_id) {
+        $this->clerkBreakdown = $datePeriod['clerkBreakdown'];
 
-            // searching by user, date or user , date_period
-            $user_id = $request->user_id;
-            $this->authenticatedUser = User::Person('user_id', $user_id)->first();
-        }
+        $this->orderList = $datePeriod['orderList'];
 
-        if ($request->date_period) {
+        $this->orderListASC = $datePeriod['orderListASC'];
 
-            // searching by date and date_period
-            $date_period = $request->date_period;
+        $this->orderSettingList = $datePeriod['orderSettingList'];
 
-            if ($date_period === 'Today') {
-                $started_at = Carbon::now()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->setTime(23, 59, 59)->toDateTimeString();
-            }
+        $this->orderHourly = $datePeriod['orderHourly'];
 
-            if ($date_period === 'Yesterday') {
-                $started_at = Carbon::yesterday()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::yesterday()->setTime(23, 59, 59)->toDateTimeString();
-            }
+        $this->eat_in_eat_out = $datePeriod['eat_in_eat_out'];
 
-            if ($date_period === 'This Week') {
-                $started_at = Carbon::now()->startOfWeek()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfWeek()->setTime(23, 59, 59)->toDateTimeString();
-            }
-
-            if ($date_period === 'Last Week') {
-                $started_at = Carbon::now()->startOfWeek()->subWeek()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfWeek()->subWeek()->setTime(23, 59, 59)->toDateTimeString();
-            }
-
-            if ($date_period === 'This Month') {
-                $started_at = Carbon::now()->startOfMonth()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfMonth()->setTime(23, 59, 59)->toDateTimeString();
-            }
-
-            if ($date_period === 'Last Month') {
-                $started_at = Carbon::now()->startOfMonth()->subMonth()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfMonth()->subMonth()->setTime(23, 59, 59)->toDateTimeString();
-            }
-
-            if ($date_period === 'This Quarter') {
-                $started_at = Carbon::now()->startOfQuarter()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfQuarter()->setTime(23, 59, 59)->toDateTimeString();
-            }
-
-            if ($date_period === 'Last Quarter') {
-                $started_at = Carbon::now()->startOfQuarter()->subQuarter()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfQuarter()->subQuarter()->setTime(23, 59, 59)->toDateTimeString();
-            }
-        }
-
-        if ($request->ended_at && $request->started_at) {
-
-            // searching by date
-            $started_at = $request->started_at;
-            $ended_at = $request->ended_at;
-        }
-
-        $this->userModel = User::Account('account_id', $this->authenticatedUser->user_account_id)->first();
-
-        if ($request->user_id) {
-            $this->orderList =  Store::Order('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
-        } else {
-            $this->orderList = Store::Order('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-        }
-
-        $this->orderSettingList = Store::Setting('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-
-        $this->eat_in_eat_out = Order::where('order_store_id', $this->userModel->store_id)->orderBy('order.created_at', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-
-        if ($request->user_id) {
-            $this->orderHourly = Order::HourlyReceipt()
-                ->where('order_store_id',  $this->userModel->store_id)
-                ->orderBy('order_id')->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)
-                ->get();
-        } else {
-            $this->orderHourly = Order::HourlyReceipt()
-                ->where('order_store_id',  $this->userModel->store_id)
-                ->orderBy('order_id')->whereBetween('order.created_at', [$started_at, $ended_at])
-                ->get();
-        }
-
-        if ($request->user_id) {
-            $this->orderListASC = Order::Receipt()
-                ->where('order_store_id',  $this->userModel->store_id)
-                ->orderBy('order_id', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)
-                ->get();
-        } else {
-            $this->orderListASC = Order::Receipt()
-                ->where('order_store_id',  $this->userModel->store_id)
-                ->orderBy('order_id', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])
-                ->get();
-        }
-
-        if ($request->user_id) {
-            $this->orderListLimited100 = Store::Sale('store_id',  $this->userModel->store_id)->limit(100)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
-        } else {
-            $this->orderListLimited100 = Store::Sale('store_id',  $this->userModel->store_id)->limit(100)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-        }
-
-        if ($request->user_id) {
-            $this->clerkBreakdownOption = Store::Order('store_id',  $this->userModel->store_id)->get();
-            $this->clerkBreakdown = Store::Order('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
-        } else {
-            $this->clerkBreakdownOption = Store::Order('store_id',  $this->userModel->store_id)->get();
-            $this->clerkBreakdown = Store::Order('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-        }
-
-        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$datePeriod['started_at'], $datePeriod['ended_at']])->get();
 
         $this->storeList = Store::get();
 
@@ -197,20 +97,20 @@ class DashboardController extends Controller
             $request->session()->forget('user');
 
             // New Session, If user Filter 
-            if ($user_id) {
+            if ($datePeriod['user_id']) {
 
                 $request->session()->flash('user', [
-                    'started_at' => $started_at,
-                    'ended_at' => $ended_at,
-                    'user_id' => $user_id,
+                    'started_at' => $datePeriod['started_at'],
+                    'ended_at' => $datePeriod['ended_at'],
+                    'user_id' => $datePeriod['user_id'],
                 ]);
             } elseif ($request->started_at && $request->ended_at) {
 
                 // if period/date range only
 
                 $request->session()->flash('date', [
-                    'started_at' => $started_at,
-                    'ended_at' => $ended_at,
+                    'started_at' => $datePeriod['started_at'],
+                    'ended_at' => $datePeriod['ended_at'],
                 ]);
             }
 

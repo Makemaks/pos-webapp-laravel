@@ -32,7 +32,6 @@ $route = Str::before(Request::route()->getName(), '.');
 <style>
     table {
         border-collapse: collapse;
-        font-size: 11px !important;
     }
 
     .scroll tbody {

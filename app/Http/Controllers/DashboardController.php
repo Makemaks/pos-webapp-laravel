@@ -59,7 +59,7 @@ class DashboardController extends Controller
 
         $this->eat_in_eat_out = $datePeriod['eat_in_eat_out'];
 
-        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$datePeriod['started_at'], $datePeriod['ended_at']])->get();
+        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$datePeriod['started'], $datePeriod['ended']])->get();
 
         $this->storeList = Store::get();
 
@@ -100,17 +100,23 @@ class DashboardController extends Controller
             if ($datePeriod['user_id']) {
 
                 $request->session()->flash('user', [
-                    'started_at' => $datePeriod['started_at'],
-                    'ended_at' => $datePeriod['ended_at'],
+                    'started_at' => $datePeriod['started'],
+                    'ended_at' => $datePeriod['ended'],
                     'user_id' => $datePeriod['user_id'],
+                    'title' => $datePeriod['title'],
                 ]);
             } elseif ($request->started_at && $request->ended_at) {
 
                 // if period/date range only
-
                 $request->session()->flash('date', [
-                    'started_at' => $datePeriod['started_at'],
-                    'ended_at' => $datePeriod['ended_at'],
+                    'started_at' => $datePeriod['started'],
+                    'ended_at' => $datePeriod['ended'],
+                    'title' => $datePeriod['title'],
+                ]);
+            } else {
+                // No Filters
+                $request->session()->flash('title', [
+                    'title' => $datePeriod['title'],
                 ]);
             }
 

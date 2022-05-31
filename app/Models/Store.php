@@ -117,6 +117,8 @@ class Store extends Model
         $user_id = null;
         $started_at = '0000-00-00 00:00:00';
         $ended_at = Carbon::now()->toDateTimeString();
+        $title = '';
+        $table = '';
 
         $authenticatedUser = Auth::user();
 
@@ -180,55 +182,94 @@ class Store extends Model
             $ended_at = $request->ended_at;
         }
 
+        if ($request->title) {
+            $title = $request->title;
+
+            if ($title === 'monthly_summary') {
+                $started_at = Carbon::now()->startOfMonth()->setTime(0, 0, 0)->toDateTimeString();
+                $ended_at = Carbon::now()->endOfMonth()->setTime(23, 59, 59)->toDateTimeString();
+                $table = 'payratePartial';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'weekly_summary') {
+                $started_at = Carbon::now()->startOfWeek()->setTime(0, 0, 0)->toDateTimeString();
+                $ended_at = Carbon::now()->endOfWeek()->setTime(23, 59, 59)->toDateTimeString();
+                $table = 'payratePartial';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'time_attendance_daily_hours_worked') {
+                $table = 'attendancePartial';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'time_attendance_audit_trail') {
+                $table = 'attendanceTrail';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'customer_person') {
+                $table = 'addressCustomerPerson';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'customer_company') {
+                $table = 'addressCustomerCompany';
+                $title = str_replace('_', ' ', $title);
+            }
+        }
+
         $userModel = User::Account('account_id', $authenticatedUser->user_account_id)->first();
 
         if ($request->user_id) {
             $orderList =  Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
-        } else {
-            $orderList = Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-        }
-
-        $orderSettingList = Store::Setting('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-
-        $eat_in_eat_out = Order::where('order_store_id', $userModel->store_id)->orderBy('order.created_at', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-
-        if ($request->user_id) {
             $orderHourly = Order::HourlyReceipt()
                 ->where('order_store_id',  $userModel->store_id)
                 ->orderBy('order_id')->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)
                 ->get();
-        } else {
-            $orderHourly = Order::HourlyReceipt()
-                ->where('order_store_id',  $userModel->store_id)
-                ->orderBy('order_id')->whereBetween('order.created_at', [$started_at, $ended_at])
-                ->get();
-        }
-
-        if ($request->user_id) {
             $orderListASC = Order::Receipt()
                 ->where('order_store_id',  $userModel->store_id)
                 ->orderBy('order_id', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)
                 ->get();
+            $orderListLimited100 = Store::Sale('store_id',  $userModel->store_id)->limit(100)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
+            $clerkBreakdownOption = Store::Order('store_id',  $userModel->store_id)->get();
+            $clerkBreakdown = Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
+            $employmentList = User::Employment('store_id',  $userModel->store_id)
+                ->where('attendance_status', '<', 2)
+                ->whereBetween('attendance.created_at', [$started_at, $ended_at])
+                ->where('user_id', $user_id)
+                ->get();
+
+            // address
+            $addressCompany = User::Company('store_id',  $userModel->store_id)->whereBetween('created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
+            $addressPerson = User::Person('store_id',  $userModel->store_id)->whereBetween('created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
         } else {
+            $orderList = Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+            $orderHourly = Order::HourlyReceipt()
+                ->where('order_store_id',  $userModel->store_id)
+                ->orderBy('order_id')->whereBetween('order.created_at', [$started_at, $ended_at])
+                ->get();
             $orderListASC = Order::Receipt()
                 ->where('order_store_id',  $userModel->store_id)
                 ->orderBy('order_id', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])
                 ->get();
-        }
-
-        if ($request->user_id) {
-            $orderListLimited100 = Store::Sale('store_id',  $userModel->store_id)->limit(100)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
-        } else {
             $orderListLimited100 = Store::Sale('store_id',  $userModel->store_id)->limit(100)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-        }
-
-        if ($request->user_id) {
-            $clerkBreakdownOption = Store::Order('store_id',  $userModel->store_id)->get();
-            $clerkBreakdown = Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
-        } else {
             $clerkBreakdownOption = Store::Order('store_id',  $userModel->store_id)->get();
             $clerkBreakdown = Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+            $employmentList = User::Employment('store_id',  $userModel->store_id)
+                ->where('attendance_status', '<', 2)
+                ->whereBetween('attendance.created_at', [$started_at, $ended_at])
+                ->get();
+
+            // address
+            $addressCompany = User::Company('store_id',  $userModel->store_id)->whereBetween('company.created_at', [$started_at, $ended_at])->get();
+            $addressPerson = User::Person('store_id',  $userModel->store_id)->whereBetween('person.created_at', [$started_at, $ended_at])->get();
         }
+
+        $orderSettingList = Store::Setting('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+        $eat_in_eat_out = Order::where('order_store_id', $userModel->store_id)->orderBy('order.created_at', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+
 
         return [
             'orderList' => $orderList,
@@ -240,9 +281,14 @@ class Store extends Model
             'clerkBreakdown' => $clerkBreakdown,
             'eat_in_eat_out' => $eat_in_eat_out,
             'userModel' => $userModel,
-            'started_at' => $started_at,
-            'ended_at' => $ended_at,
-            'user_id' => $user_id
+            'started' => $started_at,
+            'ended' => $ended_at,
+            'user_id' => $user_id,
+            'employmentList' => $employmentList,
+            'title' => $title,
+            'table' => $table,
+            'addressCompany' => $addressCompany,
+            'addressPerson' => $addressPerson,
         ];
     }
 }

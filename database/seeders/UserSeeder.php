@@ -15,11 +15,36 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+
+        $user = new User();
+        $user->user_account_id = 1;
+        $user->user_person_id = 1;
+        $user->user_type = 0;
+        $user->user_is_disabled = 0;
+        $user->user_is_notifiable = 1;
+        $user->email = 'giofadhil.ahmad@gmail.com';
+        $user->email_verified_at = now();
+        $user->password = bcrypt('test1234'); // password
+        $user->remember_token = Str::random(10);
+        $user->save();
+
+        $user = new User();
+        $user->user_account_id = 2;
+        $user->user_person_id = 2;
+        $user->user_type = 0;
+        $user->user_is_disabled = 0;
+        $user->user_is_notifiable = 1;
+        $user->email = 'test@example.com';
+        $user->email_verified_at = now();
+        $user->password = bcrypt('test1234'); // password
+        $user->remember_token = Str::random(10);
+        $user->save();
+
         User::factory(10)->create();
 
-        
 
-       /*  $userList = [
+
+        /*  $userList = [
             [
                 'user_account_id' => 1,
                 'user_person_id' => 1,

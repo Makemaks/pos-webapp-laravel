@@ -1,9 +1,9 @@
 @php
-// dd(Session::all());
+$route = Str::before(Request::route()->getName(), '.');
 @endphp
 
 <div>
-    <form id="{{ $table }}-pdf" action="{{ route('dashboard.index') }}" method="GET" style="display: inline">
+    <form id="{{ $table }}-pdf" action="{{ route($route . '.index') }}" method="GET" style="display: inline">
         @csrf
         @if (Session::has('date'))
             <input type="hidden" name="started_at" value="{{ session('date')['started_at'] }}">
@@ -16,13 +16,15 @@
         @endif
         <input type="hidden" name="fileName" value="{{ $table }}">
         <input type="hidden" name="format" value="pdf">
-        <button class="uk-button uk-button-danger button-pdf" form="{{ $table }}-pdf">Export To PDF</button>
+        <button class="uk-button uk-button-danger button-pdf uk-border-rounded" form="{{ $table }}-pdf">
+            PDF</button>
     </form>
 
     <form id="{{ $table }}-csv" action="{{ route('dashboard.index') }}" method="GET" style="display: inline">
         @csrf
         <input type="hidden" name="fileName" value="{{ $table }}">
         <input type="hidden" name="format" value="csv">
-        <button class="uk-button uk-button-danger button-pdf" form="{{ $table }}-csv">Export To CSV</button>
+        <button class="uk-button uk-button-danger button-pdf uk-border-rounded" form="{{ $table }}-csv">
+            CSV</button>
     </form>
 </div>

@@ -13,72 +13,113 @@ class Address extends Model
 
     protected $table = 'address';
     protected $primaryKey = 'address_id';
+    protected $attributes = [
+        "address_line" => '{
+            "address_line_1": "",
+            "address_line_2": "",
+            "address_line_3": "",
+            "address_town": "",
+            "address_county": "",
+            "address_postcode": 1,
+            "address_country": ""
+        }',
 
-    public static function List($column, $filter){
-        return Address::
-        rightJoin('person', 'person.person_id', 'address.addresstable_id')
-        ->rightJoin('company', 'company.company_id', 'address.addresstable_id')
-        ->where($column, $filter);
+        "address_email" => '{
+            "address_email_1": "",
+            "address_email_2": "",
+        }',
+
+        "address_phone" => '{
+            "address_phone_1": "",
+            "address_phone_2": "",
+        }',
+
+        "address_website" => '{
+            "address_website_1": "",
+            "address_website_2": "",
+        }',
+
+        "address_coordinate" => '{
+            "latitude": "",
+            "longitude": "",
+        }',
+    ];
+    protected $casts = [
+        "address_line" => "array",
+        "address_phone" => "array",
+        "address_email" => "array",
+        "address_website" => "array",
+        "address_coordinate" => "array",
+    ];
+
+    public static function List($column, $filter)
+    {
+        return Address::rightJoin('person', 'person.person_id', 'address.addresstable_id')
+            ->rightJoin('company', 'company.company_id', 'address.addresstable_id')
+            ->where($column, $filter);
     }
 
-    public static function Person($column, $filter){
-        return Address::
-        leftJoin('person', 'person.person_id', 'address.addresstable_id')
-        ->where($column, $filter);
+    public static function Person($column, $filter)
+    {
+        return Address::leftJoin('person', 'person.person_id', 'address.addresstable_id')
+            ->where($column, $filter);
+
+        // where person_type is 2 (customer)
     }
 
-    public static function Company($column, $filter){
-        return Address::
-        leftJoin('company', 'company.company_id', 'address.addresstable_id')
-        ->where($column, $filter);
+    public static function Company($column, $filter)
+    {
+        return Address::leftJoin('company', 'company.company_id', 'address.addresstable_id')
+            ->where($column, $filter);
     }
 
-    public static function Details($model){
+    public static function Details($model)
+    {
         $format_address =  '';
         $format_phone =  '';
         $format_email = '';
         $format_website = '';
 
-       if($model->address_line_1){
+        if ($model->address_line_1) {
             $format_address = $model->address_line_1;
-       }
-       if($model->address_line_2){
+        }
+        if ($model->address_line_2) {
             $format_address =  $format_address . StringHelper::StringSeparatorB() . $model->address_line_2;
-       }
-       if($model->address_line_3){
+        }
+        if ($model->address_line_3) {
             $format_address =  $format_address . StringHelper::StringSeparatorB() . $model->address_line_3;
-       }
-       if($model->address_town){
+        }
+        if ($model->address_town) {
             $format_address =  $format_address . StringHelper::StringSeparatorB() . $model->address_town;
-       }
-       if($model->address_county){
-           $format_address =  $format_address . StringHelper::StringSeparatorB() . $model->address_county;
-       }
-       if($model->address_postcode){
+        }
+        if ($model->address_county) {
+            $format_address =  $format_address . StringHelper::StringSeparatorB() . $model->address_county;
+        }
+        if ($model->address_postcode) {
             $format_address =  $format_address . StringHelper::StringSeparatorB() . $model->address_postcode;
-       }
-       if($model->address_country){
+        }
+        if ($model->address_country) {
             $format_address =  $format_address . ' . ' . $model->address_country;
-       }
+        }
 
-        if($model->address_phone_1){
+        if ($model->address_phone_1) {
             $format_phone = $model->address_phone_1;
         }
-        if($model->address_phone_2){
+        if ($model->address_phone_2) {
             $format_phone =  $format_phone . StringHelper::StringSeparatorA() . $model->address_phone_2;
         }
 
-        if($model->address_email_1){
+        if ($model->address_email_1) {
             $format_email = $model->address_email_1;
         }
-        if($model->address_email_2){
+        if ($model->address_email_2) {
             $format_email =  $format_email . StringHelper::StringSeparatorA() . $model->address_email_2;
         }
 
-        if($model->address_website_1){
+        if ($model->address_website_1) {
             $format_website = $model->address_website_1;
         }
-        if($model->address_website_2){
+        if ($model->address_website_2) {
             $format_website =  $format_website . StringHelper::StringSeparatorA() . $model->address_website_2;
         }
 
@@ -88,9 +129,10 @@ class Address extends Model
             'email' => $format_email,
             'website' => $format_website
         ];
-     }
+    }
 
-   public static function CountryCodes(){
+    public static function CountryCodes()
+    {
         return [
             'AF' => 'Afghanistan',
             'AX' => 'Aland Islands',
@@ -339,5 +381,5 @@ class Address extends Model
             'ZW' => 'Zimbabwe',
 
         ];
-   }
+    }
 }

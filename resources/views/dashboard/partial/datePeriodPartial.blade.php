@@ -1,4 +1,5 @@
 @php
+$route = Str::before(Request::route()->getName(), '.');
 $periodArray = [
     'Today' => '',
     'Yesterday' => '',
@@ -27,10 +28,9 @@ foreach ($employeeList as $key => $employee) {
     <script src="{{ asset('js/jsuites.js') }}"></script>
 @endpush
 
-<form action="{{ route('dashboard.index') }}" method="GET">
+<form action="{{ route($route . '.index') }}" method="GET">
     @csrf
     <div uk-grid>
-
 
         <div>
             <label class="uk-form-label" for="form-stacked-text">EMPLOYEE</label>

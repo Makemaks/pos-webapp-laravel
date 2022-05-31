@@ -15,25 +15,16 @@ class CreateAddressTable extends Migration
     {
         Schema::create('address', function (Blueprint $table) {
             $table->bigIncrements('address_id');
-            $table->string('address_line_1');
-            $table->string('address_line_2')->nullable();
-            $table->string('address_line_3')->nullable();
-            $table->string('address_town');
-            $table->string('address_county')->nullable();
-            $table->string('address_postcode');
-            $table->string('address_country');
-            $table->string('address_longitude')->nullable();
-            $table->string('address_latitude')->nullable();
-            $table->string('address_email_1')->nullable();
-            $table->string('address_email_2')->nullable();
-            $table->string('address_phone_1')->nullable();
-            $table->string('address_phone_2')->nullable();
-            $table->string('address_website_1')->nullable();
-            $table->string('address_website_2')->nullable();
+            $table->json('address_line');
+            $table->json('address_coordinate')->nullable()->comment('{latitude: "", longitude: ""}');
+            $table->json('address_email')->nullable();
+            $table->json('address_phone')->nullable();
+            $table->json('address_website')->nullable();
             $table->tinyInteger('address_type')->nullable()->comment('Yes::No');
             $table->tinyInteger('address_delivery_type')->nullable()->comment('billing::shipping');
-            $table->bigInteger('addresstable_id');
+            $table->bigInteger('addresstable_id')->comment('person::company::store');
             $table->string('addresstable_type'); //person/company
+
             $table->timestamps();
         });
     }

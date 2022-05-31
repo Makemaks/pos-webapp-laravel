@@ -84,8 +84,6 @@ class MenuController extends Controller
 
             break;
        
-   
-
          default:
              echo "i is not equal to 0, 1 or 2";
      endswitch;

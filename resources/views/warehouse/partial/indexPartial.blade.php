@@ -37,7 +37,7 @@
                 <td><a href="{{route('store.edit', $warehouse->warehouse_store_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$warehouse->warehouse_store_id}}</a></td>
                 <td>
                     @php
-                        
+                        $storeModel = Store::Stock()->first();
                     @endphp
                     <a href="{{route('store.edit', $warehouse->warehouse_store_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$warehouse->warehouse_store_id}}</a>
                 </td>

@@ -11,6 +11,20 @@ class Account extends Model
 
     protected $table = 'account';
     protected $primaryKey = 'account_id';
+
+    protected $attributes = [
+        'account_blacklist' => '{
+            "1": {
+                "type": "",
+                "description": ""
+            }
+        }'
+    ];
+
+    protected $casts = [
+        'account_blacklist' => 'array',
+    ];
+
     
     public static function List($column,  $filter){
         return Account::
@@ -38,7 +52,12 @@ class Account extends Model
     }
 
     
-    
+    public static function AccountBlacklistType(){
+        return [
+            'BLOCKED',
+            'SUSPENDED',
+        ];
+    }
 
     public static function Type(){
         return [

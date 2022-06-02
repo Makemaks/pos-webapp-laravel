@@ -65,10 +65,10 @@ class EmploymentFactory extends Factory
                 'default_floorplan_level' => $this->faker->numberBetween($min = 0, $max = 5),
             ],
             'employment_commision' => [
-                '1' => $this->faker->numberBetween($min = 1, $max = 100),
-                '2' => $this->faker->numberBetween($min = 1, $max = 100),
-                '3' => $this->faker->numberBetween($min = 1, $max = 100),
-                '4' => $this->faker->numberBetween($min = 1, $max = 100),
+                'rate_1' => $this->faker->numberBetween($min = 1, $max = 100),
+                'rate_2' => $this->faker->numberBetween($min = 1, $max = 100),
+                'rate_3' => $this->faker->numberBetween($min = 1, $max = 100),
+                'rate_4' => $this->faker->numberBetween($min = 1, $max = 100),
             ],
             'employment_setup' => $array,
             'employment_user_pay' => [

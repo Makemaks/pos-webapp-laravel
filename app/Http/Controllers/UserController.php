@@ -117,7 +117,7 @@ class UserController extends Controller
 
     public function Edit($user)
     {
-        $this->userModel = User::Person('user_id', $user)->first();
+        $this->userModel = User::Employment('user_id', $user)->first();
         return view('user.edit', ['data' => $this->Data()]);
     }
 
@@ -195,7 +195,6 @@ class UserController extends Controller
     public function destroy($user)
     {
         $user_person_id = User::find($user)->user_person_id;
-
 
         User::destroy($user);
         Person::find($user_person_id)->delete();

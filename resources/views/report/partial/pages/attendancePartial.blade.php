@@ -39,6 +39,7 @@ foreach ($dataModel as $user_id => $value) {
         ];
     }
 }
+
 @endphp
 @if ($dataModel->count() > 0)
 
@@ -70,7 +71,7 @@ foreach ($dataModel as $user_id => $value) {
                             $totalInterval = $dtF->diff($dtT)->format('%hh %im');
                         @endphp
 
-                        <tr style="background-color: rgb(255, 255, 255); font-weight: 700;color:black">
+                        <tr style="background-color: rgb(255, 255, 255); font-weight: 700;">
                             <td>Total Time Worked</td>
                             <td></td>
                             <td></td>
@@ -89,7 +90,7 @@ foreach ($dataModel as $user_id => $value) {
                     <tr>
                         {{-- if its different clerk, show name --}}
                         @if ($currentName !== $loopName)
-                            <td style="background-color: rgb(255, 255, 255); font-weight: 700;color:black">
+                            <td style="background-color: rgb(255, 255, 255);">
                                 {{ $itemarrayFirst['Name'] }}</td>
                         @else
                             <td></td>
@@ -111,7 +112,7 @@ foreach ($dataModel as $user_id => $value) {
 
                     {{-- code --}}
                     @if ($loopDate->diffInDays($currentDate) == 0 && $currentDate !== '' && $currentName === $loopName)
-                        <tr style="background-color: rgb(205, 205, 205); font-weight: 700;color:black">
+                        <tr style="background-color: rgb(205, 205, 205); font-weight: 700;">
                             <td></td>
                             <td>{{ $itemarrayFirst['Day of Week']->format('l') }}</td>
                             <td>{{ $itemarrayFirst['Date']->format('d/m/Y') }}</td>
@@ -134,7 +135,7 @@ foreach ($dataModel as $user_id => $value) {
                         $totalInterval = $dtF->diff($dtT)->format('%hh %im');
                     @endphp
                     @if ($keyarrayFirst === array_key_last($arrayFirst))
-                        <tr style="background-color: rgb(255, 255, 255); font-weight: 700;color:black;">
+                        <tr style="background-color: rgb(255, 255, 255); font-weight: 700;;">
                             <td>Total Time Worked</td>
                             <td></td>
                             <td></td>
@@ -158,6 +159,11 @@ foreach ($dataModel as $user_id => $value) {
         </table>
     </div>
 @else
-    <p>No data is available for the filters you have selected</p>
+    <div class="uk-margin-top">
+        <h1 style="text-transform:capitalize; font-size:22px;">{{ $title }}</h1>
+    </div>
+    <div class="uk-alert-danger uk-border-rounded" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p>No data to display.</p>
+    </div>
 @endif
-{{--  --}}

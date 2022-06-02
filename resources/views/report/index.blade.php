@@ -20,6 +20,11 @@ if ($data['table'] !== '') {
         {{-- results --}}
         @if ($table !== '')
             @include('report.partial.pages.' . $table)
+        @else
+            <div class="uk-alert-danger uk-border-rounded" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p>No data to display.</p>
+            </div>
         @endif
         </div>
     </form>

@@ -121,6 +121,9 @@
             </option>
             <option value="customer_company" data-select2-id="62">Customers Company Address List
             </option>
+            <option value="customer_last_used" data-select2-id="27">
+                Customers
+                Account Last Used</option>
             {{-- <option value="NRE/standard/Customers/Customer_Balance" data-select2-id="63">Customer Balance</option>
             <option value="NRE/standard/Customers/Customer_Email_List" data-select2-id="64">Customer Email List
             </option>

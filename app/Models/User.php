@@ -73,8 +73,6 @@ class User extends Authenticatable
             ->leftJoin('company', 'company_store_id', 'store.store_id')
             ->leftJoin('person', 'person.person_id', 'user.user_person_id')
             ->leftJoin('address', 'address.addresstable_id', 'company.company_id')
-            ->where('addresstable_type', 'Company') // person::company
-            ->where('company_type', 1) // supplier::customer::contractor
             ->where($column, $filter);
     }
 
@@ -84,8 +82,6 @@ class User extends Authenticatable
         return User::leftJoin('store', 'store.store_id', 'user.user_account_id')
             ->leftJoin('person', 'person.person_id', 'user.user_person_id')
             ->leftjoin('address', 'address.addresstable_id', 'person.person_id')
-            ->where('addresstable_type', 'Person') // person::company
-            ->where('person_type', 2) // employee::non-employee::customer
             ->where($column, $filter);
     }
 

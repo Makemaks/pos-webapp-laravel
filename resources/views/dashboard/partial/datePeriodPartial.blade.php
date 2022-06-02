@@ -13,7 +13,6 @@ $periodArray = [
 
 $employeeList = $data['clerkBreakdownOption'];
 $employeeList = $employeeList->groupBy('user_id');
-
 foreach ($employeeList as $key => $employee) {
     $employee_name = json_decode($employee[0]['person_name'])->person_firstname;
 

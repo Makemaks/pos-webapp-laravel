@@ -1,27 +1,20 @@
 @php
-
-$title = $data['title'];
-$table = $data['table'];
-
-$dataModel = $data['employmentList']->groupBy('attendance_id');
+$dataModel = $data['addressPerson']->groupBy('user_id');
 
 foreach ($dataModel as $key => $value) {
-    if ($value->first()->attendance_status == 0) {
-        $status = 'Clocked In';
-    } else {
-        $status = 'Clocked Out';
-    }
-    $arrayFirst[] = [
-        'Clerk Number' => $value[0]->user_id,
-        'Name' => json_decode($value[0]->person_name)->person_firstname,
-        'Day Of Week' => $value[0]->created_at->format('l'),
-        'Date' => $value[0]->created_at->format('d/m/Y'),
-        'Time' => $value[0]->created_at->format('H:i:s'),
-        'Terminal' => '',
-        'Type' => $status,
+    $daysAgo = Carbon\Carbon::parse($value[0]->user_last_login_at)->diffForHumans();
+    $date = Carbon\Carbon::parse($value[0]->user_last_login_at)->format('d/m/Y, H:i:s');
+    $array[] = [
+        'Account Number' => $value[0]->user_id,
+        'First Name' => json_decode($value[0]->person_name)->person_firstname,
+        'Last Name' => json_decode($value[0]->person_name)->person_lastname,
+        'Date/Time Last Used' => $date,
+        'Days Ago' => $daysAgo,
     ];
 }
 
+$title = $data['title'];
+$table = $data['table'];
 @endphp
 
 @if ($dataModel->count() > 0)
@@ -33,15 +26,15 @@ foreach ($dataModel as $key => $value) {
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
             <thead>
                 <tr>
-                    @foreach ($arrayFirst[0] as $key => $item)
+                    @foreach ($array[0] as $key => $item)
                         <th>{{ $key }}</th>
                     @endforeach
                 </tr>
             </thead>
             <tbody>
-                @foreach ($arrayFirst as $keyarrayFirst => $itemarrayFirst)
+                @foreach ($array as $keyarray => $itemarray)
                     <tr>
-                        @foreach ($itemarrayFirst as $key => $item)
+                        @foreach ($itemarray as $key => $item)
                             <td>{{ $item }}</td>
                         @endforeach
                     </tr>

@@ -57,7 +57,7 @@ $action = Str::after(Request::route()->getName(), '.');
 
         <div class="uk-margin">
             <input class="uk-input" name="password" type="password" placeholder="Password"
-                value="{{ old('password') }}">
+                value="{{ old('password') }}" required>
         </div>
         @error('passoword')
             <div class="uk-text-danger">{{ $message }}</div>

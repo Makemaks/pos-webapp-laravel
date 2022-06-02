@@ -61,7 +61,7 @@ $userModel = json_decode($data['userModel']->employment_setup, true) ?? null;
                         <select class="uk-select uk-width-expand" name="{{ $value }}">
 
                             @foreach (ConfigHelper::$value() as $key => $value)
-                                <option value="{{ $value }}">{{ $key }}</option>
+                                <option value="{{ $key }}">{{ $value }}</option>
                             @endforeach
 
                         </select>

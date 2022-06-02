@@ -113,7 +113,7 @@ class Store extends Model
 
     public static function DatePeriod(Request $request)
     {
-        // put in session for first 3 if statements. 
+        // put in session for first 4 if statements. 
         $user_id = null;
         $started_at = '0000-00-00 00:00:00';
         $ended_at = Carbon::now()->toDateTimeString();

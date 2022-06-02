@@ -27,10 +27,10 @@ class Person extends Model
         'person_blacklist' => '{
             "1": {
                 "type": "",
-                "reason": "",
+                "reason": ""
               
             }
-        }',
+        }'
     ];
 
     protected $casts = [
@@ -39,7 +39,8 @@ class Person extends Model
         'person_email' => 'array',
        
         'person_message_notification' => 'array',
-        'person_message_group' => 'array'
+        'person_message_group' => 'array',
+        'person_blacklist' => 'array'
     ];
     
    

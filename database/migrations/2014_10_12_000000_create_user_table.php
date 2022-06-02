@@ -26,7 +26,6 @@ return new class extends Migration
             $table->string('user_avatar')->nullable();
             $table->string('password');
             $table->dateTime('user_last_login_at')->nullable();
-            $table->json('attendance')->nullable()->comment('clocked_in::clocked_out');
             $table->rememberToken();
             $table->timestamps();
         });

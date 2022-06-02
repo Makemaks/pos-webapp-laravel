@@ -14,6 +14,8 @@ use App\Models\Order;
 use App\Models\Receipt;
 use App\Models\Expense;
 use App\Models\Setting;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\App;
 
 class DashboardController extends Controller
 {
@@ -31,140 +33,39 @@ class DashboardController extends Controller
     private $cartAwaitingList = [];
     private $authenticatedUser;
     private $accountList;
+    private $pdfView;
+    private $csvView;
 
 
 
     public function Index(Request $request)
     {
 
-        $started_at = '0000-00-00 00:00:00';
-        $ended_at = Carbon::now()->toDateTimeString();
-        $this->authenticatedUser = Auth::user();
+        $datePeriod = Store::DatePeriod($request);
 
-        if ($request->user_id) {
+        $this->userModel = $datePeriod['userModel'];
 
-            // searching by user, date or user , date_period
-            $user_id = $request->user_id;
-            $this->authenticatedUser = User::Person('user_id', $user_id)->first();
-        }
+        $this->clerkBreakdownOption = $datePeriod['clerkBreakdownOption'];
 
-        if ($request->date_period) {
+        $this->clerkBreakdown = $datePeriod['clerkBreakdown'];
 
-            // searching by date and date_period
-            $date_period = $request->date_period;
+        $this->orderList = $datePeriod['orderList'];
 
-            if ($date_period === 'Today') {
-                $started_at = Carbon::now()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->setTime(23, 59, 59)->toDateTimeString();
-            }
+        $this->orderListASC = $datePeriod['orderListASC'];
 
-            if ($date_period === 'Yesterday') {
-                $started_at = Carbon::yesterday()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::yesterday()->setTime(23, 59, 59)->toDateTimeString();
-            }
+        $this->orderSettingList = $datePeriod['orderSettingList'];
 
-            if ($date_period === 'This Week') {
-                $started_at = Carbon::now()->startOfWeek()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfWeek()->setTime(23, 59, 59)->toDateTimeString();
-            }
+        $this->orderHourly = $datePeriod['orderHourly'];
 
-            if ($date_period === 'Last Week') {
-                $started_at = Carbon::now()->startOfWeek()->subWeek()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfWeek()->subWeek()->setTime(23, 59, 59)->toDateTimeString();
-            }
+        $this->eat_in_eat_out = $datePeriod['eat_in_eat_out'];
 
-            if ($date_period === 'This Month') {
-                $started_at = Carbon::now()->startOfMonth()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfMonth()->setTime(23, 59, 59)->toDateTimeString();
-            }
-
-            if ($date_period === 'Last Month') {
-                $started_at = Carbon::now()->startOfMonth()->subMonth()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfMonth()->subMonth()->setTime(23, 59, 59)->toDateTimeString();
-            }
-
-            if ($date_period === 'This Quarter') {
-                $started_at = Carbon::now()->startOfQuarter()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfQuarter()->setTime(23, 59, 59)->toDateTimeString();
-            }
-
-            if ($date_period === 'Last Quarter') {
-                $started_at = Carbon::now()->startOfQuarter()->subQuarter()->setTime(0, 0, 0)->toDateTimeString();
-                $ended_at = Carbon::now()->endOfQuarter()->subQuarter()->setTime(23, 59, 59)->toDateTimeString();
-            }
-        }
-
-        if ($request->ended_at && $request->started_at) {
-
-            // searching by date
-            $started_at = $request->started_at;
-            $ended_at = $request->ended_at;
-        }
-
-        $this->userModel = User::Account('account_id', $this->authenticatedUser->user_account_id)->first();
-
-        if ($request->user_id) {
-            $this->orderList =  Store::Order('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
-        } else {
-            $this->orderList = Store::Order('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-        }
-
-        $this->orderSettingList = Store::Setting('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-
-        $this->eat_in_eat_out = Order::where('order_store_id', $this->userModel->store_id)->orderBy('order.created_at', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-
-
-        if ($request->user_id) {
-            $this->orderHourly = Order::HourlyReceipt()
-                ->where('order_store_id',  $this->userModel->store_id)
-                ->orderBy('order_id')->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)
-                ->get();
-        } else {
-            $this->orderHourly = Order::HourlyReceipt()
-                ->where('order_store_id',  $this->userModel->store_id)
-                ->orderBy('order_id')->whereBetween('order.created_at', [$started_at, $ended_at])
-                ->get();
-        }
-
-
-        if ($request->user_id) {
-            $this->orderListASC = Order::Receipt()
-                ->where('order_store_id',  $this->userModel->store_id)
-                ->orderBy('order_id', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)
-                ->get();
-        } else {
-            $this->orderListASC = Order::Receipt()
-                ->where('order_store_id',  $this->userModel->store_id)
-                ->orderBy('order_id', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])
-                ->get();
-        }
-
-
-        if ($request->user_id) {
-            $this->orderListLimited100 = Store::Sale('store_id',  $this->userModel->store_id)->limit(100)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
-        } else {
-            $this->orderListLimited100 = Store::Sale('store_id',  $this->userModel->store_id)->limit(100)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-        }
-
-
-        if ($request->user_id) {
-            $this->clerkBreakdownOption = Store::Order('store_id',  $this->userModel->store_id)->get();
-            $this->clerkBreakdown = Store::Order('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
-        } else {
-            $this->clerkBreakdownOption = Store::Order('store_id',  $this->userModel->store_id)->get();
-            $this->clerkBreakdown = Store::Order('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-        }
-
-        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$datePeriod['started_at'], $datePeriod['ended_at']])->get();
 
         $this->storeList = Store::get();
 
-        //get the system owner account
         $this->accountList = User::Account('store_id',  $this->userModel->store_id)
             ->where('person_type', 0)
             ->get();
-
-        // \dd($this->accountList);
 
         $accountList = $this->accountList;
 
@@ -172,26 +73,61 @@ class DashboardController extends Controller
             ->whereIn('expense_user_id', $accountList->pluck('user_id'))
             ->get();
 
-        // get the setting for the store only one.
         $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
 
-        // get the setting for the store ALL.
-        // $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->get();
+        // If its export PDF / CSV
+        if ($request->fileName) {
 
-        return view('dashboard.index', ['data' => $this->Data()]);
+            // If PDF
+            if ($request->format === 'pdf') {
+                $this->pdfView = view('dashboard.partial.' . $request->fileName, ['data' => $this->Data()])->render();
+                $render = \view('dashboard.create', ['data' => $this->Data()])->render();
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->loadHTML($render)->setPaper('a4', 'portrait')->setWarnings(false)->save('myfile.pdf');
+                return $pdf->stream();
+            } else {
+
+                // IF CSV
+
+            }
+        } else {
+
+            // flushing sessions
+            $request->session()->forget('date');
+            $request->session()->forget('user');
+
+            // New Session, If user Filter 
+            if ($datePeriod['user_id']) {
+
+                $request->session()->flash('user', [
+                    'started_at' => $datePeriod['started_at'],
+                    'ended_at' => $datePeriod['ended_at'],
+                    'user_id' => $datePeriod['user_id'],
+                ]);
+            } elseif ($request->started_at && $request->ended_at) {
+
+                // if period/date range only
+
+                $request->session()->flash('date', [
+                    'started_at' => $datePeriod['started_at'],
+                    'ended_at' => $datePeriod['ended_at'],
+                ]);
+            }
+
+            return view('dashboard.index', ['data' => $this->Data()]);
+        }
     }
 
     public function Create()
     {
     }
 
-    public function Store()
+    public function Store(Request $request)
     {
     }
 
-    public function Edit()
+    public function show()
     {
-        return view('dashboard.edit', ['data' => $this->Data()]);
     }
 
     public function Update()
@@ -220,7 +156,9 @@ class DashboardController extends Controller
             'clerkBreakdownOption' => $this->clerkBreakdownOption ?? null,
             'clerkBreakdown' => $this->clerkBreakdown ?? null,
             'expenseList' => $this->expenseList ?? null,
-            'settingModel' => $this->settingModel ?? null
+            'settingModel' => $this->settingModel ?? null,
+            'pdfView' => $this->pdfView ?? null,
+            'csvView' => $this->csvView ?? null
         ];
     }
 }

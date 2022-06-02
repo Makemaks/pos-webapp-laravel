@@ -1,12 +1,13 @@
 @extends('layout.master')
 
 @php
-  
+
 @endphp
-@section('content')    
-   <form action="user.store" method="POST">
-       @csrf
-       @method('PATCH')
+@section('content')
+    <form id="user-update" action="{{ route('user.update', $data['userModel']->user_id) }}" method="POST">
+        @csrf
+        @method('PATCH')
         @include('user.partial.createPartial')
-   </form>
+    </form>
+    @include('partial.modalPartial')
 @endsection

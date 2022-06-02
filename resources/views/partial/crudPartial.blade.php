@@ -1,29 +1,18 @@
 @php
-    $applicationList = [        
-        
-        
-    ];
-    $route = Str::before(Request::route()->getName(), '.');   
-    $action = Str::after(Request::route()->getName(), '.');
+$applicationList = [];
+$route = Str::before(Request::route()->getName(), '.');
+$action = Str::after(Request::route()->getName(), '.');
 
-    if ($action == 'index') {
-        $action = 'create';
-    }
-    elseif ($action == 'create') {
-        $action = 'store';
-    }
-    elseif ($action == 'edit') {
-        $action = 'update';
-    }
+if ($action === 'index') {
+    $action = 'create';
+} elseif ($action === 'create') {
+    $action = 'store';
+} elseif ($action === 'edit') {
+    $action = 'update';
+}
 
-    $routeList = [
-        'authentication',
-        'home',
-        'dashboard',
-        'receipt',
-        'order'
-    ];
-    
+$routeList = ['authentication', 'home', 'dashboard', 'receipt', 'order'];
+
 @endphp
 
 
@@ -49,7 +38,3 @@
 
        
 @endif
-
-
-
-

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Store;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -11,9 +12,11 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $datePeriod = Store::DatePeriod($request);
+
+        return view('report.index');
     }
 
     /**

@@ -1,5 +1,6 @@
 @php
 use App\Models\Store;
+use App\Models\User;
 $route = Str::before(Request::route()->getName(), '.');
 
 @endphp
@@ -29,6 +30,43 @@ $route = Str::before(Request::route()->getName(), '.');
     <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
 </head>
 
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    .scroll tbody {
+        display: block;
+        height: 440px;
+        overflow: auto;
+    }
+
+    .scroll thead,
+    .scroll tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        /* even columns width , fix width of table too*/
+    }
+
+    .scroll-search tbody {
+        display: block;
+        height: 380px;
+        overflow: auto;
+    }
+
+    .scroll-search thead,
+    .scroll-search tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        /* even columns width , fix width of table too*/
+    }
+
+</style>
+
+
+
 <body>
 
     <div class="uk-box-shadow-small">
@@ -40,14 +78,25 @@ $route = Str::before(Request::route()->getName(), '.');
             <div uk-grid>
 
                 @auth
-                    <div class="uk-width-medium@m uk-background-secondary uk-padding">
-                        @include('partial.menuPartial')
-                    </div>
+                   @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin' )
+                        <div class="uk-width-auto@m uk-background-secondary uk-padding" uk-height-viewport>
+                            @include('partial.menuPartial')
+                        </div>
+                   @endif
                 @endauth
 
                 <div class="uk-width-expand@m uk-padding">
                     @yield('content')
                 </div>
+
+                @auth
+                    @if ($route == 'home')
+                        <div class="uk-width-auto@m uk-padding">
+                            @include('receipt.partial.indexPartial')
+                        </div>
+                    @endif
+                @endauth
+                
             </div>
 
         </div>

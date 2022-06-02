@@ -38,7 +38,13 @@ class WarehouseController extends Controller
         ->first();
       
 
-        if ($request->session()->has('view')) {
+        if ($request->session()->get('view') == 'Ins-&-Out') {
+            $this->warehouseList =  Warehouse::Store()
+            ->orwhere('warehouse_type', 'In')
+            ->orwhere('warehouse_type', 'Out')
+            ->paginate(20);
+        }
+        elseif ($request->session()->get('view') != 'Ins-&-Out') {
             $this->warehouseList =  Warehouse::where('warehouse_type', $request->session()->get('view'))->paginate(20);
         }
         else {

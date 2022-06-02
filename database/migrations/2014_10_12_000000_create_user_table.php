@@ -21,7 +21,7 @@ return new class extends Migration
             $table->tinyInteger('user_type')->comment('admin::super');
             $table->tinyInteger('user_is_disabled')->default(1);
             $table->tinyInteger('user_is_notifiable')->default(1);
-            $table->tinyInteger('user_is_verified')->default(1)->comment('given accesss');                
+            $table->tinyInteger('user_is_verified')->default(1)->comment('given accesss');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('user_avatar')->nullable();
             $table->string('password');

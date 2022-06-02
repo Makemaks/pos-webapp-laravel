@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Helpers\MathHelper;
+use Carbon\Carbon;
 
 class Order extends Model
 {
@@ -18,8 +19,13 @@ class Order extends Model
 
         "order_store_id" => 1,
         "order_status" => 0,
-        "order_store_id" => 1
+        "order_store_id" => 1,
+        "order_finalise_key" => '{}'
 
+    ];
+
+    protected $casts = [
+        "order_finalise_key" => 'array'
     ];
 
 
@@ -34,12 +40,20 @@ class Order extends Model
     }
 
 
-    public static function Receipt($column, $filter)
+    public static function Receipt()
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
-            ->leftJoin('store', 'store.store_id', '=', 'order.order_store_id')
-            ->where($column,  $filter);
+            ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
+            ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id');
+    }
+
+    public static function HourlyReceipt()
+    {
+        return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
+            ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id');
     }
 
     public static function Account()
@@ -114,6 +128,14 @@ class Order extends Model
         }
 
         return $totalPrice;
+    }
+
+    public static function OrderPaymentType()
+    {
+        return [
+            "CASH",
+            "CREDIT CARD"
+        ];
     }
 
     public static function OrderStatus()

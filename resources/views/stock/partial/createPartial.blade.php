@@ -4,6 +4,7 @@
 @endphp
 
 <div class="">
+    
     <ul class="uk-subnav uk-subnav-pill" uk-switcher>
         <li><a href="#">Info</a></li>
         <li><a href="#">Option</a></li>

@@ -1,26 +1,21 @@
 <?php
+
 namespace App\Helpers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-class ConfigHelper{
+class ConfigHelper
+{
 
+    public static function EmploymentFunction()
+    {
 
-    public static function Setup(){
         return [
-             
-              'Modes'=>[
-                  "Reg Mode",
-                  "Refund Mode",
-                  "X Mode",
-                  "Z Mode",
-                  "Manager Functions",
-                ],
-              'Function' => [
+            "Allowed Function" => [
                 "No Sale",
-                "New Check/Old Check Key",
+                "New Check and Old Check Key",
                 "Split Check",
                 "Credit Card Capture",
                 "Item Correct",
@@ -48,7 +43,7 @@ class ConfigHelper{
                 "Service Charge Key",
                 "Menu Shift 2",
                 "Menu Level Shift",
-                "Suspend/Resume",
+                "Suspend and Resume",
                 "View Customer Detail",
                 "Media Exchange",
                 "View Active Clerk List",
@@ -63,19 +58,151 @@ class ConfigHelper{
                 "Temporary Price Change",
                 "Edit Customer",
                 "Customer Biometrics"
+            ],
+        ];
+    }
+
+    public static function EmploymentMode()
+    {
+        return [
+            "Allowed Modes" => [
+                "Reg Mode",
+                "Refund Mode",
+                "X Mode",
+                "Z Mode",
+                "Manager Functions",
+                "Program 1",
+                "Program 2",
+                "Program 3",
+                "Program 4",
+                "Program 5",
+                "Program 6",
+            ],
+        ];
+    }
+
+    public static function EmploymentEmployeeJob()
+    {
+
+        return [
+            "Employee Job" => [
+                "Promt to clocked in at sign on",
+                "Compulsory clocked in"
+            ],
+        ];
+    }
+
+    public static function EmploymentUserControl()
+    {
+        return [
+            "User Control" => [
+                "Use 2nd Drawer?",
+                "User is Manager",
+                "User is Trainee",
+                "Allowed to open other clerk's checks?",
+                "Allowed to correct items from checks?",
+                "Defaults to floor plan at sign on?",
+                "Last item error correct only?",
+                "Compulsory order number entry",
+                "Compulsory number of covers entry",
+                "Compulsory check number",
+                "Compulsory customer?",
+                "Prompt for customer number",
+                "Prompt for Eat In/Take Out",
+                "Sign off clerk at close of sale?",
+                "Non Turnover? {TMS/PLU sales only}"
+            ],
+        ];
+    }
+
+    public static function EmploymentKey()
+    {
+        return [
+            'ibutton' => 'iButton',
+            'secret_number' => 'Secret Number',
+            'ni_number' => 'NI Number',
+            'default_menu_level' => 'Default Menu Level',
+            'default_price_level' => 'Default Price Level',
+            'default_floorplan_level' => 'Default Floorplan Level',
+            'pay_rate' => 'Pay Rate',
+            'from_date' => 'From Date',
+            'to_date' => 'To Date',
+            'start_hour' => 'Start Hour',
+            'end_hour' => 'End Hour',
+            'rate_1' => 'Rate 1',
+            'rate_2' => 'Rate 2',
+            'rate_3' => 'Rate 3',
+            'rate_4' => 'Rate 4',
+        ];
+    }
+
+    public static function EmploymentTable()
+    {
+        return [
+            'employment_general' => 'General',
+            'employment_level_default' => 'Level Default',
+            'employment_commision' => 'Commision',
+            'employment_user_pay' => 'User Pay'
+        ];
+    }
+
+    public static function EmploymentEachTable()
+    {
+        return [
+            'employment_general' => [
+                'ibutton',
+                'secret_number',
+                'ni_number',
+            ],
+            'employment_level_default' => [
+                'default_menu_level',
+                'default_price_level',
+                'default_floorplan_level',
+            ],
+            'employment_commision' => [
+                'rate_1',
+                'rate_2',
+                'rate_3',
+                'rate_4',
+            ],
+            'employment_user_pay' => [
+                'pay_rate',
+                'from_date',
+                'to_date',
+                'start_hour',
+                'end_hour',
             ]
         ];
     }
-  
-    public static function TerminalFlag(){
 
-        for ($i=0; $i < 15; $i++) { 
+
+
+    public static function default_menu_level()
+    {
+        return [
+            "Drinks",
+            "Food"
+        ];
+    }
+
+    public static function default_price_level()
+    {
+        return [
+            "Level 1",
+            "Level 2"
+        ];
+    }
+
+    public static function TerminalFlag()
+    {
+
+        for ($i = 0; $i < 15; $i++) {
             $flag[$i + 1] = $i + 1;
         }
 
         return [
           
-            'Status Flags' => [
+            'status_flag' => [
               'Enable Zero Price Sale',
               'Do not print on receipts or bills',
               'PLU is Negative Price',
@@ -92,9 +219,9 @@ class ConfigHelper{
               'Prompt with picture',
               'Prompt Customer Verification 2',
             ],
-            'Commission Rates' => $flag,
-            'Selective Itemisers' => $flag,
-            'Stock Control (EPOS side only)' => [
+            'commission_rate' => $flag,
+            'selective_itemiser' => $flag,
+            'stock_control' => [
               	
                 'SEL Unit',
                 'SEL Quantity',
@@ -104,13 +231,14 @@ class ConfigHelper{
                 'Inhibit sales when below minimum stock',
                 'Display stock quantity on keyboard'
             ]
-          
+
         ];
     }
 
 
     //label (Location 	Facings 	Qty of Type 	Type ) )
-    public static function Labels(){
+    public static function Labels()
+    {
         return [
 
             'SHELF' => [
@@ -129,9 +257,7 @@ class ConfigHelper{
 
                 ],
 
-                "CUSTOM TEMPLATES" => [
-                    
-                ],
+                "CUSTOM TEMPLATES" => [],
             ],
 
             'STOCK' => [
@@ -139,36 +265,36 @@ class ConfigHelper{
                     "DK-1201" => "DK-1201 - 90mm x 29mm",
                     "DK-22210" => "DK-22210 - 100mm x 29mm",
                     "DK-11204" => "DK-11204 - 54mm x 17mm",
-                    "SLP-MRL" =>"SLP-MRL - 51mm x 28mm",
+                    "SLP-MRL" => "SLP-MRL - 51mm x 28mm",
                     "SRP-770II 38x25" => "SRP-770II 38x25 - 38mm x 25mm",
                     "SRP-770II 45x35" => "SRP-770II 45x35 - 45mm x 35mm",
                     "DK-1201 (Allergens)" => "DK-1201 (Allergens) - 90mm x 29mm",
                     "DK-1201 (Alternative Text)" => "DK-1201 (Alternative Text) - 90mm x 29mm",
                 ],
 
-                "CUSTOM TEMPLATES" => [
-                    
-                ],
-               
+                "CUSTOM TEMPLATES" => [],
+
             ],
-            
+
 
         ];
     }
 
-    public static function MixMatchType(){
+    public static function MixMatchType()
+    {
         return [
-           'Discount amount',
-           'Discount %',
-           'Set Price',
-           'Discount amount cheapest',
-           'Discount % cheapest',
-           'Discount amount last item',
-           'Discount % last item'
+            'Discount amount',
+            'Discount %',
+            'Set Price',
+            'Discount amount cheapest',
+            'Discount % cheapest',
+            'Discount amount last item',
+            'Discount % last item'
         ];
     }
 
-    public static function Nutrition(){
+    public static function Nutrition()
+    {
         return [
             ['name' => 'Energy', 'value' => '4934' ,'measurement' => 'kcal'],
             ['name' => 'Fat', 'value' => '4892' ,'measurement' => 'g'], 	
@@ -181,7 +307,8 @@ class ConfigHelper{
         ];
     }
 
-    public static function Allergen(){
+    public static function Allergen()
+    {
         return [
             'Celery',
             'Cereals Containing Gluten',
@@ -207,5 +334,3 @@ class ConfigHelper{
     
   
 }
-
-

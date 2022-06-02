@@ -4,6 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Order;
+use App\Models\User;
 
 
 class Store extends Model
@@ -25,8 +30,19 @@ class Store extends Model
     public static function Sale($column,  $filter)
     {
         return Store::leftJoin('order', 'order.order_store_id', '=', 'store.store_id')
+            ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
             ->leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->where($column,  $filter)
+            ->orderBy('order.created_at', 'desc');
+    }
+
+    public static function Setting($column,  $filter)
+    {
+        return Store::leftJoin('order', 'order.order_store_id', '=', 'store.store_id')
+            ->leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->leftJoin('setting', 'setting.setting_store_id', '=', 'store.store_id')
             ->where($column,  $filter)
             ->orderBy('order.created_at', 'desc');
     }
@@ -34,11 +50,12 @@ class Store extends Model
 
     public static function Order($column,  $filter)
     {
-        return Store::leftJoin('order', 'order.order_store_id', '=', 'store.store_id')
+        return Store::rightJoin('order', 'order.order_store_id', '=', 'store.store_id')
             ->leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
             ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id')
+            ->leftJoin('setting', 'setting.setting_store_id', '=', 'store.store_id')
             ->where($column,  $filter)
             ->orderBy('order.created_at', 'desc');
     }
@@ -92,5 +109,140 @@ class Store extends Model
         return Store::leftJoin('address', 'address.addresstable_id', '=', 'store.store_id')
             ->where('addresstable_type', 'store')
             ->where($column,  $filter);
+    }
+
+    public static function DatePeriod(Request $request)
+    {
+        // put in session for first 3 if statements. 
+        $user_id = null;
+        $started_at = '0000-00-00 00:00:00';
+        $ended_at = Carbon::now()->toDateTimeString();
+
+        $authenticatedUser = Auth::user();
+
+        if ($request->user_id) {
+
+            // searching by user, date or user , date_period
+            $user_id = $request->user_id;
+            $authenticatedUser = User::Person('user_id', $user_id)->first();
+        }
+
+        if ($request->date_period) {
+
+            // searching by date and date_period
+            $date_period = $request->date_period;
+
+            if ($date_period === 'Today') {
+                $started_at = Carbon::now()->setTime(0, 0, 0)->toDateTimeString();
+                $ended_at = Carbon::now()->setTime(23, 59, 59)->toDateTimeString();
+            }
+
+            if ($date_period === 'Yesterday') {
+                $started_at = Carbon::yesterday()->setTime(0, 0, 0)->toDateTimeString();
+                $ended_at = Carbon::yesterday()->setTime(23, 59, 59)->toDateTimeString();
+            }
+
+            if ($date_period === 'This Week') {
+                $started_at = Carbon::now()->startOfWeek()->setTime(0, 0, 0)->toDateTimeString();
+                $ended_at = Carbon::now()->endOfWeek()->setTime(23, 59, 59)->toDateTimeString();
+            }
+
+            if ($date_period === 'Last Week') {
+                $started_at = Carbon::now()->startOfWeek()->subWeek()->setTime(0, 0, 0)->toDateTimeString();
+                $ended_at = Carbon::now()->endOfWeek()->subWeek()->setTime(23, 59, 59)->toDateTimeString();
+            }
+
+            if ($date_period === 'This Month') {
+                $started_at = Carbon::now()->startOfMonth()->setTime(0, 0, 0)->toDateTimeString();
+                $ended_at = Carbon::now()->endOfMonth()->setTime(23, 59, 59)->toDateTimeString();
+            }
+
+            if ($date_period === 'Last Month') {
+                $started_at = Carbon::now()->startOfMonth()->subMonth()->setTime(0, 0, 0)->toDateTimeString();
+                $ended_at = Carbon::now()->endOfMonth()->subMonth()->setTime(23, 59, 59)->toDateTimeString();
+            }
+
+            if ($date_period === 'This Quarter') {
+                $started_at = Carbon::now()->startOfQuarter()->setTime(0, 0, 0)->toDateTimeString();
+                $ended_at = Carbon::now()->endOfQuarter()->setTime(23, 59, 59)->toDateTimeString();
+            }
+
+            if ($date_period === 'Last Quarter') {
+                $started_at = Carbon::now()->startOfQuarter()->subQuarter()->setTime(0, 0, 0)->toDateTimeString();
+                $ended_at = Carbon::now()->endOfQuarter()->subQuarter()->setTime(23, 59, 59)->toDateTimeString();
+            }
+        }
+
+        if ($request->ended_at && $request->started_at) {
+
+            // searching by date
+            $started_at = $request->started_at;
+            $ended_at = $request->ended_at;
+        }
+
+        $userModel = User::Account('account_id', $authenticatedUser->user_account_id)->first();
+
+        if ($request->user_id) {
+            $orderList =  Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
+        } else {
+            $orderList = Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+        }
+
+        $orderSettingList = Store::Setting('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+
+        $eat_in_eat_out = Order::where('order_store_id', $userModel->store_id)->orderBy('order.created_at', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+
+        if ($request->user_id) {
+            $orderHourly = Order::HourlyReceipt()
+                ->where('order_store_id',  $userModel->store_id)
+                ->orderBy('order_id')->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)
+                ->get();
+        } else {
+            $orderHourly = Order::HourlyReceipt()
+                ->where('order_store_id',  $userModel->store_id)
+                ->orderBy('order_id')->whereBetween('order.created_at', [$started_at, $ended_at])
+                ->get();
+        }
+
+        if ($request->user_id) {
+            $orderListASC = Order::Receipt()
+                ->where('order_store_id',  $userModel->store_id)
+                ->orderBy('order_id', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)
+                ->get();
+        } else {
+            $orderListASC = Order::Receipt()
+                ->where('order_store_id',  $userModel->store_id)
+                ->orderBy('order_id', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])
+                ->get();
+        }
+
+        if ($request->user_id) {
+            $orderListLimited100 = Store::Sale('store_id',  $userModel->store_id)->limit(100)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
+        } else {
+            $orderListLimited100 = Store::Sale('store_id',  $userModel->store_id)->limit(100)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+        }
+
+        if ($request->user_id) {
+            $clerkBreakdownOption = Store::Order('store_id',  $userModel->store_id)->get();
+            $clerkBreakdown = Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
+        } else {
+            $clerkBreakdownOption = Store::Order('store_id',  $userModel->store_id)->get();
+            $clerkBreakdown = Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+        }
+
+        return [
+            'orderList' => $orderList,
+            'orderSettingList' => $orderSettingList,
+            'orderHourly' => $orderHourly,
+            'orderListASC' => $orderListASC,
+            'orderListLimited100' => $orderListLimited100,
+            'clerkBreakdownOption' => $clerkBreakdownOption,
+            'clerkBreakdown' => $clerkBreakdown,
+            'eat_in_eat_out' => $eat_in_eat_out,
+            'userModel' => $userModel,
+            'started_at' => $started_at,
+            'ended_at' => $ended_at,
+            'user_id' => $user_id
+        ];
     }
 }

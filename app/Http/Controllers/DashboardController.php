@@ -14,6 +14,8 @@ use App\Models\Order;
 use App\Models\Receipt;
 use App\Models\Expense;
 use App\Models\Setting;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\App;
 
 class DashboardController extends Controller
 {
@@ -30,62 +32,102 @@ class DashboardController extends Controller
     private $cartItem = [];
     private $cartAwaitingList = [];
     private $authenticatedUser;
+    private $accountList;
+    private $pdfView;
+    private $csvView;
 
 
 
     public function Index(Request $request)
     {
 
+        $datePeriod = Store::DatePeriod($request);
 
+        $this->userModel = $datePeriod['userModel'];
 
-        $this->authenticatedUser = Auth::user();
-        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
+        $this->clerkBreakdownOption = $datePeriod['clerkBreakdownOption'];
 
-        $this->orderList = Store::Sale('store_id',  $this->userModel->store_id)->get();
+        $this->clerkBreakdown = $datePeriod['clerkBreakdown'];
 
-        $this->orderListASC = Order::Receipt('order_store_id',  $this->userModel->store_id)
-            ->orderBy('order_id')
-            ->get();
+        $this->orderList = $datePeriod['orderList'];
 
-        //$this->orderListASC = Store::SaleASC('store_id',  $this->userModel->store_id)->get();
+        $this->orderListASC = $datePeriod['orderListASC'];
 
-        $this->orderListLimited100 = Store::Sale('store_id',  $this->userModel->store_id)->limit(100)->get();
+        $this->orderSettingList = $datePeriod['orderSettingList'];
 
-        $this->clerkBreakdown = Store::Order('store_id',  $this->userModel->store_id)->get();
+        $this->orderHourly = $datePeriod['orderHourly'];
 
-        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->get();
+        $this->eat_in_eat_out = $datePeriod['eat_in_eat_out'];
+
+        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$datePeriod['started_at'], $datePeriod['ended_at']])->get();
 
         $this->storeList = Store::get();
 
-        //get the system owner account
-        $accountList = User::Account('store_id',  $this->userModel->store_id)
+        $this->accountList = User::Account('store_id',  $this->userModel->store_id)
             ->where('person_type', 0)
             ->get();
+
+        $accountList = $this->accountList;
 
         $this->expenseList = Expense::User()
             ->whereIn('expense_user_id', $accountList->pluck('user_id'))
             ->get();
 
-        // get the setting for the store only one.
         $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
 
-        // get the setting for the store ALL.
-        // $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->get();
+        // If its export PDF / CSV
+        if ($request->fileName) {
 
-        return view('dashboard.index', ['data' => $this->Data()]);
+            // If PDF
+            if ($request->format === 'pdf') {
+                $this->pdfView = view('dashboard.partial.' . $request->fileName, ['data' => $this->Data()])->render();
+                $render = \view('dashboard.create', ['data' => $this->Data()])->render();
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->loadHTML($render)->setPaper('a4', 'portrait')->setWarnings(false)->save('myfile.pdf');
+                return $pdf->stream();
+            } else {
+
+                // IF CSV
+
+            }
+        } else {
+
+            // flushing sessions
+            $request->session()->forget('date');
+            $request->session()->forget('user');
+
+            // New Session, If user Filter 
+            if ($datePeriod['user_id']) {
+
+                $request->session()->flash('user', [
+                    'started_at' => $datePeriod['started_at'],
+                    'ended_at' => $datePeriod['ended_at'],
+                    'user_id' => $datePeriod['user_id'],
+                ]);
+            } elseif ($request->started_at && $request->ended_at) {
+
+                // if period/date range only
+
+                $request->session()->flash('date', [
+                    'started_at' => $datePeriod['started_at'],
+                    'ended_at' => $datePeriod['ended_at'],
+                ]);
+            }
+
+            return view('dashboard.index', ['data' => $this->Data()]);
+        }
     }
 
     public function Create()
     {
     }
 
-    public function Store()
+    public function Store(Request $request)
     {
     }
 
-    public function Edit()
+    public function show()
     {
-        return view('dashboard.edit', ['data' => $this->Data()]);
     }
 
     public function Update()
@@ -101,15 +143,22 @@ class DashboardController extends Controller
 
         return [
 
-            'userModel' => $this->userModel,
-            'orderList' => $this->orderList,
-            'orderListASC' => $this->orderListASC,
-            'orderListLimited100' => $this->orderListLimited100,
-            'storeList' => $this->storeList,
-            'customerTop' => $this->customerTop,
-            'clerkBreakdown' => $this->clerkBreakdown,
-            'expenseList' => $this->expenseList,
-            'settingModel' => $this->settingModel
+            'eat_in_eat_out' => $this->eat_in_eat_out ?? null,
+            'userModel' => $this->userModel ?? null,
+            'accountList' => $this->accountList ?? null,
+            'orderHourly' => $this->orderHourly ?? null,
+            'orderList' => $this->orderList ?? null,
+            'orderSettingList' => $this->orderSettingList ?? null,
+            'orderListASC' => $this->orderListASC ?? null,
+            'orderListLimited100' => $this->orderListLimited100 ?? null,
+            'storeList' => $this->storeList ?? null,
+            'customerTop' => $this->customerTop ?? null,
+            'clerkBreakdownOption' => $this->clerkBreakdownOption ?? null,
+            'clerkBreakdown' => $this->clerkBreakdown ?? null,
+            'expenseList' => $this->expenseList ?? null,
+            'settingModel' => $this->settingModel ?? null,
+            'pdfView' => $this->pdfView ?? null,
+            'csvView' => $this->csvView ?? null
         ];
     }
 }

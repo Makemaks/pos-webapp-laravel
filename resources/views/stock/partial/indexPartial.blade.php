@@ -22,8 +22,7 @@
 @endphp
 
 
-
-@if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'User')
+@if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'User' && $route != 'home')
     <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
         <thead>
             <tr>
@@ -41,31 +40,25 @@
                     <td>{{$stock->stock_merchandise['random_code']}}</td>
                     
                     <td>
-                       {{--  @foreach ($data['settingModel']->setting_stock_group as $item)
-                            @if ($item['type'] == 1 && $stock->stock_merchandise['group_id'])
-                                {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['group_id']]['description']}}
-                            @endif
-                        @endforeach --}}
-                        {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['group_id']]['description']}}
+                        @if ($stock->stock_merchandise['group_id'])
+                            {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['group_id']]['description']}}
+                        @endif
                     </td>
                     <td>
                         {{-- dept --}}
-                       {{--  @foreach ($data['settingModel']->setting_stock_group as $item)
-                            @if ($item['type'] == 0 && $stock->stock_merchandise['category_id'])
-                                {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['category_id']]['description']}}
-                            @endif
-                        @endforeach --}}
-                        {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['category_id']]['description']}}
+                        @if ($stock->stock_merchandise['category_id'])
+                            {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['category_id']]['description']}}
+                        @endif
                     </td>
                     <td>
-                       @if ($stock->stock_merchandise['stock_vat'] == 'null')
+                       @if ($stock->stock_merchandise['stock_vat'])
+                         {{$stock->stock_merchandise['stock_vat']}}
+                       @else
                             @foreach ($data['settingModel']->setting_vat as $item)
                                 @if ($item['default'] == 0)
                                     {{$item['rate']}}
                                 @endif
                             @endforeach
-                       @else
-                            {{$stock->stock_merchandise['stock_vat']}}
                        @endif
 
                     </td>
@@ -90,9 +83,17 @@
         @foreach ($data['stockList'] as $stock)
 
             @php
-                $storeID = $stock->stock_account_id;
-                $image =  'stock/'.$storeID.'/'.$stock->image;      
-                $price = CurrencyHelper::Format($stock->stock_cost);  
+                $price = 0;
+                $storeID = $stock->stock_store_id;
+                $image =  'stock/'.$storeID.'/'.$stock->image;    
+                foreach ($stock->stock_cost as $key => $value) {
+                    if ($value['default'] == 0) {
+                        $price = CurrencyHelper::Format($value['price']);  
+                    }
+                }
+                
+                dd(CurrencyHelper::IntCurrency());
+                
                 /* $schemeList = Scheme::stock('schemetable_id',  $stock->stock_id)->get(); */
             @endphp
 
@@ -113,13 +114,13 @@
                         </ul>
                     </div>
 
-                    <a class="uk-link-reset" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_name}}', '{{$price}}')">
+                    <a class="uk-link-reset" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}', '{{$price}}')">
                         <div class="uk-padding-small" style="background-color: #{{StringHelper::getColor()}}">
                             
                             <div class="uk-text-center uk-light">
-                                <div class="uk-text-lead">{{$stock->stock_name}}</div>
+                                <div class="uk-text-small">{{$stock->stock_merchandise['stock_name']}}</div>
                                 <div class="uk-text-meta uk-margin-remove-top">{{$stock->stock_brand}}</div>
-                                <div class="uk-text-lead">
+                                <div class="uk-text-small">
                                     {{CurrencyHelper::Currency()}}{{$price}}
                                     {{-- @if ($schemeList->count() > 0)
                                         <span class="uk-text-danger">*</span>
@@ -129,14 +130,6 @@
                         </div>
                     </a>
 
-                    @if ($route == 'home')
-                        <div class="uk-margin-top">
-                            @include('partial.controlsPartial', [
-                                'cartValue' => $stock->stock_id,
-                                'quantity' => 1,
-                            ])
-                        </div>
-                    @endif
                 </div>
             </div>
     

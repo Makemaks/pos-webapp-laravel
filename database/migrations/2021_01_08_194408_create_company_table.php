@@ -19,7 +19,8 @@ class CreateCompanyTable extends Migration
             $table->tinyInteger('company_type')->comment('supplier = 0::customer = 1 :: contractor = 2');
             $table->bigInteger('company_store_id')->comment('added_by'); 
             $table->bigInteger('parent_company_id')->nullable();
-            $table->json('company_hour')->nullable()->comment('Hour::Day');
+            $table->json('company_contact')->nullable();
+            $table->json('company_opening_hour')->nullable();
             $table->timestamps();
         });
     }

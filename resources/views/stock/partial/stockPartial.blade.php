@@ -17,7 +17,7 @@
            
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">NON STOCK</label>
-                <input name="stock_merchandise[non_stock]" value="0" class="uk-checkbox" type="checkbox" @if ($data['stockModel']->stock_merchandise['non_stock'] == 0)checked @endif>
+                <input name="stock_merchandise[non_stock]" value="0" class="uk-checkbox" type="checkbox" @if (isset($data['stockModel']->stock_merchandise['non_stock']) == 0)checked @endif>
             </div>
         
             
@@ -28,7 +28,7 @@
                     @if ($data['settingModel']->setting_stock_group)
                         @foreach ($data['settingModel']->setting_stock_group as $key => $plu)
                             @if ($plu['type'] == 2)
-                                <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['master_plu']) selected @endif>{{$plu['description']}}</option>
+                                <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_merchandise['master_plu'])) selected @endif>{{$plu['description']}}</option>
                             @endif
                         @endforeach
                     @endif
@@ -41,7 +41,7 @@
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_case_size)
                         @foreach ($data['settingModel']->setting_stock_case_size as $key => $stock_case_size)
-                            <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['case_size']) selected @endif>{{$stock_case_size['description']}}</option>
+                            <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_merchandise['case_size'])) selected @endif>{{$stock_case_size['description']}}</option>
                             
                         @endforeach
                     @endif
@@ -54,7 +54,7 @@
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_recipe)
                         @foreach ($data['settingModel']->setting_stock_recipe as $key => $stock_recipe_link)
-                            <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['recipe_link']) selected @endif>{{$stock_recipe_link['name']}}</option>
+                            <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_merchandise['recipe_link'])) selected @endif>{{$stock_recipe_link['name']}}</option>
                             
                         @endforeach
                     @endif
@@ -67,7 +67,7 @@
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_set_menu)
                         @foreach ($data['settingModel']->setting_stock_set_menu as $key => $stock_set_menu)
-                            <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['set_menu']) selected @endif>{{$stock_set_menu['name']}}</option>
+                            <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_merchandise['set_menu'])) selected @endif>{{$stock_set_menu['name']}}</option>
                             
                         @endforeach
                     @endif
@@ -83,7 +83,7 @@
                
                
 
-                @foreach ($data['stockModel']->stock_merchandise as  $key => $stock_merchandise)
+                @foreach ((array)$data['stockModel']->stock_merchandise as  $key => $stock_merchandise)
 
                     @if (in_array($key, $exclude) == false)
                         <div class="uk-margin">

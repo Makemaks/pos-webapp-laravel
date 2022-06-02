@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Attendance;
+use App\Models\Employment;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,7 +17,12 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-           
+
+            EmploymentSeeder::class,
+            StockSeeder::class,
+            AttendanceSeeder::class,
+            WarehouseSeeder::class,
+            ExpenseSeeder::class,
             SettingSeeder::class,
             WarehouseSeeder::class,
             ExpenseSeeder::class,
@@ -23,14 +30,14 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ReceiptSeeder::class,
             AccountSeeder::class,
-            AddressSeeder::class, 
-            CompanySeeder::class, 
-            OrderSeeder::class, 
+            AddressSeeder::class,
+            CompanySeeder::class,
+            OrderSeeder::class,
             PersonSeeder::class,
-            
-            StoreSeeder::class, 
-            
-           
-       ]);
+
+            StoreSeeder::class,
+
+
+        ]);
     }
 }

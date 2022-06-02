@@ -4,7 +4,7 @@
 
        
         $arrayAdminMenu = [
-            "home" => [],
+            "dashboard" => [],
             "report" => [],
             "product" => [],
             "stock" => [
@@ -30,7 +30,7 @@
                 "mix-&-match",
                 "mix-&-match-2",
                 "finalise-key",
-                "status-keys,",
+                "status-keys",
                 "transaction-key",
                 "fixed-character",
                 "fixed-totaliser",

@@ -30,9 +30,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                
-                                    @if ($data['stockModel']->stock_web)
+                                 
+
+                                    @if ($data['stockModel']->stock_web && $data['stockModel']->stock_id)
                                         @foreach ($data['stockModel']->stock_web as $keyStockweb => $stockweb)
+                                       
                                             <tr>
                                                 <td>
                                                     <button class="uk-button uk-button-danger uk-border-rounded">{{$keyStockweb}}</button>
@@ -98,7 +100,7 @@
                                        @if ($key == 'plu')
                                             <div class="uk-margin">
                                                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                                                <select class="uk-select" name="stock_web[{{$keyStockweb}}][{{$key}}]">
+                                                <select class="uk-select" name="form[stock_web][{{$key}}]">
                                                     <option selected="selected" disabled>SELECT ...</option>
                                                    
                                                     @foreach ($data['settingModel']->setting_stock_group as $key => $setting_stock_plu)
@@ -112,7 +114,7 @@
                                                         
                                             <div class="uk-margin">
                                                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                                                <select class="uk-select" name="stock_web[{{$keyStockweb}}][{{$key}}]">
+                                                <select class="uk-select" name="form[stock_web][{{$key}}]">
                                                     <option selected="selected" disabled>SELECT ...</option>
                                                 
                                                     @foreach ($data['settingModel']->setting_stock_offer as $key => $setting_stock_offer)
@@ -127,7 +129,7 @@
                                             @if ($key != 'default')
                                                 <div class="uk-margin">
                                                     <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                                                    <input class="uk-input" type="number" value="" name="stock_web[{{$keyStockweb}}][{{$key}}]">
+                                                    <input class="uk-input" type="number" value="" name="form[stock_web][{{$key}}]">
                                                 </div>
                                             @endif
                                        @endif

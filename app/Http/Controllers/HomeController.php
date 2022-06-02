@@ -18,7 +18,7 @@ class HomeController extends Controller
     private $userModel;
     private $personModel;
     private $routeList;
-    private $stockList = [];
+    private $stockList;
     private $authenticatedUser;
     private $categoryList;
 
@@ -40,13 +40,13 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-       
-        return redirect()->route('dashboard.index');
-       
-       /*  $this->init();
+    
+        $this->init();
         $this->user = 0;
+        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
+        ->paginate(20);
 
-        return view('home.index', ['data' => $this->Data()]); */
+        return view('home.index', ['data' => $this->Data()]);
     }
 
     public function create(){
@@ -60,19 +60,19 @@ class HomeController extends Controller
        
         
         $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
-        $this->categoryList = $this->settingModel->setting_stock_category;
+       
     }
     
     private function Data(){
 
         return [
             'authenticatedUser' => $this->authenticatedUser,
-            'categoryList' => $this->categoryList,
             'stockList' => $this->stockList,
             'userModel' => $this->userModel,
             'personModel' => $this->personModel,
             'sessionCartList' => $this->sessionCartList,
-            'schemeList' => $this->schemeList
+            'schemeList' => $this->schemeList,
+            'settingModel' => $this->settingModel
         ];
     }
 

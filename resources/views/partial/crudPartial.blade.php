@@ -1,29 +1,18 @@
 @php
-    $applicationList = [        
-        
-        
-    ];
-    $route = Str::before(Request::route()->getName(), '.');   
-    $action = Str::after(Request::route()->getName(), '.');
+$applicationList = [];
+$route = Str::before(Request::route()->getName(), '.');
+$action = Str::after(Request::route()->getName(), '.');
 
-    if ($action == 'index') {
-        $action = 'create';
-    }
-    elseif ($action == 'create') {
-        $action = 'store';
-    }
-    elseif ($action == 'edit') {
-        $action = 'update';
-    }
+if ($action === 'index') {
+    $action = 'create';
+} elseif ($action === 'create') {
+    $action = 'store';
+} elseif ($action === 'edit') {
+    $action = 'update';
+}
 
-    $routeList = [
-        'authentication',
-        'home',
-        'dashboard',
-        'receipt',
-        'order'
-    ];
-    
+$routeList = ['authentication', 'home', 'dashboard', 'receipt', 'order'];
+
 @endphp
 
 
@@ -36,7 +25,7 @@
             </div>
         @elseif($action == 'store')
             <div class="uk-navbar-item">
-                <button type="submit" form="{{$route}}-update" class="uk-border-rounded uk-button uk-button-default uk-text-primary" uk-icon="push"></button>
+                <button type="submit" form="{{$route}}-store" class="uk-border-rounded uk-button uk-button-default uk-text-primary" uk-icon="file"></button>
             </div>
         @elseif($action == 'update')
             <div class="uk-navbar-item">
@@ -46,8 +35,6 @@
                 <button uk-toggle="target: #modal-{{Request::route($route)}}" class="uk-border-rounded uk-button uk-button-default uk-text-danger" uk-icon="trash"></button>
             </div>
         @endif
+
+       
 @endif
-
-
-
-

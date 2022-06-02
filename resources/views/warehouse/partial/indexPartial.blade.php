@@ -11,7 +11,8 @@
             <th>REF</th>
             <th>note</th>
             <th>reference</th>
-            <th>store_id</th>
+            <th>In</th>
+            <th>Out</th>
             <th>stock_id</th>
             <th>user_id</th>
             <th>price_override</th>
@@ -34,6 +35,12 @@
                 <td class="uk-text-truncate">{{$warehouse->warehouse_note}}</td>
                 <td>{{ $warehouse->warehouse_reference }}</td>
                 <td><a href="{{route('store.edit', $warehouse->warehouse_store_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$warehouse->warehouse_store_id}}</a></td>
+                <td>
+                    @php
+                        $storeModel = Store::Stock()->first();
+                    @endphp
+                    <a href="{{route('store.edit', $warehouse->warehouse_store_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$warehouse->warehouse_store_id}}</a>
+                </td>
                 <td><a href="{{route('stock.edit', $warehouse->warehouse_stock_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$warehouse->warehouse_stock_id}}</a></td>
                 <td><a href="{{route('stock.edit', $warehouse->warehouse_user_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$warehouse->warehouse_user_id}}</a></td>
                 <td>{{ $warehouse->warehouse_price_override }}</td>

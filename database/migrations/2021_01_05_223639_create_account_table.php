@@ -22,6 +22,8 @@ class CreateAccountTable extends Migration
             $table->tinyInteger('account_type')->comment('SAAS::B2B::B2B');
             $table->string('account_description');
             $table->bigInteger('parent_account_id')->nullable();
+            $table->json('account_blacklist')->nullable();
+            
             $table->timestamps();
         });
     }

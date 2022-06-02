@@ -42,6 +42,7 @@ class AccountFactory extends Factory
             'accountable_type' => $accountable_type,
             'account_type' => $account_type,
             'account_description' => $this->faker->sentence,
+            'account_currency_id' => $this->faker->numberBetween($min=1, $max=10),
         ];
     }
 }

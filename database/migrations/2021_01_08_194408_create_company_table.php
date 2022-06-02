@@ -20,7 +20,7 @@ class CreateCompanyTable extends Migration
             $table->bigInteger('company_store_id')->comment('added_by'); 
             $table->bigInteger('parent_company_id')->nullable();
             $table->json('company_contact')->nullable();
-            $table->json('company_hour')->nullable()->comment('opening hours');
+            $table->json('company_opening_hour')->nullable();
             $table->timestamps();
         });
     }

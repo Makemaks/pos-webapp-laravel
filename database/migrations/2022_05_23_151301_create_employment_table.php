@@ -21,6 +21,7 @@ return new class extends Migration
             $table->json('employment_commision');
             $table->json('employment_setup');
             $table->json('employment_user_pay');
+            $table->tinyInteger('employment_working_hour')->nullable();
             $table->timestamps();
         });
     }

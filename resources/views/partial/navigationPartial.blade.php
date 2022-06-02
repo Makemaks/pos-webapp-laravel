@@ -34,33 +34,37 @@ if (Auth::check()) {
 
         <div class="uk-navbar-left">
 
-            <div class="uk-navbar-item uk-visible@s">
-                <div>
-                    {{-- @isset($storeModel)
-                        <h3 class="uk-margin-remove-bottom" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->company_name}}</h3>
-                        <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->store_name}}</p>
-                    @endisset --}}
-                    
-                    @if ($route && Auth::check())
-                        @if ($route != 'menu')
-                            <form action="{{route($route.'.index')}}">
-                                @csrf
-                                <select name="store-form" class="uk-select" onchange="this.form.submit()">
-                                    <option selected disabled></option>
-                                    
-                                    @isset($storeList)
-                                        @foreach ($storeList as $store)
-                                            <option value="{{$store->store_id}}" @if($store->store_id == $storeModel->store_id) selected  @endif>{{$store->store_name}} - {{$store->store_id}} - {{$storeModel->store_id}}</option>
-                                        @endforeach
-                                    @endisset
-                                    
-                                </select>
-                            </form>
-                        @endif
-                    @endif
-                    
-                </div>
-            </div>
+            @auth
+                @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin')
+                    <div class="uk-navbar-item uk-visible@s">
+                        <div>
+                            {{-- @isset($storeModel)
+                                <h3 class="uk-margin-remove-bottom" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->company_name}}</h3>
+                                <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->store_name}}</p>
+                            @endisset --}}
+                            
+                            @if ($route && Auth::check())
+                                @if ($route != 'menu')
+                                    <form action="{{route($route.'.index')}}">
+                                        @csrf
+                                        <select name="store-form" class="uk-select" onchange="this.form.submit()">
+                                            <option selected disabled></option>
+                                            
+                                            @isset($storeList)
+                                                @foreach ($storeList as $store)
+                                                    <option value="{{$store->store_id}}" @if($store->store_id == $storeModel->store_id) selected  @endif>{{$store->store_name}} - {{$store->store_id}} - {{$storeModel->store_id}}</option>
+                                                @endforeach
+                                            @endisset
+                                            
+                                        </select>
+                                    </form>
+                                @endif
+                            @endif
+                            
+                        </div>
+                    </div>
+                @endif
+            @endauth
         </div>
 
         <div class="uk-navbar-right uk-margin-right">

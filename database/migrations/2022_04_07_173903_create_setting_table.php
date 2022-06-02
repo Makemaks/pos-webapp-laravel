@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('setting', function (Blueprint $table) {
             $table->bigIncrements('setting_id');
             $table->bigInteger('setting_store_id')->comment('added_by');
-
+            $table->json('setting_currency')->nullable();
             $table->json('setting_logo')->nullable();
 
 

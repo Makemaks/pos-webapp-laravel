@@ -95,17 +95,6 @@
             </div>
 
             <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">DESCRIPTION</label>
-
-                @isset($data['stockModel']->stock_merchandise['stock_description'])
-                    <textarea class="uk-textarea" type="text" name="stock_merchandise[stock_description]">{{old('stock_merchandise[stock_description]', $data['stockModel']->stock_merchandise['stock_description'])}}</textarea>
-                @else
-                    <textarea class="uk-textarea" type="text" name="stock_merchandise[stock_description]">{{old('stock_merchandise[stock_description]')}}</textarea>
-                @endisset
-                
-            </div>
-            
-            <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">BRAND</label>
                 <select class="uk-select" name="stock_merchandise[brand_id]">
                     <option selected="selected" disabled>SELECT ...</option>
@@ -122,6 +111,17 @@
                         @endforeach
                     @endif
                 </select>
+            </div>
+
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-stacked-text">DESCRIPTION</label>
+
+                @isset($data['stockModel']->stock_merchandise['stock_description'])
+                    <textarea class="uk-textarea" type="text" name="stock_merchandise[stock_description]">{{old('stock_merchandise[stock_description]', $data['stockModel']->stock_merchandise['stock_description'])}}</textarea>
+                @else
+                    <textarea class="uk-textarea" type="text" name="stock_merchandise[stock_description]">{{old('stock_merchandise[stock_description]')}}</textarea>
+                @endisset
+                
             </div>
             
             <div class="uk-margin">

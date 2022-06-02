@@ -1,7 +1,7 @@
 @extends('layout.master')
 @inject('currencyHelper', 'App\Helpers\CurrencyHelper')
 @php
-    use App\Models\Product;
+    use App\Models\stock;
 @endphp
 
 @push('scripts')
@@ -9,6 +9,7 @@
 @endpush
 
 @section('content')
+
 
 <ul uk-accordion="multiple: true">
     <li class="uk-open">
@@ -20,7 +21,7 @@
             
                     <div class="uk-slider-container">
                         <div class="uk-grid-match uk-grid-small uk-slider-items uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@m">
-                            @include('category.partial.indexPartial') 
+                            {{-- @include('category.partial.indexPartial')  --}}
                         </div>
                     </div>
             
@@ -45,9 +46,9 @@
         <a class="uk-accordion-title" href="#"> <h2><b>Choose</b> Order</h2></a>
         <div class="uk-accordion-content uk-margin">
             @include('home.partial.menuPartial')
-            @if (count($data['productList']))  
-                @include('product.partial.indexPartial')
-            @endif
+            @isset($data['stockList'])
+                @include('stock.partial.indexPartial')
+            @endisset
         </div>
     </li>
 </ul>

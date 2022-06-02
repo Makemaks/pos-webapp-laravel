@@ -25,7 +25,7 @@ class StockFactory extends Factory
             $stock_cost[$i + 1] = [
                 'price' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 200000),
                 'quantity' => $this->faker->numberBetween($min = 0, $max = 50),
-                'default' => 1,
+                'default' => $this->faker->numberBetween($min = 0, $max = 1),
                 'supplier_id' => $this->faker->numberBetween($min = 1, $max = 5)
             ];
 

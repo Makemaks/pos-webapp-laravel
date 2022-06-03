@@ -1,8 +1,12 @@
 @php
-$dataModel = $data['addressPerson']->groupBy('user_id');
+$dataModel = $data['accountModel']->groupBy('user_id');
 
 foreach ($dataModel as $key => $value) {
-    $daysAgo = Carbon\Carbon::parse($value[0]->user_last_login_at)->diffForHumans();
+    if ($value[0]->user_last_login_at != null) {
+        $daysAgo = Carbon\Carbon::parse($value[0]->user_last_login_at)->diffForHumans();
+    } else {
+        $daysAgo = 'Never Log in yet';
+    }
     $date = Carbon\Carbon::parse($value[0]->user_last_login_at)->format('d/m/Y, H:i:s');
     $array[] = [
         'Account Number' => $value[0]->user_id,

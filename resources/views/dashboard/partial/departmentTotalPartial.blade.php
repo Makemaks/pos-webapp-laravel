@@ -1,5 +1,5 @@
 @php
-$categoryData = App\Models\Stock::GroupCategoryBrandPlu($data, 1);
+$categoryData = App\Models\Stock::GroupCategoryBrandPlu($data, 1, 'category_id');
 $table = 'departmentTotalPartial';
 @endphp
 <div>

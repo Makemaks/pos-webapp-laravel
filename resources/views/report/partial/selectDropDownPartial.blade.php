@@ -124,7 +124,15 @@
             <option value="customer_last_used" data-select2-id="27">
                 Customers
                 Account Last Used</option>
-            {{-- <option value="NRE/standard/Customers/Customer_Balance" data-select2-id="63">Customer Balance</option>
+            <option value="blacklisted_customer" data-select2-id="26">Blacklisted
+                Customer</option>
+        </optgroup>
+        <optgroup label="Department" data-select2-id="80">
+            <option value="dept_sales_by_day_and_hour" data-select2-id="84">Department
+                Totals
+                By Day Week</option>
+        </optgroup>
+        {{-- <option value="NRE/standard/Customers/Customer_Balance" data-select2-id="63">Customer Balance</option>
             <option value="NRE/standard/Customers/Customer_Email_List" data-select2-id="64">Customer Email List
             </option>
             <option value="NRE/standard/Customers/Customer_Expiry" data-select2-id="65">Customer Expiry</option>
@@ -274,7 +282,7 @@
         </optgroup>
         <optgroup label="PLU" data-select2-id="130">
             <option value="NRE/standard/PLU/House_Bon_Report" data-select2-id="131">House Bon Report</option>
-            <option value="NRE/standard/PLU/Master_PLU_Links" data-select2-id="132">Master PLU Links</option>
+            <option value="NRE/standard/PLU/plu_id_Links" data-select2-id="132">Master PLU Links</option>
             <option value="NRE/standard/PLU/PLU_Allergen_List" data-select2-id="133">PLU Allergen List</option>
             <option value="NRE/standard/PLU/PLU_Allocated_To_Keyboard" data-select2-id="134">PLU Allocated To
                 Keyboard

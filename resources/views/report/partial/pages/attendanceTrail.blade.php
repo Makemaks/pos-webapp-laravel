@@ -3,20 +3,21 @@
 $title = $data['title'];
 $table = $data['table'];
 
-$dataModel = $data['employmentList']->groupBy('attendance_id');
+$dataModel = $data['attendanceModel'];
 
 foreach ($dataModel as $key => $value) {
-    if ($value->first()->attendance_status == 0) {
+    $date = Carbon\Carbon::parse($value->attendance_created_at);
+    if ($value->attendance_status == 0) {
         $status = 'Clocked In';
     } else {
         $status = 'Clocked Out';
     }
     $arrayFirst[] = [
-        'Clerk Number' => $value[0]->user_id,
-        'Name' => json_decode($value[0]->person_name)->person_firstname,
-        'Day Of Week' => $value[0]->created_at->format('l'),
-        'Date' => $value[0]->created_at->format('d/m/Y'),
-        'Time' => $value[0]->created_at->format('H:i:s'),
+        'Clerk Number' => $value->user_id,
+        'Name' => json_decode($value->person_name)->person_firstname,
+        'Day Of Week' => $date->format('l'),
+        'Date' => $date->format('d/m/Y'),
+        'Time' => $date->format('H:i:s'),
         'Terminal' => '',
         'Type' => $status,
     ];
@@ -50,9 +51,6 @@ foreach ($dataModel as $key => $value) {
         </table>
     </div>
 @else
-    <div class="uk-margin-top">
-        <h1 style="text-transform:capitalize; font-size:22px;">{{ $title }}</h1>
-    </div>
     <div class="uk-alert-danger uk-border-rounded" uk-alert>
         <a class="uk-alert-close" uk-close></a>
         <p>No data to display.</p>

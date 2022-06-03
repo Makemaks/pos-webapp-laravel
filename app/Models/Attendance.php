@@ -15,4 +15,14 @@ class Attendance extends Model
         'attendance_user_id',
         'attendance_status',
     ];
+
+    public static function User($column, $filter)
+    {
+        return Attendance::leftjoin('user', 'attendance_user_id', 'user.user_id')
+            ->leftjoin('person', 'person_id', 'user_person_id')
+            ->leftJoin('store', 'store.store_id', 'person.persontable_id')
+            ->select('attendance.*', 'user.*', 'person.*', 'store.*', 'attendance.created_at as attendance_created_at')
+            ->orderBy('attendance_created_at', 'asc')
+            ->where($column, $filter);
+    }
 }

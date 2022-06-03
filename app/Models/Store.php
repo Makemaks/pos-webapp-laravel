@@ -56,6 +56,7 @@ class Store extends Model
             ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id')
             ->leftJoin('setting', 'setting.setting_store_id', '=', 'store.store_id')
+            ->select('order.*', 'receipt.*', 'stock.*', 'store.*', 'user.*', 'person.*', 'setting.*', 'order.created_at as order_created_at')
             ->where($column,  $filter)
             ->orderBy('order.created_at', 'desc');
     }
@@ -113,7 +114,6 @@ class Store extends Model
 
     public static function DatePeriod(Request $request)
     {
-        // put in session for first 4 if statements. 
         $user_id = null;
         $started_at = '0000-00-00 00:00:00';
         $ended_at = Carbon::now()->toDateTimeString();
@@ -152,17 +152,27 @@ class Store extends Model
             }
 
             if ($title === 'customer_person') {
-                $table = 'addressCustomerPerson';
+                $table = 'address';
                 $title = str_replace('_', ' ', $title);
             }
 
             if ($title === 'customer_company') {
-                $table = 'addressCustomerCompany';
+                $table = 'address';
                 $title = str_replace('_', ' ', $title);
             }
 
             if ($title === 'customer_last_used') {
                 $table = 'customerLastUsed';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'blacklisted_customer') {
+                $table = 'blacklistCustomer';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'dept_sales_by_day_and_hour') {
+                $table = 'deptSales';
                 $title = str_replace('_', ' ', $title);
             }
         }
@@ -255,19 +265,40 @@ class Store extends Model
             $addressPerson = User::Person('store_id',  $userModel->store_id)
                 ->where('addresstable_type', 'Person') // person::company
                 ->where('person_type', 2) // employee::non-employee::customer
+                ->whereBetween('person.created_at', [$started_at, $ended_at])
+                ->where('user_id', $user_id)->get();
+
+            // Account level last used
+            $accountModel = User::Account('store_id', $userModel->store_id)
+                ->whereBetween('person.created_at', [$started_at, $ended_at])
+                ->where('user_id', $user_id)->get();
+
+            // Account Company
+            $accountCompanyModel = User::AccountCompany('store_id', $userModel->store_id)
                 ->whereBetween('person.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
+
+            // Attendance Log
+            $attendanceModel = Attendance::User('store_id', $userModel->store_id)
+                ->whereBetween('attendance.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
         } else {
             $orderList = Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+
             $orderHourly = Order::HourlyReceipt()
                 ->where('order_store_id',  $userModel->store_id)
                 ->orderBy('order_id')->whereBetween('order.created_at', [$started_at, $ended_at])
                 ->get();
+
             $orderListASC = Order::Receipt()
                 ->where('order_store_id',  $userModel->store_id)
                 ->orderBy('order_id', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])
                 ->get();
-            $orderListLimited100 = Store::Sale('store_id',  $userModel->store_id)->limit(100)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-            $clerkBreakdown = Store::Order('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+
+            $orderListLimited100 = Store::Sale('store_id',  $userModel->store_id)
+                ->limit(100)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+
+            $clerkBreakdown = Store::Order('store_id',  $userModel->store_id)
+                ->whereBetween('order.created_at', [$started_at, $ended_at])->get();
+
             $employmentList = User::Employment('store_id',  $userModel->store_id)
                 ->where('attendance_status', '<', 2)
                 ->whereBetween('attendance.created_at', [$started_at, $ended_at])
@@ -282,12 +313,28 @@ class Store extends Model
                 ->where('addresstable_type', 'Person') // person::company
                 ->where('person_type', 2) // employee::non-employee::customer
                 ->whereBetween('person.created_at', [$started_at, $ended_at])->get();
+
+            // Account level last used
+            $accountModel = User::Account('store_id', $userModel->store_id)
+                ->whereBetween('person.created_at', [$started_at, $ended_at])->get();
+
+            // Account Company
+            $accountCompanyModel = User::AccountCompany('store_id', $userModel->store_id)
+                ->whereBetween('person.created_at', [$started_at, $ended_at])->get();
+
+            // Attendance Log
+            $attendanceModel = Attendance::User('store_id', $userModel->store_id)
+                ->whereBetween('attendance.created_at', [$started_at, $ended_at])->get();
         }
 
-        $clerkBreakdownOption = Store::Order('store_id',  $userModel->store_id)->get();
+        // dept average
+        $settingModel = Setting::where('setting_store_id', $userModel->store_id)->first();
+
+        // dropdown clerk option
+        $clerkBreakdownOption = User::Account('store_id', $userModel->store_id)->get();
+
         $orderSettingList = Store::Setting('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
         $eat_in_eat_out = Order::where('order_store_id', $userModel->store_id)->orderBy('order.created_at', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])->get();
-
 
         return [
             'orderList' => $orderList,
@@ -307,6 +354,10 @@ class Store extends Model
             'table' => $table,
             'addressCompany' => $addressCompany,
             'addressPerson' => $addressPerson,
+            'accountModel' => $accountModel,
+            'accountCompanyModel' => $accountCompanyModel,
+            'attendanceModel' => $attendanceModel,
+            'settingModel' => $settingModel,
         ];
     }
 }

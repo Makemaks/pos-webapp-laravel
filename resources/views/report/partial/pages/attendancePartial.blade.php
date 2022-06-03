@@ -14,7 +14,7 @@ $total = 0;
 $grandTotal = 0;
 $title = $data['title'];
 $table = $data['table'];
-$dataModel = $data['employmentList']->groupBy('user_id');
+$dataModel = $data['attendanceModel']->groupBy('user_id');
 
 foreach ($dataModel as $user_id => $value) {
     foreach ($value as $key => $values) {
@@ -22,10 +22,10 @@ foreach ($dataModel as $user_id => $value) {
         $personName = json_decode($values->person_name)->person_firstname . ' ' . json_decode($values->person_name)->person_lastname;
         if ($values->attendance_status == 0) {
             $status = 'Clocked In';
-            $date = $values->created_at;
+            $date = Carbon\Carbon::parse($values->attendance_created_at);
         } else {
             $status = 'Clocked Out';
-            $date = $values->created_at;
+            $date = Carbon\Carbon::parse($values->attendance_created_at);
         }
         $terminal = '';
 
@@ -90,7 +90,7 @@ foreach ($dataModel as $user_id => $value) {
                     <tr>
                         {{-- if its different clerk, show name --}}
                         @if ($currentName !== $loopName)
-                            <td style="background-color: rgb(255, 255, 255);">
+                            <td style="font-weight: 700;">
                                 {{ $itemarrayFirst['Name'] }}</td>
                         @else
                             <td></td>

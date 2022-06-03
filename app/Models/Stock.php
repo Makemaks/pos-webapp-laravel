@@ -59,7 +59,7 @@ class Stock extends Model
             "unit_size": "",
             "recipe_link" => "",
             "case_size" => "",
-            "master_plu": "",
+            "plu_id": "",
             
             "current_stock": "",
             "days_to_order": "",
@@ -219,7 +219,7 @@ class Stock extends Model
         ];
     }
 
-    public static function GroupCategoryBrandPlu($data, $type)
+    public static function GroupCategoryBrandPlu($data, $type, $stock_merchandise_key)
     {
 
         $totalCostPrice = 0;
@@ -231,21 +231,23 @@ class Stock extends Model
 
             if ($value['type'] == $type) {
 
-
                 $i = 0;
 
                 foreach ($data['orderList'] as $orderList) {
 
 
-                    $category_id = json_decode($orderList->stock_merchandise, true);
+                    $stock_merchandise = json_decode($orderList->stock_merchandise, true);
 
-                    if ($category_id['category_id'] == $key) {
+                    if ($stock_merchandise) {
 
-                        $price = json_decode($orderList->stock_cost, true)[$category_id['category_id']]['price'];
+                        if ($stock_merchandise[$stock_merchandise_key] == $key) {
 
-                        $totalCostPrice = $totalCostPrice + $price;
+                            $price = json_decode($orderList->stock_cost, true)[$stock_merchandise[$stock_merchandise_key]]['price'];
 
-                        $i++;
+                            $totalCostPrice = $totalCostPrice + $price;
+
+                            $i++;
+                        }
                     }
                 }
 

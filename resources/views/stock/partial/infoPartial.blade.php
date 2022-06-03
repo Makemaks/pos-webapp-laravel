@@ -61,12 +61,12 @@
         
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">PLU</label>
-                <select class="uk-select" name="stock_merchandise[master_plu]">
+                <select class="uk-select" name="stock_merchandise[plu_id]">
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_group_category_plu)
                         @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $plu)
                             @if ($plu['type'] == 2)
-                                <option value="{{$key}}"  @if($key == $data['stockModel']->stock_merchandise['master_plu']) selected @endif>{{$plu['description']}}</option>
+                                <option value="{{$key}}"  @if($key == $data['stockModel']->stock_merchandise['plu_id']) selected @endif>{{$plu['description']}}</option>
                             @endif
                         @endforeach
                     @endif

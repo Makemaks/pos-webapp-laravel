@@ -1,6 +1,13 @@
 @php
 
-$dataModel = $data['addressCompany']->groupBy('user_id');
+$title = $data['title'];
+$table = $data['table'];
+
+if ($title === 'customer company') {
+    $dataModel = $data['addressCompany']->groupBy('user_id');
+} elseif ($title === 'customer person') {
+    $dataModel = $data['addressPerson']->groupBy('user_id');
+}
 
 foreach ($dataModel as $key => $value) {
     $person_name = $value[0]->person_name;
@@ -18,9 +25,6 @@ foreach ($dataModel as $key => $value) {
         'Phone 2' => json_decode($address_phone, true)['address_phone_2'],
     ];
 }
-
-$title = $data['title'];
-$table = $data['table'];
 
 @endphp
 
@@ -50,6 +54,9 @@ $table = $data['table'];
         </table>
     </div>
 @else
+    <div class="uk-margin-top">
+        <h1 style="text-transform:capitalize; font-size:22px;">{{ $title }}</h1>
+    </div>
     <div class="uk-alert-danger uk-border-rounded" uk-alert>
         <a class="uk-alert-close" uk-close></a>
         <p>No data to display.</p>

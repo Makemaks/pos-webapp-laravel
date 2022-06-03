@@ -1,27 +1,19 @@
 @php
-
-$dataModel = $data['addressPerson']->groupBy('user_id');
+$dataModel = $data['accountCompanyModel']->groupBy('user_id');
 
 foreach ($dataModel as $key => $value) {
-    $person_name = $value[0]->person_name;
-    $address_line = $value[0]->address_line;
-    $address_phone = $value[0]->address_phone;
-    $arrayFirst[] = [
-        'Number' => $value[0]->person_id,
-        'First Name' => json_decode($person_name, true)['person_firstname'],
-        'Last Name' => json_decode($person_name, true)['person_lastname'],
-        'Address 1' => json_decode($address_line, true)['address_line_1'],
-        'Address 2' => json_decode($address_line, true)['address_line_2'],
-        'Address 3' => json_decode($address_line, true)['address_line_3'],
-        'PostCode' => json_decode($address_line, true)['address_postcode'],
-        'Phone 1' => json_decode($address_phone, true)['address_phone_1'],
-        'Phone 2' => json_decode($address_phone, true)['address_phone_2'],
-    ];
+    if ($value[0]->account_blacklist != null) {
+        $array[] = [
+            'Account Number' => $value[0]->user_id,
+            'First Name' => json_decode($value[0]->person_name)->person_firstname,
+            'Last Name' => json_decode($value[0]->person_name)->person_lastname,
+            'Customer Group' => $value[0]->company_name,
+        ];
+    }
 }
 
 $title = $data['title'];
 $table = $data['table'];
-
 @endphp
 
 @if ($dataModel->count() > 0)
@@ -33,15 +25,15 @@ $table = $data['table'];
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
             <thead>
                 <tr>
-                    @foreach ($arrayFirst[0] as $key => $item)
+                    @foreach ($array[0] as $key => $item)
                         <th>{{ $key }}</th>
                     @endforeach
                 </tr>
             </thead>
             <tbody>
-                @foreach ($arrayFirst as $keyarrayFirst => $itemarrayFirst)
+                @foreach ($array as $keyarray => $itemarray)
                     <tr>
-                        @foreach ($itemarrayFirst as $key => $item)
+                        @foreach ($itemarray as $key => $item)
                             <td>{{ $item }}</td>
                         @endforeach
                     </tr>

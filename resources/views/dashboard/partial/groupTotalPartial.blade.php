@@ -1,6 +1,6 @@
 @php
 $table = 'groupTotalPartial';
-$groupData = App\Models\Stock::GroupCategoryBrandPlu($data, 0);
+$groupData = App\Models\Stock::GroupCategoryBrandPlu($data, 0, 'group_id');
 @endphp
 <div>
     <div class="uk-card uk-card-default uk-card-body" style="height: 730px">

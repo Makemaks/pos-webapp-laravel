@@ -16,8 +16,12 @@ class Account extends Model
         'account_blacklist' => '{
 
                 "1": {
-                "type": "",
-                "description": ""
+                    "type": "",
+                    "description": "",
+                    "start_time": "",
+                    "end_time": "",
+                    "user_id": {},
+                    "blocked_access": {} 
                 }
 
             }'
@@ -26,7 +30,7 @@ class Account extends Model
 
 
     protected $casts = [
-        'account_blacklist' => 'array',
+        'account_blacklist' => 'array'
     ];
 
     public static function List($column,  $filter)
@@ -55,7 +59,16 @@ class Account extends Model
         return $result;
     }
 
+    public static function AccountBlacklistType()
+    {
 
+        return [
+
+            'BLOCKED',
+            'SUSPENDED',
+
+        ];
+    }
 
 
     public static function Type()

@@ -21,6 +21,15 @@ class ReportController extends Controller
 
         $datePeriod = Store::DatePeriod($request);
 
+        // attendance by trail
+        $this->attendanceModel = $datePeriod['attendanceModel'];
+
+        // Account Last Used
+        $this->accountModel = $datePeriod['accountModel'];
+
+        // Account Company
+        $this->accountCompanyModel = $datePeriod['accountCompanyModel'];
+
         // clerk Payrate
         $this->employmentList = $datePeriod['employmentList'];
 
@@ -39,6 +48,9 @@ class ReportController extends Controller
         $this->addressCompany = $datePeriod['addressCompany'];
         $this->addressPerson = $datePeriod['addressPerson'];
 
+        // dept average
+        $this->settingModel = $datePeriod['settingModel'];
+        $this->orderList = $datePeriod['orderList'];
 
         // If its export PDF / CSV
         if ($request->fileName) {
@@ -157,7 +169,7 @@ class ReportController extends Controller
 
         return [
 
-            'eat_in_eat_out' => $this->eat_in_eat_out ?? null,
+            'attendanceModel' => $this->attendanceModel ?? null,
             'userModel' => $this->userModel ?? null,
             'orderHourly' => $this->orderHourly ?? null,
             'orderList' => $this->orderList ?? null,
@@ -177,6 +189,9 @@ class ReportController extends Controller
             'ended' => $this->ended ?? null,
             'addressCompany' => $this->addressCompany ?? null,
             'addressPerson' => $this->addressPerson ?? null,
+            'accountModel' => $this->accountModel ?? null,
+            'accountCompanyModel' => $this->accountCompanyModel ?? null,
+            'settingModel' => $this->settingModel ?? null,
         ];
     }
 }

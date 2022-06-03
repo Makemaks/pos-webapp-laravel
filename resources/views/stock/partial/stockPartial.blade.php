@@ -22,13 +22,13 @@
         
             
             <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">{{Str::upper('master_plu')}}</label>
+                <label class="uk-form-label" for="form-stacked-text">{{Str::upper('plu_id')}}</label>
                 <select class="uk-select" name="stock_merchandise[stock_plu_id]">
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_group_category_plu)
                         @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $plu)
                             @if ($plu['type'] == 2)
-                                <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['master_plu']) selected @endif>{{$plu['description']}}</option>
+                                <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['plu_id']) selected @endif>{{$plu['description']}}</option>
                             @endif
                         @endforeach
                     @endif
@@ -77,7 +77,7 @@
             <div>
                 @php
                     $exclude = [
-                        "non_stock","set_menu","case_size","recipe_link","stock_name","group_id","category_id","brand_id","stock_vat","stock_description","stock_quantity","master_plu"
+                        "non_stock","set_menu","case_size","recipe_link","stock_name","group_id","category_id","brand_id","stock_vat","stock_description","stock_quantity","plu_id"
                     ];
                 @endphp
                

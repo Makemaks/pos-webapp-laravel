@@ -3,39 +3,12 @@ namespace App\Helpers;
 use App;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Helpers\LanguageHelper;
+
 use App\Helpers\CountryHelper;
 use Illuminate\Support\Arr;
 
 class CurrencyHelper{
 
-
-    public static function Currency(){
-       
-        $locale = App::getLocale();
-        $language = Arr::get(LanguageHelper::Language(), $locale);
-
-        $fmt = new \NumberFormatter( $locale, \NumberFormatter::CURRENCY );
-        $symbol = $fmt->getSymbol(\NumberFormatter::CURRENCY_SYMBOL);
-        
-        return $symbol;
-    }
-
-
-    public static function IntCurrency(){
-       
-        $locale = App::getLocale();
-        $language = Arr::get(LanguageHelper::Language(), $locale);
-
-       
-        /* $fmt = new \NumberFormatter( $locale, \NumberFormatter::CURRENCY );
-        $a = $fmt->formatCurrency(1234567.891234567890000, "EUR")."\n"; */
-
-        $fmt = new \NumberFormatter( $locale, \NumberFormatter::CURRENCY );
-        $symbol = $fmt->getSymbol(\NumberFormatter::CURRENCY_SYMBOL);
-
-        return $symbol;
-    }
 
     public static function Format($number, $decimal = 1) { // cents: 0=never, 1=if needed, 2=always
 

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Helpers\ConfigHelper;
+use App\Helpers\CountryHelper;
 use App\Models\Setting;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -198,7 +199,10 @@ class SettingFactory extends Factory
         for ($i = 0; $i < count(ConfigHelper::Allergen()); $i++) {
             $stock_allergen[$i + 1] = ConfigHelper::Allergen()[$i];
         }
-
+    
+        $setting_group = [
+            'default_country' => $this->faker->numberBetween($min = 1, $max = count(CountryHelper::ISO()))
+        ];
 
 
         return [
@@ -221,7 +225,8 @@ class SettingFactory extends Factory
             'setting_receipt' => $setting_receipt,
             
             'setting_key' => $setting_key,
-            'setting_key_type' => $setting_key_type
+            'setting_key_type' => $setting_key_type,
+            'setting_group' => $setting_group,
 
         ];
     }

@@ -276,8 +276,13 @@ class Setting extends Model
             }
         }',
 
-        'setting_key_type' => '{}'
+        'setting_key_type' => '{}',
 
+        'setting_group' => '{
+            "default_country": ""
+        }'
+
+      
     ];
 
     protected $casts = [
@@ -322,7 +327,11 @@ class Setting extends Model
         "setting_api" => 'array',
 
         'setting_key' => 'array',
-        'setting_key_type' => 'array'
+        'setting_key_type' => 'array',
+        'setting_group' => 'array'
+
+      
+
     ];
 
 

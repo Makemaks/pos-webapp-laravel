@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Address;
-use App\Helpers\CountryHelper;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AddressFactory extends Factory
@@ -52,7 +52,7 @@ class AddressFactory extends Factory
             
         ];
 
-        $address_country = $this->faker->randomElement($array = CountryHelper::ISO());
+       
        
         return [
         
@@ -60,7 +60,7 @@ class AddressFactory extends Factory
            'address_town' => $this->faker->city, 
            'address_county' => $this->faker->state,
            'address_postcode' => $this->faker->postcode,
-           'address_country' => $address_country['name'],
+           'address_country' => $this->faker->country,
            'address_email' => $address_email,
            'address_phone' => $address_phone,
            'address_website' => $address_website,

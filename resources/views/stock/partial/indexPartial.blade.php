@@ -1,12 +1,13 @@
 @php
     use App\Helpers\CurrencyHelper;
+    use App\Helpers\CountryHelper;
     use App\Helpers\MathHelper;
     use App\Helpers\StringHelper;
     use App\Models\Scheme;
     use App\Models\User;
 
     $route = Str::before(Request::route()->getName(), '.');  
-    $currency = CurrencyHelper::Currency();
+    $currency = CountryHelper::Currency();
 
     $tableHeader = [
         'ID',
@@ -92,7 +93,7 @@
                     }
                 }
                 
-                dd(CurrencyHelper::IntCurrency());
+              
                 
                 /* $schemeList = Scheme::stock('schemetable_id',  $stock->stock_id)->get(); */
             @endphp

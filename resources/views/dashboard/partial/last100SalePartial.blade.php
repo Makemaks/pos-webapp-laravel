@@ -5,7 +5,6 @@ $totalCostPrice = 0;
 $price = 0;
 
 $orderList = $data['orderListASC'];
-
 $orderList = $orderList->groupBy('order_id');
 
 if (count($orderList) > 0) {

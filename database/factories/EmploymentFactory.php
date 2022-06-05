@@ -53,7 +53,7 @@ class EmploymentFactory extends Factory
         $array = array_merge($employment_function, $employment_mode, $employment_job, $employment_user_control);
 
         return [
-            'employment_user_id' => $this->faker->numberBetween($min = 1, $max = 50),
+            'employment_user_id' => $this->faker->numberBetween($min = 1, $max = 2),
             'employment_general' => [
                 'ibutton' => $this->faker->numerify('##########'),
                 'secret_number' => $this->faker->numberBetween($min = 1, $max = 100),
@@ -72,7 +72,7 @@ class EmploymentFactory extends Factory
             ],
             'employment_setup' => $array,
             'employment_user_pay' => [
-                'pay_rate' => $this->faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = 200000),
+                'pay_rate' => $this->faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 20),
                 'from_date' => now()->subDays(30)->format('Y-m-d'),
                 'to_date' => now()->format('Y-m-d'),
                 'start_hour' => $this->faker->numberBetween($min = 0, $max = 24),

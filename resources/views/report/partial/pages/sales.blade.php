@@ -52,8 +52,8 @@ foreach ($settingModel as $key => $value) {
                     $stock_merchandise = json_decode($orderList->stock_merchandise, true);
 
                     // get price
-                    if ($stock_merchandise['category_id'] == $key) {
-                        $price = json_decode($orderList->stock_cost, true)[$stock_merchandise['category_id']]['price'];
+                    if ($orderList->receipt_id) {
+                        $price = json_decode($orderList->stock_cost, true)[$orderList->receipt_stock_cost_id]['price'];
 
                         // creating variable for array
                         if ($currentDay === 'Monday') {

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements('person_id');
             $table->bigInteger('person_user_id');  //user that added this account
 
-            $table->bigInteger('persontable_id')->comment('company/store id'); // store id
+            $table->bigInteger('persontable_id')->comment('Store id'); // store id
             $table->string('persontable_type')->comment('Store::Company');
 
             $table->json('person_name')->comment('person_firstname::person_lastname::person_preferred_name');

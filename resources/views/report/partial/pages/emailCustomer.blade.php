@@ -1,25 +1,22 @@
 @php
-$dataModel = $data['accountCompanyModel']->groupBy('user_id');
-
-$array = null;
-
-foreach ($dataModel as $key => $value) {
-    if ($value[0]->account_blacklist != null) {
-        $array[] = [
-            'Account Number' => $value[0]->user_id,
-            'First Name' => json_decode($value[0]->person_name)->person_firstname,
-            'Last Name' => json_decode($value[0]->person_name)->person_lastname,
-            'Customer Group' => $value[0]->company_name,
-        ];
-    }
-}
-
 $title = $data['title'];
 $table = $data['table'];
 
+$dataModel = $data['accountCompanyModel']->groupBy('user_id');
+
+foreach ($dataModel as $key => $value) {
+    $array[] = [
+        'Number' => $value[0]->user_id,
+        'First Name' => json_decode($value[0]->person_name)->person_firstname,
+        'Last Name' => json_decode($value[0]->person_name)->person_lastname,
+        'Customer Group' => $value[0]->company_name,
+        'Email Address' => $value[0]->email,
+        'Expiry Date' => '',
+    ];
+}
 @endphp
 
-@if ($dataModel->count() > 0 && $array != null)
+@if ($dataModel->count() > 0)
     <div class="uk-margin-top">
         <h1 style="text-transform:capitalize; font-size:22px;">{{ $title }}</h1>
     </div>

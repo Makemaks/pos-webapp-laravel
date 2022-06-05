@@ -17,7 +17,7 @@ if (count($orderList) > 0) {
                 $stockName = $stockNameJson['stock_name'];
 
                 // category name
-                $category_id = json_decode($receipt->stock_merchandise, true)['category_id'];
+                $category_id = json_decode($receipt->stock_merchandise, true)['plu_id'];
                 $setting_stock_group_category_plu = json_decode($receipt->setting_stock_group_category_plu, true);
                 $kpcat = $setting_stock_group_category_plu[$category_id]['description'];
 

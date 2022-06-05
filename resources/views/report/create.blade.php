@@ -37,7 +37,6 @@ if (Session::has('title')) {
             {{ $staffName->person_name['person_firstname'] }}
             {{ $staffName->person_name['person_lastname'] }}</p>
     @endif
-    <p class="uk-text-center" style="text-transform:capitalize;font-size: 18px;">{{ $title }}</p>
 @else
     @if (Session::has('date'))
         <p class="uk-text-center" style="font-size: 12px;">Date Range From : {{ session('date')['started_at'] }} to
@@ -55,7 +54,6 @@ if (Session::has('title')) {
             {{ $staffName->person_name['person_firstname'] }}
             {{ $staffName->person_name['person_lastname'] }}</p>
     @endif
-    <p class="uk-text-center" style="text-transform:capitalize;font-size: 18px;">{{ $title }}</p>
 @endif
 @section('content')
     <div style="margin-top:-15px;"></div>

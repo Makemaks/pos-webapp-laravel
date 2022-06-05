@@ -235,7 +235,6 @@ class Stock extends Model
 
                 foreach ($data['orderList'] as $orderList) {
 
-
                     $stock_merchandise = json_decode($orderList->stock_merchandise, true);
 
                     if ($stock_merchandise) {

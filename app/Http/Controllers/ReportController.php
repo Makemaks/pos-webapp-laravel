@@ -21,6 +21,15 @@ class ReportController extends Controller
 
         $datePeriod = Store::DatePeriod($request);
 
+        // orderSetting List
+        $this->orderSettingList = $datePeriod['orderSettingList'];
+
+        // Stock Each Receipt List
+        $this->orderListASC = $datePeriod['orderListASC'];
+
+        // clerk List
+        $this->clerkList = $datePeriod['clerkList'];
+
         // attendance by trail
         $this->attendanceModel = $datePeriod['attendanceModel'];
 
@@ -54,13 +63,13 @@ class ReportController extends Controller
 
         // If its export PDF / CSV
         if ($request->fileName) {
-
             // If PDF
+            $this->title = $request->session()->get('title')['title'];
             if ($request->format === 'pdf') {
                 $this->pdfView = view('report.partial.pages.' . $request->fileName, ['data' => $this->Data()])->render();
                 $render = \view('report.create', ['data' => $this->Data()])->render();
                 $pdf = App::make('dompdf.wrapper');
-                $pdf->loadHTML($render)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf');
+                $pdf->loadHTML($render)->setPaper('a4', 'portrait')->setWarnings(false)->save('myfile.pdf');
                 return $pdf->stream();
             } else {
             }
@@ -192,6 +201,7 @@ class ReportController extends Controller
             'accountModel' => $this->accountModel ?? null,
             'accountCompanyModel' => $this->accountCompanyModel ?? null,
             'settingModel' => $this->settingModel ?? null,
+            'clerkList' => $this->clerkList ?? null,
         ];
     }
 }

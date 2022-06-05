@@ -146,17 +146,27 @@ class Store extends Model
                 $title = str_replace('_', ' ', $title);
             }
 
+            if ($title === 'time_attendance_daily_shifts') {
+                $table = 'attendancePartial';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'time_attendance_hours_worked') {
+                $table = 'attendanceHoursWorked';
+                $title = str_replace('_', ' ', $title);
+            }
+
             if ($title === 'time_attendance_audit_trail') {
                 $table = 'attendanceTrail';
                 $title = str_replace('_', ' ', $title);
             }
 
-            if ($title === 'customer_person') {
+            if ($title === 'customer_person_address_list') {
                 $table = 'address';
                 $title = str_replace('_', ' ', $title);
             }
 
-            if ($title === 'customer_company') {
+            if ($title === 'customer_company_address_list') {
                 $table = 'address';
                 $title = str_replace('_', ' ', $title);
             }
@@ -171,8 +181,53 @@ class Store extends Model
                 $title = str_replace('_', ' ', $title);
             }
 
-            if ($title === 'dept_sales_by_day_and_hour') {
+            if ($title === 'avg_dept_sales_by_day_and_hour') {
                 $table = 'deptSales';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'avg_dept_sales_by_day') {
+                $table = 'deptSalesByDay';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'avg_sales_by_day_and_hour') {
+                $table = 'sales';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'avg_sales_by_day') {
+                $table = 'salesByDay';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'hourly_sales') {
+                $table = 'hourlySales';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'customer_email_list') {
+                $table = 'emailCustomer';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'customer_list') {
+                $table = 'customerList';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'clerk_list') {
+                $table = 'clerkList';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'clerk_pay_rate_summary') {
+                $table = 'clerkPayRate';
+                $title = str_replace('_', ' ', $title);
+            }
+
+            if ($title === 'plu_sales_by_clerk') {
+                $table = 'pluClerk';
                 $title = str_replace('_', ' ', $title);
             }
         }
@@ -273,7 +328,7 @@ class Store extends Model
                 ->whereBetween('person.created_at', [$started_at, $ended_at])
                 ->where('user_id', $user_id)->get();
 
-            // Account Company
+            // Account Company / blacklisted
             $accountCompanyModel = User::AccountCompany('store_id', $userModel->store_id)
                 ->whereBetween('person.created_at', [$started_at, $ended_at])->where('user_id', $user_id)->get();
 
@@ -318,8 +373,9 @@ class Store extends Model
             $accountModel = User::Account('store_id', $userModel->store_id)
                 ->whereBetween('person.created_at', [$started_at, $ended_at])->get();
 
-            // Account Company
+            // Account with Company / blacklisted
             $accountCompanyModel = User::AccountCompany('store_id', $userModel->store_id)
+                ->where('person_type', 2) // employee::non-employee::customer
                 ->whereBetween('person.created_at', [$started_at, $ended_at])->get();
 
             // Attendance Log
@@ -332,6 +388,11 @@ class Store extends Model
 
         // dropdown clerk option
         $clerkBreakdownOption = User::Account('store_id', $userModel->store_id)->get();
+
+        // clerk list with employment identity
+        $clerkList = User::Employment('store_id',  $userModel->store_id)
+            ->where('person_type', 0)
+            ->get();
 
         $orderSettingList = Store::Setting('store_id',  $userModel->store_id)->whereBetween('order.created_at', [$started_at, $ended_at])->get();
         $eat_in_eat_out = Order::where('order_store_id', $userModel->store_id)->orderBy('order.created_at', 'desc')->whereBetween('order.created_at', [$started_at, $ended_at])->get();
@@ -358,6 +419,7 @@ class Store extends Model
             'accountCompanyModel' => $accountCompanyModel,
             'attendanceModel' => $attendanceModel,
             'settingModel' => $settingModel,
+            'clerkList' => $clerkList,
         ];
     }
 }

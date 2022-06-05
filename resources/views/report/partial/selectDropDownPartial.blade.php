@@ -1,20 +1,20 @@
     <label class="uk-form-label" for="form-stacked-text">REPORT </label> <br>
     <select class="uk-select uk-width-expand" name="title" style="width:195px;">
         <option value="0" data-select2-id="8">Please Select Report</option>
-        <optgroup label="Clerk Time &amp; Attendance" data-select2-id="9">
+        <optgroup label="Summary" data-select2-id="9">
             {{-- <option value="adjust times" data-select2-id="10">Adjust Times</option>
             <option value="adjustment audit" data-select2-id="11">Adjustment Audit</option>
             <option value="adjustment audit by user" data-select2-id="12">Adjustment Audit By User</option> --}}
             <option value="monthly_summary" data-select2-id="13">Monthly Summary</option>
             <option value="weekly_summary" data-select2-id="14">Weekly Summary</option>
         </optgroup>
-        <optgroup label="Clerks" data-select2-id="15">
+        <optgroup label="Attendance" data-select2-id="15">
             <option value="time_attendance_audit_trail" data-select2-id="16">Time Attendance Audit Trail</option>
             <option value="time_attendance_daily_hours_worked" data-select2-id="17">Time Attendance Daily Hours
                 Worked
             </option>
-            {{-- <option value="time attendance daily shifts" data-select2-id="18">Time Attendance Daily Shifts</option>
-            <option value="time attendance hours worked" data-select2-id="19">Time Attendance Hours Worked</option> --}}
+            <option value="time_attendance_daily_shifts" data-select2-id="18">Time Attendance Daily Shifts</option>
+            <option value="time_attendance_hours_worked" data-select2-id="19">Time Attendance Hours Worked</option>
         </optgroup>
         {{-- <optgroup label="Custom Reports" data-select2-id="20">
             <option value="weekly line sales" data-select2-id="21">Weekly Line Sales</option>
@@ -117,20 +117,38 @@
             <option value="NRE/standard/Customers/Customer_Account_Last_Used" data-select2-id="61">Customer Account
                 Last
                 Used</option> --}}
-            <option value="customer_person" data-select2-id="62">Customers Person Address List
+            <option value="customer_person_address_list" data-select2-id="62">Customers Person Address List
             </option>
-            <option value="customer_company" data-select2-id="62">Customers Company Address List
+            <option value="customer_company_address_list" data-select2-id="62">Customers Company Address List
             </option>
             <option value="customer_last_used" data-select2-id="27">
                 Customers
                 Account Last Used</option>
-            <option value="blacklisted_customer" data-select2-id="26">Blacklisted
-                Customer</option>
+            <option value="customer_list" data-select2-id="64">Customer List
+            </option>
+            <option value="customer_email_list" data-select2-id="64">Customer Email List
+            </option>
+            <option value="blacklisted_customer" data-select2-id="26">Customer Blacklisted</option>
         </optgroup>
-        <optgroup label="Department" data-select2-id="80">
-            <option value="dept_sales_by_day_and_hour" data-select2-id="84">Department
-                Totals
-                By Day Week</option>
+        <optgroup label="Financial" data-select2-id="80">
+            <option value="avg_sales_by_day" data-select2-id="99">Avg Sales By Day
+            </option>
+            <option value="avg_sales_by_day_and_hour" data-select2-id="84">Avg Sales By Day And Hour</option>
+            <option value="avg_dept_sales_by_day" data-select2-id="99">Avg Dept Sales By Day
+            </option>
+            <option value="avg_dept_sales_by_day_and_hour" data-select2-id="84">Avg Dept Sales By Day And Hour</option>
+            <option value="hourly_sales" data-select2-id="85">Hourly Sales</option>
+        </optgroup>
+        <optgroup label="Clerk" data-select2-id="52">
+            {{-- <option value="NRE/standard/Clerk/Clerk_Detail_Link_Report" data-select2-id="53">Clerk Detail Link
+                Report
+            </option> --}}
+            <option value="clerk_list" data-select2-id="54">Clerk List</option>
+            <option value="clerk_pay_rate_summary" data-select2-id="57">
+                Clerk
+                Pay
+                Rate Summary</option>
+            <option value="plu_sales_by_clerk" data-select2-id="55">Clerk PLU Sales</option>
         </optgroup>
         {{-- <option value="NRE/standard/Customers/Customer_Balance" data-select2-id="63">Customer Balance</option>
             <option value="NRE/standard/Customers/Customer_Email_List" data-select2-id="64">Customer Email List

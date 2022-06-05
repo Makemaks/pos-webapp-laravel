@@ -1,25 +1,26 @@
 @php
-$dataModel = $data['accountCompanyModel']->groupBy('user_id');
-
-$array = null;
-
-foreach ($dataModel as $key => $value) {
-    if ($value[0]->account_blacklist != null) {
-        $array[] = [
-            'Account Number' => $value[0]->user_id,
-            'First Name' => json_decode($value[0]->person_name)->person_firstname,
-            'Last Name' => json_decode($value[0]->person_name)->person_lastname,
-            'Customer Group' => $value[0]->company_name,
-        ];
-    }
-}
-
 $title = $data['title'];
 $table = $data['table'];
 
+$dataModel = $data['attendanceModel']->groupBy('user_id');
+
+foreach ($dataModel as $key => $value) {
+    $array[$key] = [
+        'Number' => $value[0]->user_id,
+        'First Name' => json_decode($value[0]->person_name)->person_firstname,
+        'Last Name' => json_decode($value[0]->person_name)->person_lastname,
+        'Start Date' => Carbon\Carbon::parse($value[0]->attendance_created_at)->format('d M, Y'),
+        'End Date' => '',
+        'Start Time' => '',
+        'End Time' => '',
+        'Pay Rate' => json_decode($value[0]->employment_user_pay)->pay_rate,
+    ];
+}
+
 @endphp
 
-@if ($dataModel->count() > 0 && $array != null)
+
+@if ($dataModel->count() > 0)
     <div class="uk-margin-top">
         <h1 style="text-transform:capitalize; font-size:22px;">{{ $title }}</h1>
     </div>
@@ -28,7 +29,7 @@ $table = $data['table'];
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
             <thead>
                 <tr>
-                    @foreach ($array[0] as $key => $item)
+                    @foreach ($array[array_key_first($array)] as $key => $item)
                         <th>{{ $key }}</th>
                     @endforeach
                 </tr>

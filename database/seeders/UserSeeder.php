@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
         $user->save();
 
         $user = new User();
-        $user->user_account_id = 2;
+        $user->user_account_id = 1;
         $user->user_person_id = 2;
         $user->user_type = 0;
         $user->user_is_disabled = 0;

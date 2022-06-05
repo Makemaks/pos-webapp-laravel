@@ -1,11 +1,10 @@
 @php
-
 $title = $data['title'];
 $table = $data['table'];
 
-if ($title === 'customer company') {
+if ($title === 'customer company address list') {
     $dataModel = $data['addressCompany']->groupBy('user_id');
-} elseif ($title === 'customer person') {
+} elseif ($title === 'customer person address list') {
     $dataModel = $data['addressPerson']->groupBy('user_id');
 }
 

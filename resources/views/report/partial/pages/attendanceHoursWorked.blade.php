@@ -22,6 +22,7 @@ foreach ($dataModel as $user_id => $value) {
         if ($values->attendance_status == 0) {
             $status = 'Clocked In';
             $date = Carbon\Carbon::parse($values->attendance_created_at);
+            $payRate = json_decode($values->employment_user_pay)->pay_rate;
         } else {
             $status = 'Clocked Out';
             $date = Carbon\Carbon::parse($values->attendance_created_at);
@@ -35,10 +36,10 @@ foreach ($dataModel as $user_id => $value) {
             'Time' => $date,
             'Terminal' => 'Unknown',
             'Type' => $status,
+            'Pay_rate' => $payRate,
         ];
     }
 }
-
 @endphp
 @if ($dataModel->count() > 0)
 
@@ -50,9 +51,12 @@ foreach ($dataModel as $user_id => $value) {
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
             <thead>
                 <tr>
-                    @foreach ($arrayFirst[1] as $key => $item)
-                        <th>{{ $key }}</th>
-                    @endforeach
+                    <th>Name</th>
+                    <th>Day of Week</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Terminal</th>
+                    <th>Type</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,7 +66,7 @@ foreach ($dataModel as $user_id => $value) {
                         $loopName = $itemarrayFirst['Name'];
                     @endphp
 
-                    {{-- Total Interval Each Clerk --}}
+                    {{-- Total Interval Each Clerk and its different Name --}}
                     @if ($currentName !== $loopName && $currentName !== '')
                         @php
                             $dtF = new DateTime('@0');
@@ -76,7 +80,8 @@ foreach ($dataModel as $user_id => $value) {
                             <td></td>
                             <td>{{ $totalInterval->format('%hh %im') }}</td>
                             <td></td>
-                            <td></td>
+                            <td>$ {{ App\Helpers\MathHelper::FloatRoundUp($payRate * ($totalHours / 60 / 60), 2) }}
+                            </td>
                         </tr>
 
                         @php
@@ -107,6 +112,7 @@ foreach ($dataModel as $user_id => $value) {
                         if ($currentDate !== '') {
                             $differentDate = $loopDate->diff($currentDate);
                         }
+                        $payRate = $itemarrayFirst['Pay_rate'];
                     @endphp
 
                     {{-- code --}}
@@ -141,7 +147,8 @@ foreach ($dataModel as $user_id => $value) {
                             <td></td>
                             <td>{{ $totalInterval->format('%hh %im') }}</td>
                             <td></td>
-                            <td></td>
+                            <td>$ {{ App\Helpers\MathHelper::FloatRoundUp($payRate * ($totalHours / 60 / 60), 2) }}
+                            </td>
                         </tr>
                         @php
                             $currentTime = new DateTime('NOW');

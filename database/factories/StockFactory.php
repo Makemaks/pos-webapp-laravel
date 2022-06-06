@@ -108,11 +108,7 @@ class StockFactory extends Factory
         for ($j=0; $j < 5; $j++) { 
             for ($i=0; $i < 10; $i++) { 
                 
-                $stock_cost[$j + 1][$i + 1] = [
-                    "setting_stock_cost_id" => $j,
-                    'price' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
-                    'default' => $this->faker->numberBetween($min = 0, $max = 1)
-                ];
+                $stock_cost[$j + 1][$i + 1] = ['price' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20)];
             }
         }
 

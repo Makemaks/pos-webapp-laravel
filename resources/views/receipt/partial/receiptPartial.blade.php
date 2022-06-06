@@ -2,18 +2,32 @@
     use App\Helpers\CurrencyHelper;
     use App\Models\Scheme;
     use App\Models\Plan;
-
+    use App\Models\Stock;
+    use App\Models\User;
+    
     $schemeModel = NULL;
     $currency = "";
-    $priceVAT = "";
+    $priceVAT = 0;
+    $totalPrice = 0;
+
+    $data['sessionCartList'] = Session::get('user-session-'.Auth::user()->user_id. '.cartList');
+    $data['userModel'] = User::Account('user_account_id', Auth::user()->user_account_id)
+    ->first();
+
+    /* $data['sessionCartList'] = collect($data['sessionCartList'])->pluck('product_id')
+
+    if ($data['sessionCartList']) {
+        $data['productList'] = Stock::whereIn('stock_id',$data['sessionCartList'] );
+    } */
+
 @endphp
 
 
 
-<div class="uk-margin uk-child-width-1-2" uk-grid>
+{{-- <div class="uk-margin uk-child-width-1-2" uk-grid>
     <div>Offer(s) : <span id="schemeCountID"></div>
     <div>Discount(s) : <span id="planCountID"></div>
-</div>
+</div> --}}
 
 
 
@@ -22,22 +36,22 @@
         <thead>
             <tr>
                 <th class="uk-table-expand">Item</th>
-                <th class="uk-width-auto">Qty</th>
+                {{-- <th class="uk-width-auto">Qty</th> --}}
                 <th>{{$currency}}</th>
+                {{-- <th></th> --}}
                 <th></th>
-                <th class="uk-table-expand"></th>
             </tr>
         </thead>
         <tbody id="cartListID">
             @if ($data['sessionCartList'] && count($data['sessionCartList']) > 0)
-                @foreach ($data['sessionCartList'] as $cartItem)
+                @foreach ($data['sessionCartList'] as $cartKey => $cartItem)
                     @php
                     
                         $price = $cartItem['price'] * $cartItem['quantity'];
                         $totalPrice = $price + $totalPrice;
 
                         //scheme
-                        $schemeProductList = Scheme::Product('schemetable_id', $cartItem['product'])->get();
+                       /*  $schemeProductList = Scheme::Product('schemetable_id', $cartItem['product_id'])->get();
                         if ($schemeProductList->count() >= 1) {
                             $discount['value'] = '';
                             $discount['symbol'] = '';
@@ -47,7 +61,7 @@
                                 $discount = Plan::CalculatePlanType($schemeModel);
                                 $totalPrice = $totalPrice - $discount['value'];
                             }
-                        }
+                        } */
 
                         if ($loop->last && isset($data['calculate_vat'])) {
                             $priceVAT = MathHelper::VAT($data['userModel']->store_vat, $totalPrice);
@@ -56,7 +70,7 @@
                         }
         
                     @endphp
-                        <tr id="cartItemID-{{$loop->iteration}}">
+                        <tr id="cartItemID-{{$cartKey}}">
                             <td>
                                 
                                 {{$cartItem['name']}}
@@ -69,28 +83,28 @@
                                 @endif
                                 </p>
                             </td>
-                            <td>
+                            {{-- <td>
                             
                                     @include('partial.controlsPartial',
                                     [
-                                        'cartValue' => $loop->iteration,
+                                        'cartValue' => $cartKey,
                                         'quantity' => $cartItem['quantity']
                                     ])
                             
-                            </td>
+                            </td> --}}
                             <td>
                                 {{CurrencyHelper::Format($cartItem['price'])}}
                             </td>
                             <td>
-                                <button type="button" id="deleteID-{{$loop->iteration}}" onclick="Delete({{$loop->iteration}})" class="uk-text-danger" uk-icon="trash">
+                                <button type="button" id="deleteID-{{$cartKey}}" onclick="Delete({{$cartKey}})" class="uk-text-danger" uk-icon="trash">
                                 </button>
                             </td>
-                            <td>
-                                <button type="button" class="uk-button uk-button-default uk-border-rounded" onclick="GetScheme({{$cartItem['product']}})">
+                            {{-- <td>
+                                <button type="button" class="uk-button uk-button-default uk-border-rounded" onclick="GetScheme({{$cartItem['product_id']}})">
                                     <span uk-icon="icon: star"></span>
-                                    <span class="uk-label"> {{$schemeProductList->count()}}</span>
+                                   <span class="uk-label"> {{$schemeProductList->count()}}</span>
                                 </button>
-                            </td>
+                            </td> --}}
                         </tr>
                 @endforeach
                 <tr>

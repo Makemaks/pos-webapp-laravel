@@ -1,16 +1,13 @@
 <div>  
 
-    <form id="formReceipt" action="{{route('payment.create')}}" method="POST">
+    {{-- <form id="formReceipt" action="{{route('payment.create')}}" method="POST">
         @csrf
         @method('GET')
         @include('receipt.partial.userPartial')
-    </form>
+    </form> --}}
 
     <div>
-        <a class="uk-accordion-title" href="#"><h2><b>Order</b> Receipt</h2></a>
-        <div class="uk-accordion-content uk-container uk-container-xsmall">
-            @include('receipt.partial.receiptPartial')
-        </div>
+        @include('receipt.partial.receiptPartial')
     </div>
 
     {{-- <ul uk-accordion="multiple: true">

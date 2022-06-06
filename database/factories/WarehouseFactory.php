@@ -35,6 +35,7 @@ class WarehouseFactory extends Factory
                 "warehouse_reference" => $this->faker->randomElement($array = array (NULL,$this->faker->word)),
                 "warehouse_note" => $this->faker->randomElement($array = array (NULL,$this->faker->sentence)),
                 "warehouse_type" => $this->faker->numberBetween($min = 0, $max = 3),
+                "warehouse_company_id" => $this->faker->numberBetween($min = 1, $max = 10),
         ];
     }
 }

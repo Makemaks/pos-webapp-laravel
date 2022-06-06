@@ -200,9 +200,15 @@ class SettingFactory extends Factory
             $stock_allergen[$i + 1] = ConfigHelper::Allergen()[$i];
         }
     
+        $isoCount = count(CountryHelper::ISO());
         $setting_group = [
-            'default_country' => $this->faker->numberBetween($min = 1, $max = count(CountryHelper::ISO()))
+            'default_country' => $this->faker->numberBetween($min = 1, $max = $isoCount),
+            'group_stock_cost' => $this->faker->numberBetween($min = 5, $max = 10)
         ];
+
+      
+        
+       
 
 
         return [
@@ -227,6 +233,7 @@ class SettingFactory extends Factory
             'setting_key' => $setting_key,
             'setting_key_type' => $setting_key_type,
             'setting_group' => $setting_group,
+            
 
         ];
     }

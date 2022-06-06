@@ -22,12 +22,7 @@ class StockFactory extends Factory
     {
         for ($i = 0; $i < 6; $i++) {
 
-            $stock_cost[$i + 1] = [
-                'price' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 200000),
-                'quantity' => $this->faker->numberBetween($min = 0, $max = 50),
-                'default' => $this->faker->numberBetween($min = 0, $max = 1),
-                'supplier_id' => $this->faker->numberBetween($min = 1, $max = 5)
-            ];
+           
 
             $stock_supplier[$i + 1] = [
                 'supplier_id' => $this->faker->numberBetween($min = 1, $max = 5),
@@ -83,7 +78,6 @@ class StockFactory extends Factory
             "stock_vat" => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 5))),
             'stock_name' => $this->faker->word,
             'stock_description' => $this->faker->paragraph,
-            'stock_quantity' => $this->faker->numberBetween($min = 1, $max = 200),
             "set_menu" => $this->faker->numberBetween($min = 1, $max = 5),
             "stock_tag" => $this->faker->numberBetween($min = 1, $max = 5),
             "stock_offer" => $this->faker->numberBetween($min = 1, $max = 5),
@@ -110,6 +104,27 @@ class StockFactory extends Factory
             $stock_allergen[$i + 1] = $i + 1;
         }
 
+        $stock_cost = [];
+        for ($j=0; $j < 5; $j++) { 
+            for ($i=0; $i < 10; $i++) { 
+                
+                $stock_cost[$j + 1][$i + 1] = [
+                    "setting_stock_cost_id" => $j,
+                    'price' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+                    'default' => $this->faker->numberBetween($min = 0, $max = 1)
+                ];
+            }
+        }
+
+
+        for ($j=0; $j < 5; $j++) { 
+                
+            $stock_cost_quantity[$j + 1] = $this->faker->randomElement($array = array (1, 2, 5));
+           
+        }
+
+       
+
         return [
 
 
@@ -117,7 +132,7 @@ class StockFactory extends Factory
 
             'stock_supplier' => $stock_supplier,
 
-            'stock_parent_id' => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 5))),
+            
             'stock_store_id' => $this->faker->numberBetween($min = 1, $max = 10),
 
             'stock_gross_profit' => $stock_gross_profit,
@@ -132,6 +147,7 @@ class StockFactory extends Factory
 
             'stock_nutrition' => $stock_nutrition,
             'stock_allergen' => $stock_allergen,
+            'stock_cost_quantity' => $stock_cost_quantity
 
 
         ];

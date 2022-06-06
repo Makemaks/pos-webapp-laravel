@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\User;
 use App\Models\Scheme;
 use App\Models\Plan;
 use App\Helpers\MathHelper;
@@ -20,6 +21,8 @@ class CartAPIController extends Controller
      */
 
     private $userModel;
+    private $discount;
+    private $html = '';
 
     public function index(Request $request)
     {
@@ -30,17 +33,16 @@ class CartAPIController extends Controller
               
                 $requestInput = $request->except('_token', '_method');
 
-                $schemeModel = Scheme::List('scheme_id', $request->scheme_id)->first();
+                //$schemeModel = Scheme::List('scheme_id', $request->scheme_id)->first();
 
-
-                $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'schemeList', $request->scheme_id);
+                //$request->session()->push('user-session-'.Auth::user()->user_id.'.'.'schemeList', $request->scheme_id);
                 $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'schemeList');
 
-                $discount = Plan::CalculatePlanType($schemeModel);
+                //$discount = Plan::CalculatePlanType($schemeModel);
 
                 return response()->json([
                     'success'=>'Got Simple Ajax Request.', 
-                    'discount' => $discount
+                    'discount' => $this->discount
                 ]);
 
             }
@@ -54,19 +56,19 @@ class CartAPIController extends Controller
                 $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)
                 ->first();
 
-                $planModel = Plan::List('plan_account_id', $this->userModel->person_account_id)
+                /* $planModel = Plan::List('plan_account_id', $this->userModel->person_account_id)
                 ->where('plan_discount_code', $requestInput['plan_discount_code'])
-                ->first();
+                ->first(); */
 
-                $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'planList', $planModel->plan_id);
+                //$request->session()->push('user-session-'.Auth::user()->user_id.'.'.'planList', $planModel->plan_id);
                 $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'planList');
 
 
-                $discount = MathHelper::Discount($planModel->plan_value, $request->totalPrice);
+                //$this->discount = MathHelper::Discount($planModel->plan_value, $request->totalPrice);
 
                 return response()->json([
                     'success'=>'Got Simple Ajax Request.', 
-                    'discount' => $discount
+                    'discount' => $this->discount
                 ]);
             }
         }
@@ -101,30 +103,33 @@ class CartAPIController extends Controller
 
       
         if ($request->has('barcode')) {
-            $productModel = Product::where('product_barcode', $request['barcode'])->first();
+            //$this->productModel = Product::where('product_barcode', $request['barcode'])->first();
             
-            if ($productModel) {
-                $requestInput['product'] = $productModel->product_id;
-                $requestInput['name'] = $productModel->product_name;
-                $requestInput['price'] = $productModel->product_price;
+            if ($this->productModel) {
+                $requestInput['product_id'] = $this->productModel->product_id;
+                $requestInput['name'] = $this->productModel->product_name;
+                $requestInput['price'] = $this->productModel->product_price;
                 $requestInput['quantity'] = '';
                 $requestInput['plan'] = '';
 
-                $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $requestInput);
+                //$request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $requestInput);
                 $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList');
             }
 
         }else{
             $requestInput = $request->except('_token', '_method');
             $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $requestInput);
-            $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList');
+            
+            //$value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList');
+            $this->html = view('receipt.partial.receiptPartial')->render();
+
         }
 
             
 
            
 
-        return response()->json(['success'=>'Got Simple Ajax Request.']);
+        return response()->json(['success'=>'Got Simple Ajax Request.', 'data' => $this->html]);
 
     }
 
@@ -136,7 +141,7 @@ class CartAPIController extends Controller
      */
     public function show($id)
     {
-        $a = $request->all();
+        //$a = $request->all();
     }
 
     /**
@@ -147,7 +152,7 @@ class CartAPIController extends Controller
      */
     public function edit($id)
     {
-        $a = $request->all();
+        //$a = $request->all();
     }
 
     /**
@@ -182,9 +187,11 @@ class CartAPIController extends Controller
         if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
             //remove session
             $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList.'.$id);
+            $this->html = view('receipt.partial.receiptPartial')->render();
         }
 
-        return response()->json(['success'=>'Got Simple Ajax Request.']);
+
+        return response()->json(['success'=>'Got Simple Ajax Request.', 'data' => $this->html]);
     }
 
     

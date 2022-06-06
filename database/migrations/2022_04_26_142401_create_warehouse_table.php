@@ -21,6 +21,7 @@ return new class extends Migration
             $table->smallInteger('warehouse_status');
             $table->smallInteger('warehouse_type');
             $table->bigInteger('warehouse_store_id');
+            $table->bigInteger('warehouse_company_id')->comment('supplier');
             $table->bigInteger('warehouse_address_id')->nullable();
             $table->bigInteger('warehouse_stock_id');
             $table->bigInteger('warehouse_user_id');

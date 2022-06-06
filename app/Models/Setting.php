@@ -279,8 +279,9 @@ class Setting extends Model
         'setting_key_type' => '{}',
 
         'setting_group' => '{
-            "default_country": ""
-        }'
+            "default_country": "",
+            "group_stock_cost": ""
+        }',
 
       
     ];
@@ -328,7 +329,8 @@ class Setting extends Model
 
         'setting_key' => 'array',
         'setting_key_type' => 'array',
-        'setting_group' => 'array'
+        'setting_group' => 'array',
+       
 
       
 

@@ -85,20 +85,20 @@ function Control(type){
 }
 
 
-function Delete(cartCount, price){
+function Delete(row_id){
 
     //update basket count
     var cartCountID = document.getElementById('cartCountID'); 
-    
+    var quantity = 1;
 
     //update total
-    var receiptButtonID = document.getElementById('receiptButtonID');  
+    /* var receiptButtonID = document.getElementById('receiptButtonID');  
     var receiptButtonID = document.getElementById('receiptButtonID');
-    var quantityID = document.getElementById('quantityID-'+ cartCount);
+    var quantityID = document.getElementById('quantityID-'+ cartCount); */
    
    
     //get quantity
-    if(quantityID.value != ''){
+    /* if(quantityID.value != ''){
         quantityXID.innerText = '';
         var priceQuantity = price * parseInt(quantityID.value); 
         cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(quantityID.value); 
@@ -115,18 +115,20 @@ function Delete(cartCount, price){
   
 
     cartListID = document.getElementById('cartItemID-'+ cartCount);       
-    cartListID.remove();
+    cartListID.remove(); */
 
     $.ajax({
-            type: "DELETE",
-            url: 'cart-api/' + cartCount,
-            success: function (data) {
-               
-             
-            },
-            error: function (data) {
-               
-            }
+        url:"/cart-api/" + row_id,
+        method: 'DELETE',
+        success: function (data) {
+        
+            cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(quantity);
+            setFocus('barcodeinputID');
+            document.getElementById('receipt-id').innerHTML = data.data;
+        },
+        error: function (data) {
+        
+        }
     });
   
     
@@ -141,7 +143,7 @@ function Update(){
     $.ajax({        
         url:"/cart-api/",
         method: 'PUT',
-        data: {product: product, name:name, price: price},      
+        data: {product_id: product_id, name:name, price: price},      
         success:function(data){
           //alert(data.success);
            cartCountID.innerText++;
@@ -150,13 +152,13 @@ function Update(){
     
 }
 
-//add a product to cart
-function Add(product, name, price){
+//add a product_id to cart
+function Add(product_id, name, price){
  
      //update basket count
      var cartCountID = document.getElementById('cartCountID'); 
-     var quantityID = document.getElementById('quantityID-'+product);
-     var quantity = quantityID.value;
+     //var quantityID = document.getElementById('quantityID-'+product_id);
+     var quantity = 1;
      var plan = null;
 
     
@@ -164,12 +166,14 @@ function Add(product, name, price){
      $.ajax({        
          url:"/cart-api/",
          method: 'POST',
-         data: {product: product, name:name, price: price, quantity:quantity, plan:plan },      
+         data: {product_id: product_id, name:name, price: price, quantity:quantity, plan:plan },      
          success:function(data){
            //alert(data.success);
             cartCountID.innerText = parseInt(cartCountID.innerText) + parseInt(quantity);
             setFocus('barcodeinputID');
-            quantityID.value = 1;
+            document.getElementById('receipt-id').innerHTML = data.data;
+
+            //quantityID.value = 1;
         }
       });
      
@@ -177,7 +181,7 @@ function Add(product, name, price){
  }
 
  //remove
-function Empty(product, name, price){
+function Empty(product_id, name, price){
  
      //update basket count
      var cartCountID = document.getElementById('cartCountID'); 
@@ -186,7 +190,7 @@ function Empty(product, name, price){
      $.ajax({        
          url:"/cart-api/",
          method: 'POST',
-         data: {product: product, name:name, price: price},      
+         data: {product_id: product_id, name:name, price: price},      
          success:function(data){
            //alert(data.success);
             cartCountID.innerText++;
@@ -236,8 +240,8 @@ function GetScheme(user_id){
    
 }
 
-function ApplyProductScheme(){
-    var schemePlanSelectID = document.getElementById('schemePlanSelectID-'+product);
+function Applyproduct_idScheme(){
+    var schemePlanSelectID = document.getElementById('schemePlanSelectID-'+product_id);
      var plan = null;
      
 

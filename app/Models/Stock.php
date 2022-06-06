@@ -17,13 +17,12 @@ class Stock extends Model
     //creates default value
     protected $attributes = [
 
+       
+
         'stock_store_id' => 1,
         "stock_cost" => '{
             "1": {
-                "price": "",
-                "quantity": "",
-                "default": 1,
-                "supplier_id": ""
+                "1": ""
             }
         }',
 
@@ -103,6 +102,7 @@ class Stock extends Model
             "value": "",
             "measurement": ""
         }',
+        'stock_cost_quantity' => '{}'
 
         
 
@@ -120,6 +120,7 @@ class Stock extends Model
         "stock_web" => 'array',
         "stock_nutrition" => 'array',
         "stock_allergen" => 'array',
+        "stock_cost_quantity" => 'array'
     ];
 
     public static function List()
@@ -282,5 +283,18 @@ class Stock extends Model
         }
 
         return $totalCostPrice;
+    }
+
+    public static function StockCostDefault($stock){
+        $stockCost = [];
+        
+        foreach ($stock->stock_cost as $key => $value) {
+            if ($value['default'] == 0) {
+                $stockCost = $value;
+                break;
+            }
+        }
+
+        return $stockCost;
     }
 }

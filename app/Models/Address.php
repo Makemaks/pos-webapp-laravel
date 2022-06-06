@@ -107,5 +107,11 @@ class Address extends Model
         ];
      }
 
+     public function AddressType(){
+         return [
+            "Home",
+            "Work"
+         ];
+     }
   
 }

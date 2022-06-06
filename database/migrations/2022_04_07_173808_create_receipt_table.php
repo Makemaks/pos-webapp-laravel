@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('receipttable_type');
 
             $table->tinyInteger('receipt_stock_cost_id')->comment('stock_merchandise');
-            $table->float('receipt_stock_cost_override')->nullable();
+            $table->json('receipt_stock_cost_override')->nullable();
 
             $table->smallInteger('receipt_quantity')->default(1); 
             $table->tinyInteger('receipt_status')->comment('processed::cancelled::refunded')->default(0);
@@ -29,7 +29,9 @@ return new class extends Migration
             $table->bigInteger('receipt_user_id')->comment('user');
             $table->bigInteger('receipt_stock_offer_id')->nullable(); //customer
             
+            $table->json('receipt_stock_cost')->nullable();
             
+
             $table->timestamps();
         });
     }

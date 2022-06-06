@@ -11,6 +11,25 @@ class Receipt extends Model
     protected $table = 'receipt';
     protected $primaryKey = 'receipt_id';
 
+
+    protected $attributes = [
+
+        "receipt_stock_cost" => '{}',
+        "receipt_stock_cost_override" => '{
+            "1": {
+                "type": "",
+                "value": ""
+            }
+        }'
+
+       
+    ];
+
+    protected $casts = [
+        "receipt_stock_cost" => 'array',
+        "receipt_stock_cost_override" => 'array'
+    ];
+
     public static function List($column,  $filter){
         return Receipt::
         leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
@@ -41,6 +60,13 @@ class Receipt extends Model
         }
 
         return $count;
+    }
+
+    public static function ReceiptCostOverrideType(){
+        return [
+            'percentage',
+            'amount'
+        ];
     }
 
    

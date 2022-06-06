@@ -18,6 +18,22 @@ class ReceiptFactory extends Factory
      */
     public function definition()
     {
+        $receipt_stock_cost = [
+            $this->faker->numberBetween($min = 1, $max = 5) => $this->faker->numberBetween($min = 1, $max = 10)
+        ];
+
+        $count = $this->faker->randomElement($array = array (NULL, $this->faker->numberBetween($min = 1, $max = 10)));
+        $receipt_stock_cost_override = NULL;
+        if ($count) {
+            for ($i=0; $i < $count; $i++) { 
+                $receipt_stock_cost_override[$i + 1] = [
+                    "type" => $this->faker->numberBetween($min = 1, $max = 5),
+                    "value" => $this->faker->numberBetween($min = 1, $max = 5)
+                ];
+            }
+        }
+        
+
         return [
             'receipttable_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'receipttable_type' => $this->faker->randomElement($array = array ('Stock')),
@@ -25,6 +41,8 @@ class ReceiptFactory extends Factory
             'receipt_user_id' => $this->faker->numberBetween($min = 1, $max = 2),
             'receipt_order_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'receipt_stock_cost_id' => $this->faker->numberBetween($min = 1, $max = 5),
+            'receipt_stock_cost' => $receipt_stock_cost,
+            'receipt_stock_cost_override' => $receipt_stock_cost_override
         ];
     }
 }

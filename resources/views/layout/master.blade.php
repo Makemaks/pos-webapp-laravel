@@ -85,17 +85,11 @@ $route = Str::before(Request::route()->getName(), '.');
                    @endif
                 @endauth
 
-                <div class="uk-width-expand@m uk-padding">
+                <div class="uk-width-expand@m uk-margin-top">
                     @yield('content')
                 </div>
 
-                @auth
-                    @if ($route == 'home')
-                        <div class="uk-width-auto@m uk-padding">
-                            @include('receipt.partial.indexPartial')
-                        </div>
-                    @endif
-                @endauth
+                
                 
             </div>
 
@@ -105,6 +99,7 @@ $route = Str::before(Request::route()->getName(), '.');
 
     <!-- UIkit JS -->
     @stack('scripts')
+    
     <script src="{{ asset('js/config.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit-icons.min.js"></script>

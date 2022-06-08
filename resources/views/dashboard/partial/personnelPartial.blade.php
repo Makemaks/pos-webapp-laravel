@@ -38,6 +38,6 @@
             @endforeach
         </tbody>
     </table>
-    </div>
+    
 </div>
 @include('partial.paginationPartial', ['paginator' => $orderList])

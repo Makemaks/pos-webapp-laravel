@@ -1,4 +1,5 @@
 @php
+use App\Models\Stock;
 $table = 'topCustomerPartial';
 $totalCostPrice = 0;
 $price = 0;
@@ -10,19 +11,13 @@ if (count($customerTop) > 0) {
     foreach ($customerTop as $receiptList) {
         $person = $receiptList[0]->person_name;
         $personName = json_decode($person);
-        $totalCostPrice = 0;
-        $price = 0;
 
-        foreach ($receiptList as $receipt) {
-            if ($receipt->receipt_id) {
-                $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
-                $totalCostPrice = $totalCostPrice + $price;
-            }
-        }
+
+        $totalCostPrice = Stock::OrderTotal($receiptList);
 
         $arraycustomerTop[] = [
-            'Account Num' => $receipt->company_store_id,
-            'Name' => $receipt->company_name,
+            'Account Num' => $receiptList->first()->company_store_id,
+            'Name' => $receiptList->first()->company_name,
             'total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2),
         ];
     }
@@ -36,8 +31,7 @@ if (count($customerTop) > 0) {
 
 @endphp
 <div>
-    <div class="uk-card uk-card-default uk-card-body">
-        <h3 class="uk-card-title">TOP CUSTOMERS</h3>
+    <h3 class="uk-card-title">TOP CUSTOMERS</h3>
 
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
             <thead>
@@ -58,5 +52,5 @@ if (count($customerTop) > 0) {
             </tbody>
         </table>
         
-    </div>
+
 </div>

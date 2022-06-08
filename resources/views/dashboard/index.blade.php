@@ -3,126 +3,168 @@
     <script src="{{ asset('js/chart.js') }}"></script>
 @endpush
 
+@php
+$route = Str::before(Request::route()->getName(), '.');
+@endphp
+
 @section('content')
     <div class="">
         <div>
             @include('dashboard.partial.datePeriodPartial')
         </div>
 
-        <div class="uk-margin uk-child-width-1-2@l uk-grid-match" uk-grid>
+        <div class="uk-child-width-1-2@s uk-grid-match" uk-grid>
 
             {{-- fixed totals --}}
             <div>
-                @include('dashboard.partial.fixedTotalPartial')
-                @include('document.button', ['table' => 'fixedTotalPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.fixedTotalPartial')
+                    @include('document.button', ['table' => 'fixedTotalPartial'])
+                </div>
             </div>
 
             {{-- category 1 sales / DEPARTMEN TOTAL --}}
            <div>
-                @include('dashboard.partial.departmentTotalPartial')
-                @include('document.button', ['table' => 'departmentTotalPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.departmentTotalPartial')
+                    @include('document.button', ['table' => 'departmentTotalPartial'])
+                </div>
            </div>
 
             {{-- group 0 sales --}}
             <div>
-                @include('dashboard.partial.groupTotalPartial')
-                @include('document.button', ['table' => 'groupTotalPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.groupTotalPartial')
+                    @include('document.button', ['table' => 'groupTotalPartial'])
+                </div>
             </div>
 
             {{-- TOP CUSTOMERS --}}
             <div>
-                @include('dashboard.partial.topCustomerPartial')
-                @include('document.button', ['table' => 'topCustomerPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.topCustomerPartial')
+                    @include('document.button', ['table' => 'topCustomerPartial'])
+                </div>
             </div>
 
             {{-- Transaction Key --}}
             <div>
-                @include('dashboard.partial.transactionKeyPartial')
-                @include('document.button', ['table' => 'transactionKeyPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.transactionKeyPartial')
+                    @include('document.button', ['table' => 'transactionKeyPartial'])
+                </div>
             </div>
 
             {{-- Clerk Breakdown --}}
             <div>
-                @include('dashboard.partial.clerkBreakdownPartial')
-                @include('document.button', ['table' => 'clerkBreakdownPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.clerkBreakdownPartial')
+                    @include('document.button', ['table' => 'clerkBreakdownPartial'])
+                </div>
             </div>
 
             {{-- FINALISE Key --}}
             <div>
-                @include('dashboard.partial.finaliseKeyPartial')
-                @include('document.button', ['table' => 'finaliseKeyPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.finaliseKeyPartial')
+                    @include('document.button', ['table' => 'finaliseKeyPartial'])
+                </div>
             </div>
 
             {{-- last 100 sales --}}
             <div>
-                @include('dashboard.partial.last100SalePartial')
-                @include('document.button', ['table' => 'last100SalePartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.last100SalePartial')
+                    @include('document.button', ['table' => 'last100SalePartial'])
+                </div>
             </div>
 
             {{-- Specials Manager --}}
             <div>
-                @include('dashboard.partial.specialsManagerPartial')
-                @include('document.button', ['table' => 'specialsManagerPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.specialsManagerPartial')
+                    @include('document.button', ['table' => 'specialsManagerPartial'])
+                </div>
             </div>
 
             {{-- EMPLOYEE TIME AND ATTENDANCE --}}
             <div>
-                @include('dashboard.partial.employeePartial')
-                @include('document.button', ['table' => 'employeePartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.employeePartial')
+                    @include('document.button', ['table' => 'employeePartial'])
+                </div>
             </div>
 
             {{-- Plu 0 sales --}}
             <div>
-                @include('dashboard.partial.pluSalesPartial')
-                @include('document.button', ['table' => 'pluSalesPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.pluSalesPartial')
+                    @include('document.button', ['table' => 'pluSalesPartial'])
+                </div>
             </div>
 
             {{-- HOURLY BREAKDOWN --}}
             <div>
-                @include('dashboard.partial.hourlyBreakdownPartial')
-                @include('document.button', ['table' => 'hourlyBreakdownPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.hourlyBreakdownPartial')
+                    @include('document.button', ['table' => 'hourlyBreakdownPartial'])
+                </div>
             </div>
 
             {{-- SALES BREAKDOWN BY SITE --}}
             <div>
-                @include('dashboard.partial.salesBreakdownBySitePartial')
-                @include('document.button', ['table' => 'salesBreakdownBySitePartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.salesBreakdownBySitePartial')
+                    @include('document.button', ['table' => 'salesBreakdownBySitePartial'])
+                </div>
             </div>
 
             {{-- STOCK SEARCH --}}
             <div>
-                @include('dashboard.partial.stockSearchPartial')
-                @include('document.button', ['table' => 'stockSearchPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.stockSearchPartial')
+                    @include('document.button', ['table' => 'stockSearchPartial'])
+                </div>
             </div>
 
             {{-- PENDING UPDATES --}}
             <div>
-                @include('dashboard.partial.pendingUpdatesPartial')
-                @include('document.button', ['table' => 'pendingUpdatesPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.pendingUpdatesPartial')
+                    @include('document.button', ['table' => 'pendingUpdatesPartial'])
+                </div>
             </div>
 
             {{-- EAT IN EAT OUT --}}
             <div>
-                @include('dashboard.partial.eatInEatOutPartial')
-                @include('document.button', ['table' => 'eatInEatOutPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.eatInEatOutPartial')
+                    @include('document.button', ['table' => 'eatInEatOutPartial'])
+                </div>
             </div>
 
             {{-- LAST Z READ --}}
             <div>
-                @include('dashboard.partial.lastZReadPartial')
-                @include('document.button', ['table' => 'lastZReadPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.lastZReadPartial')
+                    @include('document.button', ['table' => 'lastZReadPartial'])
+                </div>
             </div>
 
             {{-- GP SALES --}}
             <div>
-                @include('dashboard.partial.GPSalesPartial')
-                @include('document.button', ['table' => 'GPSalesPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.GPSalesPartial')
+                    @include('document.button', ['table' => 'GPSalesPartial'])
+                </div>
             </div>
 
             {{-- GP OVERVIEW --}}
             <div>
-                @include('dashboard.partial.GPOverviewPartial')
-                @include('document.button', ['table' => 'GPOverviewPartial'])
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.GPOverviewPartial')
+                    @include('document.button', ['table' => 'GPOverviewPartial'])
+                </div>
             </div>
 
         </div>

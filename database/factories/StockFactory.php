@@ -69,7 +69,7 @@ class StockFactory extends Factory
             "minimum_stock" => $this->faker->numberBetween($min = 1, $max = 50),
             "maximum_stock" => $this->faker->numberBetween($min = 50, $max = 100),
             "days_to_order" => $this->faker->numberBetween($min = 1, $max = 5),
-            "master_plu" => $this->faker->numberBetween($min = 1, $max = 5),
+            "plu_id" => $this->faker->numberBetween($min = 1, $max = 5),
             "qty_adjustment" => $this->faker->numberBetween($min = 100, $max = 800),
 
             "unit_size" => $this->faker->numberBetween($min = 1, $max = 20),
@@ -119,16 +119,21 @@ class StockFactory extends Factory
            
         }
 
+        $stock_manager_special = [];
+        for ($j=0; $j < 2; $j++) { 
+            
+            for ($i=0; $i < 1; $i++) { 
+                
+                $stock_manager_special[$j + 1][$i + 1] = $j + 1;
+            }
+        }
        
 
         return [
 
 
             'stock_cost' => $stock_cost,
-
             'stock_supplier' => $stock_supplier,
-
-            
             'stock_store_id' => $this->faker->numberBetween($min = 1, $max = 10),
 
             'stock_gross_profit' => $stock_gross_profit,
@@ -139,11 +144,10 @@ class StockFactory extends Factory
 
             'stock_terminal_flag' => $stock_terminal_flag,
             'stock_web' => $stock_web,
-
-
             'stock_nutrition' => $stock_nutrition,
             'stock_allergen' => $stock_allergen,
-            'stock_cost_quantity' => $stock_cost_quantity
+            'stock_cost_quantity' => $stock_cost_quantity,
+            'stock_manager_special' => $stock_manager_special,
 
 
         ];

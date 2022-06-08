@@ -58,7 +58,7 @@ class Stock extends Model
             "unit_size": "",
             "recipe_link" => "",
             "case_size" => "",
-            "master_plu": "",
+            "plu_id": "",
             
             "current_stock": "",
             "days_to_order": "",
@@ -102,11 +102,16 @@ class Stock extends Model
             "value": "",
             "measurement": ""
         }',
-        'stock_cost_quantity' => '{}'
+        'stock_cost_quantity' => '{
+            "1": "1"
+        }',
 
-        
+        'stock_manager_special' => '{
+            "1": {
+                "1": ""
+            }
+        }'
 
-        
 
     ];
 
@@ -120,7 +125,8 @@ class Stock extends Model
         "stock_web" => 'array',
         "stock_nutrition" => 'array',
         "stock_allergen" => 'array',
-        "stock_cost_quantity" => 'array'
+        "stock_cost_quantity" => 'array',
+        "stock_manager_special" => 'array'
     ];
 
     public static function List()
@@ -219,7 +225,7 @@ class Stock extends Model
         $price = 0;
         $departmentTotal = [];
 
-        foreach ($data['settingModel']->setting_stock_group as $key => $value) {
+         foreach ($data['settingModel']->setting_stock_group as $key => $value) {
 
          
 
@@ -238,6 +244,7 @@ class Stock extends Model
                             $totalCostPrice = $totalCostPrice + $price * $orderList->receipt_quantity;
 
                             $quantity = $quantity + $orderList->receipt_quantity;
+                           
                         }
                    
                 }
@@ -259,50 +266,80 @@ class Stock extends Model
 
         $price = 0;
         $totalCostPrice = 0;
-
         
-        foreach ($orderList as $stockList) {
-
-                foreach ($stockList->receipt_stock_cost as $key => $value) {
-                    $price = json_decode($stockList->stock_cost, true)[$key][$value]['price'];
-                }
-
-                if ($stockList->receipt_stock_cost_override) {
-
-                    foreach ($stockList->receipt_stock_cost_override as $key => $value) {
-
-                        if (Receipt::ReceiptCostOverrideType()[$value['type']] == 'percentage') {
-                            //percentage at checkout
-                            $price = $price - $value['value'];
-                            
-                        } 
-                        elseif(Receipt::ReceiptCostOverrideType()[$value['type']] == 'amount') {
-                            //minus the amount at checkout
-                            $price = $price - $value['value'];
-                        }
-                    }
-                    
-                }
-               
-                $price = $price * $stockList->receipt_quantity;
-           
-
-            $totalCostPrice = $totalCostPrice + $price;
+        foreach ($orderList as $receiptList) {
+            $totalCostPrice = $totalCostPrice + Stock::ReceiptTotal($receiptList);
         }
 
         return $totalCostPrice;
     }
 
-    public static function StockCostDefault($stock){
-        $stockCost = [];
-        
-        foreach ($stock->stock_cost as $key => $value) {
-            if ($value['default'] == 0) {
-                $stockCost = $value;
-                break;
+
+    public static function ReceiptTotal($receiptList)
+    {
+
+        $price = 0;
+        $totalCostPrice = 0;
+
+        if ($receiptList->receipt_stock_cost) {
+            foreach (json_decode($receiptList->receipt_stock_cost) as $key => $value) {
+                $price = json_decode($receiptList->stock_cost, true)[$key][$value]['price'];
             }
         }
+        
+        
 
-        return $stockCost;
+        if ($receiptList->receipt_stock_cost_override) {
+
+            foreach (json_decode($receiptList->receipt_stock_cost_override) as $keyOverride => $valueOverride) {
+
+
+                if (Receipt::ReceiptCostOverrideType()[$valueOverride->type] == 'percentage') {
+                    //percentage at checkout
+                    $price = $price - $valueOverride->value;
+                    
+                } 
+                elseif(Receipt::ReceiptCostOverrideType()[$valueOverride->type] == 'amount') {
+                    //minus the amount at checkout
+                    $price = $price - $valueOverride->value;
+                }
+            }
+            
+        }
+       
+        $price = $price * $receiptList->receipt_quantity;
+   
+
+        $totalCostPrice = $totalCostPrice + $price;
+
+        return $totalCostPrice;
     }
+
+    public static function GrossProfitTotal($orderList){
+    
+       $stockModel = New Stock();
+
+       $orderList->groupBy('stock_id');
+       
+        foreach ($orderList as $receiptList) {
+
+            foreach ($stockModel->stock_gross_profit as $key => $value) {
+                $stockModel->stock_gross_profit[$key] = $stockgrossProfit[$key] + $receiptList->stock_gross_profit[$key];
+            }
+
+            $stockModel->stock_id = $receiptList->stock_id;
+            $stockModel->stock_description = $receiptList->stock_description;
+        }
+
+        return $totalCostPrice;
+
+    }
+
+    public static function StockCostDefault($stock_cost){
+    
+        return $stock_cost[1][1]['price'];
+
+    }
+
+
 }

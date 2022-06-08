@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('person', function (Blueprint $table) {
             $table->bigIncrements('person_id');
             $table->bigInteger('person_user_id');  //user that added this account
-            
-            $table->bigInteger('persontable_id');
+
+            $table->bigInteger('persontable_id')->comment('Store id'); // store id
             $table->string('persontable_type')->comment('Store::Company');
 
             $table->json('person_name')->comment('person_firstname::person_lastname::person_preferred_name');
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('person_role')->nullable();
             $table->json('person_email')->nullable();
             $table->json('person_phone')->nullable();
-            
+
             $table->json('person_message_notification')->nullable()->comment('user_id, person_message_group => message_group');
             $table->json('person_blacklist')->nullable();
             $table->json('person_message_group')->nullable()->comment('create message group');

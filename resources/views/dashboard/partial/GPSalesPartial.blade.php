@@ -1,35 +1,20 @@
 @php
 
-
+$totalCostPrice = 0;
+$price = 0;
 $orderList = $data['orderList'];
 $orderList = $orderList->groupBy('stock_id');
 
 if (count($orderList) > 0) {
     foreach ($orderList as $receiptList) {
-        $totalCostPrice = 0;
-        $price = 0;
-        $totalStockNet = 0;
-        $totalactualPrice = 0;
+    
 
-        foreach ($receiptList as $receipt) {
-            if ($receipt->receipt_id) {
-                $defaultPrice = json_decode($receipt->stock_cost, true);
-                $actualPrice = json_decode($receipt->stock_gross_profit, true);
-                $stockNameJson = json_decode($receipt->stock_merchandise, true);
-                $stockName = $stockNameJson['stock_name'];
+        $totalCostPrice = Stock::OrderTotal($receiptList);
 
-                foreach ($defaultPrice as $key => $value) {
-                    if ($value['default'] == 0) {
-                        $totalStockNet = $totalStockNet + $value['price'];
-                    }
-                }
+        $quantity = $receiptList->count();
+        $rrpTotalCostPrice = $orderList->groupBy('stock_id')->count() * $orderList->groupBy('stock_id')->sum('stockGross_profit->rrp');
 
-                $totalactualPrice = $totalactualPrice + $actualPrice['actual'];
-                $quantity = $receiptList->count();
-            }
-        }
-
-        $totalGP = $totalStockNet - $totalactualPrice;
+        $totalGP = $rrpTotalCostPrice - $totalCostPrice;
 
         $GPpercentage = ($totalGP / $quantity) * 100;
 
@@ -87,7 +72,6 @@ if (count($orderList) > 0) {
 
 @endphp
 <div>
-    <div class="uk-card uk-card-default uk-card-body" style="height: 730px">
         <h3 class="uk-card-title">GP SALES</h3>
 
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
@@ -127,7 +111,5 @@ if (count($orderList) > 0) {
             </tbody>
 
         </table>
-      
-    </div>
-
+   
 </div>

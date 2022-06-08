@@ -24,25 +24,33 @@ class AccountFactory extends Factory
     public function definition()
     {
 
-        $accountable_type = $this->faker->randomElement($array = array ('Person','Company'));
+        $accountable_type = $this->faker->randomElement($array = array('Person', 'Company'));
 
         if ($accountable_type == 'Company') {
             $account_type = 1;
-        }
-        else if ($accountable_type == 'Person') {
+        } else if ($accountable_type == 'Person') {
             $account_type = 2;
-        } else{
+        } else {
             $account_type = 0;
         }
-       
-        
+
+        $account_blacklist = [
+            "type" => $this->faker->numberBetween($min = 0, $max = 1),
+            "description" => $this->faker->word,
+            "start_time" => "",
+            "end_time" => "",
+            "user_id" => [],
+            "blocked_access" => []
+        ];
+
+
         return [
-            'account_system_id' => $this->faker->numberBetween($min=1, $max=2),
-            'accountable_id' => $this->faker->numberBetween($min=1, $max=10),
+            'account_system_id' => $this->faker->numberBetween($min = 1, $max = 2),
+            'accountable_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'accountable_type' => $accountable_type,
             'account_type' => $account_type,
             'account_description' => $this->faker->sentence,
-           
+            'account_blacklist' => $this->faker->randomElement($array = array(NULL, $account_blacklist))
         ];
     }
 }

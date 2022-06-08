@@ -94,7 +94,7 @@ class StockController extends Controller
     public function Update(Request $request, $stock)
     {
 
-        $stockArray = $request->except('_token', '_method', 'stockroom');
+        $stockArray = $request->except('_token', '_method', 'warehouse');
  
         $stockModel = Stock::find($stock)->toArray();
  
@@ -107,10 +107,14 @@ class StockController extends Controller
         }
  
         foreach ((array)$request['stock_cost'] as $keystock_cost  => $stock_cost) {
-             foreach ($stock_supplier as $key => $value) {
+             foreach ($stock_cost as $key => $value) {
                  $stockModel['stock_cost'][$keystock_cost][$key]  = $value;
              }
          }
+
+         foreach ((array)$request['stock_cost_quantity'] as $keystock_cost_quantity  => $stock_cost_quantity) {
+            $stockModel['stock_cost_quantity'][$keystock_cost_quantity] =  $stock_cost_quantity;
+        }
  
         foreach ((array)$request['stock_merchandise'] as $keystock_merchandise  => $stock_merchandise) {
              $stockModel['stock_merchandise'][$keystock_merchandise]  = $stock_merchandise;
@@ -148,6 +152,9 @@ class StockController extends Controller
   
          $stockModel = $stockModel->except(['created_at', 'updated_at', 'deleted_at']);
          Stock::where('stock_id', $stock)->update($stockModel->toArray());
+
+       
+         Warehouse::where('warehouse_stock_id', $stock)->update($request->only('warehouse'));
  
          return redirect()->route('stock.edit', $stock);
  
@@ -158,7 +165,7 @@ class StockController extends Controller
     public function Destroy($stock)
     {
         Stock::destroy($stock);
-
+        Warehouse::where('warehouse_user_id',$stock)->delete();
         return redirect()->route('stock.index');
     }
 

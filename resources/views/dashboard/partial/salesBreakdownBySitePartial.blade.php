@@ -1,5 +1,5 @@
 @php
-$table = 'salesBreakdownBySitePartial';
+use App\Models\Stock;
 
 $totalCostPrice = 0;
 $price = 0;
@@ -9,23 +9,13 @@ $orderList = $orderList->groupBy('store_id');
 
 if (count($orderList) > 0) {
     foreach ($orderList as $receiptList) {
-        $totalCostPrice = 0;
-        $price = 0;
-        $i = 0;
-
-        foreach ($receiptList as $receipt) {
-            if ($receipt->receipt_id) {
-                $price = json_decode($receipt->stock_cost, true)[$receipt->receipt_stock_cost_id]['price'];
-                $totalCostPrice = $totalCostPrice + $price;
-
-                $i++;
-            }
-        }
+       
+        $totalCostPrice = Stock::OrderTotal($receiptList);
 
         $arraySiteBreakdown[] = [
-            'Number' => $receipt->store_id,
-            'Site' => $receipt->store_name,
-            'Sales' => $receiptList->count(),
+            'Number' => $receiptList->first()->store_id,
+            'Site' => $receiptList->first()->store_name,
+            'Sales' => $receiptList->first()->count(),
             'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2),
         ];
     }
@@ -40,8 +30,7 @@ if (count($orderList) > 0) {
 
 @endphp
 <div>
-    <div class="uk-card uk-card-default uk-card-body">
-        <h3 class="uk-card-title">SALES BREAKDOWN BY SITE</h3>
+    <h3 class="uk-card-title">SALES BREAKDOWN BY SITE</h3>
 
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
             <thead>
@@ -61,7 +50,4 @@ if (count($orderList) > 0) {
                 @endforeach
             </tbody>
         </table>
-        
-
-    </div>
 </div>

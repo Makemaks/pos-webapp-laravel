@@ -33,29 +33,29 @@ $totaliser = [
 
 @endphp
 
+
 <div>
-    <div class="uk-card uk-card-default uk-card-body">
-        <h3 class="uk-card-title">FIXED TOTAL</h3>
-        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
-            <thead>
+    <h3 class="uk-card-title">FIXED TOTAL</h3>
+    <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
+        <thead>
+            <tr>
+                <th>Totaliser</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($totaliser as $key => $item)
                 <tr>
-                    <th>Totaliser</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
+                    <td>{{ $key }}</td>
+                    <td>{{ $item['Quantity'] }}</td>
+                    <td>{{ $item['Total'] }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach ($totaliser as $key => $item)
-                    <tr>
-                        <td>{{ $key }}</td>
-                        <td>{{ $item['Quantity'] }}</td>
-                        <td>{{ $item['Total'] }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+            @endforeach
+        </tbody>
+    </table>
 
-        
-    </div>
-
+    
 </div>
+
+

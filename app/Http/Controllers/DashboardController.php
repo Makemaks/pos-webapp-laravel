@@ -14,6 +14,7 @@ use App\Models\Order;
 use App\Models\Receipt;
 use App\Models\Expense;
 use App\Models\Setting;
+use App\Models\Stock;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\App;
 
@@ -59,7 +60,7 @@ class DashboardController extends Controller
 
         $this->eat_in_eat_out = $datePeriod['eat_in_eat_out'];
 
-        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$datePeriod['started_at'], $datePeriod['ended_at']])->get();
+        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$datePeriod['started'], $datePeriod['ended']])->get();
 
         $this->storeList = Store::get();
 
@@ -74,6 +75,8 @@ class DashboardController extends Controller
             ->get();
 
         $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+
+        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->get();
 
         // If its export PDF / CSV
         if ($request->fileName) {
@@ -100,17 +103,23 @@ class DashboardController extends Controller
             if ($datePeriod['user_id']) {
 
                 $request->session()->flash('user', [
-                    'started_at' => $datePeriod['started_at'],
-                    'ended_at' => $datePeriod['ended_at'],
+                    'started_at' => $datePeriod['started'],
+                    'ended_at' => $datePeriod['ended'],
                     'user_id' => $datePeriod['user_id'],
+                    'title' => $datePeriod['title'],
                 ]);
             } elseif ($request->started_at && $request->ended_at) {
 
                 // if period/date range only
-
                 $request->session()->flash('date', [
-                    'started_at' => $datePeriod['started_at'],
-                    'ended_at' => $datePeriod['ended_at'],
+                    'started_at' => $datePeriod['started'],
+                    'ended_at' => $datePeriod['ended'],
+                    'title' => $datePeriod['title'],
+                ]);
+            } else {
+                // No Filters
+                $request->session()->flash('title', [
+                    'title' => $datePeriod['title'],
                 ]);
             }
 
@@ -158,7 +167,8 @@ class DashboardController extends Controller
             'expenseList' => $this->expenseList ?? null,
             'settingModel' => $this->settingModel ?? null,
             'pdfView' => $this->pdfView ?? null,
-            'csvView' => $this->csvView ?? null
+            'csvView' => $this->csvView ?? null,
+            'stockList' => $this->stockList ?? null
         ];
     }
 }

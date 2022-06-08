@@ -30,8 +30,6 @@ class UserController extends Controller
         $this->userList = User::Store('person_user_id', $this->userModel->user_id)
             ->paginate(20);
 
-
-
         return view('user.index', ['data' => $this->Data()]);
     }
 
@@ -45,10 +43,14 @@ class UserController extends Controller
     public function Store(Request $request)
     {
 
+        $validated = $request->validate([
+            'password' => 'required|min:8',
+        ]);
+
         // User Create
         $user = new User();
         $user->email = $request->email;
-        $user->password = Hash::make($request->password);
+        $user->password = Hash::make($validated['password']);
         $user->user_account_id = Auth::user()->user_account_id;
         $user->user_type = $request->user_type;
         $user->save();
@@ -115,15 +117,18 @@ class UserController extends Controller
 
     public function Edit($user)
     {
-        $this->userModel = User::Person('user_id', $user)->first();
+        $this->userModel = User::Employment('user_id', $user)->first();
         return view('user.edit', ['data' => $this->Data()]);
     }
 
     public function Update(Request $request, $user)
     {
+        $validated = $request->validate([
+            'password' => 'required|min:8',
+        ]);
 
         // Hashing Password
-        $password = Hash::make($request->password);
+        $password = Hash::make($validated['password']);
 
         // User Update
         $userSave = User::find($user);
@@ -190,7 +195,6 @@ class UserController extends Controller
     public function destroy($user)
     {
         $user_person_id = User::find($user)->user_person_id;
-
 
         User::destroy($user);
         Person::find($user_person_id)->delete();

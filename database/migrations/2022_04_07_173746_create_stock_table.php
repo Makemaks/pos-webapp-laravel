@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('stock', function (Blueprint $table) {
             $table->bigIncrements('stock_id');
-            
             $table->json('stock_cost')->nullable(); // as array
             $table->json('stock_cost_quantity')->nullable(); // as array
             $table->json('stock_supplier')->nullable(); // as array
@@ -26,6 +25,7 @@ return new class extends Migration
             $table->json('stock_nutrition')->nullable();
             $table->json('stock_web')->nullable();
             $table->json('stock_terminal_flag')->nullable();
+            $table->json('stock_manager_special')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

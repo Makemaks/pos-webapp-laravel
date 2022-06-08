@@ -11,17 +11,24 @@ if (count($orderList) > 0) {
             ->orderBy('created_at', 'desc')
             ->first();
 
-        if ($user->attendance_status == 0) {
+        if ($user == null) {
+            $attendance_status = 'Not Clocked In/Out Yet';
+            $date = 0;
+            $time = 0;
+        } elseif ($user->attendance_status == 0) {
             $attendance_status = 'CLOCKED IN';
-        }
-        if ($user->attendance_status == 1) {
+            $date = $user->created_at->format('d/m/Y');
+            $time = $user->created_at->format('H:i:s');
+        } elseif ($user->attendance_status == 1) {
             $attendance_status = 'CLOCKED OUT';
+            $date = $user->created_at->format('d/m/Y');
+            $time = $user->created_at->format('H:i:s');
         }
 
         $arraytimeAndAttendance[$userId] = [
             'Clerk' => json_decode($receiptList->first()->person_name)->person_firstname,
-            'Date' => $user->created_at->format('d/m/Y'),
-            'Time' => $user->created_at->format('H:i:s'),
+            'Date' => $date,
+            'Time' => $time,
             'Status' => $attendance_status,
         ];
     }
@@ -36,8 +43,7 @@ if (count($orderList) > 0) {
 
 @endphp
 <div>
-    <div class="uk-card uk-card-default uk-card-body">
-        <h3 class="uk-card-title">EMPLOYEE TIME AND ATTENDANCE</h3>
+    <h3 class="uk-card-title">EMPLOYEE TIME AND ATTENDANCE</h3>
 
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
             <thead>
@@ -58,7 +64,4 @@ if (count($orderList) > 0) {
                 @endforeach
             </tbody>
         </table>
-        
-
-    </div>
 </div>

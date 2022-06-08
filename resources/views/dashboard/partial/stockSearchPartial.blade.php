@@ -32,8 +32,7 @@ if (count($stockList) > 0) {
 
 @endphp
 <div>
-    <div class="uk-card uk-card-default uk-card-body">
-        <h3 class="uk-card-title">STOCK SEARCH</h3>
+    <h3 class="uk-card-title">STOCK SEARCH</h3>
         <div class="uk-margin search-form">
             <form class="uk-search uk-search-default">
                 <a href="" class="uk-search-icon-flip" uk-search-icon></a>
@@ -58,7 +57,4 @@ if (count($stockList) > 0) {
                 @endforeach
             </tbody>
         </table>
-
-        
-    </div>
 </div>

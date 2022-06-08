@@ -5,6 +5,7 @@
     use App\Helpers\StringHelper;
     use App\Models\Scheme;
     use App\Models\User;
+    use App\Models\Stock;
 
     $currency = "";
     $route = Str::before(Request::route()->getName(), '.');  
@@ -43,7 +44,7 @@
                 <tr>
                     <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$stock->stock_id}}</a></td>
                     <td>{{$stock->stock_merchandise['stock_name']}}</td>
-                    <td>{{$stock->stock_merchandise['master_plu']}}</td>
+                    <td>{{$stock->stock_merchandise['plu_id']}}</td>
                     <td>{{$stock->stock_merchandise['random_code']}}</td>
                     
                     <td>
@@ -72,9 +73,7 @@
                     <td>
                         @php
                             $cost = 0;
-                            /* foreach ($stock->stock_cost as $stock_cost){
-                                    $cost = MathHelper::FloatRoundUp($stock_cost['price'], 2);
-                            } */
+                            $cost = MathHelper::FloatRoundUp(Stock::StockCostDefault($stock->stock_cost), 2);
                            
                         @endphp
                        {{$cost}}
@@ -93,11 +92,7 @@
                 $price = 0;
                 $storeID = $stock->stock_store_id;
                 $image =  'stock/'.$storeID.'/'.$stock->image;    
-                foreach ($stock->stock_cost as $key => $value) {
-                    if ($value['default'] == 0) {
-                        $price = CurrencyHelper::Format($value['price']);  
-                    }
-                }
+                $cost = MathHelper::FloatRoundUp(Stock::StockCostDefault($stock->stock_cost), 2);
                 /* $schemeList = Scheme::stock('schemetable_id',  $stock->stock_id)->get(); */
             @endphp
 

@@ -1,93 +1,80 @@
 @php
 
-$table = 'specialsManagerPartial';
-$orderList = $data['orderSettingList'];
 
-$orderList = $orderList->groupBy('stock_id');
-
-if (count($orderList) > 0) {
-    foreach ($orderList as $stockId => $receiptList) {
-        $totalCostPrice = 0;
-        $price = 0;
-
-        foreach ($receiptList as $key => $receipt) {
-            if ($receipt->receipt_id) {
-                // product name
-                $stockNameJson = json_decode($receipt->stock_merchandise, true);
-                $stockName = $stockNameJson['stock_name'];
-
-                // category name
-                $category_id = json_decode($receipt->stock_merchandise, true)['category_id'];
-                $setting_stock_group = json_decode($receipt->setting_stock_group, true);
-                $kpcat = $setting_stock_group[$category_id]['description'];
-
-                // price 1 and 2
-                $stock_cost = json_decode($receipt->stock_cost, true);
-                $price_1 = $stock_cost[1]['price'];
-                $price_2 = $stock_cost[2]['price'];
-            }
-        }
-
-        $arraySpecialsManager[] = [
-            'PLU' => $stockId,
-            'NAME' => $stockName,
-            'PRICE1L1' => App\Helpers\MathHelper::FloatRoundUp($price_1, 2),
-            'PRICE2L2' => App\Helpers\MathHelper::FloatRoundUp($price_2, 2),
-            'KPCAT' => $kpcat,
-        ];
-    }
-
-    $arraySpecialsManager = collect($arraySpecialsManager)
-        ->sortBy('PLU')
-        ->toArray();
-} else {
-    $arraySpecialsManager[] = [
-        'PLU' => '',
-        'NAME' => '',
-        'PRICE1L1' => '',
-        'PRICE2L2' => '',
-        'KPCAT' => '',
-    ];
-
-    // dd($arraySpecialsManager);
-}
 @endphp
 <div>
-    @if ($arraySpecialsManager[0]['PLU'] !== '')
-        <div class="uk-card uk-card-default uk-card-body">
+    @if ($data['stockList']->whereNotNULL('stock_special_manager'))
+        <div>
             <h3 class="uk-card-title">SPECIALS MANAGER</h3>
 
             <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
                 <thead>
                     <tr>
-                        @foreach ($arraySpecialsManager[0] as $key => $item)
-                            <th>{{ $key }}</th>
-                        @endforeach
+                        <th>REF</th>
+                       
+                            <th>REF</th>
+                            <th>NAME</th>
+                            @for ($i = 0; $i < $data['settingModel']->setting_group['group_stock_cost']; $i++)
+                                <th>{{$i + 1}}</th>
+                            @endfor
+                            <th>KPCAT</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($arraySpecialsManager as $keyarraySpecialsManager => $itemarraySpecialsManager)
+                        
+                        
+                        
+                    @foreach ($data['stockList']->whereNotNULL('stock_special_manager') as $stockModel)
+                        @php
+                            $category_id = json_decode($data['settingModel']->stock_merchandise, true)['category_id'];
+                            $setting_stock_group = json_decode($data['settingModel']->setting_stock_group, true)[$category_id];
+                            
+
+                            $price = $stockModel->stock_cost[$j + 1][$i + 1]['price'];
+                        @endphp
                         <tr>
-                            @foreach ($itemarraySpecialsManager as $key => $item)
-                                <td>{{ $item }}</td>
-                            @endforeach
-                        </tr>
+                            <td>
+                                <button class="uk-button uk-button-danger uk-border-rounded">
+                                    {{ $stockModel->stock_id}}
+                                </button>
+                            </td>
+                            <td>
+                                {{$stockModel->stock_name}}
+                            </td>
+
+                            @for ($j=0; $j < count($data['stockModel']->stock_special_manager[1]); $j++)
+                                <td>
+                                    <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="{{$price}}" name="stock_cost[{{$j + 1}}][{{$i + 1}}][price]">
+                                    
+                                </td>
+                                
+                            @endfor
+
+                            <td>
+                                {{$setting_stock_group['description']}}
+                            </td>
+                        <tr>
+                            
                     @endforeach
+
+                       
+                    
                 </tbody>
             </table>
-            
-        @else
-            <div class="uk-card uk-card-default uk-card-body">
-                <h3 class="uk-card-title">SPECIALS MANAGER</h3>
-                <h6 style="">INSTRUCTIONS FOR USE</h6>
-                <p style="font-size: 12px">The Specials Manager widget is designed to allow limited access users to
-                    edit
-                    nominated fields of PLU's within defined PLU Ranges at a site level. <br> <br> To configure this
-                    widget
-                    please select a site from the Site Selecter at the top of the page and then click the settings
-                    link
-                    in
-                    the top right corner of this widget.</p>
+        </div>    
+    @else
+        <div>
+            <h3 class="uk-card-title">SPECIALS MANAGER</h3>
+            <h6>INSTRUCTIONS FOR USE</h6>
+            <p class="uk-text-tiny">The Specials Manager widget is designed to allow limited access users to
+                edit
+                nominated fields of PLU's within defined PLU Ranges at a site level. <br> <br> To configure this
+                widget
+                please select a site from the Site Selecter at the top of the page and then click the settings
+                link
+                in
+                the top right corner of this widget.</p>
+        </div>
     @endif
-</div>
 </div>

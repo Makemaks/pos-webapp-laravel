@@ -67,15 +67,30 @@ class User extends Authenticatable
             ->where($column, $filter);
     }
 
-    public static function Employment()
+    public static function AccountCompany($column, $filter)
     {
-        // user , person , employment
+        return User::leftJoin('person', 'person.person_id', 'user.user_person_id')
+            ->leftJoin('account', 'account_id', 'user.user_account_id')
+            ->leftJoin('store', 'store.store_account_id', 'account.account_id')
+            ->leftJoin('company', 'company_store_id', 'store.store_id')
+            ->where($column, $filter);
+    }
+
+    public static function Company($column, $filter)
+    {
+        return User::leftJoin('store', 'store.store_id', 'user.user_account_id')
+            ->leftJoin('company', 'company_store_id', 'store.store_id')
+            ->leftJoin('person', 'person.person_id', 'user.user_person_id')
+            ->leftJoin('address', 'address.addresstable_id', 'company.company_id')
+            ->where($column, $filter);
     }
 
     public static function Person($column, $filter)
     {
-        return User::leftJoin('person', 'person.person_id', 'user.user_person_id')
-            ->leftjoin('employment', 'employment.employment_user_id', 'user.user_id')
+
+        return User::leftJoin('store', 'store.store_id', 'user.user_account_id')
+            ->leftJoin('person', 'person.person_id', 'user.user_person_id')
+            ->leftjoin('address', 'address.addresstable_id', 'person.person_id')
             ->where($column, $filter);
     }
 
@@ -109,6 +124,16 @@ class User extends Authenticatable
         }
 
         return $user;
+    }
+
+    public static function Employment($column, $filter)
+    {
+        return User::leftJoin('person', 'person.person_id', 'user.user_person_id')
+            ->leftJoin('account', 'account_id', 'user.user_account_id')
+            ->leftJoin('store', 'store.store_account_id', 'account.account_id')
+            ->leftJoin('employment', 'employment.employment_user_id', 'user.user_id')
+            ->leftjoin('attendance', 'attendance.attendance_user_id', 'user.user_id')
+            ->where($column, $filter);
     }
 
     public static function UserType()

@@ -27,7 +27,7 @@ class ReceiptFactory extends Factory
         if ($count) {
             for ($i=0; $i < $count; $i++) { 
                 $receipt_stock_cost_override[$i + 1] = [
-                    "type" => $this->faker->numberBetween($min = 1, $max = 5),
+                    "type" => $this->faker->numberBetween($min = 0, $max = 1),
                     "value" => $this->faker->numberBetween($min = 1, $max = 5)
                 ];
             }

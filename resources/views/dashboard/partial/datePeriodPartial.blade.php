@@ -1,4 +1,5 @@
 @php
+$route = Str::before(Request::route()->getName(), '.');
 $periodArray = [
     'Today' => '',
     'Yesterday' => '',
@@ -12,9 +13,6 @@ $periodArray = [
 
 $employeeList = $data['clerkBreakdownOption'];
 $employeeList = $employeeList->groupBy('user_id');
-
-
-
 foreach ($employeeList as $key => $employee) {
     $employee_name = json_decode($employee[0]['person_name'])->person_firstname;
 
@@ -29,10 +27,9 @@ foreach ($employeeList as $key => $employee) {
     <script src="{{ asset('js/jsuites.js') }}"></script>
 @endpush
 
-<form action="{{ route('dashboard.index') }}" method="GET">
+<form action="{{ route($route . '.index') }}" method="GET">
     @csrf
     <div uk-grid>
-
 
         <div>
             <label class="uk-form-label" for="form-stacked-text">EMPLOYEE</label>
@@ -73,8 +70,7 @@ foreach ($employeeList as $key => $employee) {
 
     </div>
 
-    <div class="uk-margin-medium-top">
-
+    <div class="uk-margin">
         <div>
             <label class="uk-form-label" for="form-stacked-text"></label>
             <button class="uk-button uk-button-danger uk-border-rounded" type="submit">

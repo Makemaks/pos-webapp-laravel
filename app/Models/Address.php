@@ -13,6 +13,8 @@ class Address extends Model
 
     protected $table = 'address';
     protected $primaryKey = 'address_id';
+   
+       
 
     protected $attributes = [
         'address_line' => '{}',
@@ -38,25 +40,28 @@ class Address extends Model
         ->where($column, $filter);
     }
 
-    public static function Person($column, $filter){
-        return Address::
-        leftJoin('person', 'person.person_id', 'address.addresstable_id')
-        ->where($column, $filter);
+    public static function Person($column, $filter)
+    {
+        return Address::leftJoin('person', 'person.person_id', 'address.addresstable_id')
+            ->where($column, $filter);
+
+        // where person_type is 2 (customer)
     }
 
-    public static function Company($column, $filter){
-        return Address::
-        leftJoin('company', 'company.company_id', 'address.addresstable_id')
-        ->where($column, $filter);
+    public static function Company($column, $filter)
+    {
+        return Address::leftJoin('company', 'company.company_id', 'address.addresstable_id')
+            ->where($column, $filter);
     }
 
-    public static function Details($model){
+    public static function Details($model)
+    {
         $format_address =  '';
         $format_phone =  '';
         $format_email = '';
         $format_website = '';
 
-       if($model->address_line_1){
+        if ($model->address_line_1) {
             $format_address = $model->address_line_1;
        }
        if($model->address_line_2){
@@ -76,23 +81,23 @@ class Address extends Model
        }
        if($model->address_country){
             $format_address =  $format_address . ' . ' . $model->address_country;
-       }
+        }
 
-        if($model->address_phone_1){
+        if ($model->address_phone_1) {
             $format_phone = $model->address_phone_1;
         }
         if($model->address_phone_2){
             $format_phone =  $format_phone . StringHelper::StringSeparator() . $model->address_phone_2;
         }
 
-        if($model->address_email_1){
+        if ($model->address_email_1) {
             $format_email = $model->address_email_1;
         }
         if($model->address_email_2){
             $format_email =  $format_email . StringHelper::StringSeparator() . $model->address_email_2;
         }
 
-        if($model->address_website_1){
+        if ($model->address_website_1) {
             $format_website = $model->address_website_1;
         }
         if($model->address_website_2){
@@ -105,7 +110,7 @@ class Address extends Model
             'email' => $format_email,
             'website' => $format_website
         ];
-     }
+    }
 
      public function AddressType(){
          return [

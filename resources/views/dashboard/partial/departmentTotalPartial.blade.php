@@ -1,10 +1,9 @@
 @php
-$categoryData = App\Models\Stock::GroupCategoryBrandPlu($data, 1);
-$table = 'departmentTotalPartial';
+$categoryData = App\Models\Stock::GroupCategoryBrandPlu($data, 1, 'category_id');
+
 @endphp
 <div>
-    <div class="uk-card uk-card-default uk-card-body">
-        <h3 class="uk-card-title">DEPARTMENT TOTAL</h3>
+    <h3 class="uk-card-title">DEPARTMENT TOTAL</h3>
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
             <thead>
                 <tr>
@@ -23,6 +22,4 @@ $table = 'departmentTotalPartial';
                 @endforeach
             </tbody>
         </table>
-        
-    </div>
 </div>

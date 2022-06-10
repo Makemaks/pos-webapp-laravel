@@ -1,9 +1,10 @@
 @php
 
+use App\Models\Stock;
 $totalCostPrice = 0;
 $price = 0;
-$orderList = $data['orderList'];
-$orderList = $orderList->groupBy('stock_id');
+$orderList = $data['orderList']->groupBy('stock_id');
+
 
 if (count($orderList) > 0) {
     foreach ($orderList as $receiptList) {
@@ -12,15 +13,15 @@ if (count($orderList) > 0) {
         $totalCostPrice = Stock::OrderTotal($receiptList);
 
         $quantity = $receiptList->count();
-        $rrpTotalCostPrice = $orderList->groupBy('stock_id')->count() * $orderList->groupBy('stock_id')->sum('stockGross_profit->rrp');
+        $rrpTotalCostPrice = $quantity * json_decode($receiptList->first()->stock_gross_profit)->rrp;
 
         $totalGP = $rrpTotalCostPrice - $totalCostPrice;
 
         $GPpercentage = ($totalGP / $quantity) * 100;
 
         $arrayGPList[] = [
-            'Number' => $receipt->stock_id,
-            'Descriptor' => $stockName,
+            'Number' => $receiptList->first()->stock_id,
+            'Descriptor' => json_decode($receiptList->first()->stock_merchandise)->stock_name,
             'Profit' => App\Helpers\MathHelper::FloatRoundUp($totalGP, 2),
             'GP' => App\Helpers\MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
         ];
@@ -50,24 +51,7 @@ if (count($orderList) > 0) {
         'Profit' => '',
         'GP' => '',
     ];
-    $topGPList[] = [
-        'Number' => '',
-        'Descriptor' => '',
-        'Profit' => '',
-        'GP' => '',
-    ];
-    $bottomGPList[] = [
-        'Number' => '',
-        'Descriptor' => '',
-        'Profit' => '',
-        'GP' => '',
-    ];
-    $bottomGPListASC[] = [
-        'Number' => '',
-        'Descriptor' => '',
-        'Profit' => '',
-        'GP' => '',
-    ];
+  
 }
 
 @endphp
@@ -76,11 +60,7 @@ if (count($orderList) > 0) {
 
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
 
-            <thead>
-                <td>
-                    <h5>Top GP %</h5>
-                </td>
-            </thead>
+       
             <thead>
                 <tr>
                     @foreach ($arrayGPList[0] as $key => $item)
@@ -89,7 +69,10 @@ if (count($orderList) > 0) {
                 </tr>
             </thead>
             <tbody>
-                @foreach ($topGPList as $keyarrayGPList => $itemarrayGPList)
+                <tr>
+                    <td><h5>Top GP %</h5></td>
+                </tr>
+                @foreach ($arrayGPList as $keyarrayGPList => $itemarrayGPList)
                     <tr>
                         @foreach ($itemarrayGPList as $key => $item)
                             <td>{{ $item }}</td>
@@ -101,7 +84,7 @@ if (count($orderList) > 0) {
                     <td><h5>Bottom GP %</h5></td>
                 </tr>
 
-                @foreach ($bottomGPListASC as $keyarrayGPList => $itemarrayGPList)
+                @foreach ($arrayGPList as $keyarrayGPList => $itemarrayGPList)
                     <tr>
                         @foreach ($itemarrayGPList as $key => $item)
                             <td>{{ $item }}</td>

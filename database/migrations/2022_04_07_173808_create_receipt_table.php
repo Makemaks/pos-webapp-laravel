@@ -20,6 +20,7 @@ return new class extends Migration
             $table->bigInteger('receipttable_id');
             $table->string('receipttable_type');
 
+            $table->smallInteger('receipt_vat_id')->nullable(); 
             $table->bigInteger('receipt_stock_id')->comment('stock_cost');
             $table->json('receipt_stock_cost_override')->nullable()->comment('OverrideType::Amount');
 
@@ -30,7 +31,7 @@ return new class extends Migration
             $table->bigInteger('receipt_stock_offer')->nullable(); //customer
             
             $table->json('receipt_stock_cost')->nullable();
-            
+            $table->text('receipt_note')->nullable();
 
             $table->timestamps();
         });

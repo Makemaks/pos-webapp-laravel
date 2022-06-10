@@ -58,14 +58,14 @@
                         {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['category_id']]['description']}}
                     </td>
                     <td>
-                       @if ($stock->stock_merchandise['stock_vat'] == 'null')
+                       @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
                             @foreach ($data['settingModel']->setting_vat as $item)
                                 @if ($item['default'] == 0)
                                     {{$item['rate']}}
                                 @endif
                             @endforeach
                        @else
-                            {{$stock->stock_merchandise['stock_vat']}}
+                            {{$stock->stock_merchandise['stock_vat_id']}}
                        @endif
 
                     </td>

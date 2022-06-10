@@ -127,10 +127,10 @@
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">VAT</label>
                 
-                @isset($data['stockModel']->stock_merchandise['stock_vat'])
-                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_merchandise[stock_vat]', $data['stockModel']->stock_merchandise['stock_vat'])}}" name="stock_merchandise[stock_vat]">
+                @isset($data['stockModel']->stock_merchandise['stock_vat_id'])
+                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_merchandise[stock_vat_id]', $data['stockModel']->stock_merchandise['stock_vat_id'])}}" name="stock_merchandise[stock_vat_id]">
                     @else
-                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_merchandise[stock_vat]')}}" name="stock_merchandise[stock_vat]">
+                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_merchandise[stock_vat_id]')}}" name="stock_merchandise[stock_vat_id]">
                 @endisset
                 
             </div>

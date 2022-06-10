@@ -1,4 +1,4 @@
-<form action="{{ route('payment.store') }}" id="setup-form" data-secret="{{ $data['setupIntent']->client_secret }}" method="POST">
+<form action="{{ route('receipt.store') }}" id="setup-form" data-secret="{{ $data['setupIntent']->client_secret }}" method="POST">
     @csrf
     <input type="text" name="receipt_user_id" value="{{$receipt_user_id}}" hidden>
     

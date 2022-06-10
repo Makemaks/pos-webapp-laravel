@@ -20,10 +20,13 @@
             @include('stock.partial.indexPartial')
         @endisset
     </div>
+
     <div>
+
         <div class="uk-width-large@m" id="receipt-id">
             @include('receipt.partial.indexPartial')
         </div>
+       
     </div>
 </div>
 

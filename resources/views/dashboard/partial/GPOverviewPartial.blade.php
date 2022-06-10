@@ -1,71 +1,98 @@
-{{-- @php
+@php
 
-$table = 'GPOverviewPartial';
-$orderList = $data['orderList'];
-$orderList = $orderList->groupBy('store_id');
+use App\Models\Stock;
+$totalCostPrice = 0;
+$price = 0;
+$orderList = $data['orderList']->groupBy('stock_id');
+
 
 if (count($orderList) > 0) {
     foreach ($orderList as $receiptList) {
-        $totalCostPrice = 0;
-        $price = 0;
-        $totalStockProfit = 0;
-        $totalactualPrice = 0;
+    
 
-        foreach ($receiptList as $receipt) {
-            if ($receipt->receipt_id) {
-                $defaultPrice = json_decode($receipt->stock_cost, true);
-                $actualPrice = json_decode($receipt->stock_gross_profit, true);
+        $totalCostPrice = Stock::OrderTotal($receiptList);
 
-                foreach ($defaultPrice as $key => $value) {
-                    if ($value['default'] == 0) {
-                        $totalStockProfit = $totalStockProfit + $value['price'];
-                    }
-                }
+        $quantity = $receiptList->count();
+        $rrpTotalCostPrice = $quantity * json_decode($receiptList->first()->stock_gross_profit)->rrp;
 
-                $totalactualPrice = $totalactualPrice + $actualPrice['actual'];
-
-                $quantity = $receiptList->count();
-            }
-        }
-
-        // dd($totalStockProfit, $totalactualPrice, $quantity);
-
-        $totalGP = $totalStockProfit - $totalactualPrice;
+        $totalGP = $rrpTotalCostPrice - $totalCostPrice;
 
         $GPpercentage = ($totalGP / $quantity) * 100;
 
-        $arrayGPOverview[] = [
-            'GP %' => App\Helpers\MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
-            'Total GP' => App\Helpers\MathHelper::FloatRoundUp($totalGP, 2),
+        $arrayGPList[] = [
+            'Number' => $receiptList->first()->stock_id,
+            'Descriptor' => json_decode($receiptList->first()->stock_merchandise)->stock_name,
+            'Profit' => App\Helpers\MathHelper::FloatRoundUp($totalGP, 2),
+            'GP' => App\Helpers\MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
         ];
     }
+
+    $sortarraytopGPList = collect($arrayGPList)
+        ->sortBy('Profit')
+        ->reverse()
+        ->toArray();
+
+    $topGPList = array_slice($sortarraytopGPList, 0, 5);
+
+    $sortarraybottomGPList = collect($arrayGPList)
+        ->sortBy('Profit')
+        ->toArray();
+
+    $bottomGPList = array_slice($sortarraybottomGPList, 0, 5);
+
+    $bottomGPListASC = collect($bottomGPList)
+        ->sortBy('Profit')
+        ->reverse()
+        ->toArray();
 } else {
-    $arrayGPOverview[] = [
-        'GP %' => '',
-        'Total GP' => '',
+    $arrayGPList[] = [
+        'Number' => '',
+        'Descriptor' => '',
+        'Profit' => '',
+        'GP' => '',
     ];
+  
 }
+
 @endphp
 <div>
-    <h3 class="uk-card-title">GP OVERVIEW</h3>
+        <h3 class="uk-card-title">GP OVERVIEW</h3>
 
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
+
+       
             <thead>
                 <tr>
-                    @foreach ($arrayGPOverview[0] as $key => $item)
+                    @foreach ($arrayGPList[0] as $key => $item)
                         <th>{{ $key }}</th>
                     @endforeach
                 </tr>
             </thead>
             <tbody>
-                @foreach ($arrayGPOverview as $keyarrayGPOverview => $itemarrayGPOverview)
+                <tr>
+                    <td><h5>Top GP %</h5></td>
+                </tr>
+                @foreach ($arrayGPList as $keyarrayGPList => $itemarrayGPList)
                     <tr>
-                        @foreach ($itemarrayGPOverview as $key => $item)
+                        @foreach ($itemarrayGPList as $key => $item)
+                            <td>{{ $item }}</td>
+                        @endforeach
+                    </tr>
+                @endforeach
+              
+                <tr> 
+                    <td><h5>Bottom GP %</h5></td>
+                </tr>
+
+                @foreach ($arrayGPList as $keyarrayGPList => $itemarrayGPList)
+                    <tr>
+                        @foreach ($itemarrayGPList as $key => $item)
                             <td>{{ $item }}</td>
                         @endforeach
                     </tr>
                 @endforeach
             </tbody>
+
         </table>
+   
 </div>
- --}}

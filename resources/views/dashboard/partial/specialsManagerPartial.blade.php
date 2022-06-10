@@ -2,6 +2,8 @@
 
 
 @endphp
+
+
 <div>
     @if ($data['stockList']->whereNotNULL('stock_special_manager'))
         <div>
@@ -10,54 +12,53 @@
             <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
                 <thead>
                     <tr>
-                        <th>REF</th>
                        
                             <th>REF</th>
                             <th>NAME</th>
-                            @for ($i = 0; $i < $data['settingModel']->setting_group['group_stock_cost']; $i++)
+                            @for ($i = 0; $i < $data['settingModel']->setting_group['group_manager_special']; $i++)
                                 <th>{{$i + 1}}</th>
                             @endfor
                             <th>KPCAT</th>
-                        <th></th>
+                       
                     </tr>
                 </thead>
                 <tbody>
                         
-                        
-                        
-                    @foreach ($data['stockList']->whereNotNULL('stock_special_manager') as $stockModel)
-                        @php
-                            $category_id = json_decode($data['settingModel']->stock_merchandise, true)['category_id'];
-                            $setting_stock_group = json_decode($data['settingModel']->setting_stock_group, true)[$category_id];
-                            
+                    @php
+                        $stockList = $data['stockList']->whereNotNULL('stock_manager_special')->take(5);
+                    @endphp
 
-                            $price = $stockModel->stock_cost[$j + 1][$i + 1]['price'];
-                        @endphp
-                        <tr>
-                            <td>
-                                <button class="uk-button uk-button-danger uk-border-rounded">
-                                    {{ $stockModel->stock_id}}
-                                </button>
-                            </td>
-                            <td>
-                                {{$stockModel->stock_name}}
-                            </td>
+                  
 
-                            @for ($j=0; $j < count($data['stockModel']->stock_special_manager[1]); $j++)
+                  @foreach ($stockList as $stockModel)
+                      
+                            <tr>
                                 <td>
-                                    <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="{{$price}}" name="stock_cost[{{$j + 1}}][{{$i + 1}}][price]">
-                                    
+                                    <button class="uk-button uk-button-danger uk-border-rounded">
+                                        {{$stockModel->stock_id}}
+                                    </button>
                                 </td>
-                                
-                            @endfor
 
-                            <td>
-                                {{$setting_stock_group['description']}}
-                            </td>
-                        <tr>
+                                <td>
+                                    {{$stockModel->stock_merchandise['stock_name']}}
+                                </td>
+
+                                @for ($j=0; $j < count($stockModel->stock_manager_special); $j++)
+                                    <td>
+                                        @php
+                                            $price = $stockModel->stock_manager_special[$j + 1][1]['price'];
+                                        @endphp
+                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="{{$price}}" name="stock_cost[{{$j + 1}}][{{$i + 1}}][price]">
+                                        
+                                    </td>           
+                                @endfor
+
+                                <td>
+                                    {{$data['settingModel']->setting_stock_group[$stockModel->stock_merchandise['category_id']]['description']}}
+                                </td>
                             
+                            </tr>
                     @endforeach
-
                        
                     
                 </tbody>

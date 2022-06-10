@@ -1,6 +1,6 @@
 <div class="uk-margin uk-align-center" uk-spinner ></div>
 
-<form action="{{ route('payment.store') }}" id="setup-in-store" method="POST">
+<form action="{{ route('receipt.store') }}" id="setup-in-store" method="POST">
     @csrf
     <input type="text" name="receipt_user_id" value="{{$receipt_user_id}}" hidden>
 </form>

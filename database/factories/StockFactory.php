@@ -119,14 +119,16 @@ class StockFactory extends Factory
            
         }
 
-        $stock_manager_special = [];
-        for ($j=0; $j < 2; $j++) { 
-            
-            for ($i=0; $i < 1; $i++) { 
-                
-                $stock_manager_special[$j + 1][$i + 1] = $j + 1;
+
+        $stock_manager_special = $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 5)));
+
+        if ($stock_manager_special != NULL) {
+            $stock_manager_special = [];
+            for ($j=0; $j < 2; $j++) { 
+                $stock_manager_special[$j + 1][1] = ['price' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20)];
             }
         }
+       
        
 
         return [

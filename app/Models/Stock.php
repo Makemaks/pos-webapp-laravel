@@ -67,7 +67,7 @@ class Stock extends Model
             "outer_barcode": "",
             "qty_adjustment": "",
             
-            "stock_vat": "",
+            "stock_vat_id": "",
             "stock_name": "",
             "stock_description": "",
             "stock_quantity": "",
@@ -337,6 +337,7 @@ class Stock extends Model
 
     public static function StockCostDefault($stock_cost){
     
+       
         return $stock_cost[1][1]['price'];
 
     }

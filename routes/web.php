@@ -35,7 +35,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PlanManagerController;
 use App\Http\Controllers\SchemeController;
 use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ContactManagerController;
 use App\Http\Controllers\ReportController;
@@ -85,7 +85,7 @@ Route::resource('dashboard', DashboardController::class);
 Route::resource('report', ReportController::class);
 Route::resource('ticket', TicketController::class);
 Route::resource('warehouse', WarehouseController::class);
-Route::resource('payment', PaymentController::class);
+Route::resource('receipt', ReceiptController::class);
 
 // Route::get('mail/', [MailController::class, 'Index'])->name('mail.index');
 // Route::post('mail/send', [MailController::class, 'Send'])->name('mail.send');

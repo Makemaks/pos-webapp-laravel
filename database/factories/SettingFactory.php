@@ -203,7 +203,8 @@ class SettingFactory extends Factory
         $isoCount = count(CountryHelper::ISO());
         $setting_group = [
             'default_country' => $this->faker->numberBetween($min = 1, $max = $isoCount),
-            'group_stock_cost' => $this->faker->numberBetween($min = 5, $max = 10)
+            'group_stock_cost' => 5,
+            'group_manager_special' => 2
         ];
 
       
@@ -212,7 +213,7 @@ class SettingFactory extends Factory
 
 
         return [
-            'setting_store_id' => $this->faker->numberBetween($min = 1, $max = 10),
+            'setting_store_id' => $this->faker->numberBetween($min = 1, $max = 1),
 
             'setting_api' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
@@ -234,7 +235,6 @@ class SettingFactory extends Factory
             'setting_key_type' => $setting_key_type,
             'setting_group' => $setting_group,
             
-
         ];
     }
 }

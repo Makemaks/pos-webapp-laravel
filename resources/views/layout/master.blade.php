@@ -75,7 +75,15 @@ $route = Str::before(Request::route()->getName(), '.');
 
     <div>
       
-            <div uk-grid>
+        @php
+            $uk_grid = '';
+            if(Auth::check()){
+                if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin' ) {
+                   $uk_grid = 'uk-grid';
+                }
+            }
+        @endphp
+            <div {{$uk_grid}}>
 
                 @auth
                    @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin' )

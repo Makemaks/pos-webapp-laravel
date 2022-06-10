@@ -39,6 +39,14 @@ $route = Str::before(Request::route()->getName(), '.');
                 </div>
             </div>
 
+             {{-- Plu 0 sales --}}
+             <div>
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.pluSalesPartial')
+                    @include('document.button', ['table' => 'pluSalesPartial'])
+                </div>
+            </div>
+
             {{-- TOP CUSTOMERS --}}
             <div>
                 <div class="uk-card uk-card-default uk-card-body">
@@ -92,14 +100,6 @@ $route = Str::before(Request::route()->getName(), '.');
                 <div class="uk-card uk-card-default uk-card-body">
                     @include('dashboard.partial.employeePartial')
                     @include('document.button', ['table' => 'employeePartial'])
-                </div>
-            </div>
-
-            {{-- Plu 0 sales --}}
-            <div>
-                <div class="uk-card uk-card-default uk-card-body">
-                    @include('dashboard.partial.pluSalesPartial')
-                    @include('document.button', ['table' => 'pluSalesPartial'])
                 </div>
             </div>
 

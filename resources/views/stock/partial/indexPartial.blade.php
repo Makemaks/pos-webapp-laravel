@@ -59,8 +59,8 @@
                         @endif
                     </td>
                     <td>
-                       @if ($stock->stock_merchandise['stock_vat'])
-                         {{$stock->stock_merchandise['stock_vat']}}
+                       @if ($stock->stock_merchandise['stock_vat_id'])
+                         {{$stock->stock_merchandise['stock_vat_id']}}
                        @else
                             @foreach ($data['settingModel']->setting_vat as $item)
                                 @if ($item['default'] == 0)
@@ -72,11 +72,11 @@
                     </td>
                     <td>
                         @php
-                            $cost = 0;
-                            $cost = MathHelper::FloatRoundUp(Stock::StockCostDefault($stock->stock_cost), 2);
+                            $price = 0;
+                            $price = MathHelper::FloatRoundUp(Stock::StockCostDefault($stock->stock_cost), 2);
                            
                         @endphp
-                       {{$cost}}
+                       {{$price}}
                     </td>
                     {{-- <td>{{$stock->stock_merchandise['stock_quantity']}}</td> --}}
                 </tr>
@@ -92,7 +92,7 @@
                 $price = 0;
                 $storeID = $stock->stock_store_id;
                 $image =  'stock/'.$storeID.'/'.$stock->image;    
-                $cost = MathHelper::FloatRoundUp(Stock::StockCostDefault($stock->stock_cost), 2);
+                $price = MathHelper::FloatRoundUp(Stock::StockCostDefault($stock->stock_cost), 2);
                 /* $schemeList = Scheme::stock('schemetable_id',  $stock->stock_id)->get(); */
             @endphp
 

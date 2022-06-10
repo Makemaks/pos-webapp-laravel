@@ -22,7 +22,7 @@
 
     // Set up a payment
     payment: function(data, actions) {
-      return actions.payment.create({
+      return actions.receipt.create({
         transactions: [{
           amount: {
             total: '0.01',
@@ -33,7 +33,7 @@
     },
     // Execute the payment
     onAuthorize: function(data, actions) {
-      return actions.payment.execute().then(function() {
+      return actions.receipt.execute().then(function() {
         // Show a confirmation message to the buyer
         window.alert('Thank you for your purchase!');
       });

@@ -42,11 +42,11 @@
                     </ul>
                     <ul class="uk-switcher uk-margin">
                         @if (User::UserType()[Auth::user()->user_type] == 'Customer')
-                            <li>@include('payment.partial.cardPartial')</li>
-                            <li>@include('payment.partial.paypalPartial')</li>
-                            <li>@include('payment.partial.walletPartial')</li>
+                            <li>@include('receipt.partial.cardPartial')</li>
+                            <li>@include('receipt.partial.paypalPartial')</li>
+                            <li>@include('receipt.partial.walletPartial')</li>
                         @else
-                            <li>@include('payment.partial.storePaymentPartial')</li>
+                            <li>@include('receipt.partial.storePaymentPartial')</li>
                         @endif
                     </ul>
 
@@ -55,6 +55,6 @@
             </div>     
         @endif
             
-        @include('payment.partial.merchantPartial')
+        @include('receipt.partial.merchantPartial')
 </div>
 @endsection

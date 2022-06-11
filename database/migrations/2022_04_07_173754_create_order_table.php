@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('order', function (Blueprint $table) {
             $table->bigIncrements('order_id');
-            $table->bigInteger('order_user_id')->comment('customer');
+            $table->bigInteger('ordertable_id')->nullable()->comment('customer');
+            $table->string('ordertable_type')->nullable()->comment('company::user');
             $table->tinyInteger('order_status')->comment('cancelled::refunded'); 
             $table->json('order_offer')->nullable();
             $table->smallInteger('order_setting_pos')->nullable();

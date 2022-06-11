@@ -43,6 +43,8 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\WarehouseController;
 
+
+use App\Http\Controllers\API\GatewayAPIController;
 use App\Http\Controllers\API\ChartAPIController;
 use App\Http\Controllers\API\CartAPIController;
 use App\Http\Controllers\API\SchemeAPIController;
@@ -136,6 +138,7 @@ Route::get('menu/order/', [MenuController::class,'Order'])->name('menu.order');
 Route::get('menu/person/', [MenuController::class,'Person '])->name('menu.person');
 
 Route::apiResources([
+    'gateway-api' => GatewayAPIController::class,
     'chart-api' => ChartAPIController::class,
     'cart-api' => CartAPIController::class,
     'scheme-api' => SchemeAPIController::class,

@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 
 use App\Models\Setting;
 use App\Models\Product;
-use App\Models\Scheme;
+use App\Models\Company;
 use App\Models\User;
 use App\Models\Stripe;
 use App\Models\Store;
@@ -74,13 +74,13 @@ class ReceiptController extends Controller
     public function create(Request $request)
     {
 
-        $this->validate($request, [
+       /*  $this->validate($request, [
            
             'receipt_user_id' => 'required',   
 
         ], [
             'required' => 'This field is required',
-        ]);
+        ]); */
 
         $this->Init();
         
@@ -92,18 +92,6 @@ class ReceiptController extends Controller
         $this->userModel = User::Person('user_id', $request['receipt_user_id'])
         ->first();
 
-        if ($this->userModel->person_stripe_customer_id == NULL) {
-            $stripe_customer = $this->stripe->customers->create([
-                'email' => $this->userModel->email
-            ]);
-
-            Person::where('person_id', $this->userModel->person_id)->update(['person_stripe_customer_id' => $stripe_customer->id]);
-
-            $this->userModel = User::Person('user_id', $request['receipt_user_id'])
-            ->first();
-
-        }
-    
 
         if (User::UserType()[Auth::user()->user_type] == 'Customer') {
             $this->SetUpStripe();
@@ -198,24 +186,23 @@ class ReceiptController extends Controller
 
     private function Init(){
 
-        $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)
-        ->first();
-       
-       
-        $this->settingModel = Setting::where('setting_account_id', $this->userModel->person_account_id)->first();
+        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+            ->first();
 
-       /*  if (User::UserType()[Auth::user()->user_type] == "Super Admin") {
-            $this->setting_stripe_key = env('STRIPE_KEY', false);
-            $this->setting_stripe_secret = env('STRIPE_SECRET', false);
+        $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
+        
+        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+
+        if (User::UserType()[Auth::user()->user_type] == "Super Admin") {
+           
         }
         else{
-            $this->setting_stripe_key = $this->settingModel->setting_stripe_key;
-            $this->setting_stripe_secret = $this->settingModel->setting_stripe_secret;
-        } */
+            
+        }
 
        
 
-       /*  if ($this->userModel->person_stripe_customer_id == NULL) {
+       if ($this->userModel->person_stripe_customer_id == NULL) {
             $stripe_customer = $this->stripe->customers->create([
               'email' => Auth::user()->email
             ]);
@@ -224,7 +211,8 @@ class ReceiptController extends Controller
             $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)
             ->first();
 
-        } */
+        }
+
 
     }
 
@@ -237,10 +225,8 @@ class ReceiptController extends Controller
     }
 
     Private function SetUpStripe(){
-        $this->setting_stripe_key = env('STRIPE_KEY', false);
-        $this->setting_stripe_secret = env('STRIPE_SECRET', false);
-
-        $this->stripe = new \Stripe\StripeClient($this->setting_stripe_secret);
+       
+        $this->stripe = new \Stripe\StripeClient($this->settingModel->setting_stripe_secret);
 
         $setupIntent = $this->stripe->setupIntents->create([
             'payment_method_types' => ['card'],

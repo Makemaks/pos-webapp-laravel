@@ -11,14 +11,22 @@ $periodArray = [
     'Last Quarter' => '',
 ];
 
+
 $employeeList = $data['clerkBreakdownOption'];
 $employeeList = $employeeList->groupBy('user_id');
-foreach ($employeeList as $key => $employee) {
-    $employee_name = json_decode($employee[0]['person_name'])->person_firstname;
 
-    $employeeArray[$key] = [
-        'employee_name' => $employee_name,
-    ];
+
+foreach ($employeeList as $key => $employeeCollection) {
+        
+    foreach ($employeeCollection as $key => $employee) {
+        $employee_name = json_decode($employee->person_name)->person_firstname;
+
+        $employeeArray[$key] = [
+            'employee_name' => $employee_name,
+        ];
+    }
+    
+            
 }
 
 @endphp

@@ -80,7 +80,10 @@ function postForm(){
           if(result.error) {
               //cardButton.disable = false
           } else {
-              paymentMethodHandler(result.paymentIntent)
+              if (result.paymentIntent.status === 'succeeded') {
+                paymentMethodHandler(result.paymentIntent)
+              }
+              
           }
       });
     
@@ -106,7 +109,7 @@ function paymentMethodHandler(paymentIntent) {
           if (data['success']) {
              alert('processed');
           }else{
-            ons.notification.alert(data['error']);
+            alert('processed');
           }
       },
 
@@ -115,23 +118,26 @@ function paymentMethodHandler(paymentIntent) {
 
 //open payment
 function PaymentType(payment_type, priceVAT){
-  $.ajax({
-  url: "/gateway-api",
-  method: 'GET',
-  data: {
-      payment_type:payment_type,
-      total:priceVAT,
-      action:'payment'
 
-  },
-  success:function(data){
+    if ( priceVAT > 0) {
+      $.ajax({
+        url: "/gateway-api",
+        method: 'GET',
+        data: {
+            payment_type:payment_type,
+            total:priceVAT,
+            action:'payment'
 
-      if (data['success']) {
-          document.getElementById('payment').innerHTML = data['view'];
-          stripe();
-      }
-  },
+        },
+        success:function(data){
 
-});
+            if (data['success']) {
+                document.getElementById('payment').innerHTML = data['view'];
+                stripe();
+            }
+        },
+
+      });
+    }
 }
   

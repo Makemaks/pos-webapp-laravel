@@ -4,7 +4,7 @@
 @endphp
 
 <div class="uk-margin uk-height-large">
-    <form action="/charge" method="post" id="setup-form" data-secret="{{Session::get('CLIENT_SECRET')}}">
+    <form id="setup-form" data-secret="{{Session::get('CLIENT_SECRET')}}">
         @csrf
 
         {{-- data-stripe-publishable-key="{{ Session::get('STRIPE_KEY') }}" --}}
@@ -26,7 +26,7 @@
         </div>
           
         <div class="uk-margin-medium">
-            <button onclick="postForm()" class="uk-box-shadow-small uk-width-expand uk-text-lead uk-light uk-border-rounded uk-button uk-button-danger" uk-icon="icon: tag">
+            <button type="button" onclick="postForm()" class="uk-box-shadow-small uk-width-expand uk-text-lead uk-light uk-border-rounded uk-button uk-button-danger" uk-icon="icon: tag">
                 {{ CurrencyHelper::Format( SESSION::GET('GRAND_TOTAL') )}}
             </button>
         </div>

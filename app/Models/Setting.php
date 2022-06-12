@@ -405,13 +405,6 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingPaymentGatewayAPI()
-    {
-        return [
-            ['name' => 'stripe', 'key' => '', 'secret' => ''],
-        ];
-    }
-
     public static function SettingEventLoactaion()
     {
         return [

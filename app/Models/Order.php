@@ -44,7 +44,7 @@ class Order extends Model
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
-            ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
+            ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id')
             ->select('order.*', 'receipt.*', 'stock.*', 'user.*', 'person.*', 'order.created_at as order_created_at');
     }
@@ -53,7 +53,7 @@ class Order extends Model
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
-            ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
+            ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id');
     }
 

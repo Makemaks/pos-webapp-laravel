@@ -53,6 +53,9 @@ class HomeController extends Controller
        
     }
 
+    public function store(){
+        return redirect('home.index');
+    }
     
     private function init(){
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)

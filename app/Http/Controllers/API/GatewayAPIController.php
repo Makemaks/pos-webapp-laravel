@@ -48,7 +48,7 @@ class GatewayAPIController extends Controller
  
        if ($request['action'] == 'payment') {
 
-            $setting_payment_gateway = collect($this->settingModel->setting_api)->where('type', 1)->first(); 
+            $setting_payment_gateway = collect($this->settingModel->setting_api)->where('type', 0)->first(); 
             $request->session()->flash('STRIPE_KEY', $setting_payment_gateway['key']);
 
             $stripe = \Stripe\Stripe::setApiKey($setting_payment_gateway['secret']);
@@ -79,7 +79,7 @@ class GatewayAPIController extends Controller
 
        elseif($request['action'] == 'process'){
 
-            $setting_payment_gateway = $this->settingModel->setting_payment_gateway[$request->session()->get('view')]; 
+           
 
             $stripeIntent = json_decode($request['model']);
 
@@ -174,20 +174,7 @@ class GatewayAPIController extends Controller
    public function store(Request $request)
    {
 
-    $setting_payment_gateway = $this->settingModel->setting_payment_gateway[$request['view']]; 
- 
-
-        Stripe\Stripe::setApiKey(env($setting_payment_gateway['secret']));
-        Stripe\Charge::create ([
-                "amount" => 100 * 150,
-                "currency" => "inr",
-                "source" => $request->stripeToken,
-                "description" => "Making test payment." 
-        ]);
-
-        Session::flash('success', 'Payment has been successfully processed.');
-        
-        return back();
+   
    }
 
    /**

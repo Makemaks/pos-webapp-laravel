@@ -42,19 +42,6 @@
                             $price = $cartItem['price'] * $cartItem['quantity'];
                             $totalPrice = $price + $totalPrice;
     
-                            //scheme
-                        /*  $schemeProductList = Scheme::Product('schemetable_id', $cartItem['product_id'])->get();
-                            if ($schemeProductList->count() >= 1) {
-                                $discount['value'] = '';
-                                $discount['symbol'] = '';
-    
-                                $schemeModel = $schemeProductList->where('scheme_isMain', 1)->first();
-                                if ($schemeModel) {
-                                    $discount = Plan::CalculatePlanType($schemeModel);
-                                    $totalPrice = $totalPrice - $discount['value'];
-                                }
-                            } */
-    
                             if ($loop->last && isset($data['calculate_vat'])) {
                                 $priceVAT = MathHelper::VAT($data['userModel']->store_vat, $totalPrice);
                             } else {
@@ -75,15 +62,7 @@
                                     @endif
                                     </p>
                                 </td>
-                                {{-- <td>
-                                
-                                        @include('partial.controlsPartial',
-                                        [
-                                            'cartValue' => $cartKey,
-                                            'quantity' => $cartItem['quantity']
-                                        ])
-                                
-                                </td> --}}
+                               
                                 <td>
                                     {{CurrencyHelper::Format($cartItem['price'])}}
                                 </td>
@@ -91,12 +70,7 @@
                                     <button type="button" id="deleteID-{{$cartKey}}" onclick="Delete({{$cartKey}})" class="uk-text-danger" uk-icon="trash">
                                     </button>
                                 </td>
-                                {{-- <td>
-                                    <button type="button" class="uk-button uk-button-default uk-border-rounded" onclick="GetScheme({{$cartItem['product_id']}})">
-                                        <span uk-icon="icon: star"></span>
-                                    <span class="uk-label"> {{$schemeProductList->count()}}</span>
-                                    </button>
-                                </td> --}}
+                                
                             </tr>
                     @endforeach
     

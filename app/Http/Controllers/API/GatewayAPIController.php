@@ -53,10 +53,8 @@ class GatewayAPIController extends Controller
 
             $stripe = \Stripe\Stripe::setApiKey($setting_payment_gateway['secret']);
 
-
             if ($request['total'] > 0) {
 
-               
                 $total = MathHelper::FloatRoundUp($request['total'], $decimal = 1);
                 $grandTotal = str_replace(".","",$total);
 

@@ -15,7 +15,6 @@
             </div>
            {{--  <div class="w3-border-bottom w3-width-100"></div> --}}
         </div>
-        
       
         <div class='card uk-margin uk-input' id="card-element">
             <!-- a Stripe Element will be inserted here. -->

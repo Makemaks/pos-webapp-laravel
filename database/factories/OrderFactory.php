@@ -27,7 +27,8 @@ class OrderFactory extends Factory
             ];
         }
         return [
-            'order_user_id' => $this->faker->numberBetween($min = 1, $max = 2),
+            'ordertable_id' => $this->faker->numberBetween($min = 1, $max = 2),
+            'ordertable_type' => $this->faker->randomElement($array = array( 'User', 'Company' )),
             'order_status' => $this->faker->numberBetween($min = 0, $max = 7),
             'order_type' => $this->faker->numberBetween($min = 0, $max = 1), //online,takeaway
             'order_store_id' =>  $this->faker->numberBetween($min=1, $max=1),

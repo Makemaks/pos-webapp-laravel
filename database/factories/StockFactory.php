@@ -75,7 +75,7 @@ class StockFactory extends Factory
             "unit_size" => $this->faker->numberBetween($min = 1, $max = 20),
 
             "outer_barcode" => $this->faker->ean13,
-            "stock_vat" => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 5))),
+            "stock_vat_id" => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 5))),
             'stock_name' => $this->faker->word,
             'stock_description' => $this->faker->paragraph,
             "set_menu" => $this->faker->numberBetween($min = 1, $max = 5),

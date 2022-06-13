@@ -24,7 +24,7 @@ class SettingFactory extends Factory
         $setting_payment_gateway = [
             [
                 'name' => 'stripe',
-                'type' => $this->faker->numberBetween($min=1, $max=5),
+                'type' => 0,
                 'key' => 'pk_test_51IT1oKIsAyzPkVnu6KvDEOeNtomWeqwyet5eQ54q0rRYfnAVwOuwGCDPto5LGzIPzRQmL5bKzFExUivkWqBP3pVx00kyCqcZh4',
                 'secret' => 'sk_test_51IT1oKIsAyzPkVnuXXLmnfXAgSX5G54u4lnyVFyOjp3pTvruMvEeSN3vl09t3PaGURWcdAEAw7krPIY9wVSncvew004DzmhzPK'
             ],

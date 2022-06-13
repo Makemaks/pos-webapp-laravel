@@ -83,20 +83,18 @@ $route = Str::before(Request::route()->getName(), '.');
                 }
             }
         @endphp
-            <div {{$uk_grid}}>
 
-                @auth
-                   @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin' )
-                        <div class="uk-width-auto@m uk-background-secondary" uk-height-viewport>
-                            <div class="uk-container uk-container-expand uk-margin-top">
-                                @include('partial.menuPartial')
-                            </div>
-                        </div>
-                   @endif
-                @endauth
+       
+            <div uk-grid>
+
+                <div class="uk-width-auto@m uk-background-secondary" uk-height-viewport>
+                    <div class="uk-container uk-container-expand uk-margin-top">
+                        @include('partial.menuPartial')
+                    </div>
+                </div>
 
             
-                <div class="uk-container uk-container-expand uk-width-expand@m uk-margin-top">
+                <div class="uk-width-expand@m uk-container uk-container-expand uk-margin-top">
                     @yield('content')
                 </div>
             </div>

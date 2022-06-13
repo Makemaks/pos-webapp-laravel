@@ -8,6 +8,11 @@ class MathHelper{
         return round($float, $decimalPlace);
     }
 
+    public static function StripeRoundUp(float $float){
+        $amount = ($float * 100);
+        return $amount;
+    }
+
     public static function VAT(float $vat, float $price){
         $vatToPay = ($vat / 100) * $price;
         return $price + $vatToPay;
@@ -18,5 +23,7 @@ class MathHelper{
         $discount = ($discount / 100) * $price;
         return $price - $discount;
     }
+
+
   
 }

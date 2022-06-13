@@ -1,4 +1,4 @@
-<nav class="uk-navbar-container uk-margin" uk-navbar>
+<nav class="uk-navbar-container uk-margin" uk-navbar hidden>
     <div class="uk-navbar-left">
 
         <ul class="uk-navbar-nav">
@@ -23,6 +23,10 @@
                 <input class="uk-input uk-form-width-large" type="text" placeholder="Input" autofocus id="barcodeinputID" onchange="GetInput(this)">
                 <button class="uk-button uk-button-default" uk-icon="icon: search"></button>
             </form>
+
+           {{--  <div>
+                <button type="button" class="uk-border-rounded uk-button uk-button-default" uk-icon="icon: search" onclick="SetFocus('barcode_search')"></button>
+            </div> --}}
         </div>
 
         

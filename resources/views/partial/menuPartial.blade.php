@@ -61,9 +61,8 @@
         ];
 @endphp
 
-
 <div>
-    <ul  class="uk-nav-default uk-nav-parent-icon" uk-nav>
+    <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
         
             @foreach ( $arrayAdminMenu as $key => $arrayMenu)
                 

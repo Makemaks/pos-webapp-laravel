@@ -22,7 +22,6 @@
         autocomplete: true,
         lazyLoading: true,
         placeholder: @json($placeholder),
-        width: '280px',
         data:  @json($searchArray),
         onload: function GetElement(){
             document.getElementById('hiddenInputID').value = "";

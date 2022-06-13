@@ -55,8 +55,10 @@ class GatewayAPIController extends Controller
 
             if ($request['total'] > 0) {
 
-                $total = MathHelper::FloatRoundUp($request['total'], $decimal = 1);
-                $grandTotal = str_replace(".","",$total);
+                //$total = MathHelper::FloatRoundUp($request['total'], $decimal = 1);
+                //$grandTotal = str_replace(".","",$total);
+
+                $grandTotal =  MathHelper::StripeRoundUp($request['total']);
 
                 $setupIntent = \Stripe\PaymentIntent::create([
                     'amount' => $grandTotal,
@@ -83,7 +85,9 @@ class GatewayAPIController extends Controller
 
             if ($stripeIntent->status == 'succeeded') {
 
-                if (count(json_decode($request['stockList'])) > 0) {
+                if (Session::has('user-session-'.Auth::user()->user_id. '.cartList')) {
+
+                    
                     $orderInput = [
                         'order_account_id' => $this->userModel->user_account_id,
                         'order_user_id' => $this->userModel->user_id,
@@ -92,6 +96,11 @@ class GatewayAPIController extends Controller
                     $order_id = Order::insertGetId($orderInput);
             
                    
+                    if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList')){
+                        //remove session
+                        $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList.'.$receipt);
+                    }
+
                     $this->stockList = Stock::whereIn('stock_id', json_decode($request['stockList']))->get();
                     $this->sessionStockList = collect(json_decode($request['stockList']));
                     $quantity = $this->sessionStockList['sessionStockList']->countBy()->pull($stock->stock_id);

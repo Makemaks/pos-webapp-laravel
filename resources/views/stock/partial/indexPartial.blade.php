@@ -85,7 +85,7 @@
     </table>
 @else
     
-    <div class="uk-grid-small uk-grid-match uk-child-width-1-4@m uk-child-width-1-4@s" uk-grid>
+    <div class="uk-grid-collapse uk-child-width-1-3@m" uk-grid>
         @foreach ($data['stockList'] as $stock)
 
             @php
@@ -97,26 +97,25 @@
             @endphp
 
             <div>
-                <div class="uk-card uk-card-default uk-card-small uk-card-body">
-                      
-
-                    <a class="uk-link-reset" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}', '{{$price}}')">
-                        <div class="uk-padding-small" style="background-color: #{{StringHelper::getColor()}}">
-                            
-                            <div class="uk-text-center uk-light">
-                                <div class="uk-text-small">{{$stock->stock_merchandise['stock_name']}}</div>
-                                <div class="uk-text-meta uk-margin-remove-top">{{$stock->stock_brand}}</div>
-                                <div class="uk-text-small">
-                                    {{$currency}}{{$price}}
-                                    {{-- @if ($schemeList->count() > 0)
-                                        <span class="uk-text-danger">*</span>
-                                    @endif --}}
-                                </div>
+                
+                <a class="uk-link-reset" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}', '{{$price}}')">
+                    <div class="uk-height-small uk-text-center uk-light" style="background-color: #{{StringHelper::getColor()}}">
+                    
+                        <div class="">
+                            <div class="uk-text-small">{{$stock->stock_merchandise['stock_name']}}</div>
+                            <div class="uk-text-meta uk-margin-remove-top">{{$stock->stock_brand}}</div>
+                            <div class="uk-text-small">
+                                {{$currency}}{{$price}}
+                                {{-- @if ($schemeList->count() > 0)
+                                    <span class="uk-text-danger">*</span>
+                                @endif --}}
                             </div>
                         </div>
-                    </a>
+                        
+                    </div>
+                </a>
 
-                </div>
+                
             </div>
     
         @endforeach

@@ -21,7 +21,7 @@ class HomeController extends Controller
     private $stockList;
     private $authenticatedUser;
     private $categoryList;
-
+    private $userList;
 
     
     private $storeModel;
@@ -44,8 +44,15 @@ class HomeController extends Controller
         $this->init();
         $this->user = 0;
         $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
-        ->paginate(20);
+        ->paginate(12);
 
+        $this->userList = User::Store('person_user_id', $this->userModel->user_id)
+        ->orderBy('person_name->person_firstname')
+        ->get();
+
+        $view = array_search( 0, Setting::SettingGroup());
+        $request->session()->flash('view', $view);
+       
         return view('home.index', ['data' => $this->Data()]);
     }
 
@@ -75,7 +82,8 @@ class HomeController extends Controller
             'personModel' => $this->personModel,
             'sessionCartList' => $this->sessionCartList,
             'schemeList' => $this->schemeList,
-            'settingModel' => $this->settingModel
+            'settingModel' => $this->settingModel,
+            'userList' => $this->userList
         ];
     }
 

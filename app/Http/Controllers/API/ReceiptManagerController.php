@@ -32,12 +32,12 @@ class ReceiptManagerController extends Controller
 
     public function __construct()
     {
-        $this->key = env('STRIPE_SECRET', false);
+        /* $this->key = env('STRIPE_SECRET', false);
         $this->currency = env('STRIPE_CURRENCY', false);
-        //$this->stripe = new \Stripe\StripeClient($this->key);
+      
 
         $this->middleware('auth');
-        $this->middleware('cartMiddleware');
+        $this->middleware('cartMiddleware'); */
     }
 
     public function Index(Request $request){
@@ -115,6 +115,7 @@ class ReceiptManagerController extends Controller
       
     }
 
+    //remove item
     public function Remove(Request $request, $receipt){
         
         if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList')){

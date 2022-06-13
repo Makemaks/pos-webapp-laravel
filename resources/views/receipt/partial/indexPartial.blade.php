@@ -96,12 +96,12 @@
         <div>
            
             <div>
-                <div class="uk-text-right uk-text-lead">Sub Total {{$currency}} 
+                <div class="uk-text-right uk-text-bold">Sub Total {{$currency}} 
                     <span class="uk-margin-left" id="totalPriceID">{{CurrencyHelper::Format($totalPrice)}}</span>
                 </div>
             </div>
             <div>
-                <div class="uk-text-right uk-text-lead">VAT % 
+                <div class="uk-text-right uk-text-bold">VAT % 
                     <span class="uk-margin-left" id="vatID">
                         @if($data['userModel']->store_vat) 
                             {{$data['userModel']->store_vat}}
@@ -113,7 +113,7 @@
                 </div>
             </div>
             <div>
-                <div class="uk-text-right uk-text-lead">Total {{$currency}} 
+                <div class="uk-text-right uk-text-bold">Total {{$currency}} 
                     <span class="uk-margin-left" id="totalPriceID">{{CurrencyHelper::Format($priceVAT)}}</span>
                 </div>
             </div>
@@ -124,5 +124,11 @@
 </div>
 
 <div class="uk-margin" id="payment">
+
+    <div class="uk-margin-medium">
+        <button type="button" class="uk-box-shadow-small uk-width-expand uk-text-lead uk-light uk-border-rounded uk-button uk-button-danger" uk-icon="icon: tag">
+            {{ CurrencyHelper::Format($priceVAT) }}
+        </button>
+    </div>
 
 </div>

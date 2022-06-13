@@ -28,11 +28,7 @@
                     @if ($data['settingModel']->setting_stock_group)
                         @foreach ($data['settingModel']->setting_stock_group as $key => $plu)
                             @if ($plu['type'] == 2)
-<<<<<<< HEAD
-                                <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_merchandise['master_plu'])) selected @endif>{{$plu['description']}}</option>
-=======
                                 <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['plu_id']) selected @endif>{{$plu['description']}}</option>
->>>>>>> gio
                             @endif
                         @endforeach
                     @endif

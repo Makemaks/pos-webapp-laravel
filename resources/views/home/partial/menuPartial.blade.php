@@ -18,16 +18,7 @@
         </div>
     </div>
     <div class="uk-navbar-right">
-        <div class="uk-navbar-item">
-            <form action="javascript:void(0)">
-                <input class="uk-input uk-form-width-large" type="text" placeholder="Input" autofocus id="barcodeinputID" onchange="GetInput(this)">
-                <button class="uk-button uk-button-default" uk-icon="icon: search"></button>
-            </form>
-
-           {{--  <div>
-                <button type="button" class="uk-border-rounded uk-button uk-button-default" uk-icon="icon: search" onclick="SetFocus('barcode_search')"></button>
-            </div> --}}
-        </div>
+        
 
         
     </div>

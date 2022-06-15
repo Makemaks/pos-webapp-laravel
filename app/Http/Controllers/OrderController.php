@@ -14,7 +14,7 @@ use App\Models\Plan;
 use App\Models\Person;
 use App\Models\Setting;
 
-/* class OrderController extends Controller
+class OrderController extends Controller
 {
 
     private $authenticatedUser;
@@ -150,4 +150,4 @@ use App\Models\Setting;
         ];
        
     }
-} */
+}

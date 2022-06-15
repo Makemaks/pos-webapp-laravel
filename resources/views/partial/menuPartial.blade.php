@@ -1,8 +1,16 @@
 @php
-        use App\Helpers\ControllerHelper;
-        use App\Models\User;
+    use App\Helpers\ControllerHelper;
+    use App\Models\User;
+    use App\Models\Setting;
 
-       
+    $route = Str::before(Request::route()->getName(), '.');
+
+@endphp
+
+
+@php
+
+   if ($route != 'home') {
         $arrayAdminMenu = [
             "dashboard" => [],
             "report" => [],
@@ -59,19 +67,40 @@
             
 
         ];
+   } else {
+        $arrayAdminMenu = [
+         /*   
+            
+            "home" => [
+                "category",
+                "group",
+                "list-plu",
+                "mix-&-match",
+                "mix-&-match-2",
+                "tag",
+                "tag-group",
+            ],
+            
+             */
+
+        ];
+   }
+   
+
 @endphp
 
 <div>
     <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
-        
+            
             @foreach ( $arrayAdminMenu as $key => $arrayMenu)
-                
+                    
                 @php
                     $keyReplace = $key;
 
                     if ($key == 'product') {
                         $keyReplace= 'stock';
-                    }elseif($key == 'clerk'){
+                    }
+                    elseif($key == 'clerk'){
                         $keyReplace = 'user';
                     }
                     elseif($key == 'programming'){
@@ -83,49 +112,51 @@
                     elseif($key == 'customer'){
                         $keyReplace = 'person';
                     }
+                    
 
+                    $uk_open ='';
+                    if(Str::lower(session::get('action')) == $keyReplace || $keyReplace == $route){
+                        $uk_open = 'uk-open';
+                    }
+                        
                 @endphp
+                
 
                 @if (count($arrayMenu) == 0)
                     <li>
-                        <a class="uk-active" href="{{route($keyReplace.'.index')}}">
+                        <a href="{{route($keyReplace.'.index')}}">
                             {{Str::upper($key)}}
                         </a>
                     </li>
                 @else
-                    <li class="uk-parent">
+                        
+                    <li class="uk-parent {{$uk_open}}">
                         <a href="#">{{Str::upper($keyReplace)}}</a>
 
                         <ul class="uk-nav-sub">
                             @foreach ($arrayMenu as $item)
                                 @php
-                                    if($item == $route){
-                                        $active = 'uk-padding-small uk-box-shadow-small uk-text-danger uk-border-rounded';
-                                    }
-                                    else{
-                                        $active = '';
+                                    $active = '';
+                                    if (SESSION::GET('view') == $item) {
+                                        $active = 'uk-text-danger';
                                     }
                                 @endphp
-                        
-                            
+                                    
                                 <li>
-                                    <a class="uk-link-reset" href="{{route('menu.'.$keyReplace,['view' => $item])}}">
-                                        {{Str::upper(Str::replace('-', ' ', $item))}}
+                                    <a href="{{route('menu.'.$keyReplace,['view' => $item])}}">
+                                        <span class="{{$active}}">{{Str::upper(Str::replace('-', ' ', $item))}}</span>
                                     </a>
                                 </li>
-                                
+                                    
                             @endforeach
                         </ul>
-                        
+                            
                     </li>
                 @endif
 
             @endforeach
-        
+            
         <li class="uk-nav-divider"></li>
-
-        @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'User')
-            <li><a class="uk-margin-small uk-button uk-button-default uk-text-danger" href="">ADMIN</a></li>
-        @endif
+            
     </ul>
 </div>

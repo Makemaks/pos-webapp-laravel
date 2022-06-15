@@ -36,7 +36,9 @@ class WarehouseController extends Controller
 
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-      
+
+       
+        $request->session()->reflash('view');
 
         if ($request->session()->get('view') == 'Ins-&-Out') {
             $this->warehouseList =  Warehouse::Store()
@@ -58,8 +60,6 @@ class WarehouseController extends Controller
             ->paginate(20);
 
             $this->Init();
-
-            
         }
          
        return view('warehouse.index', ['data' => $this->Data()]); 

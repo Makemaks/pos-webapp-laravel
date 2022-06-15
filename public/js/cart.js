@@ -313,7 +313,7 @@ function GetInput(element)
         method: 'POST',
         data: {barcode: element.value},      
         success:function(data){
-         
+           document.getElementById('receipt-id').innerHTML = data.data;
            cartCountID.innerText++;
            setFocus(element.id);
        }

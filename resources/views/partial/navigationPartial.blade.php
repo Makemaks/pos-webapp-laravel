@@ -34,6 +34,46 @@ if (Auth::check()) {
 
         <div class="uk-navbar-left">
 
+            <div class="uk-navbar-item uk-visible@s">
+                <div>
+                    @isset($storeModel)
+                        <h3 class="uk-margin-remove-bottom" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->company_name}}</h3>
+                        <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->store_name}}</p>
+                    @endisset
+                </div>
+            </div>
+
+            <div class="uk-navbar-item">
+                <form action="javascript:void(0)">
+                    <input class="uk-input uk-form-width-medium" type="text" placeholder="">
+                    <input class="uk-input uk-form-width-medium" type="text" placeholder="Input" autofocus id="barcodeinputID" onchange="GetInput(this)" hidden>
+                    <div class="uk-button-group">
+                        <button class="uk-button uk-button-default" uk-icon="icon: search"></button>
+                         <div class="uk-inline">
+                             <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
+                             <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
+                                 <ul class="uk-nav uk-dropdown-nav">
+                                    <li class="uk-nav-header">Home</li>
+                                     <li class="uk-active"><a href="{{route('home.index', ['view' => 'category'])}}">Category</a></li>
+                                     <li><a href="{{route('home.index', ['view' => 'group'])}}">Group</a></li>
+                                     <li class="uk-nav-header">Top Brands</li>
+                                     <li><a href="#">Item</a></li>
+                                     <li><a href="#">Item</a></li>
+                                     <li class="uk-nav-divider"></li>
+                                     <li><a href="#">Item</a></li>
+                                 </ul>
+                             </div>
+                         </div>
+                     </div>
+                </form>
+
+               {{--  <div>
+                    <button type="button" class="uk-border-rounded uk-button uk-button-default" uk-icon="icon: search" onclick="SetFocus('barcode_search')"></button>
+                </div> --}}
+            </div>
+
+            
+
             @auth
                 @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin')
                     <div class="uk-navbar-item uk-visible@s">

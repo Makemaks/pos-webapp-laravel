@@ -43,15 +43,20 @@ class HomeController extends Controller
     
         $this->init();
         $this->user = 0;
-        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
-        ->paginate(12);
 
         $this->userList = User::Store('person_user_id', $this->userModel->user_id)
         ->orderBy('person_name->person_firstname')
         ->get();
 
-        $view = array_search( 0, Setting::SettingGroup());
-        $request->session()->flash('view', $view);
+        $view = array_search($request['view'], Setting::SettingGroup());
+        $request->session()->flash('view', $request['view']);
+
+         $setting_stock_group = collect($this->settingModel->setting_stock_group)->where('type', $view);
+         $this->settingModel->setting_stock_group = $setting_stock_group;
+
+         $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
+         //->orWhere('stock->stock_merchandise', $view)
+         ->paginate(12);
        
         return view('home.index', ['data' => $this->Data()]);
     }

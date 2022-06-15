@@ -29,7 +29,8 @@ class MenuController extends Controller
    public function stock(Request $request){
 
     $request->session()->flash('view', $request->view);
-     
+    $request->session()->flash('action', $request->route()->getActionMethod());
+
      switch ($request->view):
          case 'stock-list':
             return redirect()->route('stock.index');
@@ -41,8 +42,8 @@ class MenuController extends Controller
              break;
          case (in_array($request->view, Warehouse::WarehouseType())):
              
-             $view = array_search( $request->view, Warehouse::WarehouseType());
-             $request->session()->flash('view', $view);
+             $type = array_search( $request->view, Warehouse::WarehouseType());
+             $request->session()->flash('type', $type);
 
              return redirect()->route('warehouse.index');
 
@@ -50,8 +51,6 @@ class MenuController extends Controller
          
          case 'ins-&-out':
 
-          
-             $request->session()->flash('view',  $request->view);
 
              return redirect()->route('warehouse.index');
 
@@ -60,7 +59,7 @@ class MenuController extends Controller
         case 'case-sizes':
 
             $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
-            $request->session()->flash('view',  $request->view);
+           
 
             return redirect()->route('setting.index');
 
@@ -69,7 +68,7 @@ class MenuController extends Controller
         case 'recipes':
 
             $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
-            $request->session()->flash('view', $request->view);
+            
 
             return redirect()->route('setting.index');
 
@@ -78,7 +77,7 @@ class MenuController extends Controller
         case 'stock-variance':
 
             $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
-            $request->session()->flash('view', $request->view);
+            
 
             return redirect()->route('setting.index');
 
@@ -91,18 +90,21 @@ class MenuController extends Controller
    }
 
    public function setting(Request $request){
-       
+    $request->session()->flash('view', $request->view);
+    $request->session()->flash('action', $request->route()->getActionMethod());
      
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
     
         $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+        
 
         switch ($request->view):
             case (in_array($request->view, Setting::SettingGroup())):
             
-                $view = array_search( $request->view, Setting::SettingGroup());
-                $request->session()->flash('view', $view);
+                $type = array_search( $request->view, Setting::SettingGroup());
+                $request->session()->flash('type', $type);
+                
                
                 return view('menu.setting.group', ['data' => $this->Data()]);
 
@@ -110,7 +112,7 @@ class MenuController extends Controller
           
            
             case 'mix-&-match':
-                $request->session()->flash($request->view, 'view');
+                
                 
                 return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
 
@@ -123,7 +125,7 @@ class MenuController extends Controller
 
                     
             case 'receipt':
-                $request->session()->flash($request->view, 'view');
+                
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
@@ -134,8 +136,7 @@ class MenuController extends Controller
                 break;
 
             case 'tags':
-                $request->session()->flash($request->view, 'view');
-
+                
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
@@ -146,7 +147,7 @@ class MenuController extends Controller
             
 
             case 'tag-groups':
-                $request->session()->flash($request->view, 'view');
+                
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
@@ -157,7 +158,7 @@ class MenuController extends Controller
                 break;
 
             case 'vouchers':
-                $request->session()->flash($request->view, 'view');
+                
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
@@ -168,7 +169,7 @@ class MenuController extends Controller
                 break;
 
             case 'reasons':
-                $request->session()->flash($request->view, 'view');
+                
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
@@ -179,7 +180,7 @@ class MenuController extends Controller
                 break;
 
             case 'tax':
-                $request->session()->flash($request->view, 'view');
+                
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
@@ -190,7 +191,7 @@ class MenuController extends Controller
                     break;
 
             case 'reasons':
-                $request->session()->flash($request->view, 'view');
+                
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
@@ -215,8 +216,9 @@ class MenuController extends Controller
 
    public function order(Request $request){
 
-    $request->session()->flash($request->view, 'view');
-
+    $request->session()->flash('view', $request->view);
+    $request->session()->flash('action', $request->route()->getActionMethod());
+    
     switch ($request->view):
         case 'sale':
             return redirect()->route('order.index');
@@ -227,6 +229,34 @@ class MenuController extends Controller
             break;
 
         case 'bill':
+            return redirect()->route('order.index');
+            break;
+
+        default:
+            echo "i is not equal to 0, 1 or 2";
+    endswitch;
+    
+   }
+
+   public function home(Request $request){
+
+    $request->session()->flash('view', $request->view);
+    $request->session()->flash('action', $request->route()->getActionMethod());
+    
+    switch ($request->view):
+        case 'category':
+            return redirect()->route('order.index');
+            break;
+
+        case 'group':
+            return redirect()->route('order.index');
+            break;
+
+        case 'list-plu':
+            return redirect()->route('order.index');
+            break;
+
+        case 'mix-&-match':
             return redirect()->route('order.index');
             break;
 

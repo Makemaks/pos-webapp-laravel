@@ -103,16 +103,16 @@ class CartAPIController extends Controller
 
       
         if ($request->has('barcode')) {
-            //$this->productModel = Product::where('product_barcode', $request['barcode'])->first();
+             $this->productModel = Product::where('product_merchandise->outer_barcode', $request['barcode'])->first();
             
             if ($this->productModel) {
                 $requestInput['product_id'] = $this->productModel->product_id;
-                $requestInput['name'] = $this->productModel->product_name;
-                $requestInput['price'] = $this->productModel->product_price;
+                $requestInput['product_name'] = $this->productModel->product_name;
+                $requestInput['product_price'] = $this->productModel->product_cost[1][1];
                 $requestInput['quantity'] = '';
-                $requestInput['plan'] = '';
+                //$requestInput['plan'] = '';
 
-                //$request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $requestInput);
+                $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $requestInput);
                 $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList');
             }
 
@@ -121,14 +121,13 @@ class CartAPIController extends Controller
             $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $requestInput);
             
             //$value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList');
-            $this->html = view('receipt.partial.receiptPartial')->render();
-
+            
         }
 
             
 
            
-
+        $this->html = view('receipt.partial.receiptPartial')->render();
         return response()->json(['success'=>'Got Simple Ajax Request.', 'data' => $this->html]);
 
     }

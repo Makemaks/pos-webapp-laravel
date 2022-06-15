@@ -78,20 +78,21 @@ $route = Str::before(Request::route()->getName(), '.');
         @php
             $uk_grid = '';
             if(Auth::check()){
-                if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin' ) {
-                   $uk_grid = 'uk-grid';
-                }
+                $uk_grid = 'uk-grid';
             }
         @endphp
 
        
-            <div uk-grid>
+            <div {{$uk_grid}}>
 
-                <div class="uk-width-auto@m uk-background-secondary" uk-height-viewport>
-                    <div class="uk-container uk-container-expand uk-margin-top">
-                        @include('partial.menuPartial')
+                @auth
+                    <div class="uk-width-auto@m uk-box-shadow-small" uk-height-viewport>
+                        <div class="uk-container uk-container-expand uk-margin-top">
+                            @include('partial.menuPartial')
+                        </div>
                     </div>
-                </div>
+
+                @endauth
 
             
                 <div class="uk-width-expand@m uk-container uk-container-expand uk-margin-top">

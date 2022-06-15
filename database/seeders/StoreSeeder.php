@@ -14,12 +14,6 @@ class StoreSeeder extends Seeder
      */
     public function run()
     {
-        $store = new Store();
-        $store->store_name = 'example store';
-        $store->root_store_id = 1;
-        $store->store_account_id = 1;
-        $store->store_company_id = 1;
-        $store->save();
         Store::factory(10)->create();
     }
 }

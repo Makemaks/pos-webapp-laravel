@@ -48,15 +48,30 @@ class HomeController extends Controller
         ->orderBy('person_name->person_firstname')
         ->get();
 
-        $view = array_search($request['view'], Setting::SettingGroup());
-        $request->session()->flash('view', $request['view']);
+       
+        
 
-         $setting_stock_group = collect($this->settingModel->setting_stock_group)->where('type', $view);
-         $this->settingModel->setting_stock_group = $setting_stock_group;
+        
+        if ($request->has('id') && $request->has('view')) {
+            $request->session()->flash('view', $request['view']);
+            $request->session()->flash('id', $request['id']);
+            
+            $setting_stock_group = $this->settingModel->setting_stock_group[$request['id']];
+            $setting_stock_group = collect($this->settingModel->setting_stock_group)->where('type', $setting_stock_group['type']);
+            $this->settingModel->setting_stock_group = $setting_stock_group;
 
-         $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
-         //->orWhere('stock->stock_merchandise', $view)
-         ->paginate(12);
+            $where = 'stock_merchandise->'.$request['view'].'_id';
+            $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
+            ->orWhere($where, $request['id'])
+            ->paginate(12);
+        } 
+        elseif($request->has('id') && $request->has('type')){
+            $setting_stock_group = collect($this->settingModel->setting_stock_group)->where('type', $request['id']);
+            $this->settingModel->setting_stock_group = $setting_stock_group;
+            $request->session()->flash('view', $request['type']);
+           
+        }
+        
        
         return view('home.index', ['data' => $this->Data()]);
     }

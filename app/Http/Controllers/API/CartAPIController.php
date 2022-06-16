@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use App\Models\Scheme;
-use App\Models\Plan;
+
+use App\Models\Stock;
 use App\Helpers\MathHelper;
 
 class CartAPIController extends Controller
@@ -103,13 +104,16 @@ class CartAPIController extends Controller
 
       
         if ($request->has('barcode')) {
-             $this->productModel = Product::where('product_merchandise->outer_barcode', $request['barcode'])->first();
+             $this->stockModel = Stock::
+             where('stock_merchandise->outer_barcode', $request['barcode'])
+             ->orWhere('stock_merchandise->outer_barcode', 'like', '%'.$request['barcode'].'%')
+             ->first();
             
-            if ($this->productModel) {
-                $requestInput['product_id'] = $this->productModel->product_id;
-                $requestInput['product_name'] = $this->productModel->product_name;
-                $requestInput['product_price'] = $this->productModel->product_cost[1][1];
-                $requestInput['quantity'] = '';
+            if ($this->stockModel) {
+                $requestInput['stock_id'] = $this->stockModel->stock_id;
+                $requestInput['stock_name'] = $this->stockModel->stock_merchandise['stock_name'];
+                $requestInput['stock_price'] = $this->stockModel->stock_cost[1][1]['price'];
+                $requestInput['stock_quantity'] = 1;
                 //$requestInput['plan'] = '';
 
                 $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $requestInput);

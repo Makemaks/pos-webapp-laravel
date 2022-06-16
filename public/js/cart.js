@@ -89,7 +89,7 @@ function Delete(row_id){
 
     //update basket count
     var cartCountID = document.getElementById('cartCountID'); 
-    var quantity = 1;
+    var stock_quantity = 1;
 
     //update total
     /* var receiptButtonID = document.getElementById('receiptButtonID');  
@@ -122,7 +122,7 @@ function Delete(row_id){
         method: 'DELETE',
         success: function (data) {
         
-            cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(quantity);
+            cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(stock_quantity);
             setFocus('barcodeinputID');
             document.getElementById('receipt-id').innerHTML = data.data;
         },
@@ -143,7 +143,7 @@ function Update(){
     $.ajax({        
         url:"/cart-api/",
         method: 'PUT',
-        data: {product_id: product_id, name:name, price: price},      
+        data: {stock_id: stock_id, name:stock_name, price: stock_price},      
         success:function(data){
           //alert(data.success);
            cartCountID.innerText++;
@@ -152,13 +152,13 @@ function Update(){
     
 }
 
-//add a product_id to cart
-function Add(product_id, name, price){
+//add a stock_id to cart
+function Add(stock_id, stock_name, stock_price){
  
      //update basket count
      var cartCountID = document.getElementById('cartCountID'); 
-     //var quantityID = document.getElementById('quantityID-'+product_id);
-     var quantity = 1;
+     //var stock_quantity = document.getElementById('quantityID-'+stock_id);
+     var stock_quantity = 1;
      var plan = null;
 
     
@@ -166,10 +166,10 @@ function Add(product_id, name, price){
      $.ajax({        
          url:"/cart-api/",
          method: 'POST',
-         data: {product_id: product_id, name:name, price: price, quantity:quantity, plan:plan },      
+         data: {stock_id: stock_id, stock_name:stock_name, stock_price: stock_price, stock_quantity:stock_quantity },      
          success:function(data){
            //alert(data.success);
-            cartCountID.innerText = parseInt(cartCountID.innerText) + parseInt(quantity);
+            cartCountID.innerText = parseInt(cartCountID.innerText) + parseInt(stock_quantity);
             setFocus('barcodeinputID');
             document.getElementById('receipt-id').innerHTML = data.data;
 
@@ -181,7 +181,7 @@ function Add(product_id, name, price){
  }
 
  //remove
-function Empty(product_id, name, price){
+function Empty(stock_id, name, price){
  
      //update basket count
      var cartCountID = document.getElementById('cartCountID'); 
@@ -190,7 +190,7 @@ function Empty(product_id, name, price){
      $.ajax({        
          url:"/cart-api/",
          method: 'POST',
-         data: {product_id: product_id, name:name, price: price},      
+         data: {stock_id: stock_id, name:stock_name, price: stock_price},      
          success:function(data){
            //alert(data.success);
             cartCountID.innerText++;
@@ -240,8 +240,8 @@ function GetScheme(user_id){
    
 }
 
-function Applyproduct_idScheme(){
-    var schemePlanSelectID = document.getElementById('schemePlanSelectID-'+product_id);
+function Applystock_idScheme(){
+    var schemePlanSelectID = document.getElementById('schemePlanSelectID-'+stock_id);
      var plan = null;
      
 
@@ -309,14 +309,38 @@ function GetInput(element)
     var cartCountID = document.getElementById('cartCountID'); 
    
     $.ajax({        
-        url:"/cart-api/",
+        url:"/cart-api",
         method: 'POST',
         data: {barcode: element.value},      
         success:function(data){
            document.getElementById('receipt-id').innerHTML = data.data;
            cartCountID.innerText++;
+           element.value = '';
            setFocus(element.id);
-       }
+        }
      });
+}
+
+
+function numpad(element){
+    var barcodeinputID = document.getElementById('barcodeinputID');
+
+    setFocus('barcodeinputID');
+   
+    if (element.innerText == 'C') {
+        barcodeinputID.value = '';
+    } 
+    else if (element.innerText == 'BACK') {
+        let str = barcodeinputID.value;
+        barcodeinputID.value = str.slice(0, -1);
+    } 
+    else if (element.innerText == 'Shift') {
+        let str = barcodeinputID.value;
+        barcodeinputID.value = str.slice(0, -1);
+    } 
+    else {
+        barcodeinputID.value = barcodeinputID.value + element.innerText;
+    }
+  
 }
 

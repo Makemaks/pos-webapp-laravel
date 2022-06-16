@@ -56,7 +56,7 @@ if (count($orderList) > 0) {
             <tbody>
                 @foreach ($arraytimeAndAttendance as $keyarraytimeAndAttendance => $itemarraytimeAndAttendance)
                     <tr
-                        @if ($itemarraytimeAndAttendance['Status'] === 'CLOCKED IN') style="background-color: darkcyan; color:aliceblue"  @else class="uk-background-muted" @endif>
+                        @if ($itemarraytimeAndAttendance['Status'] === 'CLOCKED IN') class="uk-background-primary"  @else class="uk-background-muted" @endif>
                         @foreach ($itemarraytimeAndAttendance as $key => $item)
                             <td> {{ $item }}</td>
                         @endforeach

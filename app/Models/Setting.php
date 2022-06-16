@@ -339,12 +339,12 @@ class Setting extends Model
 
 
 
-    public static function SettingKeyType()
+    /* public static function SettingKeyType()
     {
         //  0 , 1 , 2
         return ['finalise', 'status', 'transaction'];
     }
-
+ */
     public static function List($column, $filter)
     {
 
@@ -364,13 +364,18 @@ class Setting extends Model
         }
     }
 
-    public static function SettingClass()
+   
+
+    public static function SettingKeyType()
     {
         return [
-            'Person',
-            'stock',
-            'Project',
-            'Company',
+            "CASH",
+            "CREDIT",
+            "NO FUNCTION",
+            "ACCOUNT",
+            "EFT",
+            "HOTEL_TRANSFER",
+            "VOUCHER"
         ];
     }
 
@@ -414,12 +419,14 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingGroup(){
+    public static function SettingStockCostGroup(){
+       
+      
         return [
             "category", 
             "group", 
             "brand",
-            "list-plu"
+            "plu"
         ];
     }
 

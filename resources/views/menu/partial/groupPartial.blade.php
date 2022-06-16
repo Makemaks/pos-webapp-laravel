@@ -25,7 +25,7 @@
                
                 
                 @foreach ($data['settingModel']->setting_stock_group  as $keysetting_stock_group => $setting_stock_group)
-                    @if ($setting_stock_group['type'] == Session::get('type'))
+                    @if ($setting_stock_group['type'] == Session::get('view'))
                         <tr>
                             <td>
                                 <button class="uk-button uk-button-danger uk-border-rounded">{{$keysetting_stock_group}}</button>

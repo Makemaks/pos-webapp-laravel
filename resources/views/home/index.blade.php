@@ -20,9 +20,6 @@
 
 @section('content')
 
-<div>
-    @include('home.partial.menuPartial')
-</div>
 
 
 <div>
@@ -31,22 +28,45 @@
 
         <div class="uk-width-expand@m">
             
-            
-
             <div class="uk-margin">
-                @include('menu.home.stock-groupPartial')
+                @include('home.partial.stock-groupPartial')
             </div>
 
-            <div class="uk-margin">
+           
+            {{-- uk-switcher="active: 1" --}}
+           <div class="uk-margin">
                 @isset($data['stockList'])
                     @include('stock.partial.indexPartial')
                 @endisset
-            </div>
+           </div>
            
         </div>
 
-        <div class="" id="receipt-id">
-            @include('receipt.partial.indexPartial')
+        <div class="uk-width-auto@m">
+            <nav class="uk-navbar-container" uk-navbar>
+                <div class="uk-navbar-left">
+            
+                    <ul class="uk-navbar-nav">
+                        <li class="uk-active"><a href="#">Active</a></li>
+                        <li>
+                            <a href="#">Parent</a>
+                            <div class="uk-navbar-dropdown">
+                                <ul class="uk-nav uk-navbar-dropdown-nav">
+                                    <li class="uk-active"><a href="#">Active</a></li>
+                                    <li><a href="#">Item</a></li>
+                                    <li><a href="#">Item</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><a href="#">Item</a></li>
+                    </ul>
+            
+                </div>
+            </nav>
+            <div id="receipt-id">
+                @include('receipt.partial.indexPartial')
+            </div>
+           
        </div>
     
        

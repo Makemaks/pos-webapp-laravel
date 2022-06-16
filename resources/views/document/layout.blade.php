@@ -11,24 +11,9 @@
     <link rel="stylesheet" type="text/css" href="css/color.css">
 </head>
 
-<style>
-    table {
-        font-size: 11px !important;
-    }
-
-    .search-form {
-        display: none;
-    }
-
-    .button-pdf {
-        display: none;
-    }
-
-</style>
 
 <body>
     @yield('content')
-
 </body>
 
 </html>

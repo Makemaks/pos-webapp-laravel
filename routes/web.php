@@ -62,7 +62,7 @@ Route::get('login', [AuthenticationController::class, 'Login'])->name('authentic
 Route::get('forgot-password', [AuthenticationController::class, 'ForgotPassword'])->name('authentication.forgot-password');
 Route::get('reset-password/{id}', [AuthenticationController::class, 'ResetPassword'])->name('authentication.reset-password');
 Route::get('logout', [AuthenticationController::class, 'Logout'])->name('authentication.logout');
-Route::get('clocked-out', [AuthenticationController::class, 'ClockedOut'])->name('authentication.clockedout');
+Route::get('clock-out', [AuthenticationController::class, 'ClockOut'])->name('authentication.clock-out');
 Route::get('register', [AuthenticationController::class, 'Register'])->name('authentication.register');
 Route::get('admin-store/{store}', [AuthenticationController::class, 'adminStore'])->name('authentication.admin-store');
 

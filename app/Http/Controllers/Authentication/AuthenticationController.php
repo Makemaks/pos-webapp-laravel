@@ -127,6 +127,8 @@ class AuthenticationController extends Controller
         return view('authentication.login');
     }
 
+    
+
     public function adminStore($store)
     {
         // Retrive Input
@@ -147,7 +149,7 @@ class AuthenticationController extends Controller
         return redirect()->route('dashboard.index')->with('success', 'Successfully Logged In');
     }
 
-    public function ClockedOut()
+    public function ClockOut()
     {
         $attendance = new Attendance();
         $attendance->attendance_user_id = Auth::user()->user_id;

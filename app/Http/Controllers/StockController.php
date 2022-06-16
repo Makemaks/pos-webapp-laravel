@@ -146,7 +146,6 @@ class StockController extends Controller
              }
          }
  
-         
  
          $stockModel = collect($stockModel);
   
@@ -154,7 +153,10 @@ class StockController extends Controller
          Stock::where('stock_id', $stock)->update($stockModel->toArray());
 
        
-         Warehouse::where('warehouse_stock_id', $stock)->update($request->only('warehouse'));
+         foreach ($request->only('warehouse')['warehouse'] as $key => $value) {
+            Warehouse::where('warehouse_id',  $value['warehouse_id'])->update($value);
+         }
+        
  
          return redirect()->route('stock.edit', $stock);
  

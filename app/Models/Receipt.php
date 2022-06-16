@@ -56,7 +56,7 @@ class Receipt extends Model
         $count = 0;
 
         foreach ($cartList as $cartItem) {
-            $count = $count + $cartItem['quantity'];
+            $count = $count + intval($cartItem['stock_quantity']);
         }
 
         return $count;

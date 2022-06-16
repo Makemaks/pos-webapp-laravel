@@ -1,5 +1,5 @@
     <label class="uk-form-label" for="form-stacked-text">REPORT </label> <br>
-    <select class="uk-select uk-width-expand" name="title" style="width:195px;">
+    <select class="uk-select uk-width-expand" name="title">
         <option value="0" data-select2-id="8">Please Select Report</option>
         <optgroup label="Summary" data-select2-id="9">
             {{-- <option value="adjust times" data-select2-id="10">Adjust Times</option>

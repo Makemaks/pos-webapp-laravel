@@ -30,7 +30,11 @@
 @endphp
 
 
-@if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'User' && $route != 'home')
+
+
+@if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || 
+User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home')
+
     <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
         <thead>
             <tr>
@@ -99,17 +103,19 @@
             <div>
                 
                 <a class="uk-link-reset" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}', '{{$price}}')">
-                    <div class="uk-height-small uk-text-center uk-light" style="background-color: #{{StringHelper::getColor()}}">
+                    <div class="uk-height-small uk-box-shadow-small uk-border-rounded">
                     
-                        <div class="">
-                            <div class="uk-text-small">{{$stock->stock_merchandise['stock_name']}}</div>
+                        <div class="uk-padding-small">
+                            <div class="uk-text-small  uk-text-bold">{{Str::ucfirst($stock->stock_merchandise['stock_name'])}}</div>
                             <div class="uk-text-meta uk-margin-remove-top">{{$stock->stock_brand}}</div>
-                            <div class="uk-text-small">
+                            <div class="">
                                 {{$currency}}{{$price}}
                                 {{-- @if ($schemeList->count() > 0)
                                     <span class="uk-text-danger">*</span>
                                 @endif --}}
                             </div>
+
+                           
                         </div>
                         
                     </div>

@@ -19,17 +19,20 @@
     $data['userModel'] = User::Account('user_account_id', Auth::user()->user_account_id)
     ->first();
 
+    
+   
 @endphp
+
+
 
 <div class="uk-overflow-auto uk-height-large">
     <table class="uk-table uk-table-small uk-table-divider">
         <thead>
             <tr>
-                <th class="uk-table-expand">Item</th>
-                {{-- <th class="uk-width-auto">Qty</th> --}}
-                <th>{{$currency}}</th>
-                {{-- <th></th> --}}
-                <th></th>
+                <th class=""></th>
+                 <th class=""></th>
+                <th class=""></th>
+                <th class=""></th>
             </tr>
         </thead>
         <tbody id="cartListID">
@@ -37,7 +40,8 @@
                 @foreach ($data['sessionCartList'] as $cartKey => $cartItem)
                     @php
                     
-                        $price = $cartItem['price'] * $cartItem['quantity'];
+                        //convert sting to val
+                        $price = $cartItem['stock_price'] * intval($cartItem['stock_quantity']);
                         $totalPrice = $price + $totalPrice;
 
                         if ($loop->last && isset($data['calculate_vat'])) {
@@ -50,7 +54,7 @@
                         <tr id="cartItemID-{{$cartKey}}">
                             <td>
                                 
-                                {{$cartItem['name']}}
+                                {{$cartItem['stock_name']}}
                                 <p class="uk-text-meta uk-margin-remove-top">
                                 
                                 {{-- @include('plan.partial.listPartial') --}}
@@ -60,9 +64,17 @@
                                 @endif
                                 </p>
                             </td>
+
+                            <td>
+                                @include('partial.controlsPartial',
+                                [
+                                    'cartValue' => $loop->iteration,
+                                    'quantity' => $cartItem['stock_quantity']
+                                ])
+                            </td>
                             
                             <td>
-                                {{CurrencyHelper::Format($cartItem['price'])}}
+                                {{CurrencyHelper::Format($cartItem['stock_price'])}}
                             </td>
                             <td>
                                 <button type="button" id="deleteID-{{$cartKey}}" onclick="Delete({{$cartKey}})" class="uk-text-danger" uk-icon="trash">

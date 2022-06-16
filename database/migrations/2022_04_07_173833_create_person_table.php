@@ -31,6 +31,7 @@ return new class extends Migration
             $table->json('person_message_notification')->nullable()->comment('user_id, person_message_group => message_group');
             $table->json('person_blacklist')->nullable();
             $table->json('person_message_group')->nullable()->comment('create message group');
+            $table->json('person_marketing')->nullable();
             $table->timestamps();
         });
     }

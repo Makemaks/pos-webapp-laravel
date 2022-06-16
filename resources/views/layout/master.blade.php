@@ -28,6 +28,9 @@ $route = Str::before(Request::route()->getName(), '.');
     <script src="https://jsuites.net/v4/jsuites.js"></script>
     <script src="https://jsuites.net/v4/jsuites.webcomponents.js"></script>
     <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
+
+
+   
 </head>
 
 <style>
@@ -77,7 +80,7 @@ $route = Str::before(Request::route()->getName(), '.');
       
         @php
             $uk_grid = '';
-            if(Auth::check()){
+            if(Auth::check() && $route != 'home'){
                 $uk_grid = 'uk-grid';
             }
         @endphp
@@ -86,12 +89,13 @@ $route = Str::before(Request::route()->getName(), '.');
             <div {{$uk_grid}}>
 
                 @auth
-                    <div class="uk-width-auto@m uk-box-shadow-small" uk-height-viewport>
-                        <div class="uk-container uk-container-expand uk-margin-top">
-                            @include('partial.menuPartial')
+                    @if ($route != 'home')
+                        <div class="uk-width-auto@m uk-box-shadow-small" uk-height-viewport>
+                            <div class="uk-container uk-container-expand uk-margin-top">
+                                @include('partial.menuPartial')
+                            </div>
                         </div>
-                    </div>
-
+                    @endif
                 @endauth
 
             
@@ -100,14 +104,17 @@ $route = Str::before(Request::route()->getName(), '.');
                 </div>
             </div>
 
-       
+         
+            {{-- echo 'User IP Address - '.$_SERVER['REMOTE_ADDR'];   --}}
+              
     </div>
 
 
     <!-- UIkit JS -->
     @stack('scripts')
     
-    <script src="{{ asset('js/config.js') }}"></script>
+    
+    
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit-icons.min.js"></script>
 

@@ -2,6 +2,7 @@
 use App\Models\User;
 use App\Models\Store;
 use App\Models\Receipt;
+use App\Models\Setting;
 use App\Helpers\ControllerHelper;
 
     $route = Str::before(Request::route()->getName(), '.');
@@ -43,68 +44,38 @@ if (Auth::check()) {
                 </div>
             </div>
 
-            <div class="uk-navbar-item">
-                <form action="javascript:void(0)">
-                    <input class="uk-input uk-form-width-medium" type="text" placeholder="">
-                    <input class="uk-input uk-form-width-medium" type="text" placeholder="Input" autofocus id="barcodeinputID" onchange="GetInput(this)" hidden>
-                    <div class="uk-button-group">
-                        <button class="uk-button uk-button-default" uk-icon="icon: search"></button>
-                         <div class="uk-inline">
-                             <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
-                             <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
-                                 <ul class="uk-nav uk-dropdown-nav">
-                                    <li class="uk-nav-header">Home</li>
-                                     <li class="uk-active"><a href="{{route('home.index', ['view' => 'category'])}}">Category</a></li>
-                                     <li><a href="{{route('home.index', ['view' => 'group'])}}">Group</a></li>
-                                     <li class="uk-nav-header">Top Brands</li>
-                                     <li><a href="#">Item</a></li>
-                                     <li><a href="#">Item</a></li>
-                                     <li class="uk-nav-divider"></li>
-                                     <li><a href="#">Item</a></li>
-                                 </ul>
-                             </div>
-                         </div>
-                     </div>
-                </form>
-
-               {{--  <div>
-                    <button type="button" class="uk-border-rounded uk-button uk-button-default" uk-icon="icon: search" onclick="SetFocus('barcode_search')"></button>
-                </div> --}}
-            </div>
-
-            
-
-            @auth
-                @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin')
-                    <div class="uk-navbar-item uk-visible@s">
-                        <div>
-                            {{-- @isset($storeModel)
-                                <h3 class="uk-margin-remove-bottom" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->company_name}}</h3>
-                                <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->store_name}}</p>
-                            @endisset --}}
-                            
-                            @if ($route && Auth::check())
-                                @if ($route != 'menu')
-                                    <form action="{{route($route.'.index')}}">
-                                        @csrf
-                                        <select name="store-form" class="uk-select" onchange="this.form.submit()">
-                                            <option selected disabled></option>
-                                            
-                                            @isset($storeList)
-                                                @foreach ($storeList as $store)
-                                                    <option value="{{$store->store_id}}" @if($store->store_id == $storeModel->store_id) selected  @endif>{{$store->store_name}} - {{$store->store_id}} - {{$storeModel->store_id}}</option>
-                                                @endforeach
-                                            @endisset
-                                            
-                                        </select>
-                                    </form>
-                                @endif
-                            @endif
-                            
-                        </div>
+            @if ($route == 'home')
+                
+            @else
+               
+                <div class="uk-navbar-item uk-visible@s">
+                    <div>
+                        {{-- @isset($storeModel)
+                            <h3 class="uk-margin-remove-bottom" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->company_name}}</h3>
+                            <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->store_name}}</p>
+                        @endisset --}}
+                        
+                        
+                        <form action="{{route('home.index')}}">
+                            @csrf
+                            <select name="store-form" class="uk-select" onchange="this.form.submit()">
+                                <option selected disabled></option>
+                                
+                                @isset($storeList)
+                                    @foreach ($storeList as $store)
+                                        <option value="{{$store->store_id}}" @if($store->store_id == $storeModel->store_id) selected  @endif>{{$store->store_name}} - {{$store->store_id}} - {{$storeModel->store_id}}</option>
+                                    @endforeach
+                                @endisset
+                                
+                            </select>
+                        </form>
+                    
+                        
                     </div>
-                @endif
-            @endauth
+                </div>
+                
+            @endif
+            
         </div>
 
         <div class="uk-navbar-right uk-margin-right">
@@ -124,13 +95,13 @@ if (Auth::check()) {
 
                         <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
                             <ul class="uk-nav uk-dropdown-nav">
-                                {{-- <li class="uk-nav-header" uk-icon="icon: cart"></li>
-                                <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded" href="{{route('receipt-manager.index')}}">CheckOut</a></li>
-                                <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded" href="{{route('receipt-manager.suspend')}}">Suspend</a></li>
-                                <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded" href="{{route('receipt-manager.awaiting')}}">Awaiting .. </a></li>
+                                <li class="uk-nav-header" uk-icon="icon: cart"></li>
+                                <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded" href="{{route('receipt.index', ['view' => 'checkout'])}}">CheckOut</a></li>
+                                <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded" href="{{route('receipt.index', ['view' => 'suspend'])}}">Suspend</a></li>
+                                <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded" href="{{route('receipt.index', ['view' => 'awaiting'])}}">Awaiting .. </a></li>
                                 <li class="uk-nav-header" uk-icon="icon: trash"></li>
                                 <li class="uk-nav-divider"></li>
-                                <li><a class="uk-margin-small uk-button uk-button-default uk-text-danger uk-border-rounded" href="{{route('receipt-manager.empty')}}">Empty Cart</a></li> --}}
+                                <li><a class="uk-margin-small uk-button uk-button-default uk-text-danger uk-border-rounded" href="{{route('receipt.index', ['view' => 'empty'])}}">Empty Cart</a></li>
                             </ul>
                         </div>
                     </div>
@@ -141,13 +112,23 @@ if (Auth::check()) {
                             <ul class="uk-nav uk-dropdown-nav">
                                 {{-- <li class="uk-nav-header" uk-icon="icon: user"></li> --}}
                                 @auth
+                                    <li class="uk-nav-header"  uk-icon="user"></li>
                                     <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded"
                                             href="{{ route('user.show', $userModel->user_id) }}">Profile</a></li>
                                     <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded"
                                             href="{{ route('authentication.logout') }}">Logout</a></li>
-                                    <li><a class="uk-margin-small uk-button uk-button-danger uk-border-rounded"
-                                            href="{{ route('authentication.clockedout') }}" style="color: white">Clocked
-                                            Out</a></li>
+
+                                    <li class="uk-nav-header" uk-icon="icon: clock"></li>
+                                    <li class="uk-nav-divider"></li>
+                                    <li><a class="uk-margin-small uk-button uk-button-default uk-text-danger uk-border-rounded"
+                                            href="{{ route('authentication.clock-out') }}">ClockOut</a></li>
+
+                                    <li class="uk-nav-header" uk-icon="icon: thumbnails"></li>
+                                    <li class="uk-nav-divider"></li>
+                                    @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin')
+                                        <li><a class="uk-margin-small uk-button uk-button-default uk-text-danger uk-border-rounded"
+                                            href="{{ route('dashboard.index') }}">Admin</a></li>
+                                    @endif
                                 @else
                                     <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded"
                                             href="{{ route('authentication.login') }}">Login</a></li>

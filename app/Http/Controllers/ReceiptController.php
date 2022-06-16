@@ -56,14 +56,11 @@ class ReceiptController extends Controller
 
         $this->storeModel = Store::where('store_id', $this->userModel->person_account_id)->first();
 
-       if ($this->storeModel->stripe_id) {
-            $this->cardList = $stripe->customers->allSources(
-                $this->storeModel->stripe_id,
-                ['object' => 'card', 'limit' => 10]
-            );            
-       }
-
-        return view('payment.index', ['data' => $this->Data()]);
+        if($request->has('view')){
+            $view = $request['view'].'()';
+            $this->$request['view']();
+        }
+        
     }
 
     /**
@@ -309,6 +306,83 @@ class ReceiptController extends Controller
             'countryList' => $this->countryList,
             'settingModel' => $this->settingModel
         ];
+    }
+
+
+    /* 
+        Session Manager 
+        Used to manipulate session data
+    */
+   private function Recover(Request $request, $receipt){
+
+        if ($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList')) {
+            
+            $this->sessionCartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList.'.$receipt); 
+            $request->session()->put('user-session-'.Auth::user()->user_id. '.cartList', $this->sessionCartList);       
+        }
+
+        return redirect()->route('home.index');
+    }
+
+
+   private function Suspend(Request $request){
+
+        if($request->session()->has('user-session-'.Auth::user()->user_id)){
+            //remove session
+            $cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList');
+            $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList', $cartList);
+            $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList',[]);
+        }
+
+        return back()->with('success', 'Receipt on Suspend');
+      
+    }
+
+   private function Awaiting(Request $request){
+
+        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList')){
+            //remove session
+            $this->sessionCartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList');
+        }
+
+        return view('receipt-manager.awaiting.index', ['data' => $this->Data()]);
+      
+    }
+
+   private function Empty(Request $request){
+        
+        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
+            //remove session
+            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'cartList');
+            $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList',[]);
+        }
+
+        return redirect()->route('home.index')->with('success', 'Receipt Empty');
+      
+    }
+
+    //remove item
+   private function Remove(Request $request, $receipt){
+        
+        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList')){
+            //remove session
+            $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList.'.$receipt);
+        }
+
+        return redirect()->route('home.index')->with('success', 'Receipt Removed');
+      
+    }
+
+
+   private function Complete(Request $request, $product){
+        
+        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
+            //remove session
+            $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList', $product);
+        }
+
+        return back()->with('success', 'Receipt Completed');
+      
     }
 
 }

@@ -43,7 +43,7 @@ foreach ($dataModel as $key => $value) {
     </div>
 @else
     <div class="uk-margin-top">
-        <h1 style="text-transform:capitalize; font-size:22px;">{{ $title }}</h1>
+        <h1>{{ $title }}</h1>
     </div>
     <div class="uk-alert-danger uk-border-rounded" uk-alert>
         <a class="uk-alert-close" uk-close></a>

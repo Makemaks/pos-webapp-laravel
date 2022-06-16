@@ -42,12 +42,14 @@
            
         </div>
 
-        <div class="uk-width-auto@m">
+        <div class="uk-width-large@m">
             <nav class="uk-navbar-container" uk-navbar>
                 <div class="uk-navbar-left">
             
                     <ul class="uk-navbar-nav">
-                        <li class="uk-active"><a href="#">Active</a></li>
+                        <li class="uk-active">
+                            <span id="order-user-id"></span>
+                        </li>
                         <li>
                             <a href="#">Parent</a>
                             <div class="uk-navbar-dropdown">
@@ -58,7 +60,7 @@
                                 </ul>
                             </div>
                         </li>
-                        <li><a href="#">Item</a></li>
+                        <li><a href="#" uk-icon="pencil"></a></li>
                     </ul>
             
                 </div>

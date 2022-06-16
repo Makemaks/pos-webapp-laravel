@@ -19,21 +19,28 @@
     <div class="uk-navbar-right">
 
         <div class="uk-navbar-item">
-            <form action="javascript:void(0)">
-                {{-- <input class="uk-input uk-form-width-medium" type="text" placeholder="" id="inputID"> --}}
-                <a class="uk-button uk-button-default uk-border-rounded" href="#modal-center" uk-toggle uk-icon="icon: search"></a>
-                @include('partial.numpadPartial')
-                
-                <div class="uk-inline">
-                    <button class="uk-button uk-button-default uk-border-rounded" type="button"><span uk-icon="icon:  triangle-down"></span></button>
-                    <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
+            <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></button>
+            <div class="uk-width-large" uk-dropdown>
+                <div class="uk-dropdown-grid uk-child-width-1-2@m" uk-grid>
+                    <div>
                         <ul class="uk-nav uk-dropdown-nav">
-                            <li class="uk-nav-header">Home</li>
+                            <li class="uk-nav-header">Menu</li>
                             @foreach (Setting::SettingStockCostGroup() as $item)
                                 <li><a href="{{route('home.index', ['id' => $loop->iteration,'type' => $item])}}">{{Str::ucfirst($item)}}</a></li>
                             @endforeach
-                            
-                            <li class="uk-nav-header">Top Brands</li>
+                            <li class="uk-nav-header">Header</li>
+                            <li><a href="#">Item</a></li>
+                            <li><a href="#">Item</a></li>
+                            <li class="uk-nav-divider"></li>
+                            <li><a href="#">Item</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul class="uk-nav uk-dropdown-nav">
+                            <li class="uk-nav-header">Product</li>
+                            <li class="uk-active"><a href="#">Active</a></li>
+                            <li><a href="#">Item</a></li>
+                            <li class="uk-nav-header">Customer</li>
                             <li><a href="#">Item</a></li>
                             <li><a href="#">Item</a></li>
                             <li class="uk-nav-divider"></li>
@@ -41,6 +48,14 @@
                         </ul>
                     </div>
                 </div>
+            </div>
+
+            <form action="javascript:void(0)">
+                {{-- <input class="uk-input uk-form-width-medium" type="text" placeholder="" id="inputID"> --}}
+                <a class="uk-button uk-button-default uk-border-rounded" href="#modal-center" uk-toggle uk-icon="icon: search"></a>
+                @include('partial.numpadPartial')
+                
+              
                 
             </form>
         </div>

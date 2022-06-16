@@ -168,7 +168,7 @@ class SettingFactory extends Factory
             ];
         }
 
-        for ($i=0; $i < 20; $i++) { 
+        for ($i=0; $i < 5; $i++) { 
             $setting_stock_group[$i+1] = [
                 "description"=> $this->faker->word,
                 "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),

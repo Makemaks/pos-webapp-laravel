@@ -33,7 +33,7 @@ $route = Str::before(Request::route()->getName(), '.');
    
 </head>
 
-<style>
+{{-- <style>
     table {
         border-collapse: collapse;
     }
@@ -67,7 +67,7 @@ $route = Str::before(Request::route()->getName(), '.');
     }
 
 </style>
-
+ --}}
 
 
 <body>
@@ -76,37 +76,54 @@ $route = Str::before(Request::route()->getName(), '.');
         @include('partial.navigationPartial')
     </div>
 
-    <div>
+    <div class="uk-container uk-container-expand uk-margin-top">
       
-        @php
-            $uk_grid = '';
-            if(Auth::check() && $route != 'home'){
-                $uk_grid = 'uk-grid';
-            }
-        @endphp
-
-       
-            <div {{$uk_grid}}>
+            <div class="uk-grid-small" uk-grid>
 
                 @auth
-                    @if ($route != 'home')
-                        <div class="uk-width-auto@m uk-box-shadow-small" uk-height-viewport>
-                            <div class="uk-container uk-container-expand uk-margin-top">
-                                @include('partial.menuPartial')
-                            </div>
+                    
+                    <div class="uk-width-large@m">
+                        <div>
+                            @include('partial.menuPartial')
                         </div>
-                    @endif
+                    </div>
+
                 @endauth
 
             
-                <div class="uk-width-expand@m uk-container uk-container-expand uk-margin-top">
-                    @yield('content')
+                <div class="uk-width-expand@m">
+                   
+                    <div id="contentID" class="uk-padding-small uk-overflow-auto uk-height-large uk-border-rounded uk-background-muted" uk-height-viewport>
+                        @yield('content')
+                    </div>
                 </div>
+
+               
+                @auth
+                    
+                    <div class="uk-width-large@m">
+                        @if($route == 'home')
+
+                         
+                                
+                                <div>
+                                    @include('receipt.partial.personMenuPartial')
+                                </div>
+                                    
+                                <div id="receiptID">
+                                    @include('receipt.partial.indexPartial')
+                                </div>
+                                
+                          
+                            
+                        @endif
+                    </div>
+
+                @endauth
+                
+
             </div>
 
-         
-            {{-- echo 'User IP Address - '.$_SERVER['REMOTE_ADDR'];   --}}
-              
     </div>
 
 

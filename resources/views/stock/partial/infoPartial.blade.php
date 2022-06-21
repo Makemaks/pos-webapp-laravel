@@ -42,9 +42,9 @@
                         @foreach ($data['settingModel']->setting_stock_group as $key => $group)
                             @if ( $group['type'] == 1 )
                                 @isset ($data['stockModel']->stock_merchandise['group_id'])
-                                    <option value="{{$key}}" @if($key == old('stock_merchandise[group_id]', $data['stockModel']->stock_merchandise['group_id']) ) selected @endif>{{$group['description']}}</option>
+                                    <option value="{{$key}}" @if($key == old('stock_merchandise[group_id]', $data['stockModel']->stock_merchandise['group_id']) ) selected @endif>{{$group['name']}}</option>
                                 @else
-                                    <option value="{{$key}}" @if($key == old('stock_merchandise[group_id]') ) selected @endif>{{$group['description']}}</option>
+                                    <option value="{{$key}}" @if($key == old('stock_merchandise[group_id]') ) selected @endif>{{$group['name']}}</option>
                                 @endisset
                             @endif
                         @endforeach

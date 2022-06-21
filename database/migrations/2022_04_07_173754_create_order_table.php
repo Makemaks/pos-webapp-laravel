@@ -19,11 +19,9 @@ return new class extends Migration
             $table->string('ordertable_type')->nullable()->comment('company::user');
             $table->tinyInteger('order_status')->comment('cancelled::refunded'); 
             $table->json('order_offer')->nullable();
-            $table->smallInteger('order_setting_pos')->nullable();
             $table->tinyInteger('order_type')->default(0)->comment('internal::external'); 
             $table->float('order_amount_received')->nullable();
             $table->dateTime('order_shipped_at')->nullable();
-            $table->bigInteger('order_store_id')->comment('added_by'); 
             $table->text('order_note')->nullable();
             $table->json('order_delivery')->nullable();
             $table->json('order_discount')->nullable();
@@ -42,3 +40,4 @@ return new class extends Migration
         Schema::dropIfExists('order');
     }
 };
+

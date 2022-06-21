@@ -14,7 +14,6 @@
         $arrayAdminMenu = [
             "dashboard" => [],
             "report" => [],
-            "product" => [],
             "stock" => [
 
                 "stock-list",
@@ -61,7 +60,8 @@
                 "bill",
             ],
             "customer" => [
-                "customer-explorer"
+                "person",
+                "company"
             ],
             "ticket" => [],
             
@@ -89,77 +89,110 @@
 
 @endphp
 
-<div>
-    <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
-            
-            @foreach ( $arrayAdminMenu as $key => $arrayMenu)
-                    
-                @php
-                    $keyReplace = $key;
 
-                    if ($key == 'product') {
-                        $keyReplace= 'stock';
-                    }
-                    elseif($key == 'clerk'){
-                        $keyReplace = 'user';
-                    }
-                    elseif($key == 'programming'){
-                        $keyReplace = 'setting';
-                    }
-                    elseif($key == 'sale'){
-                        $keyReplace = 'order';
-                    }
-                    elseif($key == 'customer'){
-                        $keyReplace = 'person';
-                    }
-                    
-
-                    $uk_open ='';
-                    if(Str::lower(session::get('action')) == $keyReplace || $keyReplace == $route){
-                        $uk_open = 'uk-open';
-                    }
-                        
-                @endphp
+@if ($route != 'home')
+    <div>
+        <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
                 
-
-                @if (count($arrayMenu) == 0)
-                    <li>
-                        <a href="{{route($keyReplace.'.index')}}">
-                            {{Str::upper($key)}}
-                        </a>
-                    </li>
-                @else
+                @foreach ( $arrayAdminMenu as $key => $arrayMenu)
                         
-                    <li class="uk-parent {{$uk_open}}">
-                        <a href="#">{{Str::upper($keyReplace)}}</a>
+                    @php
+                        $keyReplace = $key;
 
-                        <ul class="uk-nav-sub">
-                            @foreach ($arrayMenu as $item)
-                                @php
-                                    $active = '';
-                                    if (SESSION::GET('view') == $item) {
-                                        $active = 'uk-text-danger';
-                                    }
-                                @endphp
-                                    
-                                <li>
-                                    <a href="{{route('menu.'.$keyReplace,['view' => $item])}}">
-                                        <span class="{{$active}}">{{Str::upper(Str::replace('-', ' ', $item))}}</span>
-                                    </a>
-                                </li>
-                                    
-                            @endforeach
-                        </ul>
+                        if ($key == 'product') {
+                            $keyReplace= 'stock';
+                        }
+                        elseif($key == 'clerk'){
+                            $keyReplace = 'user';
+                        }
+                        elseif($key == 'programming'){
+                            $keyReplace = 'setting';
+                        }
+                        elseif($key == 'sale'){
+                            $keyReplace = 'order';
+                        }
+                    
+                        
+
+                        $uk_open ='';
+                        if(Str::lower(Session::get('action')) == $keyReplace || $keyReplace == $route){
+                            $uk_open = 'uk-open';
+                        }
                             
-                    </li>
-                @endif
+                    @endphp
+                    
 
-            @endforeach
-            
-        <li class="uk-nav-divider"></li>
-            
+                    @if (count($arrayMenu) == 0)
+                        <li>
+                            <a href="{{route($keyReplace.'.index')}}">
+                                {{Str::upper($key)}}
+                            </a>
+                        </li>
+                    @else
+                            
+                        <li class="uk-parent {{$uk_open}}">
+                            <a href="#">{{Str::upper($keyReplace)}}</a>
+
+                            <ul class="uk-nav-sub">
+                                @foreach ($arrayMenu as $item)
+                                    @php
+                                        $active = '';
+                                        if (Session::get('view') == $item) {
+                                            $active = 'uk-text-danger';
+                                        }
+                                    @endphp
+                                        
+                                    <li>
+                                        <a href="{{route('menu.'.$keyReplace,['view' => $item])}}">
+                                            <span class="{{$active}}">{{Str::upper(Str::replace('-', ' ', $item))}}</span>
+                                        </a>
+                                    </li>
+                                        
+                                @endforeach
+                            </ul>
+                                
+                        </li>
+                    @endif
+
+                @endforeach
+                
+            <li class="uk-nav-divider"></li>
+                
+        </ul>
+    </div>
+
+@else
+
+<div>
+
+    <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
+        <li class="uk-nav-header">Home</li>
+        @foreach (Setting::SettingStockGroup() as $item)
+            <li>
+                <a onclick="stockGroup({{$loop->iteration}}, '{{$item}}', null)">{{Str::ucfirst($item)}}</a>
+            </li>
+        @endforeach
+        
+      
+        <li class="uk-nav-header">Top Brands</li>
+        <li><a href="#">Brands</a></li>
+       
+
+        <li class="uk-nav-header">Cart</li>
+        <li><a href="#" class="uk-border-rounded" uk-icon="cart"></a></li>
+        <li><a href="#" class="uk-border-rounded" uk-icon="credit-card" onclick=""></a></li>
+        <li><a href="#" class="uk-border-rounded" uk-icon="grid" onclick="showKeypad()"></a></li>
+        <li><a href="#" class="uk-border-rounded" uk-icon="user" onclick="showCustomer()">
+            {{-- <span uk-icon="icon: plus"></span> --}}</a>
+        </li>
     </ul>
+
 </div>
+
+
+@endif
+
+
 
 
 

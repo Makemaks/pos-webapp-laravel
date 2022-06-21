@@ -20,7 +20,7 @@ class UserFactory extends Factory
     {
         return [
             'user_account_id' => $this->faker->numberBetween($min = 1, $max = 1),
-            'user_person_id' => $this->faker->unique(true)->numberBetween(1, 1),
+            'user_person_id' => $this->faker->unique(true)->numberBetween(1, 10),
             'user_type' => $this->faker->numberBetween($min = 0, $max = 3),
             'user_is_disabled' => 0,
             'user_is_notifiable' => 1,

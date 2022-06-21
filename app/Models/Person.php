@@ -59,7 +59,9 @@ class Person extends Model
 
     public static function Company()
     {
-        return Person::leftJoin('company', 'company.company_id', 'person.person_company_id');
+        return Person::
+        rightJoin('user', 'user.user_person_id', 'person.person_id')
+        ->rightJoin('company', 'company.company_id', 'person.persontable_id');
     }
 
     public static function List()
@@ -89,6 +91,7 @@ class Person extends Model
         return [
             'Employee',
             'Non-Employee',
+            'Customer'
         ];
     }
 

@@ -53,7 +53,7 @@ use App\Models\Project;
                                                 @endforeach
                                             
                                             </select>
-                                        @elseif ($key == 'description')
+                                        @elseif ($key == 'name')
                                             
                                                 <textarea class="uk-textarea" name="setting_finalise_key[{{$keysetting_finalise_key}}][{{$key}}]"> {{$value}}</textarea>
                                           

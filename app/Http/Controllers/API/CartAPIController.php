@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
-use App\Models\Scheme;
+use App\Models\Setting;
 
 use App\Models\Stock;
 use App\Helpers\MathHelper;
@@ -21,10 +21,18 @@ class CartAPIController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    private $stockList;
     private $userModel;
+    private $personModel;
+    private $sessionCartList;
+    private $settingModel;
+    private $userList;
+   
+    private $personList;
     private $discount;
     private $html = '';
 
+   
     public function index(Request $request)
     {
      
@@ -103,6 +111,8 @@ class CartAPIController extends Controller
      public function Store(Request $request){
 
       
+        $this->init();
+
         if ($request->has('barcode')) {
              $this->stockModel = Stock::
              where('stock_merchandise->outer_barcode', $request['barcode'])
@@ -114,6 +124,7 @@ class CartAPIController extends Controller
                 $requestInput['stock_name'] = $this->stockModel->stock_merchandise['stock_name'];
                 $requestInput['stock_price'] = $this->stockModel->stock_cost[1][1]['price'];
                 $requestInput['stock_quantity'] = 1;
+                $requestInput['stock_vat'] = $this->stockModel->stock_vat;
                 //$requestInput['plan'] = '';
 
                 $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $requestInput);
@@ -131,8 +142,8 @@ class CartAPIController extends Controller
             
 
            
-        $this->html = view('receipt.partial.receiptPartial')->render();
-        return response()->json(['success'=>'Got Simple Ajax Request.', 'data' => $this->html]);
+        $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
+        return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
 
     }
 
@@ -167,16 +178,17 @@ class CartAPIController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $a = $request->all();
       
-        if($request->has('quantityID')){
-            $this->cartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList'); 
+        if($request->has('quantity')){
 
-            $pos = array_search($request['quantityID'], $this->cartList);      
-             
-            $a = $request->session()->pull('user-session-'.Auth::user()->user_id.'.cartList.'.$id);
+            $this->cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList'); 
+            $this->cartList[$id]['stock_quantity'] = $request['quantity'];  
+            $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList', $this->cartList);
+
+            $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
         }
+
+        return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
     }
 
     /**
@@ -189,14 +201,40 @@ class CartAPIController extends Controller
     {
         if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
             //remove session
-            $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList.'.$id);
-            $this->html = view('receipt.partial.receiptPartial')->render();
+            $this->cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList'); 
+
+            unset($this->cartList[$id]);
+            $this->cartList = array_values($this->cartList);
+
+            $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList', $this->cartList);
+
+            $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
         }
 
 
-        return response()->json(['success'=>'Got Simple Ajax Request.', 'data' => $this->html]);
+        return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
     }
 
-    
+    private function Data(){
+
+        return [
+           
+            'stockList' => $this->stockList,
+            'userModel' => $this->userModel,
+            'personModel' => $this->personModel,
+            'sessionCartList' => $this->sessionCartList,
+            'settingModel' => $this->settingModel,
+            'userList' => $this->userList,
+            'personModel' => $this->personModel,
+            'personList' => $this->personList
+        ];
+    }
+
+
+    private function init(){
+        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+        ->first();
+        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+    }
 
 }

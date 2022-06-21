@@ -78,11 +78,13 @@ class User extends Authenticatable
 
     public static function Company($column, $filter)
     {
-        return User::leftJoin('store', 'store.store_id', 'user.user_account_id')
+        return User::leftJoin('account', 'account.account_id', 'user.user_account_id')
+            ->leftJoin('store', 'store.store_account_id', 'account.account_id')
             ->leftJoin('company', 'company_store_id', 'store.store_id')
             ->leftJoin('person', 'person.person_id', 'user.user_person_id')
             ->leftJoin('address', 'address.addresstable_id', 'company.company_id')
             ->where($column, $filter);
+            
     }
 
     public static function Person($column, $filter)

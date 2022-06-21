@@ -2,37 +2,53 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-
-use App\Models\Scheme;
-
-class SchemeAPIController extends Controller
+class SearchAPIController extends Controller
 {
-    /**
+     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
 
 
-    private $schemeList;
+     private  $stockList;
+  
 
     public function index(Request $request)
     {
+
+        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+        ->first();
+
        
+        if ($request->has('search_element_type')) {
+          
+            if ($request['search_element_type'] == 'user') {
+                $this->stockList = Stock::Store()
+                            ->where('stock_merchandise->stock_name', 'like', '%'.$request['search_element'].'%')
+                            
+                            ->get();
+                
+                $this->html = view('receipt.partial.receiptPartial', $this->Data())->render();
+            } 
+            elseif ($request['search_element_type'] == 'product') {
+                $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
+                            ->where('stock_merchandise->stock_name', 'like', '%'.$request['search_element'].'%')
+                            
+                            ->get();
+                
+                $this->html = view('receipt.partial.receiptPartial', $this->Data())->render();
+                       
+                
+              
 
-       if ($request->has('user_id')) {
-            $this->schemeList = Scheme::List('schemetable_id', $request->user_id)
-            ->where('schemetable_type', 'user')
-            ->get();
-       }
-
-       $view = view('scheme.partial.indexPartial', ['data' => $this->data()])->render();
-     
-
-       return response()->json( ['success' => true, 'html' => $view] );
+            }
+            
+        } 
+        
+        return response()->json(['success'=>'Got Simple Ajax Request.', 'data' => $this->html]);
     }
 
     /**
@@ -42,7 +58,7 @@ class SchemeAPIController extends Controller
      */
     public function create()
     {
-        $a = $request->user_id;
+        
     }
 
     /**
@@ -53,7 +69,7 @@ class SchemeAPIController extends Controller
      */
     public function store(Request $request)
     {
-        $a = $request->user_id;
+        
     }
 
     /**
@@ -75,7 +91,7 @@ class SchemeAPIController extends Controller
      */
     public function edit($id)
     {
-        $a = $request->user_id;
+       
     }
 
     /**
@@ -105,7 +121,7 @@ class SchemeAPIController extends Controller
 
         return [
          
-            'schemeList' => $this->schemeList,
+            'stockList' => $this->stockList,
         ];
        
     }

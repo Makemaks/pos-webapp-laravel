@@ -22,7 +22,7 @@ class Setting extends Model
        
         'setting_stock_group' => '{
             "1": {
-                "description": "",
+                "name": "",
                 "code": "",
                 "type": ""
             }
@@ -202,32 +202,31 @@ class Setting extends Model
         "setting_stock_offer" => '{
             "1": {
                 "points":{
-                    "gain": "",
-                    "collect": "",
+                    "gain" : "",
+                    "collect" : "",
+                    "discount_type" : "",
+                    "discount_value" : "",
                 },
                 "date":{
                     "end_date": "",
                     "start_date": "",
                 },
-                "default":{
-                    "type": "",
-                    "exception": {},
+
+                "integer":{
+                    "set_menu":"",
+                    "quantity":"",
                 },
 
-                "set_menu":"",
-                "number":"",
+                "boolean":{
+                    "type":"",
+                    "status":"",
+                },
 
-                "type": "",
-
-                "description": "",
-                "name": "",
-
-                "value":"",
-                "status":""
-                
-                "quantity": "",
-                "discount(%)": "",
-                
+                "string":{
+                    "name":"",
+                    "description":"",
+                    "code":"",
+                }
                 
             }
         }',
@@ -419,9 +418,8 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingStockCostGroup(){
+    public static function SettingStockGroup(){
        
-      
         return [
             "category", 
             "group", 
@@ -441,7 +439,16 @@ class Setting extends Model
         ];
     }
 
-    
+    public static function SettingStockOffer($setting){
+        
+        if ($setting->setting_stock_offer) {
+            $stockOffer = collect($stock->setting_stock_offer)
+            ->whereDate('start_date', '>' ,Carbon::now())
+            ->first();
+        }
+
+        return $stockOffer;
+    }
 
 
 

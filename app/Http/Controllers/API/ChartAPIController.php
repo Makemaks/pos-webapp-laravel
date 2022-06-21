@@ -117,4 +117,7 @@ class ChartAPIController extends Controller
     {
         //
     }
+
+
+  
 }

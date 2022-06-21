@@ -17,7 +17,7 @@
             <tbody>
                 @foreach ($groupData as $key => $item)
                     <tr>
-                        <td>{{ $item['description'] }}</td>
+                        <td>{{ $item['name'] }}</td>
                         <td>{{ $item['Quantity'] }}</td>
                         <td>{{ $item['Total'] }}</td>
                     </tr>

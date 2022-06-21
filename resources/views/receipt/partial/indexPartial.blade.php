@@ -3,10 +3,12 @@
 @endpush
 
 @php
-    
+    use App\Helpers\NumpadHelper;
+    use App\Helpers\StringHelper;
     use App\Helpers\CurrencyHelper;
-    use App\Models\Scheme;
-    use App\Models\Plan;
+    use App\Helpers\MathHelper;
+  
+    use App\Models\Person;
     use App\Models\Stock;
     use App\Models\User;
     
@@ -14,130 +16,199 @@
     $currency = "";
     $priceVAT = 0;
     $totalPrice = 0;
+    $stock_vat = 0;
+    
 
     $data['sessionCartList'] = Session::get('user-session-'.Auth::user()->user_id. '.cartList');
     $data['userModel'] = User::Account('user_account_id', Auth::user()->user_account_id)
     ->first();
 
-    
-   
+    if(Session::has('user-session-'.Auth::user()->user_id. '.cartList')){
+       
+        $data['sessionCartList'] = Session::get('user-session-'.Auth::user()->user_id. '.cartList');
+        
+        foreach ($data['sessionCartList'] as $sessionCartList) {
+
+            $stock = Stock::find($sessionCartList['stock_id']);
+
+            $cost = Stock::StockCostDefault($stock->stock_cost);
+            $stock_vat = Stock::StockVAT($stock);
+            
+            $stockList[] = [
+                'stock_id' => $stock->stock_id,
+                'stock_name' => $stock->stock_merchandise['stock_name'],
+                'stock_quantity' => $sessionCartList['stock_quantity'],
+                'stock_cost' => MathHelper::FloatRoundUp($cost, 2),
+                'stock_vat_id' => $stock->stock_merchandise['stock_vat_id']
+            ];
+        } 
+      
+    }
+
+  
 @endphp
 
 
-
-<div class="uk-overflow-auto uk-height-large">
+<div class="uk-height-large uk-overflow-auto">
     <table class="uk-table uk-table-small uk-table-divider">
         <thead>
             <tr>
-                <th class=""></th>
-                 <th class=""></th>
-                <th class=""></th>
-                <th class=""></th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody id="cartListID">
-            @if ($data['sessionCartList'] && count($data['sessionCartList']) > 0)
-                @foreach ($data['sessionCartList'] as $cartKey => $cartItem)
+            @isset ($stockList)
+                @foreach ($stockList as $stockKey => $stockItem)
                     @php
                     
                         //convert sting to val
-                        $price = $cartItem['stock_price'] * intval($cartItem['stock_quantity']);
-                        $totalPrice = $price + $totalPrice;
+                        $price = $stockItem['stock_cost'] * intval($stockItem['stock_quantity']);
+                        $stock_vat_rate = null;
 
-                        if ($loop->last && isset($data['calculate_vat'])) {
-                            $priceVAT = MathHelper::VAT($data['userModel']->store_vat, $totalPrice);
+                        if ($stockItem['stock_vat_id']) {
+                            $stock_vat_rate = $data['settingModel']->setting_vat[$stockItem['stock_vat_id']]['rate'];
+                            $priceVAT = $priceVAT + MathHelper::VAT($stock_vat_rate, $price);
+                            $totalPrice = $price + $totalPrice;
                         } else {
-                            $priceVAT = $totalPrice;
+                            $totalPrice = $price + $totalPrice;
                         }
-        
-                    @endphp
-                        <tr id="cartItemID-{{$cartKey}}">
-                            <td>
-                                
-                                {{$cartItem['stock_name']}}
-                                <p class="uk-text-meta uk-margin-remove-top">
-                                
-                                {{-- @include('plan.partial.listPartial') --}}
-                                @if ($schemeModel)
-                                        <span class="uk-text-danger">*</span> 
-                                        {{$discount['symbol']}}{{CurrencyHelper::Format($discount['value'])}}
-                                @endif
-                                </p>
-                            </td>
+                        
 
+                    @endphp
+                        <tr id="cartItemID-{{$loop->index}}">
                             <td>
-                                @include('partial.controlsPartial',
+                                
+                                {{$stockItem['stock_name']}} 
+                                @if ($stockItem['stock_quantity'] > 1)
+                                    <span class="uk-text-meta uk-text-top"> {{$stockItem['stock_quantity']}}</span>
+                                @endif
+                            
+                                @include('partial.controlPartial',
                                 [
-                                    'cartValue' => $loop->iteration,
-                                    'quantity' => $cartItem['stock_quantity']
+                                    'cartValue' => $loop->index,
+                                    'quantity' => $stockItem['stock_quantity']
                                 ])
                             </td>
-                            
+
                             <td>
-                                {{CurrencyHelper::Format($cartItem['stock_price'])}}
+                              
+                                @if ($stock_vat_rate)
+                                    {{ MathHelper::FloatRoundUp($stock_vat_rate, 2)}}
+                                @endif
+                                
+
                             </td>
+
                             <td>
-                                <button type="button" id="deleteID-{{$cartKey}}" onclick="Delete({{$cartKey}})" class="uk-text-danger" uk-icon="trash">
-                                </button>
+                                {{CurrencyHelper::Format($stockItem['stock_cost'])}}
                             </td>
-                            
+                           
                         </tr>
+                      
                 @endforeach
 
-            @endif 
+            @endisset
         </tbody>
         
     </table>
 </div>
 
 
-<div class="uk-margin-medium" uk-grid>
-
-    <div class="uk-width-expand">
-        <div class="uk-margin">
-            <label><input class="uk-radio" type="radio" name="radio2" checked> CASH</label>
+<div class="uk-margin-large">
+    <div class="uk-margin-large">
+        <div class="uk-text-right">Sub Total {{$currency}} 
+            <span class="uk-margin-left" id="totalPriceID">{{CurrencyHelper::Format($totalPrice)}}</span>
         </div>
-        
-        <div class="uk-margin-medium">
-            <label><input class="uk-radio" type="radio" name="radio2" onclick="PaymentType(1, {{$priceVAT}})"> CARD</label>
+        <div class="uk-text-right">VAT % 
+            <span class="uk-margin-left" id="vatID">
+                @if($data['userModel']->store_vat) 
+                    {{$data['userModel']->store_vat}}
+                @else
+                    N/A
+                @endif
+                    
+            </span>
+        </div>
+        <div class="uk-text-right">Total {{$currency}} 
+            <span class="uk-margin-left" id="totalPriceID">{{CurrencyHelper::Format($priceVAT + $totalPrice)}}</span>
         </div>
     </div>
-        
-        
+    
     <div>
+        
+      
+
+        @if (Person::PersonType()[$data['userModel']->person_type] == 'Customer')
+            <div class="uk-height-small uk-background-muted uk-border-rounded uk-padding  uk-box-shadow-small" onclick="PaymentType(1, {{$priceVAT}})">
+                Pay
+            </div>
+        @else
            
-        <div>
-            <div class="uk-text-right uk-text-bold">Sub Total {{$currency}} 
-                <span class="uk-margin-left" id="totalPriceID">{{CurrencyHelper::Format($totalPrice)}}</span>
+        <form id="receipt-store" action="{{route('receipt.store')}}"  method="POST">
+
+        </form> 
+
+            <div class="uk-child-width-expand@s uk-text-center uk-grid-small uk-button" uk-grid>
+               
+                <div>
+                    <div type="submit" form="receipt-store" value="order_type[]">
+                        <div class="uk-height-small uk-background-muted uk-border-rounded uk-padding uk-box-shadow-small">
+                            CASH
+                        </div>
+                    </div>
+                </div>
+                
+               <div>
+                    <div onclick="document.getElementById('receipt-store').submit();">
+                        <div class="uk-height-small uk-background-muted uk-border-rounded uk-padding uk-box-shadow-small">
+                            TERMINAL
+                        </div>
+                    </div>
+               </div>
+
             </div>
-        </div>
-        <div>
-            <div class="uk-text-right uk-text-bold">VAT % 
-                <span class="uk-margin-left" id="vatID">
-                    @if($data['userModel']->store_vat) 
-                        {{$data['userModel']->store_vat}}
-                    @else
-                        N/A
-                    @endif
-                        
-                </span>
-            </div>
-        </div>
-        <div>
-            <div class="uk-text-right uk-text-bold">Total {{$currency}} 
-                <span class="uk-margin-left" id="totalPriceID">{{CurrencyHelper::Format($priceVAT)}}</span>
-            </div>
-        </div>
+
+        @endif
 
     </div>
 </div>
 
-<div class="uk-margin" id="payment">
+{{-- 
+<div class="uk-margin-large">
 
-    <div class="uk-margin-medium">
-        <button type="button" class="uk-box-shadow-small uk-width-expand uk-text-lead uk-light uk-border-rounded uk-button uk-button-danger" uk-icon="icon: tag">
-            {{ CurrencyHelper::Format($priceVAT) }}
-        </button>
-    </div>
+    <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+      
+    </ul>
+    
+    <ul class="uk-switcher">
+        <li>
+            
+           
+    
+        </li>
+    
+        <li>
+            <div id="paymentID">
 
-</div>
+            </div>
+        </li>
+    
+        <li>
+           
+        </li>
+
+        <li>
+            <div>
+                <div id="customerID">
+                     @include('partial.numpadPartial', ['type' => 0])
+                    @include('receipt.partial.personPartial')
+                </div>
+            </div>
+        </li>
+        
+    </ul>
+    
+    
+
+</div> --}}

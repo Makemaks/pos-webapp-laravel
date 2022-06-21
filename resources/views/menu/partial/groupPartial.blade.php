@@ -51,7 +51,7 @@
                                                 @endforeach
                                             
                                             </select>
-                                        @elseif ($key == 'description')
+                                        @elseif ($key == 'name')
                                             
                                                 <textarea class="uk-textarea" name="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]"> {{$value}}</textarea>
                                           

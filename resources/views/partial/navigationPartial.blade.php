@@ -44,37 +44,39 @@ if (Auth::check()) {
                 </div>
             </div>
 
-            @if ($route == 'home')
-                
-            @else
-               
-                <div class="uk-navbar-item uk-visible@s">
-                    <div>
-                        {{-- @isset($storeModel)
-                            <h3 class="uk-margin-remove-bottom" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->company_name}}</h3>
-                            <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->store_name}}</p>
-                        @endisset --}}
-                        
-                        
-                        <form action="{{route('home.index')}}">
-                            @csrf
-                            <select name="store-form" class="uk-select" onchange="this.form.submit()">
-                                <option selected disabled></option>
-                                
-                                @isset($storeList)
-                                    @foreach ($storeList as $store)
-                                        <option value="{{$store->store_id}}" @if($store->store_id == $storeModel->store_id) selected  @endif>{{$store->store_name}} - {{$store->store_id}} - {{$storeModel->store_id}}</option>
-                                    @endforeach
-                                @endisset
-                                
-                            </select>
-                        </form>
+            @auth
+            
+                @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin')
                     
+                    <div class="uk-navbar-item uk-visible@s">
+                        <div>
+                            {{-- @isset($storeModel)
+                                <h3 class="uk-margin-remove-bottom" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->company_name}}</h3>
+                                <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->store_name}}</p>
+                            @endisset --}}
+                            
+                            
+                            <form action="{{route('home.index')}}">
+                                @csrf
+                                <select name="store-form" class="uk-select" onchange="this.form.submit()">
+                                    <option selected disabled></option>
+                                    
+                                    @isset($storeList)
+                                        @foreach ($storeList as $store)
+                                            <option value="{{$store->store_id}}" @if($store->store_id == $storeModel->store_id) selected  @endif>{{$store->store_name}} - {{$store->store_id}} - {{$storeModel->store_id}}</option>
+                                        @endforeach
+                                    @endisset
+                                    
+                                </select>
+                            </form>
                         
+                            
+                        </div>
                     </div>
-                </div>
-                
-            @endif
+                    
+                @endif
+
+            @endauth
             
         </div>
 
@@ -123,12 +125,15 @@ if (Auth::check()) {
                                     <li><a class="uk-margin-small uk-button uk-button-default uk-text-danger uk-border-rounded"
                                             href="{{ route('authentication.clock-out') }}">ClockOut</a></li>
 
-                                    <li class="uk-nav-header" uk-icon="icon: thumbnails"></li>
-                                    <li class="uk-nav-divider"></li>
+                                    
                                     @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin')
+                                        <li class="uk-nav-header" uk-icon="icon: thumbnails"></li>
+                                        <li class="uk-nav-divider"></li>
                                         <li><a class="uk-margin-small uk-button uk-button-default uk-text-danger uk-border-rounded"
                                             href="{{ route('dashboard.index') }}">Admin</a></li>
                                     @endif
+
+                                 
                                 @else
                                     <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded"
                                             href="{{ route('authentication.login') }}">Login</a></li>

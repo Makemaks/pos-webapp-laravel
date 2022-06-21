@@ -116,28 +116,28 @@ function paymentMethodHandler(paymentIntent) {
     });
 }
 
+
 //open payment
 function PaymentType(payment_type, priceVAT){
 
-    if ( priceVAT > 0) {
-      $.ajax({
-        url: "/gateway-api",
-        method: 'GET',
-        data: {
-            payment_type:payment_type,
-            total:priceVAT,
-            action:'payment'
+  if ( priceVAT > 0) {
+    $.ajax({
+      url: "/gateway-api",
+      method: 'GET',
+      data: {
+          payment_type:payment_type,
+          total:priceVAT,
+          action:'payment'
 
-        },
-        success:function(data){
+      },
+      success:function(data){
 
-            if (data['success']) {
-                document.getElementById('payment').innerHTML = data['view'];
-                stripe();
-            }
-        },
+          if (data['success']) {
+              document.getElementById('paymentID').innerHTML = data['view'];
+              stripe();
+          }
+      },
 
-      });
-    }
+    });
+  }
 }
-  

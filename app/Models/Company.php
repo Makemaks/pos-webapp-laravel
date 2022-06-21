@@ -24,7 +24,8 @@ class Company extends Model
 
     public static function Address(){
         return Company::
-        leftJoin('address', 'address.addresstable_id', 'company.company_id')
+        leftJoin('store', 'store.store_id', 'company.company_store_id')
+        ->leftJoin('address', 'address.addresstable_id', 'company.company_id')
         ->where('addresstable_type', 'company');
     }
 

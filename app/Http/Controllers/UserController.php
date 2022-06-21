@@ -30,6 +30,8 @@ class UserController extends Controller
         $this->userList = User::Store('person_user_id', $this->userModel->user_id)
             ->paginate(20);
 
+        $request->session->push('person_id', $request['person_id']);
+
         return view('user.index', ['data' => $this->Data()]);
     }
 

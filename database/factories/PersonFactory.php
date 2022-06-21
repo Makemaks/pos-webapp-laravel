@@ -49,8 +49,6 @@ class PersonFactory extends Factory
 
 
 
-
-
         return [
             //
             'person_message_notification' => $person_message_notification,

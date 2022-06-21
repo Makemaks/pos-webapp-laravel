@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Helpers\MathHelper;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+
+use App\Models\Setting;
+use App\Models\User;
 
 class Stock extends Model
 {
@@ -56,8 +61,8 @@ class Stock extends Model
 
             "non_stock": 1,
             "unit_size": "",
-            "recipe_link" => "",
-            "case_size" => "",
+            "recipe_link": "",
+            "case_size": "",
             "plu_id": "",
             
             "current_stock": "",
@@ -73,7 +78,7 @@ class Stock extends Model
             "stock_quantity": "",
             "stock_image": "",
             "stock_tag": "",
-            "stock_offer": "",
+            "stock_offer_id": {},
             "stock_type": "",
             
         }',
@@ -128,6 +133,12 @@ class Stock extends Model
         "stock_cost_quantity" => 'array',
         "stock_manager_special" => 'array'
     ];
+
+    public static function Warehouse($column,  $filter){
+        return Stock::
+        leftJoin('warehouse', 'warehouse.warehouse_stock_id', '=', 'stock.stock_id')
+        ->where($column,  $filter);
+    }
 
     public static function List()
     {
@@ -184,7 +195,7 @@ class Stock extends Model
 
 
                 $departmentTotal[] = [
-                    'description' => $value['description'],
+                    'name' => $value['name'],
                     'Quantity' => $quantity,
                     'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
                 ];
@@ -273,6 +284,51 @@ class Stock extends Model
        
         return $stock_cost[1][1]['price'];
 
+    }
+
+
+    public static function StockVAT($stock){
+    
+        $userModel = User::Account('account_id', Auth::user()->user_account_id)
+        ->first();
+
+        $settingModel = Setting::where('setting_store_id', $userModel->store_id)->first();
+        
+        if ($stock->stock_merchandise['stock_vat_id']) {
+            $stock_vat = $settingModel->setting_vat[$stock->stock_merchandise['stock_vat_id']];
+            return  $stock_vat['rate'];
+        }
+
+    }
+
+   
+    
+    
+
+    public static function CurrentOffer($stock){
+        
+        $stockOffer = [];
+
+        if ($stock->stock_merchandise['stock_offer_id']) {
+
+            $userModel = User::Account('account_id', Auth::user()->user_account_id)
+            ->first();
+
+            $settingModel = Setting::where('setting_store_id', $userModel->store_id)->first();
+
+            
+            $setting_stock_offer = collect($settingModel->setting_stock_offer)->where('date->start_date', '>' ,Carbon::now());
+            
+
+            foreach ($settingModel->setting_stock_offer as $key => $value) {
+                    if ( $value['date']['start_date'] > Carbon::now() && array_search($key, $stock->stock_merchandise['stock_offer_id'])) {
+                        $stockOffer[] = $value;
+                    }
+            }
+
+        }
+
+        return $stockOffer;
     }
 
 

@@ -16,7 +16,7 @@ $pluData = App\Models\Stock::GroupCategoryBrandPlu($data, 2, 'plu_id');
             <tbody>
                 @foreach ($pluData as $key => $item)
                     <tr>
-                        <td>{{ $item['description'] }}</td>
+                        <td>{{ $item['name'] }}</td>
                         <td>{{ $item['Quantity'] }}</td>
                         <td>{{ $item['Total'] }}</td>
                     </tr>

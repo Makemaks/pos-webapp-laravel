@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Company;
+use App\Models\User;
+use App\Models\Store;
+use App\Models\Setting;
 
 class CompanyController extends Controller
 {
@@ -15,10 +18,10 @@ class CompanyController extends Controller
     private  $userModel;
     private  $orderList;
 
-    public function Index(){
+    public function Index(Request $request){
 
-        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
-        $this->orderList = Store::Sale('store_id',  $this->userModel->store_id)->get();
+        $this->init();
+       
 
       if ($request->session()->get('view') == 'supplier') {
             $this->companyList = Company::List()
@@ -85,12 +88,34 @@ class CompanyController extends Controller
         return redirect()->route('company.index')->with('success', '');
     }
 
+    private function Init(){
+        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+        ->first();
+  
+        $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
+  
+        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::find($this->settingModel->setting_id);
+  
+        $this->categoryList = $this->settingModel->setting_stock_category;
+  
+  
+        $this->storeList = Store::List('root_store_id', $this->userModel->store_id);
+        
+        $storeModel = Store::Account('store_id', $this->userModel->store_id)
+        ->first();
+  
+        //$this->storeList->prepend($storeModel);
+     }
+
     private function Data(){
         return [
             'companyModel' => $this->companyModel,
             'companyList' => $this->companyList
         ];
     }
+
+    
 
 
 }

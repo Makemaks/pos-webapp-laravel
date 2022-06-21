@@ -18,7 +18,7 @@ use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InitController;
-// use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
@@ -43,7 +43,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\WarehouseController;
 
-
+use App\Http\Controllers\API\HomeAPIController;
 use App\Http\Controllers\API\GatewayAPIController;
 use App\Http\Controllers\API\ChartAPIController;
 use App\Http\Controllers\API\CartAPIController;
@@ -69,7 +69,7 @@ Route::get('admin-store/{store}', [AuthenticationController::class, 'adminStore'
 
 Route::resource('home', HomeController::class);
 Route::resource('user', UserController::class);
-// Route::resource('company', CompanyController::class);
+Route::resource('company', CompanyController::class);
 // Route::resource('address', AddressController::class);
 Route::resource('person', PersonController::class);
 Route::resource('store', StoreController::class);
@@ -135,11 +135,12 @@ Route::get('store-manager/order/store/{store}', [StoreManagerController::class,'
 Route::get('menu/stock/', [MenuController::class,'Stock'])->name('menu.stock');
 Route::get('menu/setting/', [MenuController::class,'Setting'])->name('menu.setting');
 Route::get('menu/order/', [MenuController::class,'Order'])->name('menu.order');
-Route::get('menu/person/', [MenuController::class,'Person'])->name('menu.person');
+Route::get('menu/customer/', [MenuController::class,'Customer'])->name('menu.customer');
 
 Route::get('menu/home/', [MenuController::class,'Home'])->name('menu.home');
 
 Route::apiResources([
+    'home-api' => HomeAPIController::class,
     'gateway-api' => GatewayAPIController::class,
     'chart-api' => ChartAPIController::class,
     'cart-api' => CartAPIController::class,

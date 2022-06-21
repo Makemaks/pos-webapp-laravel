@@ -26,6 +26,12 @@ class GatewayAPIController extends Controller
     private $fileModel;
     private $sessionStockList;
     
+
+    public function __construct()
+    {
+        $this->middleware('sessionMiddleware');
+    }
+    
     /**
     * Display a listing of the resource.
     *
@@ -73,7 +79,7 @@ class GatewayAPIController extends Controller
 
             $view = 'receipt.gateway.stripePartial';
 
-            $html = view($view, ['data' => $this->Data()])->render();
+            $html = view($view, ['html' => $this->Data()])->render();
 
        }
 
@@ -140,7 +146,7 @@ class GatewayAPIController extends Controller
                 ->latest('stock.created_at')
                 ->get();
 
-                $html = view('stock.index', ['data' => $this->Data()])->render();
+                $html = view('stock.index', ['html' => $this->Data()])->render();
             }else{
                 $error = 'Payment Failed';
 
@@ -169,7 +175,7 @@ class GatewayAPIController extends Controller
    {
         $this->stockModel = new Shop();
         
-        return view('stock.create',  ['data' => $this->Data()]); 
+        return view('stock.create',  ['html' => $this->Data()]); 
    }
 
    /**

@@ -48,18 +48,23 @@ class ReceiptController extends Controller
         $this->middleware('cartMiddleware'); */
     }
 
-    public function index()
+    public function index(Request $request)
     {
        
-         $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)
-        ->first();
+         $this->init();
 
-        $this->storeModel = Store::where('store_id', $this->userModel->person_account_id)->first();
+         switch ($request->view):
+            case 'person':
+                return redirect()->route('person.index');
+                break;
 
-        if($request->has('view')){
-            $view = $request['view'].'()';
-            $this->$request['view']();
-        }
+            case 'empty':
+                $this->Empty($request);
+                break;
+
+            default:
+                echo "i is not equal to 0, 1 or 2";
+        endswitch;
         
     }
 
@@ -110,17 +115,13 @@ class ReceiptController extends Controller
     {
         if ($request->session()->has('user-session-'.Auth::user()->user_id)) {
             $this->sessionCartList = $request->session()->get('user-session-'.Auth::user()->user_id. '.cartList');            
-            $this->sessionPlanList = $request->session()->get('user-session-'.Auth::user()->user_id. '.planList');
-            $this->sessionSchemeList = $request->session()->get('user-session-'.Auth::user()->user_id. '.schemeList');   
         
             $this->Init();
             $this->userModel = User::Person('user_id', $request['receipt_user_id'])
             ->first();
 
-          
 
             if ($request->has('payment_method_id')) {
-                $this->ProcessStripe();
                 $this->ProcessOrder();
             } 
             elseif ($request->has('Accepted')){
@@ -190,16 +191,8 @@ class ReceiptController extends Controller
         
         $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
 
-        if (User::UserType()[Auth::user()->user_type] == "Super Admin") {
-           
-        }
-        else{
-            
-        }
 
-       
-
-       if ($this->userModel->person_stripe_customer_id == NULL) {
+       /* if ($this->userModel->person_stripe_customer_id == NULL) {
             $stripe_customer = $this->stripe->customers->create([
               'email' => Auth::user()->email
             ]);
@@ -208,7 +201,7 @@ class ReceiptController extends Controller
             $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)
             ->first();
 
-        }
+        } */
 
 
     }
@@ -269,13 +262,16 @@ class ReceiptController extends Controller
 
     private function ProcessOrder(){
         $orderData = [
-            'order_user_id' =>  $this->userModel->user_id,
+          
+            'ordertable_id' => $this->userModel->person_id,
+            'ordertable_type' => 'Person',
+            
             'order_status' => 0,
-            'order_plan' => json_encode($this->sessionPlanList),
-            'order_scheme' => json_encode($this->sessionSchemeList),
-            'order_type' => 0,
+            'order_type' => $request->order_type,
             'stripe_payment_intent_id' =>  $payment_intent,
             'order_account_id' => $this->userModel->person_account_id,
+
+           
         ];
 
         $orderID = Order::insertGetId($orderData);

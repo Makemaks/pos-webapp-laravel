@@ -99,38 +99,32 @@ class SettingFactory extends Factory
             $setting_stock_printer[] = $i + 1;
 
             $setting_stock_offer[$i + 1] = [
-                "decimal" => [
+                    "decimal" => [
                     "gain" => $this->faker->numberBetween($min = 1, $max = 500),
                     "collect" => $this->faker->numberBetween($min = 1, $max = 500),
-                    'discount(%)' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
-                    "value" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
+                    "discount_type" => $this->faker->numberBetween($min = 0, $max = 1),
+                    "discount_value" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
                 ],
 
                 "date" => [
-                    'end_date' => $this->faker->dateTimeBetween($startDate = '-60 years', $endDate = '-3 years', $timezone = null)->format('Y-m-d H:i:s'),
-                    'start_date' => $this->faker->dateTimeBetween($startDate = '-60 years', $endDate = '-3 years', $timezone = null)->format('Y-m-d H:i:s'),
+                    "start_date" => $this->faker->dateTimeBetween($startDate = '-1 years', $endDate = '1 years', $timezone = null)->format('Y-m-d H:i:s'),
+                    "end_date" => $this->faker->dateTimeBetween($startDate = '1 years', $endDate = '2 years', $timezone = null)->format('Y-m-d H:i:s'),
+                   
                 ],
-
-                "default" => [
-                    'is_default' => $this->faker->numberBetween($min = 0, $max = 1),
-                    'exception' => []
-                ],
-
-
 
                 "integer" => [
                     "set_menu" => $this->faker->numberBetween($min = 1, $max = 5),
-                    'quantity' => $this->faker->numberBetween($min = 1, $max = 200),
+                    "quantity" => $this->faker->numberBetween($min = 1, $max = 200),
                 ],
 
                 "boolean" => [
-                    'type' => $this->faker->numberBetween($min = 0, $max = 1), //voucher / mix and match
+                    "type" => $this->faker->numberBetween($min = 0, $max = 1), //voucher / mix and match
                     "status" =>  1,
                 ],
 
                 "string" => [
                     "name" => $this->faker->word,
-                    'description' => $this->faker->word,
+                    "description" => $this->faker->word,
                     "code" => $this->faker->lexify,
                 ]
 
@@ -168,9 +162,9 @@ class SettingFactory extends Factory
             ];
         }
 
-        for ($i=0; $i < 5; $i++) { 
+        for ($i=0; $i < 20; $i++) { 
             $setting_stock_group[$i+1] = [
-                "description"=> $this->faker->word,
+                "name"=> $this->faker->word,
                 "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
                 "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::plu::brand
             ];

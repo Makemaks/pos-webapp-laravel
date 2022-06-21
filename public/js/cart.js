@@ -9,122 +9,87 @@ function Quantity(buttonType, cartValue, price){
     var quantityID = document.getElementById('quantityID-'+cartValue);
     var vatID = document.getElementById('vatID');
   
-    var receiptButtonID = document.getElementById('receiptButtonID');
-    var cartValueID = document.getElementById('cartValueID');
-    var totalPriceID = document.getElementById('totalPriceID');
-
-        if (buttonType == 0 && quantityID.value >= 2) {   
+  
+    var cartCountID = document.getElementById('cartCountID');
+   
+        if (buttonType == 0 && cartCountID) {   
             //minnus        
-            quantityID.value = parseInt(quantityID.value) - 1;
-            
-            if(cartValueID){
-                cartValueID.innerText = parseInt(cartValueID.innerText) - 1;
-            }
-          
+            quantity = parseInt(cartCountID.innerText) - 1;
+            quantityID.innerText = parseInt(quantityID.innerText) - 1;
         }
-        else if (buttonType == 1 && quantityID.value >= 1) {    
+        else if (buttonType == 1 && cartCountID) {    
             //plus
-            quantityID.value = parseInt(quantityID.value) + 1; 
-           
-            if (cartValueID) {
-                cartValueID.innerText = parseInt(cartValueID.innerText) + 1;
-            }
+            quantity = parseInt(cartCountID.innerText) + 1;
+            quantityID.innerText = parseInt(quantityID.innerText) + 1;
         }
 
-        if(receiptButtonID){
-            //update total
-           
-            var total = parseFloat(receiptButtonID.innerText) - parseFloat(price);
-            receiptButtonID.innerText = total.toFixed(2);
-            totalPriceID.innerHTML = total.toFixed(2);
+        if (quantity > 1) {
 
             $.ajax({        
                 url:"cart-api/"+cartValue,
                 method: 'PATCH',
-                data: {quantityID: quantityID.value},      
+                data: {quantity: quantityID.innerText},      
                 success:function(data){
-                  //alert(data.success);
-                  document.getElementById('cartCountID').innerText++;
-               }
-             });
+                    //alert(data.success);
+                    cartCountID.innerText = quantity;
+                    setFocus('barcodeInputID');
+                    document.getElementById('receiptID').innerHTML = data['html'];
+                    control(0);
+                }
+            });
         }
+       
 
        
 }
 
-//cart controls
-function Control(type){    
-   
-    var cartListID = document.getElementById('cartListID');
-    var count = 0;
-  
 
-    while (count < cartListID.children.length-3) {
-       
+
+//cart controls
+function control(type){
+
+    var cartListID = document.getElementById('cartListID');
+
+    for (let index =0; index <= cartListID.children.length - 1; index++) {
         if (type == 0) {
             //show controls hidden = true
-            document.getElementById('controlID-'+count).removeAttribute('hidden');
+            document.getElementById('controlID-'+index).removeAttribute("hidden");
      
         } else {           
-            document.getElementById('controlID-'+count).setAttribute('hidden','');  
+            document.getElementById('controlID-'+index).setAttribute("hidden", true);
         }
-
-        count++;
+    
     }
 
     if (type == 0) {
         //show controls hidden = true
         document.getElementById('controlHideID').removeAttribute('hidden'); 
-        document.getElementById('controlShowID').setAttribute('hidden','');      
+        document.getElementById('controlShowID').setAttribute('hidden', true);      
     } else {           
         document.getElementById('controlShowID').removeAttribute('hidden'); 
-        document.getElementById('controlHideID').setAttribute('hidden',''); 
+        document.getElementById('controlHideID').setAttribute('hidden', true); 
        
     }
    
 }
 
-
 function Delete(row_id){
 
     //update basket count
+    var quantityID = document.getElementById('quantityID-'+row_id);
     var cartCountID = document.getElementById('cartCountID'); 
-    var stock_quantity = 1;
-
-    //update total
-    /* var receiptButtonID = document.getElementById('receiptButtonID');  
-    var receiptButtonID = document.getElementById('receiptButtonID');
-    var quantityID = document.getElementById('quantityID-'+ cartCount); */
-   
-   
-    //get quantity
-    /* if(quantityID.value != ''){
-        quantityXID.innerText = '';
-        var priceQuantity = price * parseInt(quantityID.value); 
-        cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(quantityID.value); 
-    }
-    else{
-        var priceQuantity = parseFloat(price);
-        cartCountID.innerText = parseInt(cartCountID.innerText) - 1; 
-    }
-   
-   
-
-    var total = parseFloat(receiptButtonID.innerText) - parseFloat(priceQuantity);
-    receiptButtonID.innerText = total.toFixed(2);
   
-
-    cartListID = document.getElementById('cartItemID-'+ cartCount);       
-    cartListID.remove(); */
 
     $.ajax({
         url:"/cart-api/" + row_id,
         method: 'DELETE',
+        data: {quantity: quantityID.innerText},   
         success: function (data) {
         
-            cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(stock_quantity);
-            setFocus('barcodeinputID');
-            document.getElementById('receipt-id').innerHTML = data.data;
+            cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(quantityID.innerText);
+            setFocus('barcodeInputID');
+            document.getElementById('receiptID').innerHTML = data['html'];
+            control(0);
         },
         error: function (data) {
         
@@ -135,25 +100,8 @@ function Delete(row_id){
 }
 
 
-function Update(){
-    
-     //update basket count
-     var cartCountID = document.getElementById('cartCountID'); 
-
-    $.ajax({        
-        url:"/cart-api/",
-        method: 'PUT',
-        data: {stock_id: stock_id, name:stock_name, price: stock_price},      
-        success:function(data){
-          //alert(data.success);
-           cartCountID.innerText++;
-       }
-     });
-    
-}
-
 //add a stock_id to cart
-function Add(stock_id, stock_name, stock_price){
+function Add(stock_id, stock_name, stock_price, stock_vat){
  
      //update basket count
      var cartCountID = document.getElementById('cartCountID'); 
@@ -166,39 +114,19 @@ function Add(stock_id, stock_name, stock_price){
      $.ajax({        
          url:"/cart-api/",
          method: 'POST',
-         data: {stock_id: stock_id, stock_name:stock_name, stock_price: stock_price, stock_quantity:stock_quantity },      
+         data: {stock_id: stock_id, stock_name:stock_name, stock_price: stock_price, stock_vat,stock_quantity:stock_quantity },      
          success:function(data){
            //alert(data.success);
             cartCountID.innerText = parseInt(cartCountID.innerText) + parseInt(stock_quantity);
-            setFocus('barcodeinputID');
-            document.getElementById('receipt-id').innerHTML = data.data;
-
-            //quantityID.value = 1;
+            setFocus('barcodeInputID');
+            document.getElementById('receiptID').innerHTML = data['html'];
+            
         }
       });
      
     
  }
 
- //remove
-function Empty(stock_id, name, price){
- 
-     //update basket count
-     var cartCountID = document.getElementById('cartCountID'); 
-    var quantity = 0;
- 
-     $.ajax({        
-         url:"/cart-api/",
-         method: 'POST',
-         data: {stock_id: stock_id, name:stock_name, price: stock_price},      
-         success:function(data){
-           //alert(data.success);
-            cartCountID.innerText++;
-        }
-      });
-     
-    
- }
 
 
   //get
@@ -240,7 +168,7 @@ function GetScheme(user_id){
    
 }
 
-function Applystock_idScheme(){
+function ApplyScheme(){
     var schemePlanSelectID = document.getElementById('schemePlanSelectID-'+stock_id);
      var plan = null;
      
@@ -299,48 +227,66 @@ function ClearSelect(select){
     select.add(option);
 }
 
-function setFocus(element_id){
-    var element = document.getElementById(element_id);
-    element.focus;
+function setFocus(elementID){
+    document.getElementById(elementID).focus();
 }
 
-function GetInput(element)
+function searchInput(element)
 {
     var cartCountID = document.getElementById('cartCountID'); 
    
-    $.ajax({        
-        url:"/cart-api",
-        method: 'POST',
-        data: {barcode: element.value},      
-        success:function(data){
-           document.getElementById('receipt-id').innerHTML = data.data;
-           cartCountID.innerText++;
-           element.value = '';
-           setFocus(element.id);
-        }
-     });
+   if (element.id == 'barcodeInputID') {
+        $.ajax({        
+                url:"/cart-api",
+                method: 'POST',
+                data: {barcode: element.value},      
+                success:function(data){
+                document.getElementById('receiptID').innerHTML = data['html'];
+                cartCountID.innerText++;
+                element.value = '';
+                setFocus(element.id);
+            }
+        });
+   } 
+   else if(element.id == 'searchInputID') {
+        $.ajax({        
+                url:"/cart-api",
+                method: 'POST',
+                data: {search_element: element.value},      
+                success:function(data){
+                document.getElementById('receiptID').innerHTML = data['html'];
+                cartCountID.innerText++;
+                element.value = '';
+                setFocus(element.id);
+            }
+        });
+   }
+
 }
 
 
 function numpad(element){
-    var barcodeinputID = document.getElementById('barcodeinputID');
+    var searchInputID = document.getElementById('searchInputID');
 
-    setFocus('barcodeinputID');
+    setFocus('searchInputID');
    
     if (element.innerText == 'C') {
-        barcodeinputID.value = '';
+         searchInputID.value = '';
     } 
     else if (element.innerText == 'BACK') {
-        let str = barcodeinputID.value;
-        barcodeinputID.value = str.slice(0, -1);
+        let str =  searchInputID.value;
+         searchInputID.value = str.slice(0, -1);
     } 
     else if (element.innerText == 'Shift') {
-        let str = barcodeinputID.value;
-        barcodeinputID.value = str.slice(0, -1);
+        let str =  searchInputID.value;
+         searchInputID.value = str.slice(0, -1);
     } 
     else {
-        barcodeinputID.value = barcodeinputID.value + element.innerText;
+         searchInputID.value =  searchInputID.value + element.innerText;
     }
   
 }
+
+
+
 

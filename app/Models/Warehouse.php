@@ -37,6 +37,20 @@ class Warehouse extends Model
         ->where($column,  $filter);
     }
 
+    public static function Available($id){
+        $stockList = Warehouse::where('warehouse_stock_id', $id )
+        ->where('warehouse_type', 1)
+        ->get();
+
+        if ($stockList->sum('warehouse_quantity') == 0) {
+            $stockList = Warehouse::where('warehouse_stock_id', $id )
+            ->where('warehouse_type', 2)
+            ->get();
+        }
+
+        return $stockList;
+    }
+
     public static function WarehouseStatus(){
         return [
             'FIFO',

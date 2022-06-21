@@ -100,9 +100,9 @@ class MenuController extends Controller
         
 
         switch ($request->view):
-            case (in_array($request->view, Setting::SettingGroup())):
+            case (in_array($request->view, Setting::SettingStockGroup())):
             
-                $type = array_search( $request->view, Setting::SettingGroup());
+                $type = array_search( $request->view, Setting::SettingStockGroup());
                 $request->session()->flash('type', $type);
                 
                
@@ -266,9 +266,24 @@ class MenuController extends Controller
     
    }
 
-   public function customer(){
+   public function customer(Request $request){
 
-    
+        $request->session()->flash('view', $request->view);
+        $request->session()->flash('action', $request->route()->getActionMethod());
+        
+        switch ($request->view):
+            case 'person':
+                return redirect()->route('person.index');
+                break;
+
+            case 'company':
+                return redirect()->route('company.index');
+                break;
+
+            default:
+                echo "i is not equal to 0, 1 or 2";
+        endswitch;
+
    }
 
    private function Init(){

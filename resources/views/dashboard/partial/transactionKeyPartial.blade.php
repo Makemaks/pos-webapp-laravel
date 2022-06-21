@@ -2,7 +2,7 @@
 
 
 $arraytransactionKey[] = [
-    'Description' => '',
+    'name' => '',
     'Quantity' => '',
     'Total' => '',
 ];

@@ -24,7 +24,7 @@ foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $val
                     $arrays[$stock_merchandise['plu_id']] = [
                         'PLU' => $stock_merchandise['plu_id'],
                         'Name' => $stock_merchandise['stock_name'],
-                        'Department' => $valueDepartment['description'],
+                        'Department' => $valueDepartment['name'],
                         'Quantity' => 1,
                         'Total' => json_decode($values->stock_cost, true)[$stock_merchandise['plu_id']]['price'],
                     ];

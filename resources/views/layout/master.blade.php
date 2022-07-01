@@ -33,99 +33,74 @@ $route = Str::before(Request::route()->getName(), '.');
    
 </head>
 
-{{-- <style>
-    table {
-        border-collapse: collapse;
-    }
-
-    .scroll tbody {
-        display: block;
-        height: 440px;
-        overflow: auto;
-    }
-
-    .scroll thead,
-    .scroll tbody tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-        /* even columns width , fix width of table too*/
-    }
-
-    .scroll-search tbody {
-        display: block;
-        height: 380px;
-        overflow: auto;
-    }
-
-    .scroll-search thead,
-    .scroll-search tbody tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-        /* even columns width , fix width of table too*/
-    }
-
-</style>
- --}}
-
-
 <body>
 
     <div class="uk-box-shadow-small">
         @include('partial.navigationPartial')
     </div>
-
+    
     <div class="uk-container uk-container-expand uk-margin-top">
       
-            <div class="uk-grid-small" uk-grid>
+        <div class="uk-grid-collapse" uk-grid>
 
-                @auth
-                    
-                    <div class="uk-width-large@m">
-                        <div>
-                            @include('partial.menuPartial')
-                        </div>
-                    </div>
-
-                @endauth
-
-            
-                <div class="uk-width-expand@m">
-                   
-                    <div id="contentID" class="uk-padding-small uk-overflow-auto uk-height-large uk-border-rounded uk-background-muted" uk-height-viewport>
-                        @yield('content')
+            @auth
+                
+                <div class="uk-width-auto@m">
+                    <div>
+                        @include('partial.menuPartial')
                     </div>
                 </div>
 
-               
-                @auth
-                    
-                    <div class="uk-width-large@m">
-                        @if($route == 'home')
+            @endauth
 
-                         
-                                
-                                <div>
-                                    @include('receipt.partial.personMenuPartial')
-                                </div>
-                                    
-                                <div id="receiptID">
-                                    @include('receipt.partial.indexPartial')
-                                </div>
-                                
-                          
-                            
-                        @endif
-                    </div>
-
-                @endauth
+        
+            <div class="uk-width-expand@m uk-padding-small">
                 
-
+                <div class="">
+                    @yield('content')
+                </div>
             </div>
 
+            
+            @auth
+                
+                @if ($route == 'home')
+                    <div class="uk-width-xlarge@xl uk-width-large@s uk-padding-small">
+
+                        @if($route == 'home')
+
+                            <div>
+                                @include('receipt.partial.receiptMenuPartial')
+                            </div>
+                            
+                            <div id="receiptID">
+                                @include('receipt.partial.indexPartial')
+                            </div>
+                            
+                        @endif
+
+                    </div>
+                @endif
+            @endauth
+            
+        </div>
+
+        @if ($route == 'home')
+            <div class="uk-position-bottom  uk-background-default uk-box-shadow-large" style="z-index: 2;">
+              
+                @include('partial.numpadPartial')
+            </div>
+        @endif
+
+     
     </div>
 
+
+   @if ($route == 'home')
+        <div class="uk-box-shadow-small uk-position-bottom">
+            @include('partial.navigationBottomPartial')
+        </div>
+   @endif
 
     <!-- UIkit JS -->
     @stack('scripts')

@@ -305,10 +305,10 @@ class Store extends Model
             ->where('order_store_id',  $userModel->store_id)
             ->orderBy('order_id')->orWhereBetween('order.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)
             ->get();
-        $orderListASC = Order::Receipt()
-            ->where('order_store_id',  $userModel->store_id)
+        $orderListASC = Order::Receipt('order_store_id',  $userModel->store_id)
             ->orderBy('order_id', 'desc')->orWhereBetween('order.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)
             ->get();
+            
         $orderListLimited100 = Store::Sale('store_id',  $userModel->store_id)->limit(100)->orWhereBetween('order.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)->get();
         $clerkBreakdown = Store::Order('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)->get();
         $employmentList = User::Employment('store_id',  $userModel->store_id)
@@ -352,7 +352,7 @@ class Store extends Model
             ->where('person_type', 0)
             ->get();
 
-        $orderSettingList = Store::Setting('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])->get();
+        $orderSettingList = Store::Setting('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])->limit(10);
         $eat_in_eat_out = Order::where('order_store_id', $userModel->store_id)->orderBy('order.created_at', 'desc')->orWhereBetween('order.created_at', [$started_at, $ended_at])->get();
 
         

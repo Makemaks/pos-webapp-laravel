@@ -17,15 +17,15 @@ class Order extends Model
 
     protected $attributes = [
 
-        "order_store_id" => 1,
+        "order_setting_vat" => '{}',
         "order_status" => 0,
-        "order_store_id" => 1,
         "order_finalise_key" => '{}'
 
     ];
 
     protected $casts = [
-        "order_finalise_key" => 'array'
+        "order_finalise_key" => 'array',
+        "order_setting_vat" => 'array'
     ];
 
 
@@ -40,13 +40,14 @@ class Order extends Model
     }
 
 
-    public static function Receipt()
+    public static function Receipt($column,  $filter)
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
             ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id')
-            ->select('order.*', 'receipt.*', 'stock.*', 'user.*', 'person.*', 'order.created_at as order_created_at');
+            ->where($column,  $filter);
+            //->select('order.*', 'receipt.*', 'stock.*', 'user.*', 'person.*', 'order.created_at as order_created_at');
     }
 
     public static function HourlyReceipt()
@@ -114,6 +115,18 @@ class Order extends Model
         ];
     }
 
+    public static function ProcessOrderType($userModel)
+    {
+        if (User::UserType()[$userModel->user_type] == 'Super Admin' || User::UserType()[$userModel->user_type] == 'Admin') {
+            if (Person::PersonType()[$userModel->person_type] == 'Employee') {
+                return 0;
+            }else{
+                return 1;
+            }
+        }
+       
+    }
+
     public static function Total($sessionCartList)
     {
 
@@ -149,7 +162,9 @@ class Order extends Model
             'Delivered',
             'Check in Today',
             'Ready for Pickup',
-            'Picked up'
+            'Picked up',
+            'Cancelled',
+            'Refunded'
         ];
     }
 }

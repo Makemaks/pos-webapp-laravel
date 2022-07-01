@@ -26,12 +26,25 @@ class OrderFactory extends Factory
                 'total' => $this->faker->numberBetween($min = 50, $max = 200),
             ];
         }
+
+        $vat = $this->faker->randomElement($array = array (NULL, $this->faker->numberBetween($min = 1, $max = 3) ));
+        $order_vat = Null;
+        if ($vat) {
+            for ($i = 0; $i < $vat; $i++) {
+                $order_vat[$i + 1] = $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 10, $max = 20);
+            }
+        }
+
         return [
+            'order_setting_pos_id' => $this->faker->numberBetween($min = 1, $max = 2),
+            'order_store_id' => $this->faker->numberBetween($min = 1, $max = 2),
+            'order_user_id' => $this->faker->numberBetween($min = 1, $max = 2),
             'ordertable_id' => $this->faker->numberBetween($min = 1, $max = 2),
             'ordertable_type' => $this->faker->randomElement($array = array( 'User', 'Company' )),
             'order_status' => $this->faker->numberBetween($min = 0, $max = 7),
             'order_type' => $this->faker->numberBetween($min = 0, $max = 1), //online,takeaway
-            'order_finalise_key' => $order_finalise_key
+            'order_finalise_key' => $order_finalise_key,
+            'order_setting_vat' => $order_vat
 
         ];
     }

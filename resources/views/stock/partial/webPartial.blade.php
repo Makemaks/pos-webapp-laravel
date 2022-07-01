@@ -37,7 +37,7 @@
                                        
                                             <tr>
                                                 <td>
-                                                    <button class="uk-button uk-button-danger uk-border-rounded">{{$keyStockweb}}</button>
+                                                    <button class="uk-button uk-button-default uk-border-rounded">{{$keyStockweb}}</button>
                                                 </td>
                                                 @foreach ($stockweb as $key => $stock)
                                                     <td>
@@ -79,7 +79,7 @@
                                             
                 
                                                 <td>
-                                                    <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockweb({{$stock}})"></button>
+                                                    <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockweb({{$stock}})"></button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -141,7 +141,7 @@
                                 @endforeach
                             @endif
                 
-                           <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>
+                           <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button>
                              
                         </form>
                     </li>

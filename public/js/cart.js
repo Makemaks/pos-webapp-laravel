@@ -5,9 +5,9 @@ $.ajaxSetup({
 });
 
 //quantity plus and minus
-function Quantity(buttonType, cartValue, price){
+function Quantity(buttonType, cartValue){
     var quantityID = document.getElementById('quantityID-'+cartValue);
-    var vatID = document.getElementById('vatID');
+  
   
   
     var cartCountID = document.getElementById('cartCountID');
@@ -28,7 +28,7 @@ function Quantity(buttonType, cartValue, price){
             $.ajax({        
                 url:"cart-api/"+cartValue,
                 method: 'PATCH',
-                data: {quantity: quantityID.innerText},      
+                data: {stock_quantity: quantityID.innerText},      
                 success:function(data){
                     //alert(data.success);
                     cartCountID.innerText = quantity;
@@ -38,9 +38,6 @@ function Quantity(buttonType, cartValue, price){
                 }
             });
         }
-       
-
-       
 }
 
 
@@ -48,28 +45,36 @@ function Quantity(buttonType, cartValue, price){
 //cart controls
 function control(type){
 
-    var cartListID = document.getElementById('cartListID');
+  
+    var edit_cart = true;
 
-    for (let index =0; index <= cartListID.children.length - 1; index++) {
-        if (type == 0) {
-            //show controls hidden = true
-            document.getElementById('controlID-'+index).removeAttribute("hidden");
-     
-        } else {           
-            document.getElementById('controlID-'+index).setAttribute("hidden", true);
+    if (type == 1) {
+        //hide controls hidden = true
+        edit_cart = false;
+    }
+
+    $.ajax({
+        url:"/cart-api",
+        method: 'GET',
+        data: {edit_cart: edit_cart},   
+        success: function (data) {
+            document.getElementById('receiptID').innerHTML = data['html'];
+            //control(0);
+
+            if (type == 0) {
+                //show controls hidden = true
+                document.getElementById('controlHideID').hidden = false;
+                document.getElementById('controlShowID').hidden = true;      
+            } else {           
+                document.getElementById('controlShowID').hidden = false;
+                document.getElementById('controlHideID').hidden = true; 
+               
+            }
+        },
+        error: function (data) {
+        
         }
-    
-    }
-
-    if (type == 0) {
-        //show controls hidden = true
-        document.getElementById('controlHideID').removeAttribute('hidden'); 
-        document.getElementById('controlShowID').setAttribute('hidden', true);      
-    } else {           
-        document.getElementById('controlShowID').removeAttribute('hidden'); 
-        document.getElementById('controlHideID').setAttribute('hidden', true); 
-       
-    }
+    });
    
 }
 
@@ -101,7 +106,7 @@ function Delete(row_id){
 
 
 //add a stock_id to cart
-function Add(stock_id, stock_name, stock_price, stock_vat){
+function Add(stock_id, stock_name, stock_price){
  
      //update basket count
      var cartCountID = document.getElementById('cartCountID'); 
@@ -114,7 +119,12 @@ function Add(stock_id, stock_name, stock_price, stock_vat){
      $.ajax({        
          url:"/cart-api/",
          method: 'POST',
-         data: {stock_id: stock_id, stock_name:stock_name, stock_price: stock_price, stock_vat,stock_quantity:stock_quantity },      
+         data: {
+            stock_id: stock_id, 
+            stock_name:stock_name, 
+            stock_price: stock_price, 
+            stock_quantity:stock_quantity, 
+            stock_discount:'' },      
          success:function(data){
            //alert(data.success);
             cartCountID.innerText = parseInt(cartCountID.innerText) + parseInt(stock_quantity);
@@ -151,6 +161,14 @@ function GetScheme(user_id){
     var totalPrice = totalPriceID.innerText;
 
 
+    var schemePlanSelectID = document.getElementById('schemePlanSelectID-'+stock_id);
+    var plan = null;
+    
+
+    if(schemePlanSelectID.selectedIndex > 0){
+       plan =  schemePlanSelectID.value;
+    }
+
     $.ajax({        
             url:"/cart-api/",
             method: 'GET',
@@ -168,15 +186,7 @@ function GetScheme(user_id){
    
 }
 
-function ApplyScheme(){
-    var schemePlanSelectID = document.getElementById('schemePlanSelectID-'+stock_id);
-     var plan = null;
-     
 
-     if(schemePlanSelectID.selectedIndex > 0){
-        plan =  schemePlanSelectID.value;
-     }
-}
 
 function DiscountCode(){
     var planCountID = document.getElementById('planCountID'); 
@@ -264,28 +274,77 @@ function searchInput(element)
 
 }
 
-
-function numpad(element){
-    var searchInputID = document.getElementById('searchInputID');
-
-    setFocus('searchInputID');
+function showInputKeypad(element){
    
-    if (element.innerText == 'C') {
-         searchInputID.value = '';
-    } 
-    else if (element.innerText == 'BACK') {
-        let str =  searchInputID.value;
-         searchInputID.value = str.slice(0, -1);
-    } 
-    else if (element.innerText == 'Shift') {
-        let str =  searchInputID.value;
-         searchInputID.value = str.slice(0, -1);
-    } 
-    else {
-         searchInputID.value =  searchInputID.value + element.innerText;
-    }
-  
+    showKeypad(element);
 }
+
+function update(element){
+
+    var value = document.getElementById(sessionStorage.getItem('inputID')).value;
+
+   if (value  != '') {
+        $.ajax({        
+                url:"/cart-api",
+                method: 'POST',
+                data: {
+                    type:  element.innerHTML.toLowerCase(),
+                    value: value
+                },      
+                success:function(data){
+                document.getElementById('receiptID').innerHTML = data['html'];
+                document.getElementById(sessionStorage.getItem('inputID')).value = "";
+            }
+        });
+   }
+}
+
+function addRefund(element){
+
+    showKeypad();
+    sessionStorage.setItem('buttonType', element.innerText);
+   
+    if (sessionStorage.getItem('buttonType') == 'Enter') {
+        $.ajax({        
+            url:"/home-api",
+            method: 'GET',
+            data: {action: 'showKeypad'},      
+            success:function(data){
+             
+               document.getElementById('contentID').innerHTML = data['html']; 
+           }
+         });
+    }
+
+}
+
+function finaliseKey(order_finalise_key){
+   
+    $.ajax({        
+        url:"/cart-api",
+        method: 'GET',
+        data: {
+            order_finalise_key: order_finalise_key
+        },      
+        success:function(data){
+            document.getElementById('contentID').innerHTML = data['html']; 
+        }
+    });
+  
+}   
+
+var tags = jSuites.tags(document.getElementById('order-email-cc'), {
+    value: 'cc',
+    validation: function(element, text, value) {
+        if (! value) {
+            value = text;
+        }
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        var test = re.test(String(value).toLowerCase()) ? true : false;
+        return test;
+    }
+});
+
 
 
 

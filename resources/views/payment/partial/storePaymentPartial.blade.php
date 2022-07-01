@@ -8,5 +8,5 @@
 
 <div uk-margin>
     <button form="setup-in-store" type="submit" class="uk-button uk-button-default uk-border-rounded uk-width-expand" value="Declined">Declined</button>
-    <button form="setup-in-store" type="submit" class="uk-button uk-button-default uk-border-rounded uk-button-danger uk-width-expand" value="Accepted">Accepted</button>
+    <button form="setup-in-store" type="submit" class="uk-button uk-button-default uk-border-rounded uk-button-default uk-width-expand" value="Accepted">Accepted</button>
 </div>

@@ -52,8 +52,8 @@ class StockFactory extends Factory
         ];
 
 
-        for ($i = 0; $i < 5; $i++) {
-            $stock_offer_id[$i + 1] = $i + 1;
+        for ($i = 0; $i < $this->faker->numberBetween($min = 1, $max = 5); $i++) {
+            $stock_offer_id[$i + 1] = $this->faker->numberBetween($min = 1, $max = 5);
         }
         $stock_merchandise = [
 
@@ -85,6 +85,7 @@ class StockFactory extends Factory
             "stock_tag" => $this->faker->numberBetween($min = 1, $max = 5),
             "stock_offer_id" => $this->faker->randomElement($array = array(NULL, $stock_offer_id)),
             "stock_type"=> $this->faker->numberBetween($min = 0, $max = 1),
+            "stock_maximum_cart_quantity" => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 2) )),
         ];
 
         for ($i = 0; $i < 15; $i++) {

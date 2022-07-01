@@ -26,7 +26,7 @@
     @endif
   
     <div class="form-group text-center">
-       <button type="button" id="card-button" class="uk-margin-medium uk-box-shadow-small uk-text-lead uk-light uk-border-rounded uk-width-expand uk-button uk-button-danger" uk-icon="icon: tag">
+       <button type="button" id="card-button" class="uk-margin-medium uk-box-shadow-small uk-text-lead uk-light uk-border-rounded uk-width-expand uk-button uk-button-default" uk-icon="icon: tag">
           
                 {{$currency}}
                 @php

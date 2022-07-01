@@ -47,7 +47,7 @@
                                         @if ($keystock == 'warehouse_id')
                                             <input class="uk-input" type="text" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}" hidden>
                                         <td>
-                                                <button class="uk-button uk-button-danger uk-border-rounded" onclick="">{{$stock}}</button>
+                                                <button class="uk-button uk-button-default uk-border-rounded" onclick="">{{$stock}}</button>
                                         </td>
                                     
                                         @elseif ($keystock == 'warehouse_note' || $keystock == 'warehouse_description' || $keystock == 'warehouse_reference')
@@ -86,7 +86,7 @@
                                             </td>
                                         @elseif($keystock == 'warehouse_store_id' || $keystock == 'warehouse_user_id')
                                             <td>
-                                                <a href="{{route('store.edit', $stock)}}" class="uk-button uk-button-danger uk-border-rounded">{{$stock}}</a>
+                                                <a href="{{route('store.edit', $stock)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock}}</a>
                                             </td>
                                         @endif
 
@@ -94,7 +94,7 @@
                                         
                                     @endforeach
                                 <td>
-                                    <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockTransfer({{$stock}})"></button>
+                                    <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockTransfer({{$stock}})"></button>
                                 </td>
                             </tr>    
                         @endforeach
@@ -107,7 +107,7 @@
     <li>
             <form action="">
                 @include('warehouse.partial.createPartial')
-                <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>
+                <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button>
          
             </form>
     </li>

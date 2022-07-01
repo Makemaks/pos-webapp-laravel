@@ -84,7 +84,7 @@
                         @elseif($keystock == 'warehouse_store_id')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
-                                <a href="{{route('store.edit', $stock)}}" class="uk-button uk-button-danger uk-border-rounded">{{$stock}}</a>
+                                <a href="{{route('store.edit', $stock)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock}}</a>
                             </div>
                         @elseif($keystock == 'warehouse_note' || $keystock == 'warehouse_description')
                             <div class="uk-margin">

@@ -25,7 +25,7 @@
         </div>
           
         <div class="uk-margin-medium">
-            <button type="button" onclick="postForm()" class="uk-box-shadow-small uk-width-expand uk-text-lead uk-light uk-border-rounded uk-button uk-button-danger" uk-icon="icon: tag">
+            <button type="button" onclick="postForm()" class="uk-box-shadow-small uk-width-expand uk-text-lead uk-light uk-border-rounded uk-button uk-button-default" uk-icon="icon: tag">
                 {{ CurrencyHelper::Format( SESSION::GET('GRAND_TOTAL') )}}
             </button>
         </div>

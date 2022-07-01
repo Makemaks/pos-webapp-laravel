@@ -20,9 +20,10 @@ return new class extends Migration
             $table->bigInteger('receipttable_id');
             $table->string('receipttable_type');
 
-            $table->smallInteger('receipt_vat_id')->nullable(); 
+            $table->json('receipt_setting_vat')->nullable(); 
             $table->bigInteger('receipt_stock_id')->comment('stock_cost');
-            $table->json('receipt_stock_cost_override')->nullable()->comment('OverrideType::Amount');
+            $table->float('receipt_stock_cost');
+            $table->json('receipt_discount')->nullable();
 
             $table->smallInteger('receipt_quantity')->default(1); 
             $table->tinyInteger('receipt_status')->comment('processed::cancelled::refunded')->default(0);
@@ -30,7 +31,7 @@ return new class extends Migration
             $table->bigInteger('receipt_user_id')->comment('added_by');
             $table->bigInteger('receipt_stock_offer')->nullable(); //customer
             
-            $table->json('receipt_stock_cost')->nullable();
+           
             $table->text('receipt_note')->nullable();
 
             $table->tinyInteger('receipt_setting_pos_id');
@@ -49,3 +50,5 @@ return new class extends Migration
         Schema::dropIfExists('receipt');
     }
 };
+
+

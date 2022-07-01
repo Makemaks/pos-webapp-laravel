@@ -9,7 +9,7 @@
 
 @section('content')
     <h3>{{Str::upper(Request::get('view'))}}</h3>
-    @include('stock.partial.optionPartial')
+    @include('stock.partial.offerPartial.')
 @endsection
 
 

@@ -15,7 +15,7 @@
                        
                             <th>REF</th>
                             <th>NAME</th>
-                            @for ($i = 0; $i < $data['settingModel']->setting_group['group_manager_special']; $i++)
+                            @for ($i = 0; $i < $data['settingModel']->setting_group['special_stock_cost']; $i++)
                                 <th>{{$i + 1}}</th>
                             @endfor
                             <th>KPCAT</th>
@@ -34,7 +34,7 @@
                       
                             <tr>
                                 <td>
-                                    <button class="uk-button uk-button-danger uk-border-rounded">
+                                    <button class="uk-button uk-button-default uk-border-rounded">
                                         {{$stockModel->stock_id}}
                                     </button>
                                 </td>

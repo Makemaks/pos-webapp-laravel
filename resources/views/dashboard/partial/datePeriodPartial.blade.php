@@ -81,7 +81,7 @@ foreach ($employeeList as $key => $employeeCollection) {
     <div class="uk-margin">
         <div>
             <label class="uk-form-label" for="form-stacked-text"></label>
-            <button class="uk-button uk-button-danger uk-border-rounded" type="submit">
+            <button class="uk-button uk-button-default uk-border-rounded" type="submit">
                 Submit
             </button>
         </div>

@@ -30,7 +30,7 @@ use App\Models\Project;
                     @if ($setting_finalise_key['type'] == Session::get('view'))
                         <tr>
                             <td>
-                                <button class="uk-button uk-button-danger uk-border-rounded">{{$keysetting_finalise_key}}</button>
+                                <button class="uk-button uk-button-default uk-border-rounded">{{$keysetting_finalise_key}}</button>
                             </td>
                           
                             @foreach ($setting_finalise_key as $key => $value)          
@@ -65,7 +65,7 @@ use App\Models\Project;
                             @endforeach
 
                             <td>
-                                <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockCost({{$keysetting_finalise_key}})"></button>
+                                <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockCost({{$keysetting_finalise_key}})"></button>
                             </td>
                         </tr>
                     

@@ -6,7 +6,7 @@
             <p class="uk-text-meta uk-margin-remove-top">More than +{{$orderList->count()}}</p>
         </div>
         <div>            
-            <a class="uk-align-right uk-button uk-button-danger uk-border-rounded" href="{{route('user.create')}}">
+            <a class="uk-align-right uk-button uk-button-default uk-border-rounded" href="{{route('user.create')}}">
                 <span uk-icon="icon: plus"></span>
             </a>
             <a class="uk-align-right uk-button uk-button-default" href="">

@@ -22,8 +22,15 @@ class Attendance extends Model
             ->leftjoin('person', 'person_id', 'user_person_id')
             ->leftJoin('store', 'store.store_id', 'person.persontable_id')
             ->leftJoin('employment', 'employment.employment_user_id', 'user.user_id')
-            ->select('attendance.*', 'employment.*', 'user.*', 'person.*', 'store.*', 'attendance.created_at as attendance_created_at')
-            ->orderBy('attendance_created_at', 'asc')
+            ->orderBy('attendance.created_at', 'asc')
+            ->where($column, $filter);
+    }
+
+
+    public static function Clock($column, $filter)
+    {
+        return Attendance::leftjoin('user', 'attendance_user_id', 'user.user_id')
+            ->orderBy('attendance.created_at', 'asc')
             ->where($column, $filter);
     }
 }

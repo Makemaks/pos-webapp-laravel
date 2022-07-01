@@ -2,22 +2,47 @@
     use App\Models\Person;
     $action = '';
     $userHidden = '';
+    $person_firstname = "";
+    $person_lastname = "";
+    $person_preferred_name = "";
+
+    $person_firstname = "";
+    if ($action != 'Register' && $action != 'Edit'){
+       if ( $data['personModel']) {
+            $person_firstname = $data['personModel']->person_name['person_firstname'];
+            $person_lastname = $data['personModel']->person_name['person_lastname'];
+            $person_preferred_name = $data['personModel']->person_name['person_preferred_name'];
+       }
+    }
+
 @endphp
 
 
+<div class="uk-overflow-auto uk-height-large" uk-height-viewport="offset-top: true; offset-bottom: 10">
 
+    <legend class="uk-legend">{{$person_firstname}} {{$person_lastname}}</legend>
 
-<div>
+    <div class="uk-margin">
+        
+        <label class="uk-form-label" for="form-stacked-text" for="line-1">Credit<span class="uk-text-danger">*</span></label>
+       
+        <div class="uk-form-controls">
+            @if ($data['personModel'])
+                <input type="text" class="uk-input" id="form-stacked-text" name="person_credit" value="{{ old('person_credit', $data['personModel']->person_credit) }}"></input>
+            @else
+                <input type="text" class="uk-input" id="form-stacked-text" name="person_credit" value="{{ old('person_credit') }}"></input>
+            @endif
+        </div>
+        
+        @error('person_credit')
+            <div class="uk-text-danger">{{ $message }}</div>
+        @enderror
+    </div>
 
     <div class="uk-margin">
         
         <label class="uk-form-label" for="form-stacked-text" for="line-1">Firstname<span class="uk-text-danger">*</span></label>
-        @php
-            $person_firstname = "";
-            if ($action != 'Register'){
-                $person_firstname = $data['personModel']->person_name['person_firstname'];
-            }
-        @endphp
+       
         <div class="uk-form-controls">
             <input type="text" class="uk-input" id="form-stacked-text" name="person_name[person_firstname]" value="{{ old('person_name[person_firstname]' , $person_firstname) }}"></input>
         </div>
@@ -30,12 +55,7 @@
     <div class="uk-margin">
         
         <label class="uk-form-label" for="form-stacked-text">Firstname<span class="uk-text-danger">*</span></label>
-        @php
-            $person_lastname = "";
-            if ($action != 'Register'){
-                $person_lastname = $data['personModel']->person_name['person_lastname'];
-            }
-        @endphp
+      
         <div class="uk-form-controls">
             <input type="text" class="uk-input" id="form-stacked-text" name="person_name[person_lastname]" value="{{ old('person_name[person_lastname]' , $person_lastname) }}"></input>
         </div>
@@ -48,13 +68,7 @@
 
     <div class="uk-margin" {{$userHidden}}>
         <label class="uk-form-label" for="form-stacked-text">Preferred Name <span class="uk-text-danger"></span></label>
-        @php
-           
-            $person_preferred_name = "";
-            if ($action != 'Register' && $action != 'Edit'){
-                $person_preferred_name = $data['personModel']->person_name['person_preferred_name'];
-            }
-        @endphp
+     
 
         <input type="text" class="uk-input" name="person_preferred_name[]" id="person_preferred_name" value="{{ old('person_preferred_name[]' , $person_preferred_name) }}"></input>
             
@@ -66,7 +80,11 @@
     <div class="uk-margin">
         <label class="uk-form-label" for="form-stacked-text">Status<span class="uk-text-danger">*</span></label>
         <div class="uk-form-controls">
-            <textarea class="uk-textarea" name="person_status[]" rows="3" placeholder="Textarea">{{ old('person_status[]' , $data['personModel']->person_status) }}</textarea>
+            @if ($data['personModel'])
+                <textarea class="uk-textarea" name="person_status[]" rows="3" placeholder="Textarea">{{ old('person_status[]' , $data['personModel']->person_status) }}</textarea>
+            @else
+                <textarea class="uk-textarea" name="person_status[]" rows="3" placeholder="Textarea">{{ old('person_status[]') }}</textarea>
+            @endif
         </div>
         @error('person_status[]')
             <div class="uk-text-danger">{{ $message }}</div>
@@ -77,7 +95,11 @@
         <label class="uk-form-label" for="form-stacked-text">Date of birth</label>
         
         <div class="uk-form-controls">
-            <input placeholder="YYYY-MM-DD" type="text" class="uk-input" name="person_dob[]" id="person_dob" value="{{ old('person_dob[]' , $data['personModel']->person_dob) }}"></input>
+            @if ($data['personModel'])
+                <input placeholder="YYYY-MM-DD" type="text" class="uk-input" name="person_dob[]" id="person_dob" value="{{ old('person_dob[]' , $data['personModel']->person_dob) }}"></input>
+            @else
+                <input placeholder="YYYY-MM-DD" type="text" class="uk-input" name="person_dob[]" id="person_dob" value="{{ old('person_dob[]') }}"></input>
+            @endif
         </div>
         @error('person_dob[]')
             <div class="uk-text-danger">{{ $message }}</div>
@@ -114,7 +136,11 @@
         <div class="uk-form-controls">
             <select name="person_type[]" class="uk-select">
                 @foreach (Person::PersonType() as $typeItem => $typeValue)
-                    <option value="{{$typeItem}}"{{ old('person_type[]', $data['personModel']->person_type) == $typeItem ? ' selected="selected"' : '' }}>{{Str::ucfirst($typeValue)}}</option>                           
+                    @if ($data['personModel'])
+                        <option value="{{$typeItem}}"{{ old('person_type[]', $data['personModel']->person_type) == $typeItem ? ' selected="selected"' : '' }}>{{Str::ucfirst($typeValue)}}</option>                           
+                    @else
+                        <option value="{{$typeItem}}"{{ old('person_type[]') == $typeItem ? ' selected="selected"' : '' }}>{{Str::ucfirst($typeValue)}}</option>                           
+                    @endif
                 @endforeach
             </select>
         </div>
@@ -124,5 +150,34 @@
         @enderror
     
     </div>
+
+    <div class="uk-margin">
+        <label class="uk-form-label" for="form-stacked-text">Email</label>
+        
+        <div class="uk-form-controls">
+            <input type="text" class="uk-input" name="person_dob[]" id="person_dob" value="{{ old('person_email[]') }}"></input>
+        </div>
+
+        @error('person_dob[]')
+            <div class="uk-text-danger">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <table class="uk-table uk-table-small uk-table-divider">
+        <tbody>
+            @if ($data['personModel'])
+                @foreach ($data['personModel']->person_email as $person_email)
+                    <tr>
+                        <td>{{$person_email}}</td>
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
    
 </div>
+
+
+
+
+</script>

@@ -3,7 +3,9 @@ use App\Models\User;
 use App\Models\Store;
 use App\Models\Receipt;
 use App\Models\Setting;
+use App\Models\Attendance;
 use App\Helpers\ControllerHelper;
+use App\Helpers\DateTimeHelper;
 
     $route = Str::before(Request::route()->getName(), '.');
 
@@ -35,6 +37,8 @@ if (Auth::check()) {
 
         <div class="uk-navbar-left">
 
+            
+
             <div class="uk-navbar-item uk-visible@s">
                 <div>
                     @isset($storeModel)
@@ -46,16 +50,12 @@ if (Auth::check()) {
 
             @auth
             
-                @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin')
+                @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && User::UserType()[Auth::User()->user_type] == 'Admin' || $route != 'home')
                     
+                   
                     <div class="uk-navbar-item uk-visible@s">
                         <div>
-                            {{-- @isset($storeModel)
-                                <h3 class="uk-margin-remove-bottom" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->company_name}}</h3>
-                                <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->store_name}}</p>
-                            @endisset --}}
-                            
-                            
+                        
                             <form action="{{route('home.index')}}">
                                 @csrf
                                 <select name="store-form" class="uk-select" onchange="this.form.submit()">
@@ -77,7 +77,56 @@ if (Auth::check()) {
                 @endif
 
             @endauth
+
+           <div class="uk-navbar-item">
+                <div class="uk-button-group">
+                    <div class="">
+                        <button onclick="setFocus('barcodeInputID')" uk-icon="list" class="uk-button uk-button-default uk-border-rounded"></button>
+                        <input type="text" id="barcodeInputID" hidden>
+                    </div>
+                
+                    <div class="">
+                        <button onclick="createSearch()" uk-icon="plus" class="uk-button uk-button-default uk-border-rounded"></button>
+                    </div>
+                
+                    
+                
+                {{--  <div class="">
+                        <button uk-icon="grid" onclick="showKeypad()" class="uk-button uk-button-default uk-border-rounded"></button>
+                    </div> --}}
+                </div>
+           </div>
+     
+        
+           
             
+        </div>
+
+        <div class="uk-navbar-center">
+            <div class="uk-navbar-item">
+                <div class="uk-button-group">
+                    <input class="uk-input uk-form-width-large" type="text"  onclick="showKeypad()">
+
+                    <div class="uk-button-group">
+                       {{--  <button class="uk-button uk-button-default">Dropdown</button> --}}
+                        <div class="uk-inline">
+                            <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
+                            <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
+                                <ul class="uk-nav uk-dropdown-nav">
+                                    <li class="uk-active"><a href="#">Stock</a></li>
+                                    
+                               
+                                    <li class="uk-nav-header">Header</li>
+                                    <li><a href="#">Item</a></li>
+                                    <li><a href="#">Item</a></li>
+                                    <li class="uk-nav-divider"></li>
+                                    <li><a href="#">Item</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="uk-navbar-right uk-margin-right">
@@ -109,7 +158,8 @@ if (Auth::check()) {
                     </div>
                     <div class="uk-inline">
                         <button class="uk-border-rounded uk-button uk-button-default" type="button"
-                            uk-icon="user"></button>
+                            uk-icon="user">
+                        </button>
                         <div uk-dropdown="mode: click">
                             <ul class="uk-nav uk-dropdown-nav">
                                 {{-- <li class="uk-nav-header" uk-icon="icon: user"></li> --}}
@@ -144,9 +194,20 @@ if (Auth::check()) {
                         </div>
                     </div>
                 </div>
+
+               
             </div>
 
-
+            @auth
+                <div class="uk-navbar-item">
+                    <div>
+                        <h3 class="uk-margin-remove-bottom uk-text-right" title="U{{$userModel->user_id}} : A{{$userModel->person_account_id}}">{{ json_decode($userModel->person_name, true)['person_firstname'] }}</h3>
+                        <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : P{{$userModel->person_id}}">
+                            Clocked in {{DateTimeHelper::DateTime(Attendance::Clock('user_id', $userModel->user_id)->first()->created_at)['time']}}
+                        </p>
+                    </div>
+                </div>
+            @endauth
 
 
         </div>

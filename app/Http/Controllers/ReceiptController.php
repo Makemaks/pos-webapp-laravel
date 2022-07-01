@@ -51,6 +51,10 @@ class ReceiptController extends Controller
     public function index(Request $request)
     {
        
+        
+
+        
+
          $this->init();
 
          switch ($request->view):
@@ -76,17 +80,13 @@ class ReceiptController extends Controller
     public function create(Request $request)
     {
 
-       /*  $this->validate($request, [
-           
-            'receipt_user_id' => 'required',   
-
-        ], [
-            'required' => 'This field is required',
-        ]); */
+        foreach ($stockList as $stockKey => $stockItem) {
+            # code...
+        }
 
         $this->Init();
         
-        if ($request->session()->has('user-session-'.Auth::user()->user_id)) {
+        if ($request->session()->has('user-session-'.Auth::user()->user_id. '.cartList')) {
             $this->sessionCartList = $request->session()->get('user-session-'.Auth::user()->user_id. '.cartList');            
         }
 
@@ -260,34 +260,7 @@ class ReceiptController extends Controller
         }
     }
 
-    private function ProcessOrder(){
-        $orderData = [
-          
-            'ordertable_id' => $this->userModel->person_id,
-            'ordertable_type' => 'Person',
-            
-            'order_status' => 0,
-            'order_type' => $request->order_type,
-            'stripe_payment_intent_id' =>  $payment_intent,
-            'order_account_id' => $this->userModel->person_account_id,
-
-           
-        ];
-
-        $orderID = Order::insertGetId($orderData);
-
-        foreach( $this->sessionCartList as $cart){
-           
-           $receipt = [
-            'receipt_product_id' => $cart['product'],
-            'receipt_order_id' =>  $orderID,
-            'receipt_user_id' => $request['receipt_user_id'],
-            'receipt_plan_id' => $cart['plan'],
-           ];
-
-            Receipt::insert($receipt);
-        }
-    }
+    
 
     private function Data(){
         return[
@@ -350,6 +323,9 @@ class ReceiptController extends Controller
         if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
             //remove session
             $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'cartList');
+            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'discountList');
+            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'floatList');
+            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'deliveryList');
             $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList',[]);
         }
 

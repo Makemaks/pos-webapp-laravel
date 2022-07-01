@@ -28,7 +28,7 @@
                     @if ($setting_stock_group['type'] == Session::get('view'))
                         <tr>
                             <td>
-                                <button class="uk-button uk-button-danger uk-border-rounded">{{$keysetting_stock_group}}</button>
+                                <button class="uk-button uk-button-default uk-border-rounded">{{$keysetting_stock_group}}</button>
                             </td>
                           
                             @foreach ($setting_stock_group as $key => $value)          
@@ -63,7 +63,7 @@
                             @endforeach
 
                             <td>
-                                <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockCost({{$keysetting_stock_group}})"></button>
+                                <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockCost({{$keysetting_stock_group}})"></button>
                             </td>
                         </tr>
                     

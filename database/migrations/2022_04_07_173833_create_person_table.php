@@ -33,7 +33,10 @@ return new class extends Migration
             
             $table->tinyInteger('person_status')->nullable();
             $table->json('person_message_group')->nullable()->comment('create message group');
+            $table->json('person_stock_cost')->nullable()->comment('create message group');
+            $table->json('person_offer')->nullable();
             $table->json('person_marketing')->nullable();
+            $table->float('person_credit')->nullable();
             $table->timestamps();
         });
     }

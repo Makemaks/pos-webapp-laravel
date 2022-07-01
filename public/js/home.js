@@ -10,6 +10,9 @@ function stockGroup(id, type, view){
         },      
         success:function(data){
             document.getElementById('contentID').innerHTML = data['html'];
+            if (!view) {
+                document.getElementById("stockGroupID").hidden = false;
+            }
         }
      });
 
@@ -21,10 +24,29 @@ function showCustomer(){
     $.ajax({        
         url:"/home-api",
         method: 'GET',
-        data: {action: 'show_customer'},      
+        data: {action: 'showCustomer'},      
         success:function(data){
          
            document.getElementById('contentID').innerHTML = data['html']; 
+          
+        
+       }
+     });
+
+}
+
+function removeCustomer(){
+
+   
+    $.ajax({        
+        url:"/home-api",
+        method: 'GET',
+        data: {action: 'removeCustomer'},      
+        success:function(data){
+         
+            document.getElementById('useCustomerID').innerHTML =''; 
+            document.getElementById("showCustomerID").hidden = false;
+            showStock();
        }
      });
 
@@ -37,11 +59,12 @@ function useCustomer(person_id){
         url:"/home-api",
         method: 'GET',
         data: {
-            action: 'use_customer',
+            action: 'useCustomer',
             value:person_id
         },      
         success:function(data){
            document.getElementById('useCustomerID').innerHTML = data['html']; 
+           document.getElementById("showCustomerID").hidden = true;
        }
      });
 
@@ -49,15 +72,15 @@ function useCustomer(person_id){
 
 
 
-function searchCustomer(value){
+function searchCustomer(element){
 
    
     $.ajax({        
         url:"/home-api",
         method: 'GET',
         data: {
-            value: value,
-            action: 'search_customer'
+            value: element.value,
+            action: 'searchCustomer'
         },      
         success:function(data){
          
@@ -74,7 +97,7 @@ function createCustomer(){
     $.ajax({        
         url:"/home-api",
         method: 'GET',
-        data: {action: 'create_customer'},      
+        data: {action: 'createCustomer'},      
         success:function(data){
          
            document.getElementById('contentID').innerHTML = data['html']; 
@@ -84,17 +107,53 @@ function createCustomer(){
 }
 
 
-function showKeypad(){
+function showStock(){
 
-   
+     
     $.ajax({        
         url:"/home-api",
         method: 'GET',
-        data: {action: 'show_keypad'},      
+        data: {action: 'showStock'},      
         success:function(data){
-         
            document.getElementById('contentID').innerHTML = data['html']; 
+           document.getElementById("stockGroupID").hidden = true;
        }
      });
 
 }
+
+function showOrder(){
+
+     
+    $.ajax({        
+        url:"/home-api",
+        method: 'GET',
+        data: {action: 'showOrder'},      
+        success:function(data){
+           document.getElementById('contentID').innerHTML = data['html']; 
+           //document.getElementById("stockGroupID").hidden = true;
+       }
+     });
+
+}
+
+function pagination(page, action, view){
+    
+
+    $.ajax({        
+        url:"/home-api",
+        method: 'GET',
+        data: {
+            page: page,
+            action:action,
+            view:view
+        },      
+        success:function(data){
+        document.getElementById('contentID').innerHTML = data['html']; 
+        //document.getElementById("stockGroupID").hidden = true;
+    }
+    });
+
+}
+
+

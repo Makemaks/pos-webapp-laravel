@@ -24,6 +24,11 @@ class MathHelper{
         return $price - $discount;
     }
 
+    public static function PercentageDifference(float $valueA, float $valueB){
+        $percentage = ($valueA / $valueB) * 100;
+        return $percentage;
+    }
+
 
   
 }

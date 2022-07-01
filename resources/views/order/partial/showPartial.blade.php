@@ -1,45 +1,30 @@
 @php
     use App\Models\User;
+    use App\Models\Order;
+    use App\Models\Stock;
+    use App\Models\Receipt;
     use App\Helpers\MathHelper;
-    use App\Helpers\CurrencyHelper;
+    use App\Helpers\CountryHelper;
 
-    $currency = CurrencyHelper::Currency();
-    $totalPrice = 0;
+    $default_currency = $data['settingModel']->setting_group['default_country'];
+    $currency = CountryHelper::ISO()[$default_currency]['currencies'][0];
+    $orderTotal = 0;
+
+ 
+    $stockList = Receipt::ReceiptDisplay( $data['orderList'] );
 @endphp
 
-<table class="uk-table uk-table-small uk-table-divider">
-    <thead>
-        <tr>
-            <th class="uk-table-expand">Item</th>
-            <th class="uk-text-right">Price</th>
-        </tr>
-    </thead>
-    <tbody id="cartListID">
-        @foreach ($data['orderList'] as $order)
-            @php
-                $totalPrice = $order->sum('product_cost_price') + $totalPrice;
-            @endphp
-                <tr>
-                    <td>
-                        {{$order->first()->product_name}}
-                    </td>
-                    <td class="uk-text-right">{{$currency}} {{CurrencyHelper::Format($order->first()->product_cost_price)}}</td>
-                </tr>
-        @endforeach
-            <tr>
-                <td class="uk-text-right">VAT</td>
-                <td class="uk-text-right">% {{$data['userModel']->setting_vat}}</td>
-            </tr>
-            <tr>
-                <td class="uk-text-right">Total</td>
-                <td class="uk-text-right">{{$currency}} {{CurrencyHelper::Format($totalPrice)}}</td>
-            </tr>
-    </tbody>
-</table>
-@php
-    $priceVAT = MathHelper::VAT($data['settingModel']->setting_vat, $totalPrice);
+@include('receipt.partial.indexPartial', [ 'stockList' => $stockList])
+
+
+
+
+{{-- @php
+   
+    $order_setting_vat = array_sum($orderList->pluck('order_setting_vat')->toArray());
+    $priceVAT = MathHelper::VAT($order_setting_vat, $orderTotal);
 @endphp
-<div class="uk-margin-medium uk-box-shadow-small uk-text-lead uk-light uk-border-rounded uk-width-expand uk-button uk-button-danger" uk-icon="icon: tag">
+<div class="uk-margin-medium uk-box-shadow-small uk-text-lead uk-light uk-border-rounded uk-width-expand uk-button uk-button-default" uk-icon="icon: tag">
     {{$currency}}
-    <span class="uk-margin-right" id="receiptButtonID">{{CurrencyHelper::Format($priceVAT)}}</span>
-</div>
+    <span class="uk-margin-right" id="receiptButtonID">{{MathHelper::FloatRoundUp($priceVAT, 2)}}</span>
+</div> --}}

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Helpers\MathHelper;
 use Illuminate\Support\Facades\Auth;
+use Session;
 use Carbon\Carbon;
 
 use App\Models\Setting;
@@ -146,13 +147,6 @@ class Stock extends Model
         return Stock::leftJoin('store', 'store.store_id', '=', 'stock.stock_store_id');
     }
 
-    public static function OfferType()
-    {
-        return [
-            'voucher',
-            'mix & match'
-        ];
-    }
 
     public static function OfferStatus()
     {
@@ -183,7 +177,7 @@ class Stock extends Model
 
                         if ($stock_merchandise[$stock_merchandise_key] == $key) {
 
-                            $price = json_decode($orderList->stock_cost, true)[1][1]['price'];
+                            $price = $orderList->receipt_stock_cost;
 
                             $totalCostPrice = $totalCostPrice + $price * $orderList->receipt_quantity;
 
@@ -212,48 +206,37 @@ class Stock extends Model
         $totalCostPrice = 0;
         
         foreach ($orderList as $receiptList) {
-            $totalCostPrice = $totalCostPrice + Stock::ReceiptTotal($receiptList);
+            $totalCostPrice = Stock::ReceiptTotal($receiptList, $totalCostPrice);
         }
 
         return $totalCostPrice;
     }
 
 
-    public static function ReceiptTotal($receiptList)
+    public static function ReceiptTotal($receiptList, $totalCostPrice)
     {
 
-        $price = 0;
-        $totalCostPrice = 0;
+        $price = $receiptList->receipt_stock_cost;
 
-        if ($receiptList->receipt_stock_cost) {
-            foreach (json_decode($receiptList->receipt_stock_cost) as $key => $value) {
-                $price = json_decode($receiptList->stock_cost, true)[$key][$value]['price'];
-            }
-        }
-        
-        
+        if ($receiptList->receipt_discount) {
 
-        if ($receiptList->receipt_stock_cost_override) {
-
-            foreach (json_decode($receiptList->receipt_stock_cost_override) as $keyOverride => $valueOverride) {
+            foreach (json_decode($receiptList->receipt_discount) as $keyOverride => $valueDiscount) {
 
 
-                if (Receipt::ReceiptCostOverrideType()[$valueOverride->type] == 'percentage') {
+                if (Receipt::ReceiptCostOverrideType()[$valueDiscount->type] == 'percentage') {
                     //percentage at checkout
-                    $price = $price - $valueOverride->value;
+                    $price = MathHelper::Discount($valueDiscount->value, $receiptList->receipt_stock_cost);
                     
                 } 
-                elseif(Receipt::ReceiptCostOverrideType()[$valueOverride->type] == 'amount') {
+                elseif(Receipt::ReceiptCostOverrideType()[$valueDiscount->type] == 'amount') {
                     //minus the amount at checkout
-                    $price = $price - $valueOverride->value;
+                    $price = $price - $valueDiscount->value;
                 }
             }
             
         }
        
         $price = $price * $receiptList->receipt_quantity;
-   
-
         $totalCostPrice = $totalCostPrice + $price;
 
         return $totalCostPrice;
@@ -279,12 +262,7 @@ class Stock extends Model
 
     }
 
-    public static function StockCostDefault($stock_cost){
     
-       
-        return $stock_cost[1][1]['price'];
-
-    }
 
 
     public static function StockVAT($stock){
@@ -302,12 +280,44 @@ class Stock extends Model
     }
 
    
+    public static function StockCostDefault($stock_cost){
     
+        $price = $stock_cost[1][1]['price'];
+
+       //find discount-show on till button and checkout
+       //mix and match-check out only
+       //see variance to stock
+       return $price;
+       
+    }
+
+    public static function StockCostCustomer($stock_cost){
+    
+        $price = 0;
+
+         //get customer id from session
+        if (Session::has('user-session-'.Auth::user()->user_id.'.'.'customerCartList')) {
+            $person_id = Session::get('user-session-'.Auth::user()->user_id.'.'.'customerCartList')[0]['value'];
+            $pesonModel = Person::find($person_id);
+
+            if ($pesonModel->person_stock_cost) {
+                $price = $stock_cost[ $pesonModel->person_stock_cost[1]['column'] ][ $pesonModel->person_stock_cost[1]['row'] ]['price'];
+            }
+       } 
+
+       //find discount-show on till button and checkout
+       //mix and match-check out only
+       //see variance to stock
+       return $price;
+       
+    }
     
 
-    public static function CurrentOffer($stock){
+    //compare current
+    public static function StockCurrentOffer($stock, $offerType){
         
         $stockOffer = [];
+        
 
         if ($stock->stock_merchandise['stock_offer_id']) {
 
@@ -316,19 +326,70 @@ class Stock extends Model
 
             $settingModel = Setting::where('setting_store_id', $userModel->store_id)->first();
 
-            
-            $setting_stock_offer = collect($settingModel->setting_stock_offer)->where('date->start_date', '>' ,Carbon::now());
-            
+            $setting_stock_offer = collect($settingModel->setting_stock_offer)->only( $stock->stock_merchandise['stock_offer_id'] );
 
-            foreach ($settingModel->setting_stock_offer as $key => $value) {
-                    if ( $value['date']['start_date'] > Carbon::now() && array_search($key, $stock->stock_merchandise['stock_offer_id'])) {
-                        $stockOffer[] = $value;
+            //filter offer by date 
+            foreach ($setting_stock_offer as $stock_offer_key => $stock_offer_value) {
+                if ( $stock_offer_value['date']['start_date'] >= Carbon::now() && $offerType == $stock_offer_value['boolean']['type']) {
+                    
+                    $a = Carbon::now()->dayOfWeek;
+                    //discount days
+                    if (array_search( Carbon::now()->dayOfWeek, $stock_offer_value['available_day'] )) {
+                        $stockOffer[$stock_offer_key] = $stock_offer_value;
                     }
+                }
             }
-
         }
 
         return $stockOffer;
+    }
+
+
+    public static function StockCurrentOfferType($totalPrice, $stockCurrentOffer, $price){
+
+
+        
+        $stockCurrentOfferType = 0;
+        $total = [];
+
+        foreach ($stockCurrentOffer as $stockCurrentOfferKey => $stockCurrentOfferValue) {
+            
+            if (Setting::SettingDiscountType()[$stockCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
+
+                $stockCurrentOfferType = ['price'  => MathHelper::Discount($stockCurrentOfferValue['decimal']['discount_value'], $price)];
+               
+            } else {
+                $stockCurrentOfferType = ['price' => $price - $stockCurrentOfferValue['decimal']['discount_value'] ];
+               
+            }
+
+            if (count($stockCurrentOfferType) > 0) {
+                $total[$stockCurrentOfferKey] = $stockCurrentOfferValue;
+                $total[$stockCurrentOfferKey] += ['total' => $stockCurrentOfferType];
+            }
+
+        }
+      
+        //collect($stockCurrentOfferType)->min('price')
+        
+        
+
+        return $total;
+    }
+
+    public static function StockCostMin($stockCurrentOfferType){
+       return collect( $stockCurrentOfferType )->pluck('total')->min('price');
+    }
+
+    public static function Offer(){
+        return [
+            "Discount %",
+            "Set Price",
+            "Discount amount cheapest",
+            "Discount % cheapest",
+            "Discount amount last item",
+            "Discount % last item"
+        ];
     }
 
 

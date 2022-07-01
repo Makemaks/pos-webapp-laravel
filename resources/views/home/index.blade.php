@@ -17,9 +17,12 @@
 @section('content')
 
 
-
 <div>
     
+    <div id="contentID">
+        @include('home.partial.indexPartial')
+    </div>
+
 </div>
 
 

@@ -35,7 +35,7 @@
         <tbody>
            @foreach ($data['stockList'] as $stock)
                 <tr>
-                    <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$stock->stock_id}}</a></td>
+                    <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock->stock_id}}</a></td>
                     <td>{{$stock->stock_merchandise['stock_name']}}</td>
                     <td>{{$stock->stock_merchandise['master_plu']}}</td>
                     <td>{{$stock->stock_merchandise['random_code']}}</td>

@@ -142,7 +142,7 @@
                     <input class="uk-input" type="number" value="10">
                 </div>
 
-                <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>
+                <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button>
            </div>
 
 
@@ -174,7 +174,7 @@
                     <input class="uk-input" type="number" value="10">
                 </div>
 
-                <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>
+                <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button>
            </div>
         </div>
     </div>

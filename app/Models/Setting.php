@@ -4,8 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Expertise;
+use App\Models\Setting;
+use App\Models\User;
 
 class Setting extends Model
 {
@@ -215,11 +218,13 @@ class Setting extends Model
                 "integer":{
                     "set_menu":"",
                     "quantity":"",
+                    "stock_cost":"",
                 },
 
                 "boolean":{
                     "type":"",
                     "status":"",
+                    "prompt":""
                 },
 
                 "string":{
@@ -227,6 +232,7 @@ class Setting extends Model
                     "description":"",
                     "code":"",
                 }
+                "available_day":{}
                 
             }
         }',
@@ -268,7 +274,7 @@ class Setting extends Model
 
         'setting_key' => '{
             "1": {
-                "type": "",
+                "status": "",
                 "description": "",
                 "value": "",
                 "setting_key_type": ""
@@ -279,8 +285,8 @@ class Setting extends Model
 
         'setting_group' => '{
             "default_country": "",
-            "group_stock_cost": "",
-            "group_manager_special": ""
+            "stock_cost": "",
+            "special_stock_cost": ""
         }',
 
       
@@ -338,7 +344,7 @@ class Setting extends Model
 
 
 
-    /* public static function SettingKeyType()
+    /* public static function SettingKey()
     {
         //  0 , 1 , 2
         return ['finalise', 'status', 'transaction'];
@@ -367,14 +373,25 @@ class Setting extends Model
 
     public static function SettingKeyType()
     {
+
         return [
+            "VOUCHER",
             "CASH",
             "CREDIT",
-            "NO FUNCTION",
-            "ACCOUNT",
-            "EFT",
-            "HOTEL_TRANSFER",
-            "VOUCHER"
+            "TERMINAL",
+            
+            //"DISCOUNT",
+            //"DELIVERY"
+        ];
+
+      
+    }
+
+    public static function SettingDiscountType()
+    {
+        return [
+            "percentage",
+            "amount",
         ];
     }
 
@@ -439,17 +456,22 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingStockOffer($setting){
-        
-        if ($setting->setting_stock_offer) {
-            $stockOffer = collect($stock->setting_stock_offer)
-            ->whereDate('start_date', '>' ,Carbon::now())
-            ->first();
-        }
 
-        return $stockOffer;
+    public static function SettingKey($setting, $value){
+        
+        $key = array_search($value, $setting->setting_key_type);
+
+        return collect($setting->setting_key)->where('setting_key_type', $key)->first();
     }
 
+    public static function DiscountType(){
+        return [
+            'voucher', //coupons
+            'discount', //one offs
+            'multiple-buy',
+            'mix-match'
+        ];
+    }
 
 
 

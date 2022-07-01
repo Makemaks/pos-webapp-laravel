@@ -19,7 +19,7 @@ $route = Str::before(Request::route()->getName(), '.');
             @endif
             <input type="hidden" name="fileName" value="{{ $table }}">
             <input type="hidden" name="format" value="pdf">
-            <button class="uk-button uk-button-danger uk-border-rounded" form="{{ $table }}-pdf">
+            <button class="uk-button uk-button-default uk-border-rounded" form="{{ $table }}-pdf">
                 PDF</button>
         </form>
     </div>
@@ -29,7 +29,7 @@ $route = Str::before(Request::route()->getName(), '.');
             @csrf
             <input type="hidden" name="fileName" value="{{ $table }}">
             <input type="hidden" name="format" value="csv">
-            <button class="uk-button uk-button-danger uk-border-rounded" form="{{ $table }}-csv">
+            <button class="uk-button uk-button-default uk-border-rounded" form="{{ $table }}-csv">
                 CSV</button>
         </form>
    </div>

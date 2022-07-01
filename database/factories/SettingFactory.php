@@ -86,8 +86,8 @@ class SettingFactory extends Factory
     
             $setting_vat[$i+1] = [
                 "name" => $this->faker->word,
-                "rate" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
-                "default" => 1
+                "rate" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+                "default" => $this->faker->numberBetween($min = 0, $max = 1)
             ];
 
             
@@ -99,34 +99,37 @@ class SettingFactory extends Factory
             $setting_stock_printer[] = $i + 1;
 
             $setting_stock_offer[$i + 1] = [
-                    "decimal" => [
-                    "gain" => $this->faker->numberBetween($min = 1, $max = 500),
-                    "collect" => $this->faker->numberBetween($min = 1, $max = 500),
-                    "discount_type" => $this->faker->numberBetween($min = 0, $max = 1),
-                    "discount_value" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50),
+                "decimal" => [
+                        "gain" => $this->faker->numberBetween($min = 1, $max = 500),
+                        "collect" => $this->faker->numberBetween($min = 1, $max = 500),
+                        "discount_type" => $this->faker->numberBetween($min = 0, $max = 1),
+                        "discount_value" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 1, $max = 5),
                 ],
 
                 "date" => [
-                    "start_date" => $this->faker->dateTimeBetween($startDate = '-1 years', $endDate = '1 years', $timezone = null)->format('Y-m-d H:i:s'),
-                    "end_date" => $this->faker->dateTimeBetween($startDate = '1 years', $endDate = '2 years', $timezone = null)->format('Y-m-d H:i:s'),
+                    "start_date" => $this->faker->dateTimeBetween($startDate = '1 years', $endDate = '2 years', $timezone = null)->format('Y-m-d H:i:s'),
+                    "end_date" => $this->faker->dateTimeBetween($startDate = '3 years', $endDate = '4 years', $timezone = null)->format('Y-m-d H:i:s'),
                    
                 ],
 
                 "integer" => [
                     "set_menu" => $this->faker->numberBetween($min = 1, $max = 5),
                     "quantity" => $this->faker->numberBetween($min = 1, $max = 200),
+                    "stock_cost" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
                 ],
 
                 "boolean" => [
                     "type" => $this->faker->numberBetween($min = 0, $max = 1), //voucher / mix and match
                     "status" =>  1,
+                    "prompt" => $this->faker->numberBetween($min = 0, $max = 1)
                 ],
 
                 "string" => [
                     "name" => $this->faker->word,
                     "description" => $this->faker->word,
                     "code" => $this->faker->lexify,
-                ]
+                ],
+                "available_day" => $this->faker->randomElements($array = array ('1','2','3', '4', '5', '6', '7'), $count = $this->faker->numberBetween($min = 1, $max = 7)),
 
             ];
 
@@ -149,13 +152,13 @@ class SettingFactory extends Factory
 
             $a = $this->faker->numberBetween($min = 1, $max = 7);
             if ($a == 1) {
-                $value =  $this->faker->randomElement($array = array(null, '5', '10', '20', '100'));
+                $value =  $this->faker->randomElement($array = array('5', '10', '20', '100'));
             } else {
                 $value = null;
             }
 
             $setting_key[$i + 1] = [
-                "type" => $this->faker->numberBetween($min = 0, $max = 1),
+                "status" => $this->faker->numberBetween($min = 0, $max = 1),
                 "description" => $this->faker->sentence(),
                 "value" => $value,
                 "setting_key_type" => $this->faker->numberBetween($min = 1, $max = 7),
@@ -197,13 +200,9 @@ class SettingFactory extends Factory
         $isoCount = count(CountryHelper::ISO());
         $setting_group = [
             'default_country' => $this->faker->numberBetween($min = 1, $max = $isoCount),
-            'group_stock_cost' => 5,
-            'group_manager_special' => 2
+            'stock_cost' => 5,
+            'special_stock_cost' => 2
         ];
-
-      
-        
-       
 
 
         return [

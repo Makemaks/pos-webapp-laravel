@@ -163,32 +163,6 @@
 
 @else
 
-<div>
-
-    <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
-        <li class="uk-nav-header">Home</li>
-        @foreach (Setting::SettingStockGroup() as $item)
-            <li>
-                <a onclick="stockGroup({{$loop->iteration}}, '{{$item}}', null)">{{Str::ucfirst($item)}}</a>
-            </li>
-        @endforeach
-        
-      
-        <li class="uk-nav-header">Top Brands</li>
-        <li><a href="#">Brands</a></li>
-       
-
-        <li class="uk-nav-header">Cart</li>
-        <li><a href="#" class="uk-border-rounded" uk-icon="cart"></a></li>
-        <li><a href="#" class="uk-border-rounded" uk-icon="credit-card" onclick=""></a></li>
-        <li><a href="#" class="uk-border-rounded" uk-icon="grid" onclick="showKeypad()"></a></li>
-        <li><a href="#" class="uk-border-rounded" uk-icon="user" onclick="showCustomer()">
-            {{-- <span uk-icon="icon: plus"></span> --}}</a>
-        </li>
-    </ul>
-
-</div>
-
 
 @endif
 

@@ -19,13 +19,13 @@ class OrderController extends Controller
 
     private $authenticatedUser;
     private $orderList;
-    private $productList;
+    private $stockList;
     private $storeList;
 
     private $storeModel;
     private $settingModel;
     private $schemeList;
-    private $personModel;
+    private $userModel;
    
     private $orderModel;
    
@@ -37,16 +37,15 @@ class OrderController extends Controller
         $this->middleware('auth');
     }
 
-    public function Index(){
+    public function Index(Request $request){
       
-        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
-        ->first();
+        if ($request->has('order_finalise_key')) {
+            $this->store($request);
+        }
 
+        $this->init();
         $todayDate = Carbon::now()->toDateTimeString();
-        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
-        
-      
-
+       
         $this->orderList = Store::Sale('store_id',  $this->userModel->store_id)
         ->groupBy('order_id')
         ->paginate(20);
@@ -56,35 +55,17 @@ class OrderController extends Controller
     }
 
     public function Show(Request $request, $order){
-        $this->orderList = Order::Receipt()
-        ->where('receipt_order_id', $order)
-        ->get()
-        ->groupBy('receipt_product_id');
-
-        $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)->first();
-           
-        $this->schemeList = Scheme::Store('scheme_store_id', $this->userModel->store_id)->get(); 
-        
-        $this->settingModel = Setting::Store()
-        ->where('setting_store_id', $this->userModel->store_id)
-        ->first();
+        $this->init();
+        $this->orderList = Order::Receipt('receipt_order_id', $order)
+        ->get();
 
         return view('order.show', ['data' => $this->Data()]);   
     }
 
     public function Edit(Request $request, $order){
-        $this->orderList = Order::Receipt()
-        ->where('receipt_order_id', $order)
-        ->get()
-        ->groupBy('receipt_product_id');
-
-        $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)->first();
-           
-        $this->schemeList = Plan::Scheme('scheme_store_id', $this->userModel->store_id)->get(); 
-        
-        $this->settingModel = Setting::Store()
-        ->where('setting_store_id', $this->userModel->store_id)
-        ->first();
+        $this->init();
+        $this->orderList = Order::Receipt('receipt_order_id', $order)
+        ->get();
 
         
         return view('order.edit', ['data' => $this->Data()]);   
@@ -92,41 +73,56 @@ class OrderController extends Controller
 
     public function Store(Request $request){
 
-        
-        $requestInput = $request->all()['cart'];
-        $authenticatedUser = Auth::user();
+        $this->init();
+        $receipt = [];
+        //get receipt stock
+        if(Session::has('user-session-'.Auth::user()->user_id. '.cartList')){
 
-        $orderInput = [
-            'store_store_id' => $authenticatedUser->store_id,
-            'user_person_id' => $authenticatedUser->user_id,
-            'status' => '',
-            'type' => ''
+            $sessionCartList = Session::get('user-session-'.Auth::user()->user_id. '.cartList');
+            $stockList = Receipt::SessionDisplay($sessionCartList);
+        }
+
+        $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)
+            ->first();
+
+        //store order
+        $orderData = [
+
+            'order_user_id' => $this->userModel->user_id,
+            'order_store_id' => $this->userModel->user_store_id,
+            'ordertable_id' => $this->userModel->person_id,
+            'ordertable_type' => 'Person',
+            'order_status' => 0,
+            'order_offer' => Session::get('user-session-'.Auth::user()->user_id. '.offerList'),
+            'order_type' =>  Order::ProcessOrderType($this->userModel),
+            'order_finalise_key' => '',
+            
+            
+            'order_setting_pos_id' => 1
+           
         ];
 
-        $orderInput = DatabaseHelper::MergeArray($orderInput, DatabaseHelper::Timestamp());
-        $this->orderModel = Order::create($orderInput);
+        $orderData = DatabaseHelper::MergeArray($orderData, DatabaseHelper::Timestamp());
+        $orderID = Order::insertGetId($orderData);
 
-        $productListID = Arr::pluck($requestInput, 'product_id');
-        $this->productList = Product::find($productListID);
+        //store receipt
+        foreach ($stockList as $stockKey => $stockItem) {
+            $receipt = Receipt::Calculate( $data, $stockItem, $loop, $receipt );
+
+            $receiptData = [
+                'receipt_stock_id' => $stockItem['stock_id'],
+                'receipt_order_id' =>  $orderID,
+                'receipt_user_id' => $stockItem['user_id'],
+               ];
+    
+                //decrement stock from table
+            Stock::QuantityDecrease($stockKey, $stockValue);
+            $receiptData = DatabaseHelper::MergeArray($receiptData, DatabaseHelper::Timestamp());
+            Receipt::insert($receiptData);
+        }
        
-        foreach ( $this->productList as $product) {
-            $receiptInput[] = [
-                'order_order_id' => $this->orderModel->order_id,
-                'product_product_id' => $product->product_id,
-            ];
-
-            $orderInput = DatabaseHelper::MergeArray($orderInput, DatabaseHelper::Timestamp());
-        }
-
-        //decrement product from table
-        $productCountList= collect($productListID);
-        foreach( $productCountList as $productKey => $productValue){
-            Product::QuantityDecrease($productKey, $productValue);
-        }
-
-        Receipt::Insert($receiptInput);
         
-        return view('cart.index' ,['data' => $this->Data()]);
+        return view('home.index' ,['data' => $this->Data()]);
     }
 
     public function Delete($order){
@@ -138,12 +134,27 @@ class OrderController extends Controller
         return redirect()->route('index')->with('success', 'Order Deleted Successfully');
     }
 
+    private function init(){
+        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+        ->first();
+        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+    }
+
+    private function ProcessOrder(){
+       
+
+        foreach( $this->sessionCartList as $cart){
+           
+           
+        }
+    }
+
     private function Data(){
 
         return [
             'authenticatedUser' => $this->authenticatedUser,
             'orderList' => $this->orderList,
-            'productList' => $this->productList,
+            'stockList' => $this->stockList,
             'schemeList' => $this->schemeList,
             'userModel' => $this->userModel,
             'settingModel' => $this->settingModel

@@ -171,7 +171,7 @@
                                        @for ($i = 0; $i < count($data['stockModel']->stock_cost[1]); $i++)
                                             <tr>
                                                 <td>
-                                                    <button class="uk-button uk-button-danger uk-border-rounded">
+                                                    <button class="uk-button uk-button-default uk-border-rounded">
                                                         {{$i + 1}}
                                                     </button>
                                                 </td>
@@ -234,7 +234,7 @@
                                        @for ($i = count($data['stockModel']->stock_cost[1]); $i < count($data['stockModel']->stock_cost[1]) * 2; $i++)
                                             <tr>
                                                 <td>
-                                                    <button class="uk-button uk-button-danger uk-border-rounded">
+                                                    <button class="uk-button uk-button-default uk-border-rounded">
                                                         {{$i + 1}}
                                                     </button>
                                                 </td>
@@ -267,7 +267,7 @@
                         </table>
                                 
             
-                       <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>
+                       <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button>
                          
                     </div>
                 </li>
@@ -307,7 +307,7 @@
                                @for ($i = 0; $i < 1; $i++)
                                     <tr>
                                         <td>
-                                            <button class="uk-button uk-button-danger uk-border-rounded">
+                                            <button class="uk-button uk-button-default uk-border-rounded">
                                                 {{$i + 1}}
                                             </button>
                                         </td>

@@ -38,7 +38,7 @@
                                            @if($stock_nutrition)
                                                 <tr>
                                                     <td>
-                                                        <button class="uk-button uk-button-danger uk-border-rounded">{{$key}}</button>
+                                                        <button class="uk-button uk-button-default uk-border-rounded">{{$key}}</button>
                                                     </td>
                                                     @foreach ($stock_nutrition as $keyStock => $stock)
                                                     
@@ -62,7 +62,7 @@
                                                     
                                                     @endforeach
                                                     <td>
-                                                        <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockoffers({{$key}})"></button>
+                                                        <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockoffers({{$key}})"></button>
                                                     </td>
                                                 </tr>
 
@@ -121,7 +121,7 @@
                             @endforeach
                        
             
-                       <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>
+                       <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button>
                          
                     </div>
                 </li>

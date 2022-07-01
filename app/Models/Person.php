@@ -30,6 +30,47 @@ class Person extends Model
                 "reason": ""
               
             }
+        }',
+        'person_stock_cost' => '{
+            "1": {
+                "column": "",
+                "row": ""
+              
+            }
+        }',
+        "person_offer" => '{
+            "1": {
+                "points":{
+                    "gain" : "",
+                    "collect" : "",
+                    "discount_type" : "",
+                    "discount_value" : "",
+                },
+                "date":{
+                    "end_date": "",
+                    "start_date": "",
+                },
+
+                "integer":{
+                    "set_menu":"",
+                    "quantity":"",
+                    "stock_cost":"",
+                },
+
+                "boolean":{
+                    "type":"",
+                    "status":"",
+                    "prompt":""
+                },
+
+                "string":{
+                    "name":"",
+                    "description":"",
+                    "code":"",
+                }
+                "available_day":{}
+                
+            }
         }'
     ];
 
@@ -40,7 +81,9 @@ class Person extends Model
 
         'person_message_notification' => 'array',
         'person_message_group' => 'array',
-        'person_blacklist' => 'array'
+        'person_blacklist' => 'array',
+        'person_stock_cost' => 'array',
+        'person_offer' => 'array'
     ];
 
 

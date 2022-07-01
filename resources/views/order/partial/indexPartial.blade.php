@@ -1,4 +1,5 @@
 @php
+     use App\Helpers\MathHelper;
      use App\Models\Order;
      use App\Models\Stock;
      use App\Models\Receipt;
@@ -12,7 +13,7 @@
 <table class="uk-table uk-table-small uk-table-divider">
     <thead>
         <tr>
-            <th>Number</th>
+            <th>Ref</th>
             <th>Type</th>
             <th>Status</th>
             <th>Amount</th>
@@ -26,16 +27,17 @@
     <tbody>
       
         @foreach ($data['orderList'] as $order)
+            
             @php
-                $orderList = Order::Receipt('order_id', $order->order_id)
-                ->get();
-
+                $orderList = Order::Receipt('order_id', $order->order_id)->get();
                 $orderTotal = Stock::OrderTotal($orderList);
-               
+            
                 $userPerson = User::Person('user_id', $orderList->last()->receipt_user_id)->first();
+
             @endphp
+
             <tr>
-                <td><a href="{{route('order.edit', $order->order_id)}}" class="uk-button uk-button-text">{{$order->order_id}}</a></td>
+                <td><a href="{{route('order.edit', $order->order_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$order->order_id}}</a></td>
                 <td>{{Order::OrderType()[$order->order_type]}}</td>
                 @if ($order->payment_type)
                     <td>{{$order->payment_type}}</td>
@@ -48,16 +50,18 @@
                     </select>
                 
                 </td>
-                <td>{{$orderTotal}}</td>
+                <td>{{ MathHelper::FloatRoundUp($orderTotal, 2) }}</td>
                 <td>{{$order->store_name}}</td>
-                <td>{{$data['settingModel']->setting_pos[$order->order_setting_pos]['name']}}</td>
+                <td>{{$data['settingModel']->setting_pos[1]['name']}}</td>
                 <td>{{ json_decode($userPerson->person_name, true)['person_firstname'] }}</td>
                 <td>{{$order->created_at}}</td>
                 <td>
-                 
+                
                 </td>
             </tr>
+            
         @endforeach
+
     </tbody>
 </table>
 @include('partial.paginationPartial', ['paginator' => $data['orderList']])

@@ -35,7 +35,7 @@
                         @foreach ($data['stockModel']->stock_supplier as $keyStockSupplier => $stockSupplier)
                             <tr>
                                 <td>
-                                    <button class="uk-button uk-button-danger uk-border-rounded">{{$keyStockSupplier}}</button>
+                                    <button class="uk-button uk-button-default uk-border-rounded">{{$keyStockSupplier}}</button>
                                 </td>
                                 @foreach ($stockSupplier as $key => $stock)
                                     <td>
@@ -65,7 +65,7 @@
                                 @endforeach
 
                                 <td>
-                                    <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockSupplier({{$stock}})"></button>
+                                    <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockSupplier({{$stock}})"></button>
                                 </td>
                             </tr>
                         @endforeach
@@ -114,7 +114,7 @@
             @endif
            
 
-           <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>
+           <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button>
              
         </form>
     </li>

@@ -10,26 +10,26 @@ use App\Helpers\StringHelper;
 
     $route = Str::before(Request::route()->getName(), '.');
 
-   if (Auth::check()) {
-        $userModel = User::Account('account_id', Auth::user()->user_account_id)
-        ->first();
+    if (Auth::check()) {
+            $userModel = User::Account('account_id', Auth::user()->user_account_id)
+            ->first();
 
-    $storeModel = Store::Account('store_id', $userModel->store_id)->first();
-    $storeList = Store::List('root_store_id', $storeModel->store_id)
-        ->orWhere('store_id', $storeModel->store_id)
-        ->get();
-}
-
-$count = 0;
-$cartList = null;
-$cartAwaitingList = [];
-
-if (Auth::check()) {
-    if (Session::has('user-session-' . Auth::user()->user_id . '.cartList')) {
-        $cartList = Session::get('user-session-' . Auth::user()->user_id . '.cartList');
-        $count = Receipt::Quantity($cartList);
+        $storeModel = Store::Account('store_id', $userModel->store_id)->first();
+        $storeList = Store::List('root_store_id', $storeModel->store_id)
+            ->orWhere('store_id', $storeModel->store_id)
+            ->get();
     }
-}
+
+    $count = 0;
+    $cartList = null;
+    $awaitingCartList = [];
+
+    if (Auth::check()) {
+        if (Session::has('user-session-' . Auth::user()->user_id . '.cartList')) {
+            $cartList = Session::get('user-session-' . Auth::user()->user_id . '.cartList');
+            $count = Receipt::Quantity($cartList);
+        }
+    }
 @endphp
 
 
@@ -52,38 +52,23 @@ if (Auth::check()) {
 
         <div class="uk-navbar-right uk-margin-right">
 
-            <div class="uk-navbar-item">
-                <div class="uk-button-group">
-                   
+           
 
-                    @auth
-                        
-                        @if (Person::PersonType()[$data['userModel']->person_type] == 'Customer')
-                            <div class="uk-inline">
-                                <button class="uk-border-rounded uk-button uk-button-default" type="button">Pay</button>
-                                <div uk-dropdown="mode: click">
-                                    <ul class="uk-nav uk-dropdown-nav">
-                                    
-                                    </ul>
-                                </div>
-                            </div>
-                        @else
-                           
-                        @endif
-
-                    @endauth
-
-                </div>
+            <div class="uk-navbar-item" id="cancelButtonID" hidden>
+                <button class="uk-button uk-border-rounded uk-button-large uk-light" type="button" style="background-color: #{{StringHelper::getColor()}}" onclick="settingFinaliseKey('cancel')">
+                    CANCEL
+               </button>
             </div>
 
-            <div class="uk-navbar-item" hidden>
-                <a href="{{route( 'order.store', ['order_finalise_key' => Session::get('order_finalise_key')] )}}" class="uk-button uk-border-rounded uk-button-large uk-light" type="button" style="background-color: #{{StringHelper::getColor()}}">
+            <div class="uk-navbar-item" id="confirmButtonID" hidden>
+                <a href="{{route( 'order.store' )}}" class="uk-button uk-border-rounded uk-button-large uk-light" type="button" style="background-color: #{{StringHelper::getColor()}}">
                     CONFIRM
                 </a>
             </div>
 
-            <div class="uk-navbar-item">
-
+          
+            <div class="uk-navbar-item" id="payButtonID">
+              
                 <div class="uk-inline">
                     <button class="uk-button uk-border-rounded uk-button-large uk-light" type="button" style="background-color: #{{StringHelper::getColor()}}">
                          PAY 
@@ -93,13 +78,23 @@ if (Auth::check()) {
                       
                            
                             <li class="uk-nav-header" uk-icon="icon: cart"></li>
-                           @foreach (Setting::SettingKeyType() as $setting_key)
-                            
-                                <li><button class="uk-margin-small uk-button uk-button-default uk-border-rounded  uk-width-expand" onclick="finaliseKey('{{Str::lower($setting_key)}}')">
-                                    {{ $setting_key}}
-                                </button></li>
-                             
-                           @endforeach
+                           @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && User::UserType()[Auth::User()->user_type] == 'Admin' && Person::PersonType()[$data['userModel']->person_type] == 'Customer')
+                                @foreach (Setting::SettingPaymentGateway() as $payment_gaeway)
+                                
+                                    <li><button class="uk-margin-small uk-button uk-button-default uk-border-rounded uk-width-expand" onclick="paymentType('{{Str::lower($payment_gaeway)}}')">
+                                        {{ $payment_gaeway}}
+                                    </button></li>
+                                    
+                                @endforeach
+                           @else
+                                @foreach (Setting::SettingKeyType() as $setting_key)
+                                            
+                                    <li><button class="uk-margin-small uk-button uk-button-default uk-border-rounded uk-width-expand" onclick="settingFinaliseKey('{{Str::lower($setting_key)}}')">
+                                        {{ $setting_key}}
+                                    </button></li>
+                                    
+                                @endforeach
+                           @endif
                           
                         </ul>
                     </div>

@@ -48,9 +48,10 @@ class HomeAPIController extends Controller
     {
 
         //used for pagination
+        $this->request = $request;
         $request->session()->flash('action', $request['action']);
         $request->session()->flash('view', 0);
-        $this->init($request);
+        $this->init();
         
 
         $this->userList = User::Store('person_user_id', $this->userModel->user_id)
@@ -88,7 +89,9 @@ class HomeAPIController extends Controller
 
             
             $where = 'stock_merchandise->'.$request->session()->get('type').'_id';
-            $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
+            
+            $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
+            ->where('warehouse_quantity', '>', 0)
             ->where($where, $request->session()->get('id'))
             ->paginate(20);
 
@@ -104,10 +107,16 @@ class HomeAPIController extends Controller
 
         elseif ($request->has('action') && $request['action'] == 'useCustomer') {
            
-            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'customerCartList');
-            $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'customerCartList', $request->all());
+
+            $setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList')[0];
+            $setupList['customer'] = $request->all();
+
+            $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
+          
             $this->personModel = Person::find($request['value']);
-            $this->html = view('person.partial.personPartial', ['data' => $this->Data(), 'view' => 'receipt'])->render();
+
+            $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
+          
         }
 
         elseif ($request->has('action') && $request['action'] == 'createCustomer') {
@@ -121,12 +130,18 @@ class HomeAPIController extends Controller
            
             $userList = User::Store('user_account_id', $this->userModel->account_id)->pluck('user_id');
 
-            $this->personList = Person::whereIn('person_user_id', $userList)->paginate(20);
+            $this->personList = Person::Address('person_organisation_id', $this->userModel->organisation_id)
+            ->paginate(20);
+
             $this->html = view('person.partial.indexPartial', ['data' => $this->Data()])->render();
         }
 
         elseif ($request->has('action') && $request['action'] == 'removeCustomer') {
-            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'customerCartList');
+            $setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList')[0];
+            $setupList['customer'] = [];
+            $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
+
+            $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
         }
 
         elseif ($request->has('action') && $request['action'] == 'searchCustomer') {
@@ -142,10 +157,14 @@ class HomeAPIController extends Controller
 
         elseif ($request->has('action') && $request['action'] == 'showStock' || $request['view'] == "0") {
             
-          
             $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
-            ->orWhere('stock_merchandise->stock_name', 'like', '%'.$request['value'].'%')
-            ->paginate(20);
+            ->where('warehouse_quantity', '>', 0);
+
+           if ($request->has('view')) {
+                $this->stockList = $this->stockList->orWhere('stock_merchandise->stock_name', 'like', '%'.$request['value'].'%');
+           }
+           
+           $this->stockList = $this->stockList->paginate(20);
            
             $this->html = view('stock.partial.indexPartial', ['data' => $this->Data()])->render();
         }
@@ -153,9 +172,12 @@ class HomeAPIController extends Controller
         elseif ($request->has('action') && $request['action'] == 'showOrder' || $request['view'] == "0") {
             
           
-            $this->orderList = Store::Sale('store_id',  $this->userModel->store_id)
+            $this->orderList = Receipt::Order('stock_store_id',  $this->userModel->store_id)
+            ->orderByDesc('order_id')
             ->groupBy('order_id')
             ->paginate(20);
+
+       
            
             $this->html = view('order.partial.indexPartial', ['data' => $this->Data()])->render();
         }
@@ -174,7 +196,7 @@ class HomeAPIController extends Controller
     
     
     
-    return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
+        return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
     }
 
     /**
@@ -246,7 +268,7 @@ class HomeAPIController extends Controller
     private function init(){
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
 
        
     }
@@ -264,7 +286,8 @@ class HomeAPIController extends Controller
             'settingModel' => $this->settingModel,
             'userList' => $this->userList,
             'personModel' => $this->personModel,
-            'personList' => $this->personList
+            'personList' => $this->personList,
+            'request' => $this->request
         ];
     }
 }

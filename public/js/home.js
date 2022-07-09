@@ -28,8 +28,6 @@ function showCustomer(){
         success:function(data){
          
            document.getElementById('contentID').innerHTML = data['html']; 
-          
-        
        }
      });
 
@@ -44,9 +42,9 @@ function removeCustomer(){
         data: {action: 'removeCustomer'},      
         success:function(data){
          
-            document.getElementById('useCustomerID').innerHTML =''; 
-            document.getElementById("showCustomerID").hidden = false;
-            showStock();
+            //showStock();
+            document.getElementById('receiptID').innerHTML = data['html']; 
+            
        }
      });
 
@@ -63,8 +61,7 @@ function useCustomer(person_id){
             value:person_id
         },      
         success:function(data){
-           document.getElementById('useCustomerID').innerHTML = data['html']; 
-           document.getElementById("showCustomerID").hidden = true;
+           document.getElementById('receiptID').innerHTML = data['html']; 
        }
      });
 

@@ -16,7 +16,7 @@ use App\Models\User;
 <div uk-grid>
                            
     <div>
-        <a class="uk-link-text uk-text-lead" href="{{route('person.edit', $data['personModel']->person_id)}}">
+        <a class="uk-link-text" href="{{route('person.edit', $data['personModel']->person_id)}}">
             {{$data['personModel']->person_name['person_firstname']}} {{$data['personModel']->person_name['person_lastname']}}
         </a>
     
@@ -42,14 +42,6 @@ use App\Models\User;
 
     {{-- dont show on person index --}}
 
-    @if(isset($view))
-        <div class="uk-width-auto">
-            <button type="button" class="uk-button uk-button-default uk-border-rounded" onclick="removeCustomer()" uk-icon="user">
-                <span uk-icon="minus"></span>
-            </button>
-        </div>
-    @endif
-   
 
    
 </div>

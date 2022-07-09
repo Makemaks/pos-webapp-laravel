@@ -14,6 +14,10 @@
     use App\Models\Receipt;
 
     $currency = "";
+    $receipt['deliveryTotal']=0;
+    $receipt['voucherTotal']=0;
+    $receipt['creditTotal'] = 0;
+    $receipt['cashTotal'] = 0;
     $receipt['priceVAT'] = 0;
     $receipt['totalPrice'] = 0;
     $receipt['discountTotal'] = 0;
@@ -33,7 +37,7 @@
   
 @endphp
 
-
+@include('receipt.partial.receiptMenuPartial')
 
 <div class="" uk-height-viewport="offset-top: true; offset-bottom: 50px">
     <div class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
@@ -75,7 +79,11 @@
                                     </td>
         
                                     <td>
-                                        {{$stockItem['stock_discount']}}
+                                       @if ($stockItem['stock_discount'])
+                                            @foreach ($stockItem['stock_discount'] as $item)
+                                                {{$item['value']}}
+                                            @endforeach
+                                       @endif
                                     </td>
         
                                     <td>
@@ -101,7 +109,34 @@
         </table>
     </div>
     
-    <div class="uk-child-width-1-2@m" uk-grid>
+    <div class="uk-margin-large uk-child-width-1-2@m" uk-grid>
+
+        @if ($receipt['cashTotal'] > 0)
+            
+            <div class="uk-margin-remove-top">Cash {{$currency}}
+                <span class="uk-text-danger" uk-icon="close" onclick="removeTotalDiscount()"></span>
+            </div>
+            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['cashTotal'])}}</div>
+           
+        @endif
+
+        @if ($receipt['creditTotal'] > 0)
+            
+            <div class="uk-margin-remove-top">Credit {{$currency}}
+                <span class="uk-text-danger" uk-icon="close" onclick="removeTotalDiscount()"></span>
+            </div>
+            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['discountTotal'])}}</div>
+           
+        @endif
+
+        @if ($receipt['voucherTotal'] > 0)
+            
+            <div class="uk-margin-remove-top">Voucher {{$currency}}
+                <span class="uk-text-danger" uk-icon="close" onclick="removeTotalDiscount()"></span>
+            </div>
+            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['voucherTotal'])}}</div>
+           
+        @endif
             
         @if ($receipt['discountTotal'] > 0)
             
@@ -112,14 +147,14 @@
            
         @endif
 
-        @isset ($receipt['deliveryTotal'])
+        @if ($receipt['deliveryTotal'] > 0)
           
             <div class="uk-margin-remove-top">Delivery {{$currency}}
                 <span class="uk-text-danger" uk-icon="close" onclick="removeDelivery()"></span>
             </div>
             <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['deliveryTotal'])}}</div>
          
-        @endisset
+        @endif
 
         @isset ($receipt['totalSettingVAT'])
           

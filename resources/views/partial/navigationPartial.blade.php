@@ -21,12 +21,12 @@ use App\Helpers\DateTimeHelper;
 
 $count = 0;
 $cartList = null;
-$cartAwaitingList = [];
+$awaitingCartList = [];
 
 if (Auth::check()) {
     if (Session::has('user-session-' . Auth::user()->user_id . '.cartList')) {
         $cartList = Session::get('user-session-' . Auth::user()->user_id . '.cartList');
-        $count = Receipt::Quantity($cartList);
+        $count = count($cartList);
     }
 }
 @endphp
@@ -78,7 +78,7 @@ if (Auth::check()) {
 
             @endauth
 
-           <div class="uk-navbar-item">
+           {{-- <div class="uk-navbar-item">
                 <div class="uk-button-group">
                     <div class="">
                         <button onclick="setFocus('barcodeInputID')" uk-icon="list" class="uk-button uk-button-default uk-border-rounded"></button>
@@ -91,12 +91,12 @@ if (Auth::check()) {
                 
                     
                 
-                {{--  <div class="">
+                <div class="">
                         <button uk-icon="grid" onclick="showKeypad()" class="uk-button uk-button-default uk-border-rounded"></button>
-                    </div> --}}
+                    </div>
                 </div>
            </div>
-     
+      --}}
         
            
             
@@ -105,7 +105,8 @@ if (Auth::check()) {
         <div class="uk-navbar-center">
             <div class="uk-navbar-item">
                 <div class="uk-button-group">
-                    <input class="uk-input uk-form-width-large" type="text"  onclick="showKeypad()">
+                    <input id="searchInputID" class="uk-input uk-form-width-large" type="text" autofocus onclick="showKeypad()" 
+                    onchange="searchInput(this, '{{Session::get('setting_finalise_key')}}')" autocomplete="off">
 
                     <div class="uk-button-group">
                        {{--  <button class="uk-button uk-button-default">Dropdown</button> --}}

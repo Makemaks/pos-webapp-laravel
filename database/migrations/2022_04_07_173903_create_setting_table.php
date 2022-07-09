@@ -15,7 +15,10 @@ return new class extends Migration
     {
         Schema::create('setting', function (Blueprint $table) {
             $table->bigIncrements('setting_id');
-            $table->bigInteger('setting_store_id')->comment('added_by');
+            
+            $table->bigInteger('settingtable_id');
+            $table->string('settingtable_type')->comment('company::person');
+
             $table->json('setting_currency')->nullable();
             $table->json('setting_logo')->nullable();
 
@@ -47,8 +50,6 @@ return new class extends Migration
 
             $table->json('setting_receipt')->nullable();
 
-          
-
             $table->json('setting_stock_allergen')->nullable();
             $table->json('setting_stock_nutrition')->nullable();
             $table->json('setting_stock_offer')->nullable();
@@ -59,6 +60,12 @@ return new class extends Migration
             
             $table->json('setting_group')->nullable();
            
+            $table->json('setting_marketing')->nullable();
+            $table->float('setting_credit')->nullable();
+
+            $table->json('setting_blacklist')->nullable();
+
+
            
            
             $table->timestamps();

@@ -49,7 +49,7 @@ class GatewayAPIController extends Controller
         $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)->first();
         $error = "";
 
-        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
 
  
        if ($request['action'] == 'payment') {
@@ -58,8 +58,12 @@ class GatewayAPIController extends Controller
             $request->session()->flash('STRIPE_KEY', $setting_payment_gateway['key']);
 
             $stripe = \Stripe\Stripe::setApiKey($setting_payment_gateway['secret']);
+            
+            $priceVAT = $this->Process()['priceVAT'];
+            
+    
 
-            if ($request['total'] > 0) {
+            if ($priceVAT > 0) {
 
                 //$total = MathHelper::FloatRoundUp($request['total'], $decimal = 1);
                 //$grandTotal = str_replace(".","",$total);
@@ -102,9 +106,9 @@ class GatewayAPIController extends Controller
                     $order_id = Order::insertGetId($orderInput);
             
                    
-                    if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList')){
+                    if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList')){
                         //remove session
-                        $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList.'.$receipt);
+                        $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList.'.$receipt);
                     }
 
                     $this->stockList = Stock::whereIn('stock_id', json_decode($request['stockList']))->get();
@@ -248,4 +252,40 @@ class GatewayAPIController extends Controller
          'sessionStockList' => $this->sessionStockList
      ];
    }
+
+
+   private function Process(){
+
+        $receipt = [];
+        $receipt['priceVAT'] = 0;
+        $receipt['totalPrice'] = 0;
+        $receipt['discountTotal'] = 0;
+        $orderData = [];
+        $receiptData = [];
+
+        if($request->session()->has('user-session-'.Auth::user()->user_id. '.cartList')){
+
+            $sessionCartList = $request->session()->get('user-session-'.Auth::user()->user_id. '.cartList');
+            //$stockList = Receipt::SessionDisplay($sessionCartList);
+        }
+
+        foreach ($sessionCartList as $key => $sessionCart) {
+            
+            
+            if($key >= count($sessionCartList)){
+                $loop->last = true;
+            }
+
+            if (array_key_exists('receipt_discount', $sessionCartList)) {
+                    $receiptData += $sessionCartList['receipt_discount'];
+            }
+        
+            $receipt = Receipt::Calculate($this->Data(), $sessionCartList, $loop, $receipt);
+        
+        }
+
+        return $receipt;
+   }
+
+
 }

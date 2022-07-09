@@ -16,12 +16,15 @@ class Address extends Model
    
        
 
+    public $timestamps = true;
+
     protected $attributes = [
         'address_line' => '{}',
         'address_email' => '{}',
         'address_phone' => '{}',
         'address_website' => '{}',
         'address_geolocation' => '{}'
+
 
     ];
     protected $casts = [

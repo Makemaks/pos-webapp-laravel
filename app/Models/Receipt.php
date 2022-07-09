@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Session;
 
 use App\Models\Setting;
@@ -17,6 +18,8 @@ class Receipt extends Model
     protected $table = 'receipt';
     protected $primaryKey = 'receipt_id';
 
+
+    public $timestamps = true;
 
     protected $attributes = [
 
@@ -44,11 +47,16 @@ class Receipt extends Model
         ->orderBy('stock.created_at', 'desc');
     }
 
-    public static function Order(){
+    public static function Order($column,  $filter){
         return Receipt::
         leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
-        ->leftJoin('order', 'order.order_id', '=', 'receipt.receipt_order_id');
+        ->leftJoin('order', 'order.order_id', '=', 'receipt.receipt_order_id')
+        ->leftJoin('store', 'store.store_id', '=', 'stock.stock_store_id')
+        ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
+        ->where($column,  $filter);
     }
+
+   
 
     public static function Bag($column,  $filter){
         return Receipt::
@@ -79,20 +87,21 @@ class Receipt extends Model
         
         $stockList = NULL;
 
-        foreach ($sessionCartList as $sessionCartList) {
+        foreach ($sessionCartList as $sessionCart) {
 
-            $stock = Stock::find($sessionCartList['stock_id']);
+            $stock = Stock::find($sessionCart['stock_id']);
 
             $cost = Stock::StockCostDefault($stock->stock_cost);
             $stock_vat = Stock::StockVAT($stock);
             
             $stockList[] = [
                 'stock_id' => $stock->stock_id,
+                'user_id' => $sessionCart['user_id'],
                 'stock_name' => $stock->stock_merchandise['stock_name'],
-                'stock_quantity' => $sessionCartList['stock_quantity'],
+                'stock_quantity' => $sessionCart['stock_quantity'],
                 'stock_cost' => MathHelper::FloatRoundUp($cost, 2),
                 'stock_vat_id' => $stock->stock_merchandise['stock_vat_id'],
-                'stock_discount' => $sessionCartList['stock_discount'], //manually added
+                'stock_discount' => $sessionCart['stock_discount'], //manually added
                 'stock_offer_id' =>  $stock->stock_merchandise['stock_offer_id']
             ];
         } 
@@ -100,23 +109,29 @@ class Receipt extends Model
         return $stockList;
     }
 
-    public static function ReceiptDisplay($sessionCartList){
+    public static function ReceiptDisplay($orderList){
         
         $receipt_setting_vat = NULL;
 
-        foreach ($sessionCartList as $stock) {
+        foreach ($orderList as $receipt) {
             
-           if ($stock->receipt_setting_vat) {
-                $receipt_setting_vat = array_sum($stock->receipt_setting_vat);
+           if ($receipt->receipt_setting_vat) {
+                $receipt_setting_vat = array_sum($receipt->receipt_setting_vat);
            }
+
+            $stock = Stock::find($receipt['stock_id']);
+
+            $cost = Stock::StockCostDefault($stock->stock_cost);
+            //$stock_vat = Stock::StockVAT($stock);
 
             $stockList[] = [
                 'stock_id' => $stock->stock_id,
-                'stock_name' => json_decode($stock->stock_merchandise, true)['stock_name'],
-                'stock_quantity' => $stock->receipt_stock_quantity,
-                'stock_cost' => MathHelper::FloatRoundUp($stock->receipt_stock_cost, 2),
-                'stock_vat_id' =>  $receipt_setting_vat,
-                'stock_discount' =>  $receipt_discount, //manually added
+                'user_id' => $receipt['user_id'],
+                'stock_name' => $stock->stock_merchandise['stock_name'],
+                'stock_quantity' => $receipt['receipt_quantity'],
+                'stock_cost' => MathHelper::FloatRoundUp($cost, 2),
+                'stock_vat_id' => $stock->stock_merchandise['stock_vat_id'],
+                'stock_discount' => json_decode($receipt['receipt_discount'], true), //manually added
                 'stock_offer_id' =>  $stock->stock_merchandise['stock_offer_id']
             ];
         } 
@@ -127,63 +142,46 @@ class Receipt extends Model
     //data , stock , loop
     public static function Calculate($data, $stockItem, $loop, $receipt){
         //convert sting to val
+        $stock = Stock::find($stockItem['stock_id']);
         $receipt['price'] = $stockItem['stock_cost'] * intval($stockItem['stock_quantity']);
         $receipt['stock_vat_rate'] = null;
+        $stockItem['stock_vat_id'] = $stock->stock_merchandise['stock_vat_id'];
 
-
+        //stock current offer
         if ($stockItem['stock_offer_id']) {
-          
-            $stock = Stock::find($stockItem['stock_id']);
-            $stockCurrentOffer = Stock::StockCurrentOffer($stock, array_search('discount', Setting::DiscountType()) );
+            
+            $settingCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::DiscountType()) );
             
             //if there is an offer on stock
-            if ($stockCurrentOffer) {
-                $receipt['stockCurrentOfferType'] = Stock::StockCurrentOfferType( $receipt['totalPrice'], $stockCurrentOffer, $receipt['price']);
-                $receipt['price'] = Stock::StockCostMin( $receipt['stockCurrentOfferType'] );
+            if ($settingCurrentOffer) {
+                $receipt['settingCurrentOfferType'] = Setting::SettingCurrentOfferType( $settingCurrentOffer, $receipt['price']);
+                $receipt['price'] = Stock::StockCostMin( $receipt['settingCurrentOfferType'] );
+                $receipt['totalPrice'] = $receipt['price'] - $receipt['totalPrice'];
             }
             
         }
 
+        //voucher discount // finalise key
+        
+
+        //stock vat
         if ($stockItem['stock_vat_id']) {
             $receipt['stock_vat_rate'] = $data['settingModel']->setting_vat[$stockItem['stock_vat_id']]['rate'];
-            $receipt['totalPrice'] = $receipt['totalPrice'] + MathHelper::VAT($receipt['stock_vat_rate'], $receipt['price']);
+            $receipt['price'] = MathHelper::VAT($receipt['stock_vat_rate'], $receipt['price']);
+            $receipt['totalPrice'] = $receipt['totalPrice'] + $receipt['price'];
         } else {
-            $receipt['totalPrice'] = $receipt['price'] + $receipt['totalPrice'];
+            $receipt['totalPrice'] = $receipt['totalPrice'] + $receipt['price'];
         }
+
+
 
         if ($loop->last) {
             
             //final discount
-            if (Session::has('user-session-'.Auth::user()->user_id. '.discountList')) {
-                if (count(Session::get('user-session-'.Auth::user()->user_id. '.discountList')) > 0) {
+            $receipt = Setting::SettingFinaliseKey($data, $receipt);
 
-                    foreach (Session::get('user-session-'.Auth::user()->user_id. '.discountList') as $key => $value) {
-                       
-                        //check if value has percentage
 
-                        if ( Str::contains($value['value'], '%') ) {
-                            $discountValue = Str::remove('%', $value['value']);
-                            $receipt['totalPrice'] =  $receipt['totalPrice'] - MathHelper::Discount($discountValue, $receipt['totalPrice']);
-                        } else {
-                            $discountValue = MathHelper::PercentageDifference($value['value'], $receipt['totalPrice']);
-                            $receipt['totalPrice'] = $receipt['totalPrice'] - $value['value'];
-                        }
-
-                        
-                        $receipt['discountTotal'] = $receipt['discountTotal'] + $discountValue;
-                       
-                    }
-                }
-            }
-
-            //add delivery cost
-            if (Session::has('user-session-'.Auth::user()->user_id. '.deliveryList')) {
-                if (count(Session::get('user-session-'.Auth::user()->user_id. '.deliveryList')) > 0) {
-                    $receipt['deliveryTotal'] = collect(Session::get('user-session-'.Auth::user()->user_id. '.deliveryList'))->sum('value');
-                    $receipt['priceVAT'] = $receipt['priceVAT'] + $receipt['deliveryTotal'];
-                }
-            }
-
+            //calculate overall vat
             $receipt['totalSettingVAT'] = collect($data['settingModel']->setting_vat)->where('deafult', 0)->sum('rate');
             $receipt['priceVAT'] = $receipt['priceVAT'] + MathHelper::VAT($receipt['totalSettingVAT'], $receipt['totalPrice']);
 
@@ -192,6 +190,87 @@ class Receipt extends Model
 
         return $receipt;
 
+    }
+
+
+    
+     /* 
+        Session Manager 
+        Used to manipulate session data
+    */
+    public static function Recover(Request $request, $receipt){
+
+        if ($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList')) {
+            
+            $this->sessionCartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList.'.$receipt); 
+            $request->session()->put('user-session-'.Auth::user()->user_id. '.cartList', $this->sessionCartList);       
+        }
+
+        //return redirect()->route('home.index');
+       
+    }
+
+
+    public static function Suspend(Request $request){
+
+        if($request->session()->has('user-session-'.Auth::user()->user_id)){
+            //remove session
+            $cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList');
+            $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList', $cartList);
+            $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList',[]);
+        }
+
+        //return back()->with('success', 'Receipt on Suspend');
+    
+    }
+
+    public static function Awaiting(Request $request){
+
+        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList')){
+            //remove session
+            $this->sessionCartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList');
+        }
+
+        //return view('receipt-manager.awaiting.index', ['data' => $this->Data()]);
+    
+    }
+
+    public static function Empty(Request $request){
+        
+        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
+            //remove session
+            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'cartList');
+            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'setupList');
+            
+            $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList',[]);
+        }
+
+        //return redirect()->route('home.index')->with('success', 'Receipt Empty');
+    
+    }
+
+    //remove item
+    public static function Remove(Request $request, $receipt){
+        
+        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList')){
+            //remove session
+            $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList.'.$receipt);
+        }
+
+        //return redirect()->route('home.index')->with('success', 'Receipt Removed');
+    
+    }
+
+
+    public static function Complete(Request $request, $product){
+        
+        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
+            //remove session
+            $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList', $product);
+        }
+
+        //return back()->with('success', 'Receipt Completed');
+    
     }
 
 

@@ -21,6 +21,8 @@ class Stock extends Model
     protected $primaryKey = 'stock_id';
 
     //creates default value
+    public $timestamps = true;
+
     protected $attributes = [
 
        
@@ -137,7 +139,8 @@ class Stock extends Model
 
     public static function Warehouse($column,  $filter){
         return Stock::
-        leftJoin('warehouse', 'warehouse.warehouse_stock_id', '=', 'stock.stock_id')
+        leftJoin('store', 'store.store_id', '=', 'stock.stock_store_id')
+        ->leftJoin('warehouse', 'warehouse.warehouse_stock_id', '=', 'stock.stock_id')
         ->where($column,  $filter);
     }
 
@@ -148,13 +151,7 @@ class Stock extends Model
     }
 
 
-    public static function OfferStatus()
-    {
-        return [
-            'Enabled',
-            'Disabled'
-        ];
-    }
+   
 
     public static function GroupCategoryBrandPlu($data, $type, $stock_merchandise_key)
     {
@@ -175,6 +172,9 @@ class Stock extends Model
 
                     $stock_merchandise = json_decode($orderList->stock_merchandise, true);
 
+                
+                    if ($orderList->receipt_id != null) {
+
                         if ($stock_merchandise[$stock_merchandise_key] == $key) {
 
                             $price = $orderList->receipt_stock_cost;
@@ -182,8 +182,11 @@ class Stock extends Model
                             $totalCostPrice = $totalCostPrice + $price * $orderList->receipt_quantity;
 
                             $quantity = $quantity + $orderList->receipt_quantity;
-                           
+                            
                         }
+
+                    }
+                        
                    
                 }
 
@@ -270,7 +273,7 @@ class Stock extends Model
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 
-        $settingModel = Setting::where('setting_store_id', $userModel->store_id)->first();
+        $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
         
         if ($stock->stock_merchandise['stock_vat_id']) {
             $stock_vat = $settingModel->setting_vat[$stock->stock_merchandise['stock_vat_id']];
@@ -313,72 +316,11 @@ class Stock extends Model
     }
     
 
-    //compare current
-    public static function StockCurrentOffer($stock, $offerType){
-        
-        $stockOffer = [];
-        
+    
 
-        if ($stock->stock_merchandise['stock_offer_id']) {
-
-            $userModel = User::Account('account_id', Auth::user()->user_account_id)
-            ->first();
-
-            $settingModel = Setting::where('setting_store_id', $userModel->store_id)->first();
-
-            $setting_stock_offer = collect($settingModel->setting_stock_offer)->only( $stock->stock_merchandise['stock_offer_id'] );
-
-            //filter offer by date 
-            foreach ($setting_stock_offer as $stock_offer_key => $stock_offer_value) {
-                if ( $stock_offer_value['date']['start_date'] >= Carbon::now() && $offerType == $stock_offer_value['boolean']['type']) {
-                    
-                    $a = Carbon::now()->dayOfWeek;
-                    //discount days
-                    if (array_search( Carbon::now()->dayOfWeek, $stock_offer_value['available_day'] )) {
-                        $stockOffer[$stock_offer_key] = $stock_offer_value;
-                    }
-                }
-            }
-        }
-
-        return $stockOffer;
-    }
-
-
-    public static function StockCurrentOfferType($totalPrice, $stockCurrentOffer, $price){
-
-
-        
-        $stockCurrentOfferType = 0;
-        $total = [];
-
-        foreach ($stockCurrentOffer as $stockCurrentOfferKey => $stockCurrentOfferValue) {
-            
-            if (Setting::SettingDiscountType()[$stockCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
-
-                $stockCurrentOfferType = ['price'  => MathHelper::Discount($stockCurrentOfferValue['decimal']['discount_value'], $price)];
-               
-            } else {
-                $stockCurrentOfferType = ['price' => $price - $stockCurrentOfferValue['decimal']['discount_value'] ];
-               
-            }
-
-            if (count($stockCurrentOfferType) > 0) {
-                $total[$stockCurrentOfferKey] = $stockCurrentOfferValue;
-                $total[$stockCurrentOfferKey] += ['total' => $stockCurrentOfferType];
-            }
-
-        }
-      
-        //collect($stockCurrentOfferType)->min('price')
-        
-        
-
-        return $total;
-    }
-
-    public static function StockCostMin($stockCurrentOfferType){
-       return collect( $stockCurrentOfferType )->pluck('total')->min('price');
+    //find the minum offer price
+    public static function StockCostMin($settingCurrentOfferType){
+       return collect( $settingCurrentOfferType )->pluck('total')->min('price');
     }
 
     public static function Offer(){

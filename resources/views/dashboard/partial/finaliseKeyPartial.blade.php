@@ -27,29 +27,32 @@ foreach ($setting_model->setting_key as $key => $setting) {
 foreach ($orderList as $key => $order) {
     $order_finalise_key_value = json_decode($order->first()->order_finalise_key, true);
 
-    foreach ($order_finalise_key_value as $key => $order_key) {
-        foreach ($setting_model->setting_key as $settingKey => $value) {
-            if (array_key_exists($value['setting_key_type'], $array) && $order_key['ref'] == $settingKey && $value['value'] != null) {
-                //
+    if ($order_finalise_key_value) {
+        foreach ($order_finalise_key_value as $key => $order_key) {
+            foreach ($setting_model->setting_key as $settingKey => $value) {
+                if (array_key_exists($value['setting_key_type'], $array) && $order_key['ref'] == $settingKey && $value['value'] != null) {
+                    //
 
-                $array[$value['setting_key_type']]['total'] = $order_key['total'] + $array[$value['setting_key_type']]['total'];
-                $array[$value['setting_key_type']]['quantity'] = $array[$value['setting_key_type']]['quantity'] + 1;
+                    $array[$value['setting_key_type']]['total'] = $order_key['total'] + $array[$value['setting_key_type']]['total'];
+                    $array[$value['setting_key_type']]['quantity'] = $array[$value['setting_key_type']]['quantity'] + 1;
 
-                $array[$value['value'] . 'pound']['quantity'] = $order_key['total'] / $value['value'] + $array[$value['value'] . 'pound']['quantity'];
-                $array[$value['value'] . 'pound']['total'] = $array[$value['value'] . 'pound']['total'] + $order_key['total'];
+                    $array[$value['value'] . 'pound']['quantity'] = $order_key['total'] / $value['value'] + $array[$value['value'] . 'pound']['quantity'];
+                    $array[$value['value'] . 'pound']['total'] = $array[$value['value'] . 'pound']['total'] + $order_key['total'];
 
-                //
-            } elseif (array_key_exists($value['setting_key_type'], $array) && $order_key['ref'] == $settingKey && $value['setting_key_type'] == 3) {
-                // IF ITS VOUCHER
-            } elseif (array_key_exists($value['setting_key_type'], $array) && $order_key['ref'] == $settingKey && $value['value'] == null && $value['setting_key_type'] != 3) {
-                // IF ITS NON CASH
-                $array[$value['setting_key_type']]['total'] = $order_key['total'] + $array[$value['setting_key_type']]['total'];
-                $array[$value['setting_key_type']]['quantity'] = $array[$value['setting_key_type']]['quantity'] + 1;
+                    //
+                } elseif (array_key_exists($value['setting_key_type'], $array) && $order_key['ref'] == $settingKey && $value['setting_key_type'] == 3) {
+                    // IF ITS VOUCHER
+                } elseif (array_key_exists($value['setting_key_type'], $array) && $order_key['ref'] == $settingKey && $value['value'] == null && $value['setting_key_type'] != 3) {
+                    // IF ITS NON CASH
+                    $array[$value['setting_key_type']]['total'] = $order_key['total'] + $array[$value['setting_key_type']]['total'];
+                    $array[$value['setting_key_type']]['quantity'] = $array[$value['setting_key_type']]['quantity'] + 1;
+                }
             }
         }
     }
 }
 @endphp
+
 <div>
     <h3 class="uk-card-title">FINALISE KEY</h3>
 

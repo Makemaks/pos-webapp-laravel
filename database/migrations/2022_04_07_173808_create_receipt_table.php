@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('receipttable_type');
 
             $table->json('receipt_setting_vat')->nullable(); 
-            $table->bigInteger('receipt_stock_id')->comment('stock_cost');
+           
             $table->float('receipt_stock_cost');
             $table->json('receipt_discount')->nullable();
 

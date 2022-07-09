@@ -51,10 +51,6 @@ class ReceiptController extends Controller
     public function index(Request $request)
     {
        
-        
-
-        
-
          $this->init();
 
          switch ($request->view):
@@ -62,8 +58,34 @@ class ReceiptController extends Controller
                 return redirect()->route('person.index');
                 break;
 
+            case 'recover':
+                Receipt::Recover($request);
+                return redirect()->route('home.index')->with('success', 'Company Successfully Added');
+                break;
+
+            case 'suspend':
+                Receipt::Suspend($request);
+                return redirect()->route('home.index')->with('success', 'Receipt on Suspend');
+                break;
+
+            case 'awaiting':
+                Receipt::Awaiting($request);
+                return redirect()->route('home.index')->with('success', 'Company Successfully Added');
+                break;
+
             case 'empty':
-                $this->Empty($request);
+                Receipt::Empty($request);
+                return redirect()->route('home.index')->with('success', 'Receipt Empty');
+                break;
+
+            case 'remove':
+                Receipt::Remove($request, $receipt); //id
+                return redirect()->route('home.index')->with('success', 'Receipt Removed');
+                break;
+
+            case 'complete':
+                Receipt::Complete($request);
+                return redirect()->route('home.index')->with('success', 'Receipt Completed');
                 break;
 
             default:
@@ -188,8 +210,7 @@ class ReceiptController extends Controller
             ->first();
 
         $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
-        
-        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
 
 
        /* if ($this->userModel->person_stripe_customer_id == NULL) {
@@ -208,8 +229,6 @@ class ReceiptController extends Controller
 
     private function ClearSession(){
         $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'cartList');
-        $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'scemeList');
-        $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'planList');
 
         $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList',[]);
     }
@@ -278,83 +297,6 @@ class ReceiptController extends Controller
     }
 
 
-    /* 
-        Session Manager 
-        Used to manipulate session data
-    */
-   private function Recover(Request $request, $receipt){
-
-        if ($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList')) {
-            
-            $this->sessionCartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList.'.$receipt); 
-            $request->session()->put('user-session-'.Auth::user()->user_id. '.cartList', $this->sessionCartList);       
-        }
-
-        return redirect()->route('home.index');
-    }
-
-
-   private function Suspend(Request $request){
-
-        if($request->session()->has('user-session-'.Auth::user()->user_id)){
-            //remove session
-            $cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList');
-            $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList', $cartList);
-            $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList',[]);
-        }
-
-        return back()->with('success', 'Receipt on Suspend');
-      
-    }
-
-   private function Awaiting(Request $request){
-
-        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList')){
-            //remove session
-            $this->sessionCartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList');
-        }
-
-        return view('receipt-manager.awaiting.index', ['data' => $this->Data()]);
-      
-    }
-
-   private function Empty(Request $request){
-        
-        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
-            //remove session
-            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'cartList');
-            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'discountList');
-            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'floatList');
-            $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'deliveryList');
-            $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList',[]);
-        }
-
-        return redirect()->route('home.index')->with('success', 'Receipt Empty');
-      
-    }
-
-    //remove item
-   private function Remove(Request $request, $receipt){
-        
-        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList')){
-            //remove session
-            $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartAwaitingList.'.$receipt);
-        }
-
-        return redirect()->route('home.index')->with('success', 'Receipt Removed');
-      
-    }
-
-
-   private function Complete(Request $request, $product){
-        
-        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
-            //remove session
-            $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList', $product);
-        }
-
-        return back()->with('success', 'Receipt Completed');
-      
-    }
+   
 
 }

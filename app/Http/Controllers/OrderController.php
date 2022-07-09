@@ -9,8 +9,9 @@ use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Store;
 use App\Models\User;
-use App\Models\Scheme;
-use App\Models\Plan;
+use App\Models\Stock;
+use App\Models\Warehouse;
+use App\Models\Receipt;
 use App\Models\Person;
 use App\Models\Setting;
 
@@ -33,22 +34,24 @@ class OrderController extends Controller
 
     public function __construct()
     {
-      
         $this->middleware('auth');
     }
 
     public function Index(Request $request){
       
-        if ($request->has('order_finalise_key')) {
+      
+        if ($request->session()->has('setting_finalise_key')) {
+            $request->session()->reflash('order_finalise_key');
             $this->store($request);
         }
 
         $this->init();
         $todayDate = Carbon::now()->toDateTimeString();
        
-        $this->orderList = Store::Sale('store_id',  $this->userModel->store_id)
+        $this->orderList = Receipt::Order('stock_store_id',  $this->userModel->store_id)
+        ->orderByDesc('order_id')
         ->groupBy('order_id')
-        ->paginate(20);
+        ->paginate(10);
 
         return view('order.index', ['data' => $this->Data()]);   
       
@@ -74,53 +77,7 @@ class OrderController extends Controller
     public function Store(Request $request){
 
         $this->init();
-        $receipt = [];
-        //get receipt stock
-        if(Session::has('user-session-'.Auth::user()->user_id. '.cartList')){
-
-            $sessionCartList = Session::get('user-session-'.Auth::user()->user_id. '.cartList');
-            $stockList = Receipt::SessionDisplay($sessionCartList);
-        }
-
-        $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)
-            ->first();
-
-        //store order
-        $orderData = [
-
-            'order_user_id' => $this->userModel->user_id,
-            'order_store_id' => $this->userModel->user_store_id,
-            'ordertable_id' => $this->userModel->person_id,
-            'ordertable_type' => 'Person',
-            'order_status' => 0,
-            'order_offer' => Session::get('user-session-'.Auth::user()->user_id. '.offerList'),
-            'order_type' =>  Order::ProcessOrderType($this->userModel),
-            'order_finalise_key' => '',
-            
-            
-            'order_setting_pos_id' => 1
-           
-        ];
-
-        $orderData = DatabaseHelper::MergeArray($orderData, DatabaseHelper::Timestamp());
-        $orderID = Order::insertGetId($orderData);
-
-        //store receipt
-        foreach ($stockList as $stockKey => $stockItem) {
-            $receipt = Receipt::Calculate( $data, $stockItem, $loop, $receipt );
-
-            $receiptData = [
-                'receipt_stock_id' => $stockItem['stock_id'],
-                'receipt_order_id' =>  $orderID,
-                'receipt_user_id' => $stockItem['user_id'],
-               ];
-    
-                //decrement stock from table
-            Stock::QuantityDecrease($stockKey, $stockValue);
-            $receiptData = DatabaseHelper::MergeArray($receiptData, DatabaseHelper::Timestamp());
-            Receipt::insert($receiptData);
-        }
-       
+        Order::Process($request, $this->Data());
         
         return view('home.index' ,['data' => $this->Data()]);
     }
@@ -137,7 +94,7 @@ class OrderController extends Controller
     private function init(){
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
     }
 
     private function ProcessOrder(){
@@ -148,6 +105,9 @@ class OrderController extends Controller
            
         }
     }
+
+
+
 
     private function Data(){
 
@@ -161,4 +121,8 @@ class OrderController extends Controller
         ];
        
     }
+
+
+    
+
 }

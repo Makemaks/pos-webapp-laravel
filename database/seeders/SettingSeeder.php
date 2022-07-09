@@ -15,6 +15,6 @@ class SettingSeeder extends Seeder
      */
     public function run()
     {
-        Setting::factory(1)->create();
+        Setting::factory(50)->create();
     }
 }

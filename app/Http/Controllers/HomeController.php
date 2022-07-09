@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Session;
 
 use App\Models\User;
 use App\Models\Person;
@@ -30,7 +31,7 @@ class HomeController extends Controller
     private $sessionCartList = [];
     private $schemeList;
     private $personList;
-    
+    private $request;
     
 
     public function __construct()
@@ -42,8 +43,26 @@ class HomeController extends Controller
     //for session see session middleware
     public function index(Request $request)
     {
-    
-        $this->init($request);
+        $this->init();
+        $this->request = $request;
+
+         //setup new
+         if ( $request->session()->has('user-session-'.Auth::user()->user_id.'.'.'setupList') == false) {
+            $setupList = [
+                "cash" => [],
+                "credit" => [],
+                "voucher" => [],
+                "delivery" => [],
+                "discount" => [],
+                "customer" => []
+            ];
+
+            $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
+           
+        }
+
+        $setupList =  $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList');
+        
         $this->user = 0;
 
         $this->userList = User::Store('person_user_id', $this->userModel->user_id)
@@ -60,7 +79,10 @@ class HomeController extends Controller
 
       /*   $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
         ->paginate(12); */
-
+       
+        $a = $this->Data();
+       
+      
         return view('home.index', ['data' => $this->Data()]);
     }
 
@@ -75,7 +97,9 @@ class HomeController extends Controller
     private function init(){
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+
+       
     }
 
     private function Session(Request $request){
@@ -95,7 +119,9 @@ class HomeController extends Controller
             'settingModel' => $this->settingModel,
             'userList' => $this->userList,
             'personModel' => $this->personModel,
-            'personList' => $this->personList
+            'personList' => $this->personList,
+            'request' => $this->request
+           
         ];
     }
 

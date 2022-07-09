@@ -30,9 +30,10 @@ function Quantity(buttonType, cartValue){
                 method: 'PATCH',
                 data: {stock_quantity: quantityID.innerText},      
                 success:function(data){
-                    //alert(data.success);
+                    /* alert(data.success);
+                    setFocus('barcodeInputID'); */
                     cartCountID.innerText = quantity;
-                    setFocus('barcodeInputID');
+                    
                     document.getElementById('receiptID').innerHTML = data['html'];
                     control(0);
                 }
@@ -91,8 +92,10 @@ function Delete(row_id){
         data: {quantity: quantityID.innerText},   
         success: function (data) {
         
+            //setFocus('barcodeInputID');
+
             cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(quantityID.innerText);
-            setFocus('barcodeInputID');
+           
             document.getElementById('receiptID').innerHTML = data['html'];
             control(0);
         },
@@ -106,7 +109,7 @@ function Delete(row_id){
 
 
 //add a stock_id to cart
-function Add(stock_id, stock_name, stock_price){
+function Add(stock_id, stock_name, stock_cost){
  
      //update basket count
      var cartCountID = document.getElementById('cartCountID'); 
@@ -122,94 +125,21 @@ function Add(stock_id, stock_name, stock_price){
          data: {
             stock_id: stock_id, 
             stock_name:stock_name, 
-            stock_price: stock_price, 
+            stock_cost: stock_cost, 
             stock_quantity:stock_quantity, 
-            stock_discount:'' },      
+           },      
          success:function(data){
-           //alert(data.success);
+           /* alert(data.success);
+           setFocus('barcodeInputID'); */
+           
             cartCountID.innerText = parseInt(cartCountID.innerText) + parseInt(stock_quantity);
-            setFocus('barcodeInputID');
             document.getElementById('receiptID').innerHTML = data['html'];
-            
+            setFocus('searchInputID');
         }
       });
      
     
  }
-
-
-
-  //get
-function GetScheme(user_id){
-
-    $.ajax({        
-        url:"/scheme-api/",
-        method: 'GET',
-        data: {user_id:user_id},      
-        success:function(data){
-          document.getElementById('scheme-id').innerHTML = data['html']; 
-          
-       }
-     });
-}
-
-  //get
-  function ApplyScheme(scheme_id){
-    var schemeCountID = document.getElementById('schemeCountID'); 
-    var totalPriceID = document.getElementById('totalPriceID'); 
-    var receiptButtonID = document.getElementById('receiptButtonID'); 
-    var totalPrice = totalPriceID.innerText;
-
-
-    var schemePlanSelectID = document.getElementById('schemePlanSelectID-'+stock_id);
-    var plan = null;
-    
-
-    if(schemePlanSelectID.selectedIndex > 0){
-       plan =  schemePlanSelectID.value;
-    }
-
-    $.ajax({        
-            url:"/cart-api/",
-            method: 'GET',
-            data: {scheme_id:scheme_id, totalPrice:totalPrice},      
-            success:function(data){
-                if(schemeCountID.innerText == ""){
-                    schemeCountID.innerText = 0;
-                }
-                schemeCountID.innerText = parseInt(schemeCountID.innerText) + 1;
-                totalPriceID.innerText = data['discount'].toFixed(2);
-                receiptButtonID.innerText = data['discount'].toFixed(2);
-            }
-     });
-    
-   
-}
-
-
-
-function DiscountCode(){
-    var planCountID = document.getElementById('planCountID'); 
-    var discountCodeID = document.getElementById('discountCodeID');
-    var totalPriceID = document.getElementById('totalPriceID'); 
-    var receiptButtonID = document.getElementById('receiptButtonID'); 
-    var totalPrice = totalPriceID.innerText;
-
-    $.ajax({        
-        url:"/cart-api/",
-        method: 'GET',
-        data: { plan_discount_code: discountCodeID.value, totalPrice:totalPrice },
-        success:function(data){
-            if(planCountID.innerText == ""){
-                planCountID.innerText = 0;
-            }
-            planCountID.innerText = parseInt(planCountID.innerText) + 1;
-            totalPriceID.innerText = data['discount'].toFixed(2);
-            receiptButtonID.innerText = data['discount'].toFixed(2);
-            discountCodeID.value = "";
-       }
-     });
-}
 
 function CalculateChange(){
 
@@ -245,31 +175,26 @@ function searchInput(element)
 {
     var cartCountID = document.getElementById('cartCountID'); 
    
-   if (element.id == 'barcodeInputID') {
+   if (element.value) {
         $.ajax({        
-                url:"/cart-api",
-                method: 'POST',
-                data: {barcode: element.value},      
-                success:function(data){
-                document.getElementById('receiptID').innerHTML = data['html'];
-                cartCountID.innerText++;
-                element.value = '';
+            url:"/cart-api",
+            method: 'GET',
+            data: {searchInputID: element.value}, 
+            success:function(data){
+
+                if (data['view'] == 'receiptID') {
+                    document.getElementById(data['view']).innerHTML = data['html'];
+                    cartCountID.innerText++;
+                    element.value = '';
+                } else {
+                    document.getElementById(data['view']).innerHTML = data['html'];
+                    element.value = '';
+                }
                 setFocus(element.id);
             }
         });
-   } 
-   else if(element.id == 'searchInputID') {
-        $.ajax({        
-                url:"/cart-api",
-                method: 'POST',
-                data: {search_element: element.value},      
-                success:function(data){
-                document.getElementById('receiptID').innerHTML = data['html'];
-                cartCountID.innerText++;
-                element.value = '';
-                setFocus(element.id);
-            }
-        });
+   }else{
+        alert('No input');
    }
 
 }
@@ -281,7 +206,8 @@ function showInputKeypad(element){
 
 function update(element){
 
-    var value = document.getElementById(sessionStorage.getItem('inputID')).value;
+    //var value = document.getElementById(sessionStorage.getItem('inputID')).value;
+    var value = document.getElementById(element.id).value;
 
    if (value  != '') {
         $.ajax({        
@@ -289,12 +215,14 @@ function update(element){
                 method: 'POST',
                 data: {
                     type:  element.innerHTML.toLowerCase(),
-                    value: value
+                    value: value,
                 },      
                 success:function(data){
-                document.getElementById('receiptID').innerHTML = data['html'];
-                document.getElementById(sessionStorage.getItem('inputID')).value = "";
-            }
+                    document.getElementById(data['view']).innerHTML = data['html'];
+                    setFocus(element.id);
+                }
+
+                
         });
    }
 }
@@ -318,32 +246,49 @@ function addRefund(element){
 
 }
 
-function finaliseKey(order_finalise_key){
+function settingFinaliseKey(setting_finalise_key){
    
-    $.ajax({        
-        url:"/cart-api",
-        method: 'GET',
-        data: {
-            order_finalise_key: order_finalise_key
-        },      
-        success:function(data){
-            document.getElementById('contentID').innerHTML = data['html']; 
+    var cartCountID = document.getElementById('cartCountID'); 
+
+   if (cartCountID.innerText > 0) {
+        if (setting_finalise_key == 'cancel') {
+            document.getElementById('payButtonID').hidden = false;
+            document.getElementById('cancelButtonID').hidden = true;
+            document.getElementById('confirmButtonID').hidden = true;
         }
-    });
+        else {
+            $.ajax({        
+                url:"/cart-api",
+                method: 'GET',
+                data: {
+                    setting_finalise_key: setting_finalise_key
+                },      
+                success:function(data){
+                    document.getElementById('contentID').innerHTML = data['html']; 
+                    document.getElementById('cancelButtonID').hidden = false;
+                    document.getElementById('confirmButtonID').hidden = false;
+                    document.getElementById('payButtonID').hidden = true;
+                    setFocus('searchInputID');
+                    // /emptyFields("input");
+
+                    
+                }
+            });
+        }
+   }
   
 }   
 
-var tags = jSuites.tags(document.getElementById('order-email-cc'), {
-    value: 'cc',
-    validation: function(element, text, value) {
-        if (! value) {
-            value = text;
+function emptyFields(elementID){
+    var elements = document.getElementsByTagName(elementID);
+    for (var ii=0; ii < elements.length; ii++) {
+        if (elements[ii].type == "text") {
+            elements[ii].value = "";
         }
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        var test = re.test(String(value).toLowerCase()) ? true : false;
-        return test;
     }
-});
+}
+
+
 
 
 

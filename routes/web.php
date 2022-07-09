@@ -50,6 +50,10 @@ use App\Http\Controllers\API\CartAPIController;
 use App\Http\Controllers\API\SchemeAPIController;
 use App\Http\Controllers\API\OrderAPIController;
 
+
+Route::middleware(['datetimeMiddleware'])->group(function () {
+  
+    
 Route::get('/', function () {
     return view('welcome.index');
 });
@@ -153,3 +157,5 @@ Route::post('order-manager/checkin', [OrderManagerController::class, 'Checkin'])
 
 Route::get('plan-manager/plan/scheme/{type}/{id}', [PlanManagerController::class,'Scheme'])->name('plan-manager.scheme');
 Route::get('plan-manager/statistics/{stock}', [PlanManagerController::class,'Statistics'])->name('plan-manager.statistics'); */
+
+});

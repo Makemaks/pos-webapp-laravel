@@ -34,22 +34,14 @@ class Store extends Model
             ->orderBy('store.store_name', 'desc');
     }
 
-    public static function Sale($column,  $filter)
-    {
-        return Store::leftJoin('order', 'order.order_store_id', '=', 'store.store_id')
-            ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
-            ->leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
-            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
-            ->where($column,  $filter)
-            ->orderBy('order.created_at', 'desc');
-    }
+   
 
     public static function Setting($column,  $filter)
     {
         return Store::leftJoin('order', 'order.order_store_id', '=', 'store.store_id')
             ->leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
-            ->leftJoin('setting', 'setting.setting_store_id', '=', 'store.store_id')
+            ->leftJoin('setting', 'setting.settingtable_id', '=', 'store.store_id')
             ->where($column,  $filter)
             ->orderBy('order.created_at', 'desc');
     }
@@ -62,7 +54,7 @@ class Store extends Model
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
             ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id')
-            ->leftJoin('setting', 'setting.setting_store_id', '=', 'store.store_id')
+            ->leftJoin('setting', 'setting.settingtable_id', '=', 'store.store_id')
             ->select('order.*', 'receipt.*', 'stock.*', 'store.*', 'user.*', 'person.*', 'setting.*', 'order.created_at as order_created_at')
             ->where($column,  $filter)
             ->orderBy('order.created_at', 'desc');
@@ -299,7 +291,9 @@ class Store extends Model
 
         $userModel = User::Account('account_id', $userModel->user_account_id)->first();
 
-        $orderList =  Store::Order('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)->get();
+        $orderList =  Store::Order('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])
+        ->orWhere('user_id', $user_id)
+        ->get();
         
         $orderHourly = Order::HourlyReceipt()
             ->where('order_store_id',  $userModel->store_id)
@@ -309,8 +303,15 @@ class Store extends Model
             ->orderBy('order_id', 'desc')->orWhereBetween('order.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)
             ->get();
             
-        $orderListLimited100 = Store::Sale('store_id',  $userModel->store_id)->limit(100)->orWhereBetween('order.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)->get();
-        $clerkBreakdown = Store::Order('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)->get();
+        $orderListLimited100 = Receipt::Order('order_store_id',  $userModel->store_id)
+        ->limit(10)
+        ->orWhereBetween('order.created_at', [$started_at, $ended_at])
+        ->orWhere('user_id', $user_id)->get();
+
+        $clerkBreakdown = Store::Order('store_id',  $userModel->store_id)
+        ->orWhereBetween('order.created_at', [$started_at, $ended_at])
+        ->orWhere('user_id', $user_id)->get();
+
         $employmentList = User::Employment('store_id',  $userModel->store_id)
             ->where('attendance_status', '<', 2)
             ->orWhereBetween('attendance.created_at', [$started_at, $ended_at])
@@ -342,7 +343,7 @@ class Store extends Model
             ->orWhereBetween('attendance.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)->get();
 
         // dept average
-        $settingModel = Setting::where('setting_store_id', $userModel->store_id)->first();
+        $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
 
         // dropdown clerk option
         $clerkBreakdownOption = User::Account('store_id', $userModel->store_id)->get();

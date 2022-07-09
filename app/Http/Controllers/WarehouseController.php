@@ -109,7 +109,7 @@ class WarehouseController extends Controller
 
         $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
         
-        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
         $this->settingModel = Setting::find($this->settingModel->setting_id);
 
         $this->categoryList = $this->settingModel->setting_stock_category;

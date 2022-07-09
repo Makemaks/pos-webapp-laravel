@@ -12,6 +12,8 @@ class Account extends Model
     protected $table = 'account';
     protected $primaryKey = 'account_id';
 
+    public $timestamps = true;
+
     protected $attributes = [
         'account_blacklist' => '{
 

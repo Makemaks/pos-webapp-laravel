@@ -5,6 +5,7 @@
     $person_firstname = "";
     $person_lastname = "";
     $person_preferred_name = "";
+    $address_email = [];
 
     $person_firstname = "";
     if ($action != 'Register' && $action != 'Edit'){
@@ -12,13 +13,14 @@
             $person_firstname = $data['personModel']->person_name['person_firstname'];
             $person_lastname = $data['personModel']->person_name['person_lastname'];
             $person_preferred_name = $data['personModel']->person_name['person_preferred_name'];
+            $address_email = $data['personModel']->address_email;
        }
     }
 
 @endphp
 
 
-<div class="uk-overflow-auto uk-height-large" uk-height-viewport="offset-top: true; offset-bottom: 10">
+<div>
 
     <legend class="uk-legend">{{$person_firstname}} {{$person_lastname}}</legend>
 
@@ -155,7 +157,7 @@
         <label class="uk-form-label" for="form-stacked-text">Email</label>
         
         <div class="uk-form-controls">
-            <input type="text" class="uk-input" name="person_dob[]" id="person_dob" value="{{ old('person_email[]') }}"></input>
+            <input type="text" class="uk-input" name="person_dob[]" id="person_dob" value="{{ old('address_email[]') }}"></input>
         </div>
 
         @error('person_dob[]')
@@ -165,13 +167,15 @@
 
     <table class="uk-table uk-table-small uk-table-divider">
         <tbody>
-            @if ($data['personModel'])
-                @foreach ($data['personModel']->person_email as $person_email)
+         
+            @if ($address_email)
+                @foreach ($address_email as $email)
                     <tr>
-                        <td>{{$person_email}}</td>
+                        <td>{{$email}}</td>
                     </tr>
                 @endforeach
             @endif
+    
         </tbody>
     </table>
    

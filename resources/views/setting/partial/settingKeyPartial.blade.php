@@ -75,14 +75,17 @@
 
 
 
-@if (Session::get('order_finalise_key') == 'cash')
-    
-     
-    <div class="uk-child-width-expand" uk-grid>
-        @foreach (collect($data['settingModel']->setting_key)->where('setting_key_type', 1) as $keySettingKey => $itemSettingKey)
+@if (Session::get('setting_finalise_key') == 'cash')
+
+    @php
+        $setting_key_type = collect($data['settingModel']->setting_key)->where('setting_key_type', 1);
+    @endphp
+
+    <div class="uk-child-width-1-2" uk-grid>
+        @foreach ($setting_key_type as $keySettingKey => $itemSettingKey)
             
-            <div>
-               <div  class="uk-padding uk-box-shadow-small">
+            <div onclick="addSettingKey($itemSettingKey)">
+               <div class="uk-padding uk-box-shadow-small">
                     {{$itemSettingKey['value']}}
                     <p>{{$itemSettingKey['description']}}</p>
                </div>

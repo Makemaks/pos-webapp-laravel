@@ -100,10 +100,10 @@ class SettingFactory extends Factory
 
             $setting_stock_offer[$i + 1] = [
                 "decimal" => [
-                        "gain" => $this->faker->numberBetween($min = 1, $max = 500),
-                        "collect" => $this->faker->numberBetween($min = 1, $max = 500),
-                        "discount_type" => $this->faker->numberBetween($min = 0, $max = 1),
-                        "discount_value" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 1, $max = 5),
+                    "gain" => $this->faker->numberBetween($min = 1, $max = 500),
+                    "collect" => $this->faker->numberBetween($min = 1, $max = 500),
+                    "discount_type" => $this->faker->numberBetween($min = 0, $max = 1),
+                    "discount_value" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 1, $max = 5),
                 ],
 
                 "date" => [
@@ -128,8 +128,13 @@ class SettingFactory extends Factory
                     "name" => $this->faker->word,
                     "description" => $this->faker->word,
                     "code" => $this->faker->lexify,
+                    "barcode" => $this->faker->lexify,
                 ],
                 "available_day" => $this->faker->randomElements($array = array ('1','2','3', '4', '5', '6', '7'), $count = $this->faker->numberBetween($min = 1, $max = 7)),
+                "usage" => [
+                    "per_person" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 2))),
+                    "per_usage" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 2))),
+                ]
 
             ];
 
@@ -150,6 +155,17 @@ class SettingFactory extends Factory
                 "default" => 1,
             ];
 
+           
+        }
+
+        for ($i=0; $i < 20; $i++) { 
+            $setting_stock_group[$i+1] = [
+                "name"=> $this->faker->word,
+                "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
+                "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::plu::brand
+            ];
+
+
             $a = $this->faker->numberBetween($min = 1, $max = 7);
             if ($a == 1) {
                 $value =  $this->faker->randomElement($array = array('5', '10', '20', '100'));
@@ -165,15 +181,7 @@ class SettingFactory extends Factory
             ];
         }
 
-        for ($i=0; $i < 20; $i++) { 
-            $setting_stock_group[$i+1] = [
-                "name"=> $this->faker->word,
-                "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
-                "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::plu::brand
-            ];
 
-          
-        }
 
         $array = [
             "CASH",
@@ -206,8 +214,9 @@ class SettingFactory extends Factory
 
 
         return [
-            'setting_store_id' => $this->faker->numberBetween($min = 1, $max = 1),
-
+            
+            'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 10),
+            'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company', 'Organisation')),
             'setting_api' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
             'setting_stock_group'  => $setting_stock_group,

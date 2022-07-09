@@ -110,10 +110,10 @@ class AuthenticationController extends Controller
     public function logout(Request $request)
     {
 
-        $attendance = new Attendance();
+       /*  $attendance = new Attendance();
         $attendance->attendance_user_id = Auth::user()->user_id;
         $attendance->attendance_status = 3; //logout
-        $attendance->save();
+        $attendance->save(); */
 
         if (Auth::check()) {
 

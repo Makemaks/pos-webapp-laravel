@@ -118,7 +118,7 @@ function paymentMethodHandler(paymentIntent) {
 
 
 //open payment
-function PaymentType(payment_type, priceVAT){
+function paymentType(payment_type){
 
   if ( priceVAT > 0) {
     $.ajax({
@@ -126,7 +126,6 @@ function PaymentType(payment_type, priceVAT){
       method: 'GET',
       data: {
           payment_type:payment_type,
-          total:priceVAT,
           action:'payment'
 
       },

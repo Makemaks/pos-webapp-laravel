@@ -12,6 +12,8 @@ class Employment extends Model
     protected $table = 'employment';
     protected $primaryKey = 'employment_id';
     protected $guarded = [];
+    public $timestamps = true;
+
     protected $attributes = [
         'employment_user_id' => 1,
         "employment_general" => '{

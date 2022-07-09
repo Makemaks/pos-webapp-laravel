@@ -29,6 +29,9 @@ class MathHelper{
         return $percentage;
     }
 
-
+    public static function ValueToPercentage(float $valueA){
+        $percentage = $valueA / 100;
+        return $percentage;
+    }
   
 }

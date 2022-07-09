@@ -65,14 +65,10 @@ $route = Str::before(Request::route()->getName(), '.');
             @auth
                 
                 @if ($route == 'home')
-                    <div class="uk-width-xlarge@xl uk-width-large@s uk-padding-small">
+                    <div class="uk-width-auto@xl uk-width-auto@s uk-padding-small" style="min-width: 600px">
 
                         @if($route == 'home')
-
-                            <div>
-                                @include('receipt.partial.receiptMenuPartial')
-                            </div>
-                            
+                        
                             <div id="receiptID">
                                 @include('receipt.partial.indexPartial')
                             </div>
@@ -86,10 +82,11 @@ $route = Str::before(Request::route()->getName(), '.');
         </div>
 
         @if ($route == 'home')
-            <div class="uk-position-bottom  uk-background-default uk-box-shadow-large" style="z-index: 2;">
-              
+            <div class="uk-position-bottom uk-background-default uk-box-shadow-large" style="z-index: 2;">
                 @include('partial.numpadPartial')
             </div>
+           
+            
         @endif
 
      
@@ -97,7 +94,7 @@ $route = Str::before(Request::route()->getName(), '.');
 
 
    @if ($route == 'home')
-        <div class="uk-box-shadow-small uk-position-bottom">
+        <div class="uk-box-shadow-small uk-position-bottom" id="navigationBottomID">
             @include('partial.navigationBottomPartial')
         </div>
    @endif

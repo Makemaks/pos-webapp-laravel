@@ -13,8 +13,9 @@
     <nav class="uk-navbar-container uk-margin" uk-navbar>
 
         <div class="uk-navbar-left">
-            <a class="uk-navbar-item uk-logo" href="#">Logo</a>
-            
+            <a class="uk-navbar-item uk-logo" href="#">
+                <span uk-icon="grid"></span>
+            </a>
         </div>
 
         <div class="uk-navbar-center">
@@ -86,6 +87,7 @@
 
        
         var searchInputID = document.getElementById(sessionStorage.getItem('inputID'));
+       
 
         setFocus('keypadInputID');
     
@@ -116,9 +118,14 @@
     }
 
     function showKeypad(element){
+        document.getElementById('navigationBottomID').hidden = true;
         document.getElementById('keypadID').hidden = false;
-        sessionStorage.setItem('inputID', element.id);
+        
 
+        document.getElementById('numpadLayoutID').hidden = true;
+        document.getElementById('keypadLayoutID').hidden = false;
+
+        /* sessionStorage.setItem('inputID', element.id);
        if (element.id == 'receiptInputID') {
             document.getElementById('numpadLayoutID').hidden = false;
             document.getElementById('keypadLayoutID').hidden = true;
@@ -126,17 +133,20 @@
         else if(element.id == 'numpadLayoutID'){
             document.getElementById('numpadLayoutID').hidden = true;
             document.getElementById('keypadLayoutID').hidden = false;
-        }
+        } */
 
         
     }
 
     function closeKeypad(element){
         document.getElementById('keypadID').hidden = true;
-        document.getElementById('keypadInputID').value = '';
+        //document.getElementById('keypadInputID').value = '';
+        document.getElementById('navigationBottomID').hidden = false;
+        document.getElementById('searchInputID').focus();
     }
 
 </script>
+
 
 
 

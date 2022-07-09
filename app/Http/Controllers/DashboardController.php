@@ -31,7 +31,7 @@ class DashboardController extends Controller
     private $settingModel;
     private $paymentModel;
     private $cartItem = [];
-    private $cartAwaitingList = [];
+    private $awaitingCartList = [];
     private $authenticatedUser;
     private $accountList;
     private $pdfView;
@@ -60,7 +60,10 @@ class DashboardController extends Controller
 
         $this->eat_in_eat_out = $datePeriod['eat_in_eat_out'];
 
-        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)->whereBetween('order.created_at', [$datePeriod['started'], $datePeriod['ended']])->get();
+        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)
+        ->whereBetween('order.created_at', [$datePeriod['started'], $datePeriod['ended']])
+        ->limit(10)
+        ->get();
 
         $this->storeList = Store::get();
 
@@ -74,7 +77,7 @@ class DashboardController extends Controller
             ->whereIn('expense_user_id', $accountList->pluck('user_id'))
             ->get();
 
-        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
 
         $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->get();
 

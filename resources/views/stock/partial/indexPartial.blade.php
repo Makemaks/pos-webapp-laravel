@@ -123,21 +123,22 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                         }
 
                         //find discount
-                        $stockCurrentOffer = Stock::StockCurrentOffer($stock, array_search('discount', Setting::DiscountType()));
+                        $stockCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::DiscountType()));
                         
                         if ($stockCurrentOffer) {
-                            $stockOffer = Stock::StockCurrentOfferType( $price,$stockCurrentOffer, $price );
+                            $stockOffer = Setting::SettingCurrentOfferType( $stockCurrentOffer, $price );
                         }
 
                     @endphp
     
                     <div>
 
-                        <div class="uk-padding-small uk-background-muted" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
+                        <div class="uk-padding-small uk-background-muted uk-border-rounded" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
                             <div class="">
                                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                                     <div class="uk-width-auto">
                                         <img class="uk-border-circle" width="40" height="40" src="images/avatar.jpg">
+                                       
                                     </div>
                                     <div class="uk-width-expand">
                                         @if (count($stockOffer) > 0)
@@ -187,21 +188,25 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                                                 $color = '';
                                                 $warehouseStock = Warehouse::Available($stock->stock_id);
                                                 
-                                                if ($warehouseStock->count() > 0) {
-                                                    if (Warehouse::WarehouseType()[$warehouseStock->first()->warehouse_type] == 'transfer') {
+                                                if ($warehouseStock) {
+                                                    if (Warehouse::WarehouseType()[$warehouseStock->warehouse_type] == 'transfer') {
                                                         $color = 'uk-text-warning';
                                                     }
-                                                }else{
-                                                    $color = 'uk-text-danger';
+                                                    else{
+                                                        $color = 'uk-text-danger';
+                                                    }
                                                 }
                                         
                                             @endphp
-                                            <h3 {{$color}}">{{$warehouseStock->sum('warehouse_quantity')}}</h6>
+                                            @if ($warehouseStock)
+                                                <h3 {{$color}}">{{$warehouseStock->warehouse_quantity}}</h6>
+                                            @endif
                                         </div>
                                     </div>
                                     
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
    

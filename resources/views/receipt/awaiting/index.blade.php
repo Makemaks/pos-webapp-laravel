@@ -20,7 +20,7 @@
                     @endphp
                 @foreach ($sessionCartList as $productCount => $cart)
                     @php
-                        $total = $total + $cart['stock_price'];
+                        $total = $total + $cart['stock_cost'];
                     @endphp
                 @endforeach
                 <tr>

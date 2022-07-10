@@ -113,6 +113,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                         $storeID = $stock->stock_store_id;
                         $image =  'stock/'.$storeID.'/'.$stock->image;   
                         $stockOffer = [];
+                        $stockCurrentOffer = [];
                         
 
                         $price = MathHelper::FloatRoundUp(Stock::StockCostCustomer($stock->stock_cost), 2);
@@ -123,9 +124,8 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                         }
 
                         //find discount
-                        $stockCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::DiscountType()));
-                        
-                        if ($stockCurrentOffer) {
+                        if ($stock->stock_merchandise['stock_offer_id']) {
+                            $stockCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::DiscountType()));
                             $stockOffer = Setting::SettingCurrentOfferType( $stockCurrentOffer, $price );
                         }
 
@@ -133,7 +133,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
     
                     <div>
 
-                        <div class="uk-padding-small uk-background-muted uk-border-rounded" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
+                        <div title="{{$stock->stock_id}}" class="uk-padding-small uk-background-muted uk-border-rounded" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
                             <div class="">
                                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                                     <div class="uk-width-auto">

@@ -66,14 +66,6 @@ class User extends Authenticatable
         return User::leftJoin('person', 'person.person_id', 'user.user_person_id')
             ->leftJoin('account', 'account_id', 'user.user_account_id')
             ->leftJoin('store', 'store.store_account_id', 'account.account_id')
-            ->where($column, $filter);
-    }
-
-    public static function AccountCompany($column, $filter)
-    {
-        return User::leftJoin('person', 'person.person_id', 'user.user_person_id')
-            ->leftJoin('account', 'account_id', 'user.user_account_id')
-            ->leftJoin('store', 'store.store_account_id', 'account.account_id')
             ->leftJoin('company', 'company_store_id', 'store.store_id')
             ->where($column, $filter);
     }

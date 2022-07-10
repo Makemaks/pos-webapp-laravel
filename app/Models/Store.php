@@ -292,37 +292,27 @@ class Store extends Model
         $userModel = User::Account('account_id', $userModel->user_account_id)->first();
 
         $orderList =  Store::Order('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])
+        ->limit(10)
         ->orWhere('user_id', $user_id)
         ->get();
         
-        $orderHourly = Order::HourlyReceipt()
-            ->where('order_store_id',  $userModel->store_id)
-            ->orderBy('order_id')->orWhereBetween('order.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)
-            ->get();
-        $orderListASC = Order::Receipt('order_store_id',  $userModel->store_id)
-            ->orderBy('order_id', 'desc')->orWhereBetween('order.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)
-            ->get();
+
+        $orderListASC = $orderList;
+
+        $orderHourly = $orderListASC;
             
-        $orderListLimited100 = Receipt::Order('order_store_id',  $userModel->store_id)
-        ->limit(10)
-        ->orWhereBetween('order.created_at', [$started_at, $ended_at])
-        ->orWhere('user_id', $user_id)->get();
+        $orderListLimited100 = $orderListASC;
 
-        $clerkBreakdown = Store::Order('store_id',  $userModel->store_id)
-        ->orWhereBetween('order.created_at', [$started_at, $ended_at])
-        ->orWhere('user_id', $user_id)->get();
+        $clerkBreakdown = $orderList;
 
-        $employmentList = User::Employment('store_id',  $userModel->store_id)
-            ->where('attendance_status', '<', 2)
-            ->orWhereBetween('attendance.created_at', [$started_at, $ended_at])
-            ->orWhere('user_id', $user_id)
-            ->get();
+       
 
         // Address
         $addressCompany = User::Company('store_id',  $userModel->store_id)
             ->where('addresstable_type', 'Company') // person::company
             ->where('company_type', 1) // supplier::customer::contractor
             ->whereBetween('company.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)->get();
+
         $addressPerson = User::Person('store_id',  $userModel->store_id)
             ->where('addresstable_type', 'Person') // person::company
             ->where('person_type', 2) // employee::non-employee::customer
@@ -335,7 +325,7 @@ class Store extends Model
             ->orWhere('user_id', $user_id)->get();
 
         // Account Company / blacklisted
-        $accountCompanyModel = User::AccountCompany('store_id', $userModel->store_id)
+        $accountCompanyModel = User::Account('store_id', $userModel->store_id)
             ->orWhereBetween('person.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)->get();
 
         // Attendance Log
@@ -352,6 +342,12 @@ class Store extends Model
         $clerkList = User::Employment('store_id',  $userModel->store_id)
             ->where('person_type', 0)
             ->get();
+
+        $employmentList = User::Employment('store_id',  $userModel->store_id)
+        ->where('attendance_status', '<', 2)
+        ->orWhereBetween('attendance.created_at', [$started_at, $ended_at])
+        ->orWhere('user_id', $user_id)
+        ->get();
 
         $orderSettingList = Store::Setting('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])->limit(10);
         $eat_in_eat_out = Order::where('order_store_id', $userModel->store_id)->orderBy('order.created_at', 'desc')->orWhereBetween('order.created_at', [$started_at, $ended_at])->get();

@@ -155,7 +155,9 @@ class Receipt extends Model
             //if there is an offer on stock
             if ($settingCurrentOffer) {
                 $receipt['settingCurrentOfferType'] = Setting::SettingCurrentOfferType( $settingCurrentOffer, $receipt['price']);
-                $receipt['price'] = Stock::StockCostMin( $receipt['settingCurrentOfferType'] );
+                $stockCostMin = Stock::StockCostMin( $receipt['settingCurrentOfferType'] );
+                
+                $receipt['price'] = $stockCostMin['total']['price'];
                 $receipt['totalPrice'] = $receipt['price'] - $receipt['totalPrice'];
             }
             

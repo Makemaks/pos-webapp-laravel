@@ -103,31 +103,33 @@ if (Auth::check()) {
         </div>
 
         <div class="uk-navbar-center">
-            <div class="uk-navbar-item">
-                <div class="uk-button-group">
-                    <input id="searchInputID" class="uk-input uk-form-width-large" type="text" autofocus onclick="showKeypad()" 
-                    onchange="searchInput(this, '{{Session::get('setting_finalise_key')}}')" autocomplete="off">
-
+            @if ($route == 'home')
+                <div class="uk-navbar-item">
                     <div class="uk-button-group">
-                       {{--  <button class="uk-button uk-button-default">Dropdown</button> --}}
-                        <div class="uk-inline">
-                            <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
-                            <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
-                                <ul class="uk-nav uk-dropdown-nav">
-                                    <li class="uk-active"><a href="#">Stock</a></li>
-                                    
-                               
-                                    <li class="uk-nav-header">Header</li>
-                                    <li><a href="#">Item</a></li>
-                                    <li><a href="#">Item</a></li>
-                                    <li class="uk-nav-divider"></li>
-                                    <li><a href="#">Item</a></li>
-                                </ul>
+                        <input id="searchInputID" class="uk-input uk-form-width-large" type="text" autofocus onclick="showKeypad()" 
+                        onchange="searchInput(this, '{{Session::get('setting_finalise_key')}}')" autocomplete="off">
+
+                        <div class="uk-button-group">
+                        {{--  <button class="uk-button uk-button-default">Dropdown</button> --}}
+                            <div class="uk-inline">
+                                <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
+                                <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
+                                    <ul class="uk-nav uk-dropdown-nav">
+                                        <li class="uk-active"><a href="#">Stock</a></li>
+                                        
+                                
+                                        <li class="uk-nav-header">Header</li>
+                                        <li><a href="#">Item</a></li>
+                                        <li><a href="#">Item</a></li>
+                                        <li class="uk-nav-divider"></li>
+                                        <li><a href="#">Item</a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         <div class="uk-navbar-right uk-margin-right">

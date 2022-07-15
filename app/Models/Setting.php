@@ -513,7 +513,10 @@ class Setting extends Model
             $data['request'] = $data['request']->session()->get('setting_finalise_key');
         } */
         
+        
+        $setupList = [];
         $setupList = $data['request']->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList')[0];
+
 
         //cash
         if ($data['request']['action'] == 'cash') {
@@ -589,10 +592,10 @@ class Setting extends Model
                         $percentage = MathHelper::PercentageDifference($company->company_discount['discount_value'], $receipt['priceVAT']);
                     }
                     
-                    $receipt['voucherTotal'] = ['discount_type' => $value['discount_type'], 'discount_value' => $value, 
+                    $voucher = ['discount_type' => $value['discount_type'], 'discount_value' => $value, 
                     'converted_value' => $value , 'converted_percentage' => $percentage ];
 
-                    $setupList[$data['request']['action']] += $data['request']->session()->get($data['request']);
+                    $setupList[$data['request']['action']] += $data['request']->session()->get($voucher);
                     
                     break;
                     
@@ -623,14 +626,15 @@ class Setting extends Model
                     $valueTotal = $value + $value;
                 }
 
-                $receipt['discountTotal'] = $receipt['discountTotal'] + $valueTotal;
+                $receipt['voucherTotal'] = $receipt['voucherTotal'] + $valueTotal;
             }
         }
         
         //delivery
         if ($data['request']['action'] == 'delivery'){
 
-            $setupList[$data['request']] += $data['request']->session()->get($data['request']);
+            $setupList[$data['request']['action']] += $data['request']->session()->get($data['request']);
+           
         }else{
             //add delivery cost
             if ($receipt) {
@@ -642,15 +646,19 @@ class Setting extends Model
         //discount
         if ($data['request'] == 'discount'){
 
-            if (Setting::SettingDiscountType()[$value['discount_type']] == 'percentage') {
-                $value = $value['discount_type']/100;
-            } 
+            if (Setting::SettingDiscountType()[$request['discount_type']] == 'percentage') {
+                $value =  MathHelper::Discount($request['discount_value'], $request['price']); //percentage to amount
+                $percentage = $request['discount_value'];
+            }  else {
+                $value = $request['discount_value'];
+                $percentage = MathHelper::PercentageDifference($request['discount_value'], $receipt['priceVAT']);
+            }
             
-            $data['request'] = ['discount_type' =>  $data['request']['type'], 
-            'discount_value' => $data['request']['value'], 
-            'value' => $data['request']['value'] ];
+            $receipt['discount'] = ['discount_type' => $value['discount_type'], 'discount_value' => $value, 
+            'converted_value' => $value , 'converted_percentage' => $percentage ];
             
-            $setupList[$data['request']] += $data['request']->session()->get($data['request']);
+            $setupList[$data['request']['action']] += $data['request']->session()->get($data['request']);
+            
             
         }else{
             if ($receipt) {
@@ -734,6 +742,7 @@ class Setting extends Model
                 $settingCurrentOfferType = ['price' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
                
             }
+
 
             if (count($settingCurrentOfferType) > 0) {
                 $total[$settingCurrentOfferKey] = $settingCurrentOfferValue;

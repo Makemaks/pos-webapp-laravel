@@ -263,6 +263,7 @@ class CartAPIController extends Controller
             $this->cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList'); 
             $this->cartList[$id][$key] = $request[$key];  
             $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList', $this->cartList);
+            
 
             $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
         }
@@ -279,6 +280,8 @@ class CartAPIController extends Controller
     public function destroy(Request $request, $id)
     {
         $this->init();
+        $this->request = $request;
+
         if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
             //remove session
             $this->cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList'); 

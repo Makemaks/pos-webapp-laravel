@@ -90,7 +90,7 @@ class HomeAPIController extends Controller
             
             $where = 'stock_merchandise->'.$request->session()->get('type').'_id';
             
-            $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
+            $this->stockList = Stock::Warehouse($where, $this->userModel->store_id)
             ->groupBy('stock_id')
             ->where('warehouse_quantity', '>', 0)
             ->where($where, $request->session()->get('id'))

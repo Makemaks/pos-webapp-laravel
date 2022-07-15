@@ -129,6 +129,10 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                             $stockOffer = Setting::SettingCurrentOfferType( $stockCurrentOffer, $price );
                         }
 
+                        if($stockOffer){
+                            $stockOfferMin =  Stock::StockCostMin($stockOffer);
+                        }
+
                     @endphp
     
                     <div>
@@ -142,7 +146,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                                     </div>
                                     <div class="uk-width-expand">
                                         @if (count($stockOffer) > 0)
-                                            <h3 class="uk-margin-remove-bottom"> {{$currency}} {{ MathHelper::FloatRoundUp( Stock::StockCostMin($stockOffer), 2) }}</h3>
+                                            <h3 class="uk-margin-remove-bottom"> {{$currency}} {{ MathHelper::FloatRoundUp( $stockOfferMin['total']['price'], 2) }}</h3>
                                             
                                         @else
                                             <h3 class="uk-margin-remove-bottom">{{$currency}} {{$price}}</h3>
@@ -172,11 +176,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                                         @if (count($stockOffer) > 0)
 
                                         
-                                            @if (collect($stockOffer)->first()['decimal']['discount_type'] == 0)
-                                                <div> {{ MathHelper::FloatRoundUp( collect($stockOffer)->first()['decimal']['discount_value'], 2) }}  %</div>
-                                            @elseif (collect($stockOffer)->first()['decimal']['discount_type'] == 1)
-                                                <div> {{$currency}} {{  MathHelper::FloatRoundUp( collect($stockOffer)->first()['decimal']['discount_value'], 2) }} </div>
-                                            @endif
+                                           {{ MathHelper::FloatRoundUp( $stockOfferMin['decimal']['discount_value'], 2)}}
                                             
                                         
                                         @endif

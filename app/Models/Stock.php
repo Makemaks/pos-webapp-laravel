@@ -320,7 +320,8 @@ class Stock extends Model
 
     //find the minum offer price
     public static function StockCostMin($settingCurrentOfferType){
-       return collect( $settingCurrentOfferType )->pluck('total')->min('price');
+        $min = collect( $settingCurrentOfferType )->pluck('total')->min('price');
+        return collect( $settingCurrentOfferType )->where('total.price',  $min)->first();
     }
 
     public static function Offer(){

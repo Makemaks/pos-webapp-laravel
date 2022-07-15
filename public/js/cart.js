@@ -46,7 +46,7 @@ function Quantity(buttonType, cartValue){
 //cart controls
 function control(type){
 
-  
+    var cartCountID = document.getElementById('cartCountID');
     var edit_cart = true;
 
     if (type == 1) {
@@ -54,28 +54,19 @@ function control(type){
         edit_cart = false;
     }
 
-    $.ajax({
-        url:"/cart-api",
-        method: 'GET',
-        data: {edit_cart: edit_cart},   
-        success: function (data) {
-            document.getElementById('receiptID').innerHTML = data['html'];
-            //control(0);
-
-            if (type == 0) {
-                //show controls hidden = true
-                document.getElementById('controlHideID').hidden = false;
-                document.getElementById('controlShowID').hidden = true;      
-            } else {           
-                document.getElementById('controlShowID').hidden = false;
-                document.getElementById('controlHideID').hidden = true; 
-               
+    if (cartCountID.innerText > 0) {
+        $.ajax({
+            url:"/cart-api",
+            method: 'GET',
+            data: {edit_cart: edit_cart},   
+            success: function (data) {
+                document.getElementById('receiptID').innerHTML = data['html'];
+            },
+            error: function (data) {
+            
             }
-        },
-        error: function (data) {
-        
-        }
-    });
+        });
+    }
    
 }
 
@@ -89,15 +80,17 @@ function Delete(row_id){
     $.ajax({
         url:"/cart-api/" + row_id,
         method: 'DELETE',
-        data: {quantity: quantityID.innerText},   
+        data: {
+            quantity: quantityID.innerText,
+        },   
         success: function (data) {
         
             //setFocus('barcodeInputID');
 
             cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(quantityID.innerText);
-           
             document.getElementById('receiptID').innerHTML = data['html'];
             control(0);
+           
         },
         error: function (data) {
         

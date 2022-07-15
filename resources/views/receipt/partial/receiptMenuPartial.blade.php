@@ -1,5 +1,9 @@
 @php
     use App\Models\Person;
+    $openControlID = '';
+    $closeControlID = 'hidden';
+
+   
 
     if ( count( Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'0'.'.'.'customer') ) > 0 ) {
         
@@ -12,6 +16,17 @@
         $removeCustomerID = 'hidden';
         $showCustomerID = '';
     }
+
+    if ( Session::has('user-session-' . Auth::user()->user_id . '.cartList') ) {
+        
+        if (Session::has('edit_cart') && count( Session::get('user-session-' . Auth::user()->user_id . '.cartList'))  >= 1) {
+            $a = Session::get('user-session-' . Auth::user()->user_id . '.cartList');
+            $openControlID = 'hidden';
+            $closeControlID = '';
+        }
+
+    }
+   
     
 @endphp
 
@@ -64,8 +79,8 @@
                 </div>
             </div>
 
-            <button type="button" class="uk-button uk-button-default uk-border-rounded" onclick="control(0)" uk-icon="pencil" id="controlShowID"></button>
-            <button type="button" class="uk-button uk-button-default uk-border-rounded" onclick="control(1)" uk-icon="close" id="controlHideID" hidden></button>
+            <button type="button" class="uk-button uk-button-default uk-border-rounded" onclick="control(0)" uk-icon="pencil" {{$openControlID}}></button>
+            <button type="button" class="uk-button uk-button-default uk-border-rounded" onclick="control(1)" uk-icon="close" id="controlHideID" {{$closeControlID}}></button>
         </div>
 
     </div>

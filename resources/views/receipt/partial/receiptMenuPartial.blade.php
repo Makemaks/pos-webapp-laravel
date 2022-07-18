@@ -3,12 +3,13 @@
     $openControlID = '';
     $closeControlID = 'hidden';
 
+
    
 
-    if ( count( Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'0'.'.'.'customer') ) > 0 ) {
+    if ( count( Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'customer') ) > 0 ) {
         
         
-        $setupList =  Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'0'.'.'.'customer');
+        $setupList =  Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'customer');
         $data['personModel'] = Person::find($setupList['value']);
         $removeCustomerID = '';
         $showCustomerID = 'hidden';
@@ -17,10 +18,10 @@
         $showCustomerID = '';
     }
 
-    if ( Session::has('user-session-' . Auth::user()->user_id . '.cartList') ) {
+    if ( Session::has('user-session-'.Auth::user()->user_id.'.'.'cartList') ) {
         
-        if (Session::has('edit_cart') && count( Session::get('user-session-' . Auth::user()->user_id . '.cartList'))  >= 1) {
-            $a = Session::get('user-session-' . Auth::user()->user_id . '.cartList');
+        if (Session::has('edit_cart') && count('user-session-'.Auth::user()->user_id.'.'.'cartList')   >= 1) {
+            $a = Session::get('user-session-'.Auth::user()->user_id.'.'.'cartList');
             $openControlID = 'hidden';
             $closeControlID = '';
         }
@@ -55,28 +56,6 @@
                 <button type="button" class="uk-button uk-button-default uk-border-rounded" onclick="removeCustomer()" uk-icon="user">
                     <span uk-icon="minus"></span>
                 </button>
-            </div>
-
-            <div class="uk-inline">
-                <button class="uk-button uk-button-default  uk-border-rounded" type="button" uk-icon="file-text">
-                    {{-- <span uk-icon="plus"></span> --}}
-                </button>
-                <div uk-dropdown="mode: click">
-                    <ul class="uk-nav uk-dropdown-nav">
-                  
-                       
-                        <li class="uk-nav-header" uk-icon="icon: cart"></li>
-                        <li> <button class="uk-margin-small uk-button uk-button-default uk-border-rounded uk-width-expand" onclick="update(this)">
-                            Discount</button></li>
-                        <li> <button class="uk-margin-small uk-button uk-button-default uk-border-rounded uk-width-expand" onclick="update(this)">
-                            Delivery</button></li>
-                        <li> <button class="uk-margin-small uk-button uk-button-default uk-border-rounded uk-width-expand" onclick="update(this)">
-                            Refund</button></li>
-                        <li> <button class="uk-margin-small uk-button uk-button-default uk-border-rounded uk-width-expand" onclick="update(this)">
-                            Float</button></li>
-                      
-                    </ul>
-                </div>
             </div>
 
             <button type="button" class="uk-button uk-button-default uk-border-rounded" onclick="control(0)" uk-icon="pencil" {{$openControlID}}></button>

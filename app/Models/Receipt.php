@@ -158,7 +158,7 @@ class Receipt extends Model
                 $stockCostMin = Stock::StockCostMin( $receipt['settingCurrentOfferType'] );
                 
                 $receipt['price'] = $stockCostMin['total']['price'];
-                $receipt['totalPrice'] = $receipt['price'] - $receipt['totalPrice'];
+                $receipt['subTotal'] = $receipt['price'] - $receipt['subTotal'];
             }
             
         }
@@ -170,24 +170,25 @@ class Receipt extends Model
         if ($stockItem['stock_vat_id']) {
             $receipt['stock_vat_rate'] = $data['settingModel']->setting_vat[$stockItem['stock_vat_id']]['rate'];
             $receipt['price'] = MathHelper::VAT($receipt['stock_vat_rate'], $receipt['price']);
-            $receipt['totalPrice'] = $receipt['totalPrice'] + $receipt['price'];
+            $receipt['subTotal'] = $receipt['subTotal'] + $receipt['price'];
         } else {
-            $receipt['totalPrice'] = $receipt['totalPrice'] + $receipt['price'];
+            $receipt['subTotal'] = $receipt['subTotal'] + $receipt['price'];
         }
 
 
 
         if ($loop->last) {
             
+            
+
             //final discount
-            $receipt = Setting::SettingFinaliseKey($data, $receipt);
-
-
-            //calculate overall vat
-            $receipt['totalSettingVAT'] = collect($data['settingModel']->setting_vat)->where('deafult', 0)->sum('rate');
-            $receipt['priceVAT'] = $receipt['priceVAT'] + MathHelper::VAT($receipt['totalSettingVAT'], $receipt['totalPrice']);
-
+             //calculate overall vat
            
+            $receipt = Setting::SettingFinaliseKey($data, $receipt);
+            $receipt['totalSettingVAT'] = collect($data['settingModel']->setting_vat)->where('deafult', 0)->sum('rate');
+            
+            $receipt['totalPriceVAT'] = MathHelper::VAT($receipt['totalSettingVAT'], $receipt['subTotal']);
+            $receipt['totalPriceFinal'] =  $receipt['totalPriceVAT'] + $receipt['totalPrice'];
         }
 
         return $receipt;

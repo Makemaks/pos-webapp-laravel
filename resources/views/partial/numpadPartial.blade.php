@@ -5,6 +5,8 @@
      if (!isset($type)) {
         $type=1;
      }
+
+    
 @endphp
 
 <div id="keypadID" hidden>
@@ -34,36 +36,13 @@
     </nav>
     
    {{--  @if ($type == 0) --}}
-           
-        <div id="numpadLayoutID" hidden>
+        {{-- uppercase --}}
+        <div id="layoutUpperID" hidden>
         
-            @for ($i = 0; $i < count(NumpadHelper::Numpad()); $i++)
-                                
-                <div class="uk-margin-small">
-                    <div class="uk-grid-small uk-child-width-expand uk-text-center uk-button" uk-grid>
-                        @for ($j = 0; $j < count(NumpadHelper::Numpad()[$i]); $j++)
-                            
-                                <div>
-                                    <div class="uk-padding-small uk-box-shadow-small uk-border-rounded" onclick="numpad(this)">
-                                        {{ NumpadHelper::Numpad()[$i][$j]}}
-                                    </div>
-                                </div>
-                        @endfor
-                    </div>
-                </div>
-        
-            @endfor
-    
-        </div>
-    
-    {{-- @else --}}
-       
-        <div id="keypadLayoutID">
-            
             @for ($i = 0; $i < count(NumpadHelper::Keypad()[0]); $i++)
         
                 <div class="uk-margin-small">
-                    <div class="uk-grid-small uk-child-width-expand uk-text-center uk-button-small uk-button" uk-grid>
+                    <div class="uk-grid-small uk-child-width-expand uk-text-center" uk-grid>
                         @for ($j = 0; $j < count(NumpadHelper::Keypad()[0][$i]); $j++)
                             
                                 <div>
@@ -76,29 +55,73 @@
                 </div>
     
             @endfor
+    
         </div>
     
-    {{-- @endif --}}
+    {{-- @else --}}
+       {{-- lowercase --}}
+        <div id="layoutLowerID" hidden>
+            
+            @for ($i = 0; $i < count(NumpadHelper::Keypad()[1]); $i++)
+        
+                <div class="uk-margin-small">
+                    <div class="uk-grid-small uk-child-width-expand uk-text-center" uk-grid>
+                        @for ($j = 0; $j < count(NumpadHelper::Keypad()[1][$i]); $j++)
+                            
+                                <div>
+                                    <div class="uk-padding-small uk-box-shadow-small uk-border-rounded" onclick="numpad(this)">
+                                        {{ NumpadHelper::Keypad()[1][$i][$j] }}
+                                    </div>
+                                </div>
+                        @endfor
+                    </div>
+                </div>
+    
+            @endfor
+        </div>
 
+        {{-- other characters--}}
+        <div id="layoutCharacterID" hidden>
+            
+            @for ($i = 0; $i < count(NumpadHelper::Keypad()[2]); $i++)
+        
+                <div class="uk-margin-small">
+                    <div class="uk-grid-small uk-child-width-expand uk-text-center" uk-grid>
+                        @for ($j = 0; $j < count(NumpadHelper::Keypad()[2][$i]); $j++)
+                            
+                                <div>
+                                    <div class="uk-padding-small uk-box-shadow-small uk-border-rounded" onclick="numpad(this)">
+                                        {{ NumpadHelper::Keypad()[2][$i][$j]}}
+                                    </div>
+                                </div>
+                        @endfor
+                    </div>
+                </div>
+    
+            @endfor
+        </div>
+    
 </div>
 
 <script>
+
+    {
+        letterType = 'lowercase';
+    }
+
     function numpad(element){
-
-       
-        var searchInputID = document.getElementById(sessionStorage.getItem('inputID'));
-       
-
-        setFocus('keypadInputID');
+        
+        var searchInputID = document.getElementById('searchInputID');
+        
     
         if (element.innerText == 'C') {
             searchInputID.value = '';
         } 
-        else if (element.innerText == 'BACK') {
+        else if (element.innerText == 'Back') {
             let str =  searchInputID.value;
             searchInputID.value = str.slice(0, -1);
         } 
-        else if (element.innerText == 'SPACE') {
+        else if (element.innerText == 'Space') {
             let str =  searchInputID.value;
             searchInputID.value = searchInputID.value + ' ';
         } 
@@ -106,43 +129,67 @@
             let str =  searchInputID.value;
             searchInputID.value = str.slice(0, -1);
         } 
-        else if (element.innerText == 'ENTER') {
-            sessionStorage.removeItem('buttonType');
+        else if (element.innerText == 'Enter') {
+            var buttonType = sessionStorage.getItem('buttonType');
+            if (buttonType) {
+                var buttonType = document.getElementById(sessionStorage.getItem('buttonType'));
+                update(buttonType); //call function
+               
+            }
+          
+        } 
+        else if (element.innerText == 'Aa') {
+
+            if ( letterType == 'lowercase' ) {
+                letterType = 'uppercase';
+                document.getElementById('layoutUpperID').hidden = false;
+                document.getElementById('layoutCharacterID').hidden = true;
+                document.getElementById('layoutLowerID').hidden = true;
+            } else {
+                letterType = 'lowercase';
+                document.getElementById('layoutUpperID').hidden = true;
+                document.getElementById('layoutCharacterID').hidden = true;
+                document.getElementById('layoutLowerID').hidden = false;
+            }
+        } 
+        else if (element.innerText == 'fn') {
+           
+            letterType = 'charactercase';
+            document.getElementById('layoutUpperID').hidden = true;
+            document.getElementById('layoutCharacterID').hidden = false;
+            document.getElementById('layoutLowerID').hidden = true;
+
         } 
         else {
-            searchInputID.value =  searchInputID.value + element.innerText;
+            searchInputID.value = searchInputID.value + element.innerText;
         }
 
-        
+        setFocus('keypadInputID');
     
     }
 
     function showKeypad(element){
         document.getElementById('navigationBottomID').hidden = true;
         document.getElementById('keypadID').hidden = false;
-        
+        document.getElementById('layoutUpperID').hidden = true;
+        document.getElementById('layoutCharacterID').hidden = true;
+        document.getElementById('layoutLowerID').hidden = false;
+        letterType = 'lowercase';
 
-        document.getElementById('numpadLayoutID').hidden = true;
-        document.getElementById('keypadLayoutID').hidden = false;
-
-        /* sessionStorage.setItem('inputID', element.id);
-       if (element.id == 'receiptInputID') {
-            document.getElementById('numpadLayoutID').hidden = false;
-            document.getElementById('keypadLayoutID').hidden = true;
-        }
-        else if(element.id == 'numpadLayoutID'){
-            document.getElementById('numpadLayoutID').hidden = true;
-            document.getElementById('keypadLayoutID').hidden = false;
-        } */
-
+      
+        //sessionStorage.setItem('buttonType', element.id);
+        sessionStorage.setItem('openKeypad', true);
+      
         
     }
 
-    function closeKeypad(element){
+    function closeKeypad(){
         document.getElementById('keypadID').hidden = true;
-        //document.getElementById('keypadInputID').value = '';
         document.getElementById('navigationBottomID').hidden = false;
+        document.getElementById('searchInputID').value = '';
         document.getElementById('searchInputID').focus();
+        sessionStorage.setItem('openKeypad', false);
+        //sessionStorage.removeItem('buttonType');
     }
 
 </script>

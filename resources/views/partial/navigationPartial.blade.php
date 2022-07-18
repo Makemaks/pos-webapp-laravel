@@ -13,22 +13,22 @@ use App\Helpers\DateTimeHelper;
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 
-    $storeModel = Store::Account('store_id', $userModel->store_id)->first();
-    $storeList = Store::List('root_store_id', $storeModel->store_id)
-        ->orWhere('store_id', $storeModel->store_id)
-        ->get();
-}
-
-$count = 0;
-$cartList = null;
-$awaitingCartList = [];
-
-if (Auth::check()) {
-    if (Session::has('user-session-' . Auth::user()->user_id . '.cartList')) {
-        $cartList = Session::get('user-session-' . Auth::user()->user_id . '.cartList');
-        $count = count($cartList);
+        $storeModel = Store::Account('store_id', $userModel->store_id)->first();
+        $storeList = Store::List('root_store_id', $storeModel->store_id)
+            ->orWhere('store_id', $storeModel->store_id)
+            ->get();
     }
-}
+
+    $count = 0;
+    $cartList = null;
+    $awaitingCartList = [];
+
+    if (Auth::check()) {
+        if (Session::has('user-session-' . Auth::user()->user_id . '.cartList')) {
+            $cartList = Session::get('user-session-' . Auth::user()->user_id . '.cartList');
+            $count = count($cartList);
+        }
+    }
 @endphp
 
 
@@ -97,9 +97,6 @@ if (Auth::check()) {
                 </div>
            </div>
       --}}
-        
-           
-            
         </div>
 
         <div class="uk-navbar-center">
@@ -107,7 +104,7 @@ if (Auth::check()) {
                 <div class="uk-navbar-item">
                     <div class="uk-button-group">
                         <input id="searchInputID" class="uk-input uk-form-width-large" type="text" autofocus onclick="showKeypad()" 
-                        onchange="searchInput(this, '{{Session::get('setting_finalise_key')}}')" autocomplete="off">
+                        onchange="searchInput(this)" autocomplete="off">
 
                         <div class="uk-button-group">
                         {{--  <button class="uk-button uk-button-default">Dropdown</button> --}}

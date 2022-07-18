@@ -192,33 +192,10 @@ function searchInput(element)
 
 }
 
-function showInputKeypad(element){
-   
-    showKeypad(element);
-}
 
-function update(element){
 
-    //var value = document.getElementById(sessionStorage.getItem('inputID')).value;
-    var value = document.getElementById(element.id).value;
 
-   if (value  != '') {
-        $.ajax({        
-                url:"/cart-api",
-                method: 'POST',
-                data: {
-                    type:  element.innerHTML.toLowerCase(),
-                    value: value,
-                },      
-                success:function(data){
-                    document.getElementById(data['view']).innerHTML = data['html'];
-                    setFocus(element.id);
-                }
 
-                
-        });
-   }
-}
 
 function addRefund(element){
 
@@ -279,6 +256,87 @@ function emptyFields(elementID){
             elements[ii].value = "";
         }
     }
+}
+
+function update(element){
+
+    //var value = document.getElementById(sessionStorage.getItem('inputID')).value;
+    var element = document.getElementById(element.id);
+    var searchInputID = document.getElementById('searchInputID');
+    var cartCountID = document.getElementById('cartCountID'); 
+
+   if (searchInputID.value && cartCountID.innerText > 0) {
+        $.ajax({        
+                url:"/cart-api",
+                method: 'POST',
+                data: {
+                    type: element.value,
+                    value: searchInputID.value,
+                },      
+                success:function(data){
+                    document.getElementById(data['view']).innerHTML = data['html'];
+                    setFocus(element.id);
+                    if (sessionStorage.getItem('openKeypad') == "true") {
+                        closeKeypad();
+                    }
+                }
+
+                
+        });
+   }else{
+        closeKeypad();
+   }
+}
+
+function addSetupList(element){
+
+    var searchInputID = document.getElementById('searchInputID');
+    var cartCountID = document.getElementById('cartCountID'); 
+
+    if (cartCountID.innerText > 0) {
+        $.ajax({        
+            url:"/cart-api",
+            method: 'POST',
+            data: {
+                type: element.value,
+                value: searchInputID.value,
+            },      
+            success:function(data){
+                document.getElementById('contentID').innerHTML = data['html']; 
+                //document.getElementById('receiptID').innerHTML = data['html']; 
+            }
+        });
+    }
+
+   
+}
+
+function showSetupList(element){
+    $.ajax({        
+        url:"/cart-api",
+        method: 'GET',
+        data: {
+            action: "setupList",
+            type: element.value
+        },      
+        success:function(data){
+            document.getElementById('contentID').innerHTML = data['html']; 
+        }
+    });
+}
+
+function deleteSetupList(id){
+    $.ajax({        
+        url:"/cart-api/"+id,
+        method: 'DELETE',
+        data: {
+            action: setup
+           
+        },      
+        success:function(data){
+            document.getElementById('contentID').innerHTML = data['html']; 
+        }
+    });
 }
 
 

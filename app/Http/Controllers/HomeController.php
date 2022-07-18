@@ -43,6 +43,7 @@ class HomeController extends Controller
     //for session see session middleware
     public function index(Request $request)
     {
+
         $this->init();
         $this->request = $request;
 
@@ -57,7 +58,7 @@ class HomeController extends Controller
                 "customer" => []
             ];
 
-            $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
+            $request->session()->put('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
            
         }
 

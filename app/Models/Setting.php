@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Session;
+use Illuminate\Support\Str;
 
 use App\Models\Expertise;
 use App\Models\Setting;
@@ -370,7 +371,7 @@ class Setting extends Model
     /* public static function SettingKey()
     {
         //  0 , 1 , 2
-        return ['finalise', 'status', 'transaction'];
+        return ['finalise', 'status', 'transtype'];
     }
  */
     public static function List($column, $filter)
@@ -507,7 +508,7 @@ class Setting extends Model
     //session and grand total
     public static function SettingFinaliseKey($data, $receipt = null){
 
-        //$data['request'] = ['action' => null];
+        //$data['request'] = ['type' => null];
 /* 
         if ($data['request']->session()->has('setting_finalise_key')) {
             $data['request'] = $data['request']->session()->get('setting_finalise_key');
@@ -515,181 +516,175 @@ class Setting extends Model
         
         
         $setupList = [];
-        $setupList = $data['request']->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList')[0];
+        $setupList = $data['request']->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
 
 
         //cash
-        if ($data['request']['action'] == 'cash') {
-            if ($data['request']->session()->get('value')) {
-                $amount = $data['settingModel']->setting_key[$data['request']->session()->get('value')]['value'];
-                $setupList[$data['request']] += ['value' => $amount];
-            }
-        }else{
-            $receipt['cashTotal'] = $receipt['cashTotal'] + collect($setupList[ 'cash' ])->sum('value');
-            $receipt['priceVAT'] = $receipt['priceVAT'] - $receipt['cashTotal'];
+        if ($data['request']['type'] == 'cash') {
+            $setupList[$data['request']][] = [
+                'value' => $data['request']['value'],
+                'type' => $data['request']['type']
+            ];
         }
         
         //credit
-        if ($data['request']['action'] == 'credit'){
+        if ($data['request']['type'] == 'credit'){
             $customer =  $setupList['customer'];
             $this->personModel = Person::find($customer['value']);
 
-            if ($data['request']->session()->get('value') <=  $this->personModel->person_credit) {
-                $setupList[$data['request']] += $data['request']->session()->get($data['request']);
-            }
+            $setupList[$data['request']][] = [
+                'value' => $data['request']['value'],
+                'type' => $data['request']['type']
+            ];
 
-        }else{
-            $receipt['creditTotal'] = $receipt['creditTotal'] + collect($setupList['credit'])->sum('value');
-            $receipt['priceVAT'] = $receipt['priceVAT'] - $receipt['creditTotal'];
         }
         
-        //customer 
-        if ( $setupList['customer'] ){
+          //delivery
+        if ($data['request']['type'] == 'delivery'){
 
-            $customer = $setupList['customer'];
-            $personModel = Person::find($customer['value']);
-            $companyModel = Company::find($personModel->persontable_id);
-
-            $a = Setting::SettingTable()
-            ->where('setting.settingtable_id', $personModel->person_id)
-            ->orwhere('setting.settingtable_id', $companyModel->company_id)
-            ->first();
-
-            
-
-            if ($company->company_discount) {
-
-                if ($company->company_discount['discount_type'] == 'percentage') {
-                    $value =  MathHelper::Discount($value['discount_value'], $receipt['priceVAT']); //percentage to amount
-                    $percentage = $value['discount_value'];
-                } else{
-                    $value = $value['discount_value'];
-                    $percentage = MathHelper::PercentageDifference($company->company_discount['discount_value'], $receipt['priceVAT']);
-                }
-
-                $receipt['customerDiscount'] = ['discount_type' => $value['discount_type'], 'discount_value' => $company->company_discount['discount_value'], 
-                'converted_value' => $value, 'converted_percentage' => $percentage ];
-
-                $receipt['priceVAT'] = $receipt['priceVAT'] - $value;
-            }
-
+            $setupList[$data['request']][] = [
+                'value' => $data['request']['value'],
+                'type' => $data['request']['type']
+            ];
         }
 
         //voucher
-        if ($data['request']['action'] == 'voucher'){
+        if ($data['request']['type'] == 'voucher'){
             foreach ($data['settingModel']->setting_stock_offer as $key => $value) {
                 if ($value['string']['barcode'] === $data['request']->session()->get('searchInputID') && 
                 $value['date']['end_date'] > Carbon::now() &&
                 array_search( Carbon::now()->dayOfWeek, $value['available_day']) ) {
 
                     $data['settingModel']->setting_stock_offer = [ $key => $value ];
-                    
-                    if (Setting::SettingDiscountType()[$value['discount_type']] == 'percentage') {
-                        $value =  MathHelper::Discount($value['discount_value'], $receipt['priceVAT']); //percentage to amount
-                        $percentage = $value['discount_value'];
-                    }  else {
-                        $value = $value['discount_value'];
-                        $percentage = MathHelper::PercentageDifference($company->company_discount['discount_value'], $receipt['priceVAT']);
-                    }
-                    
-                    $voucher = ['discount_type' => $value['discount_type'], 'discount_value' => $value, 
-                    'converted_value' => $value , 'converted_percentage' => $percentage ];
-
-                    $setupList[$data['request']['action']] += $data['request']->session()->get($voucher);
-                    
+                    $setupList[$data['request']['type']][] = [ 
+                        'discount_type' => $value['decimal']['discount_type'],
+                        'discount_value' => $value['decimal']['discount_value'] 
+                    ];
                     break;
-                    
+                  
                 }
-            }
-        }else{
-
-            if ($receipt) {
-                $valueTotal = 0;
-
-                foreach ($setupList[ 'voucher' ] as $key => $value) {
-                        
-                    //check if value has percentage
-
-                    if ( Setting::SettingDiscountType()[$value['discount_type']] == 'percentage' ) {
-                        $value =  MathHelper::Discount($value['discount_value'], $receipt['priceVAT']); //percentage to amount
-                        $percentage = $value['discount_value'];
-                    } else {
-                        //convert to percentage
-                        $value = $value['discount_value'];
-                        $percentage = MathHelper::PercentageDifference($company->company_discount['discount_value'], $receipt['priceVAT']);
-                       
-                    }
-                    
-                    $receipt['voucherTotal'] += ['discount_type' => $value['discount_type'], 'discount_value' => $value, 
-                    'converted_value' => $value , 'converted_percentage' => $percentage ];
-
-                    $valueTotal = $value + $value;
-                }
-
-                $receipt['voucherTotal'] = $receipt['voucherTotal'] + $valueTotal;
-            }
-        }
-        
-        //delivery
-        if ($data['request']['action'] == 'delivery'){
-
-            $setupList[$data['request']['action']] += $data['request']->session()->get($data['request']);
-           
-        }else{
-            //add delivery cost
-            if ($receipt) {
-                $receipt['deliveryTotal'] = $receipt['deliveryTotal'] + collect($setupList[ 'delivery' ])->sum('value');
-                $receipt['priceVAT'] = $receipt['priceVAT'] + $receipt['deliveryTotal'];
             }
         }
         
         //discount
-        if ($data['request'] == 'discount'){
-
-            if (Setting::SettingDiscountType()[$request['discount_type']] == 'percentage') {
-                $value =  MathHelper::Discount($request['discount_value'], $request['price']); //percentage to amount
-                $percentage = $request['discount_value'];
+        if ($data['request']['type'] == 'discount'){
+        
+            if ( Str::contains($data['request']['value'], '%') ) {
+                $discountValue = Str::remove('%', $data['request']['value']);
+                $discount_type = 0;
             }  else {
-                $value = $request['discount_value'];
-                $percentage = MathHelper::PercentageDifference($request['discount_value'], $receipt['priceVAT']);
+                $discountValue = $data['request']['value'];
+                $discount_type = 1;
             }
             
-            $receipt['discount'] = ['discount_type' => $value['discount_type'], 'discount_value' => $value, 
-            'converted_value' => $value , 'converted_percentage' => $percentage ];
             
-            $setupList[$data['request']['action']] += $data['request']->session()->get($data['request']);
+            $setupList[$data['request']['type']][] = ['discount_type' => $discount_type, 'discount_value' => $discountValue];
             
             
-        }else{
-            if ($receipt) {
-                foreach ( $setupList[ 'discount' ] as $key => $value) {
-                        
-                    //check if value has percentage
-
-                    if (Setting::SettingDiscountType()[$value['discount_type']] == 'percentage'  ) {
-                        $discountValue = Str::remove('%', $value['value']);
-                        $receipt['totalPrice'] =  $receipt['totalPrice'] - MathHelper::Discount($discountValue, $receipt['totalPrice']);
-                    } else {
-                        $discountValue = MathHelper::PercentageDifference($value['value'], $receipt['totalPrice']);
-                        $receipt['totalPrice'] = $receipt['totalPrice'] - $value['value'];
-                    }
-
-                    $receipt['voucherTotal'] = $receipt['voucherTotal'] + $value['discount_value'];
-                }
-
-                $receipt['discountTotal'] = $receipt['discountTotal'] - $receipt['voucherTotal'];
-
-            }
         }
-
          
-
-        $data['request']->session()->push('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
+     
+        $data['request']->session()->put('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
 
        
 
-        return $receipt;
+        return Setting::ReCalculate($receipt, $setupList);
         
+    }
+
+
+    //recalculate receipt
+    public static function ReCalculate($receipt, $setupList){
+
+        if ($receipt && $setupList) {
+
+            //discount
+            if (count($setupList[ 'discount' ]) > 0) {
+                
+                foreach ( $setupList[ 'discount' ] as $key => $value) {
+                    
+                    //check if value has percentage
+                    if ($value['discount_type'] == array_search('percentage', Setting::SettingDiscountType()) ) {
+                        $receipt['totalPrice'] = MathHelper::Discount($value['discount_value'], $receipt['totalPrice']);
+                        $receipt['discountPercentageTotal'] = $receipt['discountPercentageTotal'] + $value['discount_value'];
+                    } else {
+                        $receipt['totalPrice'] = $receipt['totalPrice'] - $value['discount_value'];
+                        $receipt['discountAmountTotal'] = $receipt['discountAmountTotal'] + $value['discount_value'];
+                    }
+                }
+
+                
+            }
+
+
+            if ( count($setupList[ 'delivery' ]) > 0 ) {
+                $receipt['deliveryTotal'] = $receipt['deliveryTotal'] + collect($setupList[ 'delivery' ])->sum('value');
+                $receipt['totalPrice'] = $receipt['totalPrice'] + $receipt['deliveryTotal'];
+            }
+
+            if (count($setupList[ 'voucher' ]) > 0) {
+                foreach ($setupList[ 'voucher' ] as $key => $value) {
+                        
+    
+                    //check if value has percentage
+                    if ($value['discount_type'] == array_search('percentage', Setting::SettingDiscountType()) ) {
+                        $receipt['totalPrice'] = MathHelper::Discount($value['discount_value'], $receipt['totalPrice']);
+                        $receipt['voucherPercentageTotal'] = $receipt['voucherPercentageTotal'] + $value['discount_value'];
+                    } else {
+                        $receipt['totalPrice'] = $receipt['totalPrice'] - $value['discount_value'];
+                        $receipt['voucherAmountTotal'] = $receipt['voucherAmountTotal'] + $value['discount_value'];
+                    }
+                }
+               
+            }
+
+
+
+            //customer 
+            if ( count($setupList['customer']) > 0 ){
+
+                $customer = $setupList['customer'];
+                $personModel = Person::find($customer['value']);
+                $companyModel = Company::find($personModel->persontable_id);
+
+                $a = Setting::SettingTable()
+                ->where('setting.settingtable_id', $personModel->person_id)
+                ->orwhere('setting.settingtable_id', $companyModel->company_id)
+                ->first();
+                
+
+                if ($company->company_discount) {
+
+                    if ($company->company_discount['discount_type'] == 'percentage') {
+                        $value =  MathHelper::Discount($value['discount_value'], $receipt['totalPrice']); //percentage to amount
+                        $percentage = $value['discount_value'];
+                    } else{
+                        $value = $value['discount_value'];
+                        $percentage = MathHelper::PercentageDifference($company->company_discount['discount_value'], $receipt['totalPrice']);
+                    }
+
+                    $receipt['customerDiscount'] = ['discount_type' => $value['discount_type'], 'discount_value' => $company->company_discount['discount_value'], 
+                    'converted_value' => $value, 'converted_percentage' => $percentage ];
+
+                    $receipt['totalPrice'] = $receipt['totalPrice'] - $value;
+                }
+
+            }
+
+
+            if (count($setupList['credit']) > 0) {
+                $receipt['creditTotal'] = $receipt['creditTotal'] + collect()->sum('value');
+                $receipt['totalPriceVAT'] = $receipt['totalPriceVAT'] - $receipt['creditTotal'];
+            }
+
+            if ( count($setupList[ 'cash' ]) > 0 ) {
+                $receipt['cashTotal'] = $receipt['cashTotal'] + collect()->sum('value');
+                $receipt['totalPriceVAT'] = $receipt['totalPriceVAT'] - $receipt['cashTotal'];
+            }
+
+        }
+
+        return $receipt;
     }
 
     //compare current

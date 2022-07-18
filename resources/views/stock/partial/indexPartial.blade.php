@@ -144,13 +144,28 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                                         <img class="uk-border-circle" width="40" height="40" src="images/avatar.jpg">
                                        
                                     </div>
-                                    <div class="uk-width-expand">
+                                    <div class="uk-width-auto">
                                         @if (count($stockOffer) > 0)
                                             <h3 class="uk-margin-remove-bottom"> {{$currency}} {{ MathHelper::FloatRoundUp( $stockOfferMin['total']['price'], 2) }}</h3>
                                             
                                         @else
                                             <h3 class="uk-margin-remove-bottom">{{$currency}} {{$price}}</h3>
                                         @endif
+                                    </div>
+                                    <div class="uk-width-expand">
+                                        <span class="uk-text-small uk-text-danger">
+                                            @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
+                                                @foreach ($data['settingModel']->setting_vat as $item)
+                                                    @if ($item['default'] == 0)
+                                                        {{ MathHelper::FloatRoundUp($item['rate'], 2) }}
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                @if (array_key_exists( $stock->stock_merchandise['stock_vat_id'], $data['settingModel']->setting_vat) )
+                                                        {{ MathHelper::FloatRoundUp($data['settingModel']->setting_vat[ $stock->stock_merchandise['stock_vat_id'] ]['rate'], 2) }}
+                                                @endif
+                                            @endif    
+                                        </span>
                                     </div>
                                     <div>
                                         @if (count($stockOffer) > 0)

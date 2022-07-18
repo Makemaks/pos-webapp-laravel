@@ -19,7 +19,7 @@
     <div><label id="quantityID-{{$cartValue}}" class="uk-form-width-small uk-form-small uk-text-center"> {{$quantity}} </label></div>
     <div><button type="button" id="plusID-{{$cartValue}}" onclick="Quantity(1, {{$cartValue}} )" class="uk-text-primary uk-button uk-button-default uk-border-rounded" uk-icon="plus"></button></div>   
     <div><button type="button" id="deleteID-{{$cartValue}}" onclick="Delete({{$cartValue}})" class="uk-text-danger uk-button uk-button-default uk-border-rounded" uk-icon="trash"></button></div>
-    <div><button type="button" id="deleteID-{{$cartValue}}" onclick="applyDiscount({{$cartValue}})" class="uk-button uk-button-default uk-border-rounded" uk-icon="tag"></button></div>
+    <div><button type="button" value="{{$cartValue}}" id="discountID-{{$cartValue}}" onclick="showKeypad(this)" class="uk-button uk-button-default uk-border-rounded" uk-icon="tag"></button></div>
 </div>
 
 

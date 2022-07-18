@@ -109,7 +109,7 @@ class HomeAPIController extends Controller
         elseif ($request->has('action') && $request['action'] == 'useCustomer') {
            
 
-            $setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList')[0];
+            $setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
             $setupList['customer'] = $request->all();
 
             $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
@@ -138,7 +138,7 @@ class HomeAPIController extends Controller
         }
 
         elseif ($request->has('action') && $request['action'] == 'removeCustomer') {
-            $setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList')[0];
+            $setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
             $setupList['customer'] = [];
             $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
 
@@ -173,19 +173,14 @@ class HomeAPIController extends Controller
 
         elseif ($request->has('action') && $request['action'] == 'showOrder' || $request['view'] == "0") {
             
-          
             $this->orderList = Receipt::Order('stock_store_id',  $this->userModel->store_id)
             ->orderByDesc('order_id')
             ->groupBy('order_id')
             ->paginate(20);
-
-       
            
             $this->html = view('order.partial.indexPartial', ['data' => $this->Data()])->render();
         }
-
         
-
         //retrieve person_id
         elseif($request->has('action') && $request['action'] == 'searchCustomer'){
           

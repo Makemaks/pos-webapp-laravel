@@ -39,7 +39,7 @@ class CartAPIController extends Controller
     {
         $this->init();
         $this->request = $request;
-
+        $request->session()->forget('type');
 
         if($request->has('scheme_id')){
             if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
@@ -89,10 +89,17 @@ class CartAPIController extends Controller
         }
         elseif ($request['action'] == 'setupList' && $request->has('type')) {
             $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList');
-            $request->session()->put('type', $request['type']);
+
+            if ( $request->session()->has('type') == false ) {
+                $request->session()->flash('type', $request['type']);
+            }
 
             $this->html = view('home.partial.setupListPartial', ['data' => $this->Data()])->render();
-            return response()->json(['view' => $this->view, 'success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
+            return response()->json([
+                'view' => $this->view, 
+                'action' => $request->has('action'), 
+                'type' => $request->has('type'), 
+                'success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
         }
         else{
             if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
@@ -122,12 +129,15 @@ class CartAPIController extends Controller
      //called by ajax
      public function Store(Request $request){
 
-      
+        //$request->session()->forget('type');
+
+
         $this->init();
         $this->request = $request;
         $a = $request->all();
         $this->view = 'receiptID';
-
+        $type = '';
+        $action = '';
 
         //add product to list
         if ($request->has('searchInputID') && $request->session()->has('setting_finalise_key') == false) {
@@ -176,11 +186,21 @@ class CartAPIController extends Controller
             $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
         }
          //discount
-        elseif ( $request->has('type') && $request->has('value') ){
+        elseif ( $request->has('type') && $request->has('value') && $request->session()->has('type')){
 
             //specific receipt
-           if ( is_int($request['type']) ) {
+            $aq = $request->session()->all();
 
+           if ( $request->session()->get('type') != 'discountCartList' ) {
+               //for end 
+               $request->session()->reflash('type');
+               $type = $request->session()->get('type');
+               $action = 'setupList';
+                $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
+
+           }
+           else{
+                //for receipt
                 $cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList');
                 $cartList[$request['type'] ]['stock_discount'] = $request['value'];
 
@@ -188,20 +208,20 @@ class CartAPIController extends Controller
                 $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList');
                 $request['type'] = 'discount';
                 $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
-
-           }else{
-                //$this->view = 'contentID';
-                $request->session()->put('type', $request['type']);
-                $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
-                
+               
            }
 
-           return response()->json(['view' => $this->view, 'success' => $request['type'].'Added.', 'html' => $this->html]);
+           //return response()->json(['view' => $this->view, 'success' => $request['type'].'Added.', 'html' => $this->html]);
 
         }
         
       
-        return response()->json(['view' => $this->view, 'success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
+        return response()->json([
+            'view' => $this->view,
+            'type' => $type,
+            'action' => $action,
+            'success'=>'Got Simple Ajax Request.', 'html' => $this->html
+        ]);
 
     }
 
@@ -263,7 +283,7 @@ class CartAPIController extends Controller
         $this->init();
         $this->request = $request;
 
-        if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
+        if($request->session()->has('type') == false && $request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
             //remove session
             $this->cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList'); 
 
@@ -274,7 +294,7 @@ class CartAPIController extends Controller
 
             $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
         }
-        elseif ($request->has('action') && $id != 0) {
+        elseif ($request->session()->has('type') && $id != 0) {
           
              //remove session
              $this->setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList'); 
@@ -287,7 +307,7 @@ class CartAPIController extends Controller
              $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
             return response()->json(['view' => $this->view, 'success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
         }
-        elseif ($request->has('action') && $id == 0) {
+        elseif ($request->session()->has('type') && $id == 0) {
           
             //remove session
             $this->setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList'); 

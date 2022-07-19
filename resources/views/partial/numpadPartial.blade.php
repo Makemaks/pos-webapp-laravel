@@ -130,12 +130,7 @@
             searchInputID.value = str.slice(0, -1);
         } 
         else if (element.innerText == 'Enter') {
-            var buttonType = sessionStorage.getItem('buttonType');
-            if (buttonType) {
-                var buttonType = document.getElementById(sessionStorage.getItem('buttonType'));
-                update(buttonType); //call function
-               
-            }
+            update(element);
           
         } 
         else if (element.innerText == 'Aa') {

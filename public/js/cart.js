@@ -258,10 +258,9 @@ function emptyFields(elementID){
     }
 }
 
-function update(element){
+function update(){
 
-    //var value = document.getElementById(sessionStorage.getItem('inputID')).value;
-    var element = document.getElementById(element.id);
+   
     var searchInputID = document.getElementById('searchInputID');
     var cartCountID = document.getElementById('cartCountID'); 
 
@@ -270,12 +269,17 @@ function update(element){
                 url:"/cart-api",
                 method: 'POST',
                 data: {
-                    type: element.value,
+                    type: '',
                     value: searchInputID.value,
                 },      
                 success:function(data){
-                    document.getElementById(data['view']).innerHTML = data['html'];
-                    setFocus(element.id);
+                    document.getElementById('receiptID').innerHTML = data['html'];
+                    setFocus('searchInputID');
+                    
+                    if (data['type']) {
+                        showSetupList(data['type']);
+                    }
+
                     if (sessionStorage.getItem('openKeypad') == "true") {
                         closeKeypad();
                     }
@@ -288,7 +292,7 @@ function update(element){
    }
 }
 
-function addSetupList(element){
+function addSetupList(type){
 
     var searchInputID = document.getElementById('searchInputID');
     var cartCountID = document.getElementById('cartCountID'); 
@@ -298,7 +302,7 @@ function addSetupList(element){
             url:"/cart-api",
             method: 'POST',
             data: {
-                type: element.value,
+                type: type,
                 value: searchInputID.value,
             },      
             success:function(data){
@@ -311,13 +315,13 @@ function addSetupList(element){
    
 }
 
-function showSetupList(element){
+function showSetupList(type){
     $.ajax({        
         url:"/cart-api",
         method: 'GET',
         data: {
             action: "setupList",
-            type: element.value
+            type: type
         },      
         success:function(data){
             document.getElementById('contentID').innerHTML = data['html']; 
@@ -330,7 +334,7 @@ function deleteSetupList(id){
         url:"/cart-api/"+id,
         method: 'DELETE',
         data: {
-            action: setup
+            action: "setupList"
            
         },      
         success:function(data){

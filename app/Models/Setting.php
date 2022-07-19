@@ -520,43 +520,43 @@ class Setting extends Model
 
 
         //cash
-        if ($data['request']['type'] == 'cash') {
+        if ($data['request']->session()->get('type') == 'cash') {
             $setupList[$data['request']][] = [
                 'value' => $data['request']['value'],
-                'type' => $data['request']['type']
+                'type' => $data['request']->session()->get('type')
             ];
         }
         
         //credit
-        if ($data['request']['type'] == 'credit'){
+        if ($data['request']->session()->get('type') == 'credit'){
             $customer =  $setupList['customer'];
             $this->personModel = Person::find($customer['value']);
 
             $setupList[$data['request']][] = [
                 'value' => $data['request']['value'],
-                'type' => $data['request']['type']
+                'type' => $data['request']->session()->get('type')
             ];
 
         }
         
           //delivery
-        if ($data['request']['type'] == 'delivery'){
+        if ($data['request']->session()->get('type') == 'delivery'){
 
-            $setupList[$data['request']][] = [
+            $setupList[$data['request']->session()->get('type')][] = [
                 'value' => $data['request']['value'],
-                'type' => $data['request']['type']
+                'type' => $data['request']->session()->get('type')
             ];
         }
 
         //voucher
-        if ($data['request']['type'] == 'voucher'){
+        if ($data['request']->session()->get('type') == 'voucher'){
             foreach ($data['settingModel']->setting_stock_offer as $key => $value) {
                 if ($value['string']['barcode'] === $data['request']->session()->get('searchInputID') && 
                 $value['date']['end_date'] > Carbon::now() &&
                 array_search( Carbon::now()->dayOfWeek, $value['available_day']) ) {
 
                     $data['settingModel']->setting_stock_offer = [ $key => $value ];
-                    $setupList[$data['request']['type']][] = [ 
+                    $setupList[$data['request']->session()->get('type')][] = [ 
                         'discount_type' => $value['decimal']['discount_type'],
                         'discount_value' => $value['decimal']['discount_value'] 
                     ];
@@ -567,18 +567,21 @@ class Setting extends Model
         }
         
         //discount
-        if ($data['request']['type'] == 'discount'){
+        if ($data['request']->session()->get('type') == 'discount'){
         
             if ( Str::contains($data['request']['value'], '%') ) {
                 $discountValue = Str::remove('%', $data['request']['value']);
                 $discount_type = 0;
-            }  else {
+                $setupList[$data['request']->session()->get('type')][] = ['discount_type' => $discount_type, 'discount_value' => $discountValue];
+            }  
+            elseif($data['request']['value'] != null) {
                 $discountValue = $data['request']['value'];
                 $discount_type = 1;
+                $setupList[$data['request']->session()->get('type')][] = ['discount_type' => $discount_type, 'discount_value' => $discountValue];
             }
             
             
-            $setupList[$data['request']['type']][] = ['discount_type' => $discount_type, 'discount_value' => $discountValue];
+            
             
             
         }

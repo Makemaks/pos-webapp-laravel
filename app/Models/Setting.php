@@ -520,7 +520,7 @@ class Setting extends Model
 
 
         //cash
-        if ($data['request']->session()->get('type') == 'cash') {
+        if ($data['request']->session()->get('type') == 'cash' && $data['request']['value']) {
             $setupList[$data['request']][] = [
                 'value' => $data['request']['value'],
                 'type' => $data['request']->session()->get('type')
@@ -528,7 +528,7 @@ class Setting extends Model
         }
         
         //credit
-        if ($data['request']->session()->get('type') == 'credit'){
+        if ($data['request']->session()->get('type') == 'credit' && $data['request']['value']){
             $customer =  $setupList['customer'];
             $this->personModel = Person::find($customer['value']);
 
@@ -540,7 +540,7 @@ class Setting extends Model
         }
         
           //delivery
-        if ($data['request']->session()->get('type') == 'delivery'){
+        if ($data['request']->session()->get('type') == 'delivery' && $data['request']['value']){
 
             $setupList[$data['request']->session()->get('type')][] = [
                 'value' => $data['request']['value'],
@@ -549,7 +549,7 @@ class Setting extends Model
         }
 
         //voucher
-        if ($data['request']->session()->get('type') == 'voucher'){
+        if ($data['request']->session()->get('type') == 'voucher' && $data['request']['value']){
             foreach ($data['settingModel']->setting_stock_offer as $key => $value) {
                 if ($value['string']['barcode'] === $data['request']->session()->get('searchInputID') && 
                 $value['date']['end_date'] > Carbon::now() &&
@@ -567,7 +567,7 @@ class Setting extends Model
         }
         
         //discount
-        if ($data['request']->session()->get('type') == 'discount'){
+        if ($data['request']->session()->get('type') == 'discount' && $data['request']['value']){
         
             if ( Str::contains($data['request']['value'], '%') ) {
                 $discountValue = Str::remove('%', $data['request']['value']);
@@ -579,10 +579,6 @@ class Setting extends Model
                 $discount_type = 1;
                 $setupList[$data['request']->session()->get('type')][] = ['discount_type' => $discount_type, 'discount_value' => $discountValue];
             }
-            
-            
-            
-            
             
         }
          
@@ -656,17 +652,17 @@ class Setting extends Model
                 ->first();
                 
 
-                if ($company->company_discount) {
+                if ( $companyModel->company_discount) {
 
-                    if ($company->company_discount['discount_type'] == 'percentage') {
+                    if ($companyModel->company_discount['discount_type'] == 'percentage') {
                         $value =  MathHelper::Discount($value['discount_value'], $receipt['totalPrice']); //percentage to amount
                         $percentage = $value['discount_value'];
                     } else{
                         $value = $value['discount_value'];
-                        $percentage = MathHelper::PercentageDifference($company->company_discount['discount_value'], $receipt['totalPrice']);
+                        $percentage = MathHelper::PercentageDifference($companyModel->company_discount['discount_value'], $receipt['totalPrice']);
                     }
 
-                    $receipt['customerDiscount'] = ['discount_type' => $value['discount_type'], 'discount_value' => $company->company_discount['discount_value'], 
+                    $receipt['customerDiscount'] = ['discount_type' => $value['discount_type'], 'discount_value' => $companyModel->company_discount['discount_value'], 
                     'converted_value' => $value, 'converted_percentage' => $percentage ];
 
                     $receipt['totalPrice'] = $receipt['totalPrice'] - $value;

@@ -4,7 +4,7 @@
     $closeControlID = 'hidden';
 
 
-   
+    $a = Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'customer');
 
     if ( count( Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'customer') ) > 0 ) {
         

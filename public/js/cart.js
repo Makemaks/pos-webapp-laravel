@@ -329,7 +329,7 @@ function showSetupList(type){
     });
 }
 
-function deleteSetupList(id){
+function deleteSetupList(id = null){
     $.ajax({        
         url:"/cart-api/"+id,
         method: 'DELETE',
@@ -338,7 +338,8 @@ function deleteSetupList(id){
            
         },      
         success:function(data){
-            document.getElementById('contentID').innerHTML = data['html']; 
+            document.getElementById('receiptID').innerHTML = data['html']; 
+            showSetupList(data['type']);
         }
     });
 }

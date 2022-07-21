@@ -31,8 +31,7 @@ class CartAPIController extends Controller
    
     private $personList;
     private $discount;
-    private $html = '';
-    private $view = 'contentID';
+    private $html;
     private $request;
    
     public function index(Request $request)
@@ -96,9 +95,9 @@ class CartAPIController extends Controller
 
             $this->html = view('home.partial.setupListPartial', ['data' => $this->Data()])->render();
             return response()->json([
-                'view' => $this->view, 
-                'action' => $request->has('action'), 
-                'type' => $request->has('type'), 
+               
+                'action' => $request['action'], 
+                'type' => $request['type'], 
                 'success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
         }
         else{
@@ -196,7 +195,7 @@ class CartAPIController extends Controller
                $request->session()->reflash('type');
                $type = $request->session()->get('type');
                $action = 'setupList';
-                $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
+               $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
 
            }
            else{
@@ -220,7 +219,8 @@ class CartAPIController extends Controller
             'view' => $this->view,
             'type' => $type,
             'action' => $action,
-            'success'=>'Got Simple Ajax Request.', 'html' => $this->html
+            'success'=>'Got Simple Ajax Request.', 
+            'html' => $this->html
         ]);
 
     }
@@ -282,6 +282,8 @@ class CartAPIController extends Controller
     {
         $this->init();
         $this->request = $request;
+        $type = $request->session()->get('type');
+        $action = 'setupList';
 
         if($request->session()->has('type') == false && $request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
             //remove session
@@ -292,37 +294,40 @@ class CartAPIController extends Controller
 
             $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList', $this->cartList);
 
-            $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
+           
         }
-        elseif ($request->session()->has('type') && $id != 0) {
+        elseif ($request->session()->has('type') && $id != 'null') {
           
              //remove session
              $this->setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList'); 
 
-             unset($this->setupList[$request['type']][$id]);
-             $this->setupList = array_values($this->setupList);
+             unset($this->setupList[ $request->session()->get('type') ][$id]);
+            
  
              $request->session()->put('user-session-'.Auth::user()->user_id.'.setupList', $this->setupList);
  
              $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
-            return response()->json(['view' => $this->view, 'success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
+            
         }
-        elseif ($request->session()->has('type') && $id == 0) {
+        elseif ($request->session()->has('type') && $id == 'null') {
           
             //remove session
             $this->setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList'); 
 
-            $this->setupList[ $request['type'] ]= [];
+            $this->setupList[  $request->session()->get('type')  ]= [];
          
 
             $request->session()->put('user-session-'.Auth::user()->user_id.'.setupList', $this->setupList);
 
             $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
-           return response()->json(['view' => $this->view, 'success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
        }
 
 
-        return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
+       return response()->json([
+        'action' => $action, 
+        'type' => $type, 
+        'success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
+      
     }
 
     private function Data(){

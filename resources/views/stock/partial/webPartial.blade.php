@@ -59,8 +59,8 @@
                                                             <select class="uk-select" name="stock_web[{{$keyStockweb}}][{{$key}}]">
                                                                 <option selected="selected" disabled>SELECT ...</option>
                                                             
-                                                                @foreach ($data['settingModel']->setting_stock_offer as $keyOffer => $setting_stock_offer)
-                                                                     <option value="{{$stock}}" @if($stock == $keyOffer) selected @endif>{{$setting_stock_offer['string']['description']}}</option>
+                                                                @foreach ($data['settingModel']->setting_offer as $keyOffer => $setting_offer)
+                                                                     <option value="{{$stock}}" @if($stock == $keyOffer) selected @endif>{{$setting_offer['string']['description']}}</option>
                                                                 @endforeach
                                                             
                                                             </select>
@@ -117,9 +117,9 @@
                                                 <select class="uk-select" name="form[stock_web][{{$key}}]">
                                                     <option selected="selected" disabled>SELECT ...</option>
                                                 
-                                                    @foreach ($data['settingModel']->setting_stock_offer as $key => $setting_stock_offer)
+                                                    @foreach ($data['settingModel']->setting_offer as $key => $setting_offer)
                                                             
-                                                          <option value="stock_web[{{$keyStockweb}}][{{$key}}]">{{$setting_stock_offer['string']['description']}}</option>
+                                                          <option value="stock_web[{{$keyStockweb}}][{{$key}}]">{{$setting_offer['string']['description']}}</option>
                                                             
                                                     @endforeach
                                                 

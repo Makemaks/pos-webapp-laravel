@@ -98,7 +98,7 @@ class SettingFactory extends Factory
 
             $setting_stock_printer[] = $i + 1;
 
-            $setting_stock_offer[$i + 1] = [
+            $setting_offer[$i + 1] = [
                 "decimal" => [
                     "gain" => $this->faker->numberBetween($min = 1, $max = 500),
                     "collect" => $this->faker->numberBetween($min = 1, $max = 500),
@@ -215,7 +215,7 @@ class SettingFactory extends Factory
 
         return [
             
-            'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 10),
+            'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 20),
             'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company', 'Organisation')),
             'setting_api' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
@@ -226,7 +226,7 @@ class SettingFactory extends Factory
 
             'setting_stock_nutrition' => $stock_nutrition,
             'setting_stock_allergen' => $stock_allergen,
-            'setting_stock_offer' => $setting_stock_offer,
+            'setting_offer' => $setting_offer,
             'setting_stock_set_menu' => $setting_stock_set_menu,
 
             'setting_stock_case_size' => $setting_stock_case_size,

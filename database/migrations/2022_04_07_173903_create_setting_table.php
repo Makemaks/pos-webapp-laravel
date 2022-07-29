@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements('setting_id');
             
             $table->bigInteger('settingtable_id');
-            $table->string('settingtable_type')->comment('company::person');
+            $table->string('settingtable_type')->comment('company::person::organisation');
 
             $table->json('setting_currency')->nullable();
             $table->json('setting_logo')->nullable();
@@ -52,7 +52,7 @@ return new class extends Migration
 
             $table->json('setting_stock_allergen')->nullable();
             $table->json('setting_stock_nutrition')->nullable();
-            $table->json('setting_stock_offer')->nullable();
+            $table->json('setting_offer')->nullable();
 
             $table->json('setting_stock_set_menu')->nullable();
             $table->json('setting_api')->nullable();

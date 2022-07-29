@@ -18,9 +18,11 @@
         $showCustomerID = '';
     }
 
+  
+
     if ( Session::has('user-session-'.Auth::user()->user_id.'.'.'cartList') ) {
         
-        if (Session::has('edit_cart') && count('user-session-'.Auth::user()->user_id.'.'.'cartList')   >= 1) {
+        if (Session::has('edit_cart') && count(Session::get('user-session-'.Auth::user()->user_id.'.'.'cartList'))   >= 1) {
             $a = Session::get('user-session-'.Auth::user()->user_id.'.'.'cartList');
             $openControlID = 'hidden';
             $closeControlID = '';

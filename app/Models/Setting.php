@@ -209,7 +209,7 @@ class Setting extends Model
             
         }',
 
-        'setting_stock_offer' => '{
+        'setting_offer' => '{
             "1": {
                 
                 "points": {
@@ -344,7 +344,7 @@ class Setting extends Model
 
         'setting_stock_allergen' => 'array',
         'setting_stock_nutrition' => 'array',
-        'setting_stock_offer' => 'array',
+        'setting_offer' => 'array',
         "setting_stock_set_menu" => 'array',
 
         "setting_stock_recipe" => 'array',
@@ -417,7 +417,7 @@ class Setting extends Model
       
     }
 
-    public static function SettingDiscountType()
+    public static function SettingOfferType()
     {
         return [
             "percentage",
@@ -494,7 +494,7 @@ class Setting extends Model
         return collect($setting->setting_key)->where('setting_key_type', $key)->first();
     }
 
-    public static function DiscountType(){
+    public static function OfferType(){
         return [
             'voucher', //coupons
             'discount', //one offs
@@ -550,12 +550,12 @@ class Setting extends Model
 
         //voucher
         if ($data['request']->session()->get('type') == 'voucher' && $data['request']['value']){
-            foreach ($data['settingModel']->setting_stock_offer as $key => $value) {
+            foreach ($data['settingModel']->setting_offer as $key => $value) {
                 if ($value['string']['barcode'] === $data['request']->session()->get('searchInputID') && 
                 $value['date']['end_date'] > Carbon::now() &&
                 array_search( Carbon::now()->dayOfWeek, $value['available_day']) ) {
 
-                    $data['settingModel']->setting_stock_offer = [ $key => $value ];
+                    $data['settingModel']->setting_offer = [ $key => $value ];
                     $setupList[$data['request']->session()->get('type')][] = [ 
                         'discount_type' => $value['decimal']['discount_type'],
                         'discount_value' => $value['decimal']['discount_value'] 
@@ -603,7 +603,7 @@ class Setting extends Model
                 foreach ( $setupList[ 'discount' ] as $key => $value) {
                     
                     //check if value has percentage
-                    if ($value['discount_type'] == array_search('percentage', Setting::SettingDiscountType()) ) {
+                    if ($value['discount_type'] == array_search('percentage', Setting::SettingOfferType()) ) {
                         $receipt['totalPrice'] = MathHelper::Discount($value['discount_value'], $receipt['totalPrice']);
                         $receipt['discountPercentageTotal'] = $receipt['discountPercentageTotal'] + $value['discount_value'];
                     } else {
@@ -626,7 +626,7 @@ class Setting extends Model
                         
     
                     //check if value has percentage
-                    if ($value['discount_type'] == array_search('percentage', Setting::SettingDiscountType()) ) {
+                    if ($value['discount_type'] == array_search('percentage', Setting::SettingOfferType()) ) {
                         $receipt['totalPrice'] = MathHelper::Discount($value['discount_value'], $receipt['totalPrice']);
                         $receipt['voucherPercentageTotal'] = $receipt['voucherPercentageTotal'] + $value['discount_value'];
                     } else {
@@ -646,26 +646,36 @@ class Setting extends Model
                 $personModel = Person::find($customer['value']);
                 $companyModel = Company::find($personModel->persontable_id);
 
-                $a = Setting::SettingTable()
-                ->where('setting.settingtable_id', $personModel->person_id)
-                ->orwhere('setting.settingtable_id', $companyModel->company_id)
-                ->first();
+                if ($personModel) {
+                    $settingModel = Setting::SettingTable()
+                    ->where('setting.settingtable_id', $companyModel->company_id)
+                    ->first();
+                }
+                
+                if ($companyModel) {
+                    $settingModel = Setting::SettingTable()
+                    ->where('setting.settingtable_id', $personModel->person_id)
+                    ->first();
+                }
+                
                 
 
-                if ( $companyModel->company_discount) {
+                if ($settingModel) {
+                    if ( $settingModel->setting_offer) {
 
-                    if ($companyModel->company_discount['discount_type'] == 'percentage') {
-                        $value =  MathHelper::Discount($value['discount_value'], $receipt['totalPrice']); //percentage to amount
-                        $percentage = $value['discount_value'];
-                    } else{
-                        $value = $value['discount_value'];
-                        $percentage = MathHelper::PercentageDifference($companyModel->company_discount['discount_value'], $receipt['totalPrice']);
+                        if ($settingModel->setting_offer['discount_type'] == 'percentage') {
+                            $value =  MathHelper::Discount($value['discount_value'], $receipt['totalPrice']); //percentage to amount
+                            $percentage = $value['discount_value'];
+                        } else{
+                            $value = $value['discount_value'];
+                            $percentage = MathHelper::PercentageDifference($settingModel->setting_offer['discount_value'], $receipt['totalPrice']);
+                        }
+    
+                        $receipt['customerDiscount'] = ['discount_type' => $value['discount_type'], 'discount_value' => $settingModel->setting_offer['discount_value'], 
+                        'converted_value' => $value, 'converted_percentage' => $percentage ];
+    
+                        $receipt['totalPrice'] = $receipt['totalPrice'] - $value;
                     }
-
-                    $receipt['customerDiscount'] = ['discount_type' => $value['discount_type'], 'discount_value' => $companyModel->company_discount['discount_value'], 
-                    'converted_value' => $value, 'converted_percentage' => $percentage ];
-
-                    $receipt['totalPrice'] = $receipt['totalPrice'] - $value;
                 }
 
             }
@@ -692,17 +702,17 @@ class Setting extends Model
         $stockOffer = [];
         
 
-        if ($stock->stock_merchandise['stock_offer_id']) {
+        if ($stock->stock_merchandise['setting_offer_id']) {
 
             $userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
 
             $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
 
-            $setting_stock_offer = collect($settingModel->setting_stock_offer)->only( $stock->stock_merchandise['stock_offer_id'] );
+            $setting_offer = collect($settingModel->setting_offer)->only( $stock->stock_merchandise['setting_offer_id'] );
 
             //filter offer by date 
-            foreach ($setting_stock_offer as $stock_offer_key => $stock_offer_value) {
+            foreach ($setting_offer as $stock_offer_key => $stock_offer_value) {
                 if ( $stock_offer_value['date']['start_date'] >= Carbon::now() && $offerType == $stock_offer_value['boolean']['type']) {
                     
                     //discount days
@@ -728,7 +738,7 @@ class Setting extends Model
 
         foreach ($settingCurrentOffer as $settingCurrentOfferKey => $settingCurrentOfferValue) {
             
-            if (Setting::SettingDiscountType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
+            if (Setting::SettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
 
                 $settingCurrentOfferType = ['price'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)];
                

@@ -102,7 +102,7 @@ class Receipt extends Model
                 'stock_cost' => MathHelper::FloatRoundUp($cost, 2),
                 'stock_vat_id' => $stock->stock_merchandise['stock_vat_id'],
                 'stock_discount' => $sessionCart['stock_discount'], //manually added
-                'stock_offer_id' =>  $stock->stock_merchandise['stock_offer_id']
+                'setting_offer_id' =>  $stock->stock_merchandise['setting_offer_id']
             ];
         } 
 
@@ -132,7 +132,7 @@ class Receipt extends Model
                 'stock_cost' => MathHelper::FloatRoundUp($cost, 2),
                 'stock_vat_id' => $stock->stock_merchandise['stock_vat_id'],
                 'stock_discount' => json_decode($receipt['receipt_discount'], true), //manually added
-                'stock_offer_id' =>  $stock->stock_merchandise['stock_offer_id']
+                'setting_offer_id' =>  $stock->stock_merchandise['setting_offer_id']
             ];
         } 
 
@@ -148,9 +148,9 @@ class Receipt extends Model
         $stockItem['stock_vat_id'] = $stock->stock_merchandise['stock_vat_id'];
 
         //stock current offer
-        if ($stockItem['stock_offer_id']) {
+        if ($stockItem['setting_offer_id']) {
             
-            $settingCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::DiscountType()) );
+            $settingCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::OfferType()) );
             
             //if there is an offer on stock
             if ($settingCurrentOffer) {
@@ -158,7 +158,7 @@ class Receipt extends Model
                 $stockCostMin = Stock::StockCostMin( $receipt['settingCurrentOfferType'] );
                 
                 $receipt['price'] = $stockCostMin['total']['price'];
-                $receipt['subTotal'] = $receipt['price'] - $receipt['subTotal'];
+                $receipt['subTotal'] = $receipt['price'] + $receipt['subTotal'];
             }
             
         }
@@ -170,8 +170,6 @@ class Receipt extends Model
         if ($stockItem['stock_vat_id']) {
             $receipt['stock_vat_rate'] = $data['settingModel']->setting_vat[$stockItem['stock_vat_id']]['rate'];
             $receipt['price'] = MathHelper::VAT($receipt['stock_vat_rate'], $receipt['price']);
-            $receipt['subTotal'] = $receipt['subTotal'] + $receipt['price'];
-        } else {
             $receipt['subTotal'] = $receipt['subTotal'] + $receipt['price'];
         }
 

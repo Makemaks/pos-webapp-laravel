@@ -124,8 +124,8 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                         }
 
                         //find discount
-                        if ($stock->stock_merchandise['stock_offer_id']) {
-                            $stockCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::DiscountType()));
+                        if ($stock->stock_merchandise['setting_offer_id']) {
+                            $stockCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::OfferType()));
                             $stockOffer = Setting::SettingCurrentOfferType( $stockCurrentOffer, $price );
                         }
 
@@ -153,7 +153,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                                         @endif
                                     </div>
                                     <div class="uk-width-expand">
-                                        <span class="uk-text-small uk-text-danger">
+                                        <span class="uk-text-small uk-text-warning">
                                             @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
                                                 @foreach ($data['settingModel']->setting_vat as $item)
                                                     @if ($item['default'] == 0)

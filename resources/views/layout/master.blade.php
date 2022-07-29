@@ -65,7 +65,7 @@ $route = Str::before(Request::route()->getName(), '.');
             @auth
                 
                 @if ($route == 'home')
-                    <div class="uk-width-1-3@xl uk-padding-small">
+                    <div class="uk-width-1-3@s uk-padding-small">
 
                         @if($route == 'home')
                         

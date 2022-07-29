@@ -117,7 +117,7 @@
         @if ($receipt['cashTotal'] > 0)
             
             <div class="uk-margin-remove-top">Cash {{$currency}}
-                <span class="uk-text-danger" uk-icon="close" onclick="showSetupList()"></span>
+                <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('cash')"></span>
             </div>
             <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['cashTotal'])}}</div>
            

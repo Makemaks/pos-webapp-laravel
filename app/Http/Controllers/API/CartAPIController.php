@@ -152,7 +152,7 @@ class CartAPIController extends Controller
                 $requestInput['stock_name'] = $this->stockModel->stock_merchandise['stock_name'];
                 $requestInput['stock_cost'] = $this->stockModel->stock_cost[1][1]['price'];
                 $requestInput['stock_quantity'] = 1;
-                $requestInput['stock_discount'] = [];
+                $requestInput['stock_discount'] = 0;
                
            
                 //$requestInput['plan'] = '';
@@ -169,7 +169,7 @@ class CartAPIController extends Controller
 
             //add to cart
             $requestInput = $request->all();
-            $requestInput['stock_discount'] = [];
+            $requestInput['stock_discount'] = 0;
             $requestInput += ['user_id' => Auth::user()->user_id];
            
             $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $requestInput);

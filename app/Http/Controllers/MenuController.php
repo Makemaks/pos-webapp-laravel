@@ -106,7 +106,7 @@ class MenuController extends Controller
                 $request->session()->flash('type', $type);
                 
                
-                return view('menu.setting.group', ['data' => $this->Data()]);
+                return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
 
                 break;
           

@@ -7,7 +7,7 @@ use App\Models\Project;
 @endphp
 
 @section('content')
-    @include('menu.partial.settingMenuPartial')
+    @include('partial.subNavigationPartial')
     @include('menu.partial.settingStockGroupPartial')
 @endsection
 

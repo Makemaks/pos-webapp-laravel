@@ -1,6 +1,5 @@
 @php
     use App\Models\Setting;
-    
 @endphp
 
 
@@ -28,10 +27,10 @@
                     </thead>
 
                     <tbody>
-                    
                         
+                       
                         @foreach ($data['settingModel']->setting_stock_group  as $keysetting_stock_group => $setting_stock_group)
-                            @if ($setting_stock_group['type'] == Session::get('view'))
+                            @if ($setting_stock_group['type'] == Session::get('type'))
                                 <tr>
                                     <td>
                                         <button class="uk-button uk-button-default uk-border-rounded">{{$keysetting_stock_group}}</button>
@@ -48,7 +47,7 @@
                                                     <select class="uk-select" name="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]">
                                                         <option selected="selected" disabled>SELECT ...</option>
                                                     
-                                                        @foreach (Setting::SettingGroup() as $key => $setting_group)
+                                                        @foreach (Setting::SettingStockGroup() as $key => $setting_group)
                                                                 
                                                             <option @if($key == $setting_stock_group['type']) selected @endif value="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]">
                                                                 {{Str::upper($setting_group)}}
@@ -69,10 +68,12 @@
                                     @endforeach
 
                                     <td>
-                                        <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockCost({{$keysetting_stock_group}})"></button>
+                                        {{-- <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockCost({{$keysetting_stock_group}})"></button> --}}
+                                        <div class="uk-width-auto"><a class="uk-button uk-button-default uk-border-rounded" uk-icon="icon: pencil" href="{{route('setting.edit', ['setting' =>$data['settingModel']->setting_id,  'index' => $keysetting_stock_group])}}"></a></div>
+                                        <div class="uk-width-auto"><a uk-toggle="target: #modal-{{$data['settingModel']->setting_id}}-{{$keysetting_stock_group}}" class="uk-button uk-button-default uk-border-rounded uk-text-danger" uk-icon="icon: trash"></a></div>
                                     </td>
                                 </tr>
-                            
+                                @include('partial.modalPartial', ['model_id' => $data['settingModel']->setting_id.'-'.$keysetting_stock_group])
                             @endif
                         @endforeach
                     </tbody>
@@ -83,5 +84,10 @@
 
     </li>
 
-    <li>Add form</li>
+    <li>
+        <form action="{{ route('setting.store') }}" method="POST">
+            @csrf
+            @include('menu.partial.createPartial')
+        </form>
+    </li>
 </ul>

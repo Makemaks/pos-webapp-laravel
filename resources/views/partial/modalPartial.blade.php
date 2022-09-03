@@ -1,8 +1,9 @@
 <!-- This is the modal -->
 @php
-$route = Str::before(Request::route()->getName(), '.');
+
+$route = Str::after(Request::route()->getName(), '.');
 $action = Str::after(Request::route()->getName(), '.');
-$model_id = $data['userModel']->user_id;
+// $model_id = $data['userModel']->user_id;
 
 @endphp
 <div id="modal-{{ $model_id }}" uk-modal>

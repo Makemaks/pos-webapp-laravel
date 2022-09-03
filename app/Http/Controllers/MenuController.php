@@ -92,7 +92,6 @@ class MenuController extends Controller
    public function setting(Request $request){
     $request->session()->flash('view', $request->view);
     $request->session()->flash('action', $request->route()->getActionMethod());
-     
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
     

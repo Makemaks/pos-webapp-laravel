@@ -20,6 +20,7 @@ class Account extends Model
                 "1": {
                     "type": "",
                     "description": "",
+                    "reason": "",
                     "start_time": "",
                     "end_time": "",
                     "user_id": {},

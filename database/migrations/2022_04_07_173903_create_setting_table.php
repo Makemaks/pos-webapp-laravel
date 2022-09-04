@@ -59,12 +59,8 @@ return new class extends Migration
             $table->json('setting_reason')->nullable();
             
             $table->json('setting_group')->nullable();
-           
-            $table->json('setting_marketing')->nullable();
-            $table->float('setting_credit')->nullable();
-
-            $table->json('setting_blacklist')->nullable();
-
+            $table->json('setting_customer')->nullable();
+          
 
            
            

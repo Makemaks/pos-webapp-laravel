@@ -207,9 +207,19 @@ class SettingFactory extends Factory
     
         $isoCount = count(CountryHelper::ISO());
         $setting_group = [
-            'default_country' => $this->faker->numberBetween($min = 1, $max = $isoCount),
-            'stock_cost' => 5,
-            'special_stock_cost' => 2
+            'default_country' => $this->faker->numberBetween($min = 1, $max = $isoCount)
+        ];
+
+       
+        for ($i = 0; $i < $this->faker->numberBetween($min = 1, $max = 10); $i++) {
+            $customer_print[$i + 1] = $this->faker->numberBetween($min = 1, $max = 10);
+        }
+        $customer_stock_cost[$this->faker->numberBetween($min = 1, $max = 5)] = [$this->faker->numberBetween($min = 1, $max = 10)];
+        $setting_customer = [
+            "customer_stock_cost" => $customer_stock_cost,
+            "customer_credit" =>  $this->faker->numberBetween($min = 0, $max = 200),
+            "customer_print" => $customer_print, //ConfigHelper::SettingCustomerPrint(),
+            "customer_marketing" => $this->faker->numberBetween($min = 0, $max = 1),
         ];
 
 
@@ -236,6 +246,8 @@ class SettingFactory extends Factory
             'setting_key' => $setting_key,
             'setting_key_type' => $setting_key_type,
             'setting_group' => $setting_group,
+            'setting_customer' => $setting_customer,
+           
             
         ];
     }

@@ -300,12 +300,30 @@ class Stock extends Model
 
          //get customer id from session
         if (Session::has('user-session-'.Auth::user()->user_id.'.'.'customerCartList')) {
-            $person_id = Session::get('user-session-'.Auth::user()->user_id.'.'.'customerCartList')[0]['value'];
-            $pesonModel = Person::find($person_id);
+            $customer = Session::get('user-session-'.Auth::user()->user_id.'.'.'customerCartList')[0]['value'];
+        
 
-            if ($pesonModel->person_stock_cost) {
-                $price = $stock_cost[ $pesonModel->person_stock_cost[1]['column'] ][ $pesonModel->person_stock_cost[1]['row'] ]['price'];
-            }
+          
+                $personModel = Person::find($customer);
+                $companyModel = Company::find($personModel->persontable_id);
+
+                if ($companyModel) {
+                    $settingModel = Setting::SettingTable()
+                    ->where('setting.settingtable_id', $companyModel->person_id)
+                    ->first();
+                }
+                elseif ($personModel) {
+                    $settingModel = Setting::SettingTable()
+                    ->where('setting.settingtable_id', $personModel->person_id)
+                    ->first();
+                }
+                
+                
+
+                foreach ($settingModel->setting_customer['customer_stock_cost'] as $key => $value) {
+                    //column row
+                    $price = $stock_cost[ $key ][ $value ]['price'];
+                }
        } 
 
        //find discount-show on till button and checkout

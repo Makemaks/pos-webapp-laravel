@@ -15,7 +15,7 @@
                        
                             <th>REF</th>
                             <th>NAME</th>
-                            @for ($i = 0; $i < $data['settingModel']->setting_group['special_stock_cost']; $i++)
+                            @for ($i = 0; $i < count($data['settingModel']->setting_group); $i++)
                                 <th>{{$i + 1}}</th>
                             @endfor
                             <th>KPCAT</th>

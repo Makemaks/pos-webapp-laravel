@@ -115,6 +115,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                         $stockOffer = [];
                         $stockCurrentOffer = [];
                         
+                      
 
                         $price = MathHelper::FloatRoundUp(Stock::StockCostCustomer($stock->stock_cost), 2);
                         //check if customer has price

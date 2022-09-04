@@ -1,7 +1,7 @@
 <!-- This is the modal -->
 @php
 
-$route = Str::after(Request::route()->getName(), '.');
+$route = Str::before(Request::route()->getName(), '.');
 $action = Str::after(Request::route()->getName(), '.');
 // $model_id = $data['userModel']->user_id;
 

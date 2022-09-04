@@ -84,15 +84,18 @@ class SettingController extends Controller
 
     public function Edit(Request $request, $setting)
     {
-        $setting = Setting::find($setting);
+        $this->settingModel = Setting::find($setting);
 
         // Check condition from url to edit setting_stock_group
         if($request->has('index')) {
-            $edit_setting_stock_group = $setting->setting_stock_group;
+           /*  $edit_setting_stock_group = $setting->setting_stock_group;
             $this->settingModel['setting_id'] = $setting->setting_id;
-            $this->settingModel['setting_stock_group'] = $edit_setting_stock_group[$request->index];
+            $this->settingModel['setting_stock_group'] = $edit_setting_stock_group[$request->index]; */
+          
+            $request->session()->reflash();
+            $this->settingModel['setting_stock_group'] = $this->settingModel['setting_stock_group'][$request->index];
             $this->settingModel['edit'] = true;
-            return view('menu.setting.settingStockGroupEdit', ['data' => $this->Data()]);
+            return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
         }
         return view('Setting.edit', ['project' => $setting]);
     }
@@ -103,20 +106,28 @@ class SettingController extends Controller
         $settingInput = $request->except('_token', '_method');
 
         // Check condition from request to update particular index of setting_stock_group
-        if ($request->code) {
-            $setting_stock_group = $this->settingModel->setting_stock_group;
+        if ($request->setting_stock_group) {
+           /*  $setting_stock_group = $this->settingModel->setting_stock_group;
             $update_setting_stock_group_data = $setting_stock_group[$request->index];
             $update_setting_stock_group_data['code'] = $request->code;
             $update_setting_stock_group_data['name'] = $request->name;
             $setting_stock_group[$request->index] = $update_setting_stock_group_data;
             $this->settingModel->setting_stock_group = $setting_stock_group;
             $this->settingModel->update();
-            return redirect()->back();
+            return redirect()->back(); */
+
+            $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+            ->first();
+            $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)
+                ->first();
+
+            $this->settingModel->setting_stock_group = $settingInput;
+            
         }
-        return view('Setting.edit', ['project' => $setting]);
+        return redirect()->back()->with('success', 'Setting Updated Successfuly');
     }
 
-    public function Destroy($setting)
+    public function Destroy(Request $request, $setting)
     {
         $currentRoute = explode('-', $setting);
         if(is_array($currentRoute)) {

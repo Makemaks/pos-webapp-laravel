@@ -103,8 +103,8 @@ class MenuController extends Controller
             
                 $type = array_search( $request->view, Setting::SettingStockGroup());
                 $request->session()->flash('type', $type);
-                
-               
+                $request->session()->flash('view', $request->view);
+
                 return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
 
                 break;

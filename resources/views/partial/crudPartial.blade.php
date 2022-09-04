@@ -3,6 +3,7 @@ $applicationList = [];
 $route = Str::before(Request::route()->getName(), '.');
 $action = Str::after(Request::route()->getName(), '.');
 
+
 if ($action === 'index') {
     $action = 'create';
 } elseif ($action === 'create') {

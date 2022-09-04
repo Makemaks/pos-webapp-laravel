@@ -301,19 +301,19 @@ class Setting extends Model
             "stock_cost": "",
             "special_stock_cost": ""
         }',
-        'setting_blacklist' => '{
-            "1": {
-                "type": "",
-                "reason": ""
-              
-            }
-        }'
+
+        'setting_customer' => '{
+            "customer_stock_cost": "",
+            "customer_credit": "",
+            "customer_print": {},
+            "customer_marketing": {}
+        }',
+       
       
     ];
 
     protected $casts = [
 
-        'setting_blacklist' => 'array',
         
         'setting_logo' => 'array',
        
@@ -357,7 +357,7 @@ class Setting extends Model
         'setting_key' => 'array',
         'setting_key_type' => 'array',
         'setting_group' => 'array',
-       
+       'setting_customer' => 'array',
 
     ];
 
@@ -661,20 +661,30 @@ class Setting extends Model
                 
 
                 if ($settingModel) {
-                    if ( $settingModel->setting_offer) {
+                    if ( $settingModel->setting_customer) {
 
-                        if ($settingModel->setting_offer['discount_type'] == 'percentage') {
-                            $value =  MathHelper::Discount($value['discount_value'], $receipt['totalPrice']); //percentage to amount
-                            $percentage = $value['discount_value'];
-                        } else{
-                            $value = $value['discount_value'];
-                            $percentage = MathHelper::PercentageDifference($settingModel->setting_offer['discount_value'], $receipt['totalPrice']);
+                        if ($settingModel->setting_customer['customer_stock_cost']) {
+                            # code...
                         }
-    
-                        $receipt['customerDiscount'] = ['discount_type' => $value['discount_type'], 'discount_value' => $settingModel->setting_offer['discount_value'], 
-                        'converted_value' => $value, 'converted_percentage' => $percentage ];
-    
-                        $receipt['totalPrice'] = $receipt['totalPrice'] - $value;
+
+                       /* foreach ($settingModel->setting_customer as $setting_customer) {
+                           
+                            if (Setting::SettingOfferType()[$setting_offer['decimal']['discount_type']] == 'percentage') {
+                                $value =  MathHelper::Discount($setting_offer['decimal']['discount_value'], $receipt['totalPrice']); //percentage to amount
+                                $percentage = $setting_offer['decimal']['discount_value'];
+                            } else{
+                                $value = $setting_offer['decimal']['discount_value'];
+                                $percentage = MathHelper::PercentageDifference($setting_offer['decimal']['discount_value'], $receipt['subTotal']);
+                            }
+        
+                            $receipt['customerDiscount'] = [
+                                'discount_type' => $setting_offer['decimal']['discount_type'], 
+                                'discount_value' => $setting_offer['decimal']['discount_value'], 
+                                'converted_value' => $value, 'converted_percentage' => $percentage 
+                            ];
+        
+                            $receipt['totalPrice'] = $receipt['totalPrice'] - $value;
+                        } */
                     }
                 }
 

@@ -98,8 +98,13 @@
     
        
     <li>
-        <form action="{{ route('setting.store') }}" method="POST">
-            @csrf
+        @if ($data['settingModel']->edit == false)
+            <form action="{{ route('setting.store') }}" method="POST">
+        @else
+            <form action="{{ route('setting.update', $data['settingModel']->setting_id) }}" method="POST">
+             @method('PATCH')   
+        @endif
+        @csrf
             <div uk-grid>
                 <div>
                     <label class="uk-form-label" for="form-stacked-text">Code</label>

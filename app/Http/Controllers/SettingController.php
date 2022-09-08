@@ -17,7 +17,7 @@ class SettingController extends Controller
 
     public function Index(Request $request)
     {
-
+        // dd($request->all());
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
 
@@ -47,6 +47,8 @@ class SettingController extends Controller
 
     public function Store(Request $request)
     {
+        // dd('create');
+        // dd($request->all());
         // Check condition from request to add new setting_stock_group
         if ($request->code) {
             $this->settingModel = Setting::find($request['setting_id']);
@@ -102,8 +104,9 @@ class SettingController extends Controller
 
     public function Update(Request $request, $setting)
     {
+        // dd($request->all());
         $this->settingModel = Setting::find($setting);
-        $settingInput = $request->except('_token', '_method');
+        $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
 
         // Check condition from request to update particular index of setting_stock_group
         if ($request->setting_stock_group) {
@@ -115,13 +118,17 @@ class SettingController extends Controller
             $this->settingModel->setting_stock_group = $setting_stock_group;
             $this->settingModel->update();
             return redirect()->back(); */
+            
+            // $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+            // ->first();
+            // $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)
+            //     ->first();
 
-            $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
-            ->first();
-            $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)
-                ->first();
+                // dd($this->userModel);
 
-            $this->settingModel->setting_stock_group = $settingInput;
+            $this->settingModel->setting_stock_group = $settingInput['setting_stock_group'];
+            // dd($this->settingModel->setting_stock_group);
+            $this->settingModel->update();
             
         }
         return redirect()->back()->with('success', 'Setting Updated Successfuly');
@@ -140,6 +147,7 @@ class SettingController extends Controller
             Setting::destroy($setting);
         }
         
+        return redirect()->route('setting.create');
         return back()->with('success', 'Setting Deleted Successfuly');
     }
 

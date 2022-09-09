@@ -33,7 +33,7 @@
             "programming" => [
                 "category",
                 "group",
-                "list-plu",
+                "plu",
                 "mix-&-match",
                 "mix-&-match-2",
                 "finalise-key",

@@ -134,7 +134,7 @@
                 </div>     
             </div>
         </form>
-        
+
         <div>
             @if ($data['settingModel']->edit)
                 <a uk-toggle="target: #modal-{{$data['settingModel']->setting_id}}-{{ request("index") }}" class="uk-button uk-width-1-1 uk-button-default uk-border-rounded uk-text-danger">

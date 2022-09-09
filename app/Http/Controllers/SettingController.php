@@ -119,17 +119,19 @@ class SettingController extends Controller
     {
         $currentRoute = explode('-', $setting);
         if(is_array($currentRoute)) {
-            $setting_stock_groups = Setting::find($currentRoute[0]);
-            $setting_stock_group = $setting_stock_groups->setting_stock_group;
+            $this->settingModel = Setting::find($currentRoute[0]);
+            $setting_stock_group = $this->settingModel->setting_stock_group;
             unset($setting_stock_group[$currentRoute[1]]);
-            $setting_stock_groups->setting_stock_group = $setting_stock_group;
-            $setting_stock_groups->update();
+            $this->settingModel->setting_stock_group = $setting_stock_group;
+            $this->settingModel->update();
+            $request->session()->reflash();
+         
+            return view('menu.setting.settingStockGroup', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         } else {
             Setting::destroy($setting);
         }
         
-        return redirect()->route('menu.setting');
-        return back()->with('success', 'Setting Deleted Successfuly');
+       
     }
 
     private function Data()

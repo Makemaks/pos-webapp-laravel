@@ -10,7 +10,15 @@
 @endif
 
 <ul class="uk-subnav uk-subnav-pill" @if ( $data['settingModel']->edit == false ) uk-switcher="active:0" @else uk-switcher="active:1" @endif>
-    <li><a href="#">{{Str::upper(Request::get('view'))}}</a></li>
+    <li>
+       
+        <a href="#">
+            @if ($data['settingModel']->edit == false)
+                {{Str::upper(Session::get('view'))}}
+            @endif
+        </a>
+       
+    </li>
     <li><a href="#" uk-icon="plus"></a></li>
 </ul>
 
@@ -125,7 +133,7 @@
                     @endif
                 </div>
             </div>
-            @dump($data['settingModel']['setting_stock_group'])
+            
             <div class="uk-child-width-expand@m" uk-grid>
                 <div>
                     <button class="uk-button uk-button-default uk-border-rounded uk-width-1-1 uk-button-danger" type="submit">
@@ -135,7 +143,7 @@
             </div>
         </form>
 
-        <div>
+        <div class="uk-margin">
             @if ($data['settingModel']->edit)
                 <a uk-toggle="target: #modal-{{$data['settingModel']->setting_id}}-{{ request("index") }}" class="uk-button uk-width-1-1 uk-button-default uk-border-rounded uk-text-danger">
                     DELETE

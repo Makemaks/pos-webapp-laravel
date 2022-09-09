@@ -28,10 +28,13 @@
                         <thead>
                             <tr>
                                 <th>REF</th>
-                            @foreach ($data['settingModel']->setting_stock_group[1] as $key => $item)
-                                    <th>{{$key}}</th>
-                            @endforeach
-                            <th></th>
+                                @foreach ($data['settingModel']->setting_stock_group as $items)
+                                    @foreach($items as $key => $item)
+                                        <th>{{$key}}</th>
+                                    @endforeach
+                                    @break
+                                @endforeach
+                                <th></th>
                             </tr>
                         </thead>
     
@@ -44,21 +47,21 @@
                                         <td>
                                             <button class="uk-button uk-button-default uk-border-rounded">{{$keysetting_stock_group}}</button>
                                         </td>
-                                    
-                                        @foreach ($setting_stock_group as $key => $value)          
-    
+                                        
+                                        @foreach ($setting_stock_group as $key => $value)        
+
                                                 <td>
                                                     @if ($key == 'code')
                                                         
                                                         <input class="uk-input" type="number" name="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]" value="{{$value}}">
                                                     @elseif ($key == 'type')
                                                                     
-                                                        <select class="uk-select" name="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]" disabled>
+                                                        <select class="uk-select" name="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]">
                                                             <option selected="selected" disabled>SELECT ...</option>
                                                         
                                                             @foreach (Setting::SettingStockGroup() as $key => $setting_group)
                                                                     
-                                                                <option @if($key == $setting_stock_group['type']) selected @endif value="setting_stock_group[{{$keysetting_stock_group}}][{{$key}}]">
+                                                                <option @if($key == $setting_stock_group['type']) selected @endif value="{{$key}}">
                                                                     {{Str::upper($setting_group)}}
                                                                 </option>
                                                                     
@@ -128,21 +131,19 @@
                     <button class="uk-button uk-button-default uk-border-rounded uk-width-1-1 uk-button-danger" type="submit">
                         SAVE
                     </button>
-                </div>
-
-                <div>
-                    @if ($data['settingModel']->edit)
-                        <a uk-toggle="target: #modal-{{$data['settingModel']->setting_id}}-{{$data['settingModel']['setting_stock_group']['code']}}" class="uk-button uk-width-1-1 uk-button-default uk-border-rounded uk-text-danger">
-                            DELETE
-                        </a>
-
-                        @include('partial.modalPartial', [
-                            'model_id' => $data['settingModel']->setting_id.'-'.$data['settingModel']['setting_stock_group']['code']])
-                    @endif
-                </div>
-     
+                </div>     
             </div>
-
         </form>
+
+        <div>
+            @if ($data['settingModel']->edit)
+                <a uk-toggle="target: #modal-{{$data['settingModel']->setting_id}}-{{ request("index") }}" class="uk-button uk-width-1-1 uk-button-default uk-border-rounded uk-text-danger">
+                    DELETE
+                </a>
+
+                @include('partial.modalPartial', [
+                    'model_id' => $data['settingModel']->setting_id.'-'. request("index")])
+            @endif
+        </div>
     </li>
 </ul>

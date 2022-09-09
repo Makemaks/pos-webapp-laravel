@@ -138,14 +138,14 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
     
                     <div>
 
-                        <div title="{{$stock->stock_id}}" class="uk-padding-small uk-background-muted uk-border-rounded" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
+                        <div class="uk-padding-small uk-background-muted uk-border-rounded" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
                             <div class="">
                                 <div class="uk-grid-small uk-flex-middle" uk-grid>
-                                    <div class="uk-width-auto">
+                                    <div class="uk-width-auto" title="{{$stock->stock_id}}" >
                                         <img class="uk-border-circle" width="40" height="40" src="images/avatar.jpg">
                                        
                                     </div>
-                                    <div class="uk-width-auto">
+                                    <div class="uk-width-auto" title="Price" >
                                         @if (count($stockOffer) > 0)
                                             <h3 class="uk-margin-remove-bottom"> {{$currency}} {{ MathHelper::FloatRoundUp( $stockOfferMin['total']['price'], 2) }}</h3>
                                             
@@ -153,7 +153,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                                             <h3 class="uk-margin-remove-bottom">{{$currency}} {{$price}}</h3>
                                         @endif
                                     </div>
-                                    <div class="uk-width-expand">
+                                    <div class="uk-width-expand" title="VAT">
                                         <span class="uk-text-small uk-text-warning">
                                             @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
                                                 @foreach ($data['settingModel']->setting_vat as $item)
@@ -181,7 +181,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                             </div>
 
                             <div>
-                                <div class="uk-child-width-1-3" uk-grid>
+                                <div class="uk-child-width-1-3" uk-grid title="Offer" >
                                     <div>
                                         @if ($stockCurrentOffer)
                                             <span class="uk-text-success" uk-icon="icon: star; ratio: 1.5"></span>

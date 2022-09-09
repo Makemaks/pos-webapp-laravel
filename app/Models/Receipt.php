@@ -170,9 +170,11 @@ class Receipt extends Model
         if ($stockItem['stock_vat_id']) {
             $receipt['stock_vat_rate'] = $data['settingModel']->setting_vat[$stockItem['stock_vat_id']]['rate'];
             $receipt['price'] = MathHelper::VAT($receipt['stock_vat_rate'], $receipt['price']);
-            $receipt['subTotal'] = $receipt['subTotal'] + $receipt['price'];
+            
         }
 
+        //add price to subtotal
+        $receipt['subTotal'] = $receipt['subTotal'] + $receipt['price'];
 
 
         if ($loop->last) {
@@ -181,7 +183,7 @@ class Receipt extends Model
 
             //final discount
              //calculate overall vat
-           
+            
             $receipt = Setting::SettingFinaliseKey($data, $receipt);
             $receipt['totalSettingVAT'] = collect($data['settingModel']->setting_vat)->where('deafult', 0)->sum('rate');
             

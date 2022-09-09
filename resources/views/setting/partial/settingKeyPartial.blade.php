@@ -1,6 +1,9 @@
 
 
 
+@php
+    use App\Helpers\StringHelper;
+@endphp
 
 @foreach ($data['settingModel']->setting_key  as $keySettingKey => $itemSettingKey)
     @foreach ($itemSettingKey as $key => $stock)
@@ -64,15 +67,11 @@
             
         @endif
 
-
-    
-    @endforeach   
+    @endforeach
 
 @break
 
 @endforeach
-
-
 
 
 @if (Session::get('setting_finalise_key') == 'cash')
@@ -81,14 +80,19 @@
         $setting_key_type = collect($data['settingModel']->setting_key)->where('setting_key_type', 1);
     @endphp
 
-    <div class="uk-child-width-1-2" uk-grid>
+    <div class="uk-child-width-1-2 uk-grid-match" uk-grid>
         @foreach ($setting_key_type as $keySettingKey => $itemSettingKey)
             
-            <div onclick="addSettingKey($itemSettingKey)">
-               <div class="uk-padding uk-box-shadow-small">
-                    {{$itemSettingKey['value']}}
-                    <p>{{$itemSettingKey['description']}}</p>
-               </div>
+            <div>
+                
+                <label class="uk-text-center">
+                    <div class="uk-padding uk-light" style="background-color: #{{StringHelper::getColor()}}">
+                        {{$itemSettingKey['value']}}
+                        <p>{{$itemSettingKey['description']}}</p>
+                    </div>
+                    <input class="uk-checkbox uk-margin uk-align-center" type="checkbox">
+                </label>
+               
             </div>
 
         @endforeach

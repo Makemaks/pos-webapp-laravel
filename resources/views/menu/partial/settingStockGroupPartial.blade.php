@@ -117,7 +117,7 @@
                     @endif
                 </div>
             </div>
-            
+            @dump($data['settingModel']['setting_stock_group'])
             <div class="uk-child-width-expand@m" uk-grid>
                 <div>
                     <button class="uk-button uk-button-default uk-border-rounded uk-width-1-1 uk-button-danger" type="submit">

@@ -93,6 +93,7 @@ class SettingController extends Controller
             $this->settingModel['setting_stock_group'] = $edit_setting_stock_group[$request->index]; */
           
             $request->session()->reflash();
+           
             $this->settingModel['setting_stock_group'] = $this->settingModel['setting_stock_group'][$request->index];
             $this->settingModel['edit'] = true;
             return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);

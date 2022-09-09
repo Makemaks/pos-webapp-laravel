@@ -14,7 +14,7 @@
             </div>
         </div>
         <div>
-            <div class="uk-light uk-border-rounded"style="background-color: #{{StringHelper::getColor()}}" onclick="showOrder()">
+            <div class="uk-light uk-border-rounded" style="background-color: #{{StringHelper::getColor()}}" onclick="showOrder()">
                <div class="uk-padding">
                     <p>Orders</p>
                     <p class="uk-margin" uk-icon="icon: list; ratio: 3.5"></p>
@@ -22,7 +22,7 @@
             </div>
         </div>
         <div>
-            <div class="uk-light uk-border-rounded "style="background-color: #{{StringHelper::getColor()}}" onclick="showCustomer()">
+            <div class="uk-light uk-border-rounded" style="background-color: #{{StringHelper::getColor()}}" onclick="showCustomer()">
                <div class="uk-padding">
                     <p>Customers</p>
                     <p class="uk-margin" uk-icon="icon: user; ratio: 2.5"></p>
@@ -30,7 +30,7 @@
             </div>
         </div>
         <div>
-            <div class="uk-light uk-border-rounded "style="background-color: #{{StringHelper::getColor()}}" onclick="showSetting()">
+            <div class="uk-light uk-border-rounded" style="background-color: #{{StringHelper::getColor()}}" onclick="showSetting()">
                <div class="uk-padding">
                     <p>Setting</p>
                     <p class="uk-margin" uk-icon="icon: cog; ratio: 2.5"></p>

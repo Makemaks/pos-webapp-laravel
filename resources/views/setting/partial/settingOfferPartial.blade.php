@@ -17,7 +17,7 @@
             @foreach ((array)$data['settingModel']->setting_offer  as $keyStockoffer => $itemStockoffer)
                 @foreach ($itemStockoffer as $key => $stock)
                                         
-                    @if($key == 'integer' || $key == 'points' || $key == 'usage')
+                    @if($key == 'integer' || $key == 'points' || $key == 'usage' || $key == 'decimal')
 
                         @foreach ($stock as $stockkey => $stockitem)
                             @if ($stockkey == 'set_menu')

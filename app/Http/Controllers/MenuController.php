@@ -112,7 +112,7 @@ class MenuController extends Controller
            
             case 'mix-&-match':
                 
-                
+                // dd('hell yhaa!');
                 return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
 
                 break;

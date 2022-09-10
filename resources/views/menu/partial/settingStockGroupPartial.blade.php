@@ -9,7 +9,7 @@
     </button>
 @endif
 
-<ul class="uk-subnav uk-subnav-pill" @if ( $data['settingModel']->edit == false ) uk-switcher="active:0" @else uk-switcher="active:1" @endif>
+<ul class="uk-subnav uk-subnav-pill">
     <li>
        
         <a href="#">

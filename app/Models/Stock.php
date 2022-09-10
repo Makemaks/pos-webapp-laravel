@@ -353,5 +353,13 @@ class Stock extends Model
         ];
     }
 
+    public static function OfferStatus()
+    {
+        return [
+            'Enabled',
+            'Disabled'
+        ];
+    }
+
 
 }

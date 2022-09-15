@@ -9,7 +9,7 @@
     </button>
 @endif
 
-<ul class="uk-subnav uk-subnav-pill"  uk-switcher>
+<ul class="uk-subnav uk-subnav-pill" uk-switcher>
     <li>
        
         <a href="#">

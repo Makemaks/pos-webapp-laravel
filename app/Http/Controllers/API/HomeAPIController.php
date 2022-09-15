@@ -49,6 +49,7 @@ class HomeAPIController extends Controller
 
         //used for pagination
         $this->request = $request;
+        
         $request->session()->flash('action', $request['action']);
         $request->session()->flash('view', 0);
         $this->init();
@@ -66,6 +67,12 @@ class HomeAPIController extends Controller
             $this->settingModel->setting_stock_group = $setting_stock_group;
             
             $this->html = view('stock.partial.groupPartial', ['data' => $this->Data()])->render();
+        }
+        elseif($request->has('setting_finalise_key')){
+            $request->session()->flash('setting_finalise_key', $request['setting_finalise_key']);
+            
+            $this->html = view('home.partial.settingFinaliseKeyPartial', ['data' => $this->Data()])->render();
+            return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
         }
         elseif ($request->has('id') && $request->has('view') || $request['action'] == "0" ) {
             
@@ -188,6 +195,7 @@ class HomeAPIController extends Controller
             $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
         }
 
+      
 
        
     

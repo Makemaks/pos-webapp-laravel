@@ -10,23 +10,27 @@
     @endforeach
 @endif 
 
-@if(session()->get('success'))  
- 
+@isset($success)
+   
+
     <script>
             $(window).on('load', function(e) {
-                UIkit.notification(@json(session()->get('success')), 'primary'); 
+                UIkit.notification(@json($success), 'muted'); 
             })
     </script>
-@endif
+   
+@endisset
 
-
-@if(session()->get('error'))  
+{{-- 
+@if($error)  
  
     <script>
             $(window).on('load', function(e) {
                 UIkit.notification(@json(session()->get('error')), 'danger'); 
             })
     </script>
-@endif
+@endif --}}
+
+
 
 

@@ -289,7 +289,7 @@ class Setting extends Model
             "1": {
                 "status": "",
                 "description": "",
-                "value": "",
+                "group": "",
                 "setting_key_type": ""
             }
         }',
@@ -503,7 +503,13 @@ class Setting extends Model
         ];
     }
 
-   
+    public static function SettingKeyGroup(){
+        return [
+            'finalise', //coupons
+            'status', //one offs
+            'transaction'
+        ];
+    }
 
     //session and grand total
     public static function SettingFinaliseKey($data, $receipt = null){

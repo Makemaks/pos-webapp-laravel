@@ -12,7 +12,7 @@ use App\Models\Person;
 use App\Models\Stock;
 use App\Models\Warehouse;
 use App\Models\Setting;
-
+use App\Models\Receipt;
 
 class HomeController extends Controller
 {
@@ -36,7 +36,6 @@ class HomeController extends Controller
 
     public function __construct()
     {
-        $this->middleware('sessionMiddleware');
         $this->middleware('auth');
     }
 
@@ -45,24 +44,10 @@ class HomeController extends Controller
     {
 
         $this->init();
-        $this->request = $request;
+       
 
          //setup new
-         if ( $request->session()->has('user-session-'.Auth::user()->user_id.'.'.'setupList') == false) {
-            $setupList = [
-                "cash" => [],
-                "credit" => [],
-                "voucher" => [],
-                "delivery" => [],
-                "discount" => [],
-                "customer" => []
-            ];
-
-            $request->session()->put('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
-           
-        }
-
-        $setupList =  $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList');
+        $this->request = Receipt::SessionInitialize($request);
         
         $this->user = 0;
 

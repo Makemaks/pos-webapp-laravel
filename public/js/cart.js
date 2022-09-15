@@ -197,57 +197,7 @@ function searchInput(element)
 
 
 
-function addRefund(element){
-
-    showKeypad();
-    sessionStorage.setItem('buttonType', element.innerText);
-   
-    if (sessionStorage.getItem('buttonType') == 'Enter') {
-        $.ajax({        
-            url:"/home-api",
-            method: 'GET',
-            data: {action: 'showKeypad'},      
-            success:function(data){
-             
-               document.getElementById('contentID').innerHTML = data['html']; 
-           }
-         });
-    }
-
-}
-
-function settingFinaliseKey(setting_finalise_key){
-   
-    var cartCountID = document.getElementById('cartCountID'); 
-
-   if (cartCountID.innerText > 0) {
-        if (setting_finalise_key == 'cancel') {
-            document.getElementById('payButtonID').hidden = false;
-            document.getElementById('cancelButtonID').hidden = true;
-            document.getElementById('confirmButtonID').hidden = true;
-        }
-        else {
-            $.ajax({        
-                url:"/cart-api",
-                method: 'GET',
-                data: {
-                    setting_finalise_key: setting_finalise_key
-                },      
-                success:function(data){
-                    document.getElementById('contentID').innerHTML = data['html']; 
-                    document.getElementById('cancelButtonID').hidden = false;
-                    document.getElementById('confirmButtonID').hidden = false;
-                    document.getElementById('payButtonID').hidden = true;
-                    setFocus('searchInputID');
-                    // /emptyFields("input");
-
-                    
-                }
-            });
-        }
-   }
-  
-}   
+ 
 
 function emptyFields(elementID){
     var elements = document.getElementsByTagName(elementID);
@@ -315,19 +265,6 @@ function addSetupList(type){
    
 }
 
-function showSetupList(type){
-    $.ajax({        
-        url:"/cart-api",
-        method: 'GET',
-        data: {
-            action: "setupList",
-            type: type
-        },      
-        success:function(data){
-            document.getElementById('contentID').innerHTML = data['html']; 
-        }
-    });
-}
 
 function deleteSetupList(id = null){
     $.ajax({        
@@ -340,6 +277,22 @@ function deleteSetupList(id = null){
         success:function(data){
             document.getElementById('receiptID').innerHTML = data['html']; 
             showSetupList(data['type']);
+        }
+    });
+}
+
+
+function useSettingFinaliseKey(type, key){
+    $.ajax({        
+        url:"/cart-api",
+        method: 'POST',
+        data: {
+            action: 'useFinaliseKey',
+            type: type,
+            key: key
+        },      
+        success:function(data){
+            document.getElementById('contentID').innerHTML = data['html']; 
         }
     });
 }

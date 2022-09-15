@@ -23,7 +23,6 @@ class SessionMiddleware
     public function handle(Request $request, Closure $next)
     {
 
-
         $queryValue  = $request->route()->parameters();
         $modelID = array_pop($queryValue);
   
@@ -63,4 +62,5 @@ class SessionMiddleware
 
         return $next($request);
     }
+    
 }

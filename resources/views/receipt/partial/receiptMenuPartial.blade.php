@@ -2,33 +2,33 @@
     use App\Models\Person;
     $openControlID = '';
     $closeControlID = 'hidden';
-
+    $removeCustomerID = 'hidden';
+    $showCustomerID = '';
 
     $a = Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'customer');
 
-    if ( count( Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'customer') ) > 0 ) {
+    if (Session::has('user-session-'.Auth::user()->user_id.'.'.'setupList')) {
+        if ( count( Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'customer') ) > 0 ) {
         
         
-        $setupList =  Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'customer');
-        $data['personModel'] = Person::find($setupList['value']);
-        $removeCustomerID = '';
-        $showCustomerID = 'hidden';
-    }else{
-        $removeCustomerID = 'hidden';
-        $showCustomerID = '';
-    }
-
-  
-
-    if ( Session::has('user-session-'.Auth::user()->user_id.'.'.'cartList') ) {
-        
-        if (Session::has('edit_cart') && count(Session::get('user-session-'.Auth::user()->user_id.'.'.'cartList'))   >= 1) {
-            $a = Session::get('user-session-'.Auth::user()->user_id.'.'.'cartList');
-            $openControlID = 'hidden';
-            $closeControlID = '';
+            $setupList =  Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.'customer');
+            $data['personModel'] = Person::find($setupList['value']);
+            $removeCustomerID = '';
+            $showCustomerID = 'hidden';
         }
+    
 
+        if ( Session::has('user-session-'.Auth::user()->user_id.'.'.'cartList') ) {
+            
+            if (Session::has('edit_cart') && count(Session::get('user-session-'.Auth::user()->user_id.'.'.'cartList'))   >= 1) {
+                $a = Session::get('user-session-'.Auth::user()->user_id.'.'.'cartList');
+                $openControlID = 'hidden';
+                $closeControlID = '';
+            }
+
+        }
     }
+   
    
     
 @endphp

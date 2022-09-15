@@ -80,23 +80,37 @@
         $setting_key_type = collect($data['settingModel']->setting_key)->where('setting_key_type', 1);
     @endphp
 
-    <div class="uk-child-width-1-2 uk-grid-match" uk-grid>
-        @foreach ($setting_key_type as $keySettingKey => $itemSettingKey)
-            
-            <div>
-                
-                <label class="uk-text-center">
-                    <div class="uk-padding uk-light" style="background-color: #{{StringHelper::getColor()}}">
-                        {{$itemSettingKey['value']}}
-                        <p>{{$itemSettingKey['description']}}</p>
-                    </div>
-                    <input class="uk-checkbox uk-margin uk-align-center" type="checkbox">
-                </label>
-               
-            </div>
 
-        @endforeach
-    </div>
-       
+        <div class="uk-child-width-1-2 uk-grid-match" uk-grid>
+            @foreach ($setting_key_type as $keySettingKey => $itemSettingKey)
+              
+                <div onclick="useSettingFinaliseKey({{$itemSettingKey['setting_key_type']}}, {{$keySettingKey}})">
+                    
+                    <label class="uk-text-center">
+                        <div class="uk-padding uk-light" style="background-color: #{{StringHelper::getColor()}}">
+                            {{$itemSettingKey['value']}}
+                            <p>{{$itemSettingKey['description']}}</p>
+                        </div>
+                    </label>
+                   
+                  
+                        @php
+                            $setupList = Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList');
+                        @endphp
+
+                        @foreach ($setupList['order_finalise_key'] as $key => $value)
+                            @if ($value['key'] == $keySettingKey && $value['type'] == $itemSettingKey['setting_key_type'])
+
+                                <button class="uk-margin uk-button uk-button-danger" type="button">Remove</button>
+                                
+                            @endif
+                        @endforeach
+                
+
+                </div>
+    
+            @endforeach
+        </div>
+
     
 @endif

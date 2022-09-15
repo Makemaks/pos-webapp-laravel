@@ -11,7 +11,7 @@
     }
 @endphp
 
-@include('partial.notificationPartial')
+
 
 
 {{--     <div>{{ Str::upper(Session::get('setting_finalise_key')) }}</div>

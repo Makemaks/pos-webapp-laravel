@@ -29,22 +29,18 @@ class OrderController extends Controller
     private $userModel;
    
     private $orderModel;
-   
+    private $request;
 
 
     public function __construct()
     {
+        
+        $this->middleware('datetimeMiddleware');
         $this->middleware('auth');
     }
 
     public function Index(Request $request){
       
-      
-        if ($request->session()->has('setting_finalise_key')) {
-            $request->session()->reflash('order_finalise_key');
-            $this->store($request);
-        }
-
         $this->init();
         $todayDate = Carbon::now()->toDateTimeString();
        
@@ -67,6 +63,7 @@ class OrderController extends Controller
 
     public function Edit(Request $request, $order){
         $this->init();
+        $this->request = Receipt::SessionInitialize($request);
         $this->orderList = Order::Receipt('receipt_order_id', $order)
         ->get();
 
@@ -79,7 +76,7 @@ class OrderController extends Controller
         $this->init();
         Order::Process($request, $this->Data());
         
-        return view('home.index' ,['data' => $this->Data()]);
+        return redirect()->route('home.index')->with('success', 'Order Completed Successfully');
     }
 
     public function Delete($order){
@@ -88,7 +85,7 @@ class OrderController extends Controller
 
         Order::Destroy($order);
 
-        return redirect()->route('index')->with('success', 'Order Deleted Successfully');
+        return redirect()->route('order.index')->with('success', 'Order Deleted Successfully');
     }
 
     private function init(){
@@ -117,7 +114,8 @@ class OrderController extends Controller
             'stockList' => $this->stockList,
             'schemeList' => $this->schemeList,
             'userModel' => $this->userModel,
-            'settingModel' => $this->settingModel
+            'settingModel' => $this->settingModel,
+            'request' => $this->request
         ];
        
     }

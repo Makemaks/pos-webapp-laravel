@@ -36,7 +36,7 @@
        
         $data['sessionCartList'] = Session::get('user-session-'.Auth::user()->user_id. '.cartList');
         
-        $stockList = Receipt::SessionDisplay($data['sessionCartList']);
+        $stockList = Receipt::SessionCartInitialize($data['sessionCartList']);
     }
 
   

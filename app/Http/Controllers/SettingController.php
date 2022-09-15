@@ -124,13 +124,13 @@ class SettingController extends Controller
             unset($setting_stock_group[$currentRoute[1]]);
             $this->settingModel->setting_stock_group = $setting_stock_group;
             $this->settingModel->update();
-            $request->session()->reflash();''
+            $request->session()->reflash();
          
             $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
 
             $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id);
-            foreach ($ as $key => $value) {
+            foreach ($this->stockList  as $key => $value) {
                 $stockModel->stock_merchandise['category_id']
             }
 

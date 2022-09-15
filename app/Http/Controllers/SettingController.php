@@ -44,6 +44,7 @@ class SettingController extends Controller
 
     public function Store(Request $request)
     {
+        // dd($request->form['setting_offer']);
         // Check condition from request to add new setting_stock_group
         if ($request->code) {
             $this->settingModel = Setting::find($request['setting_id']);
@@ -56,8 +57,23 @@ class SettingController extends Controller
                 $stock_group[1] = $settingInput;
             }
             $this->settingModel->setting_stock_group = $stock_group;
+            // dd($this->settingModel);
             $this->settingModel->save();
             return back()->with('success', 'Added Successfuly');
+        } else if($request->form['setting_offer']) {
+            $this->settingModel = Setting::find($request['setting_id']);
+            dd($request['setting_id']);
+            $stock_offer = $this->settingModel->setting_offer;
+            if(!empty($stock_offer)){
+                $last_key = (int)collect($stock_offer)->keys()->last();
+                $stock_offer[$last_key + 1] = $request->form['setting_offer'];
+            } else {
+                $stock_offer[1] = $request->form['setting_offer'];
+            }
+            $this->settingModel->setting_offer = $stock_offer;
+            $this->settingModel->save();
+            return back()->with('success', 'Added Successfuly');
+            // dd($this->settingModel->setting_offer);
         }
 
         if ($request->hasFile('setting_logo_url')) {

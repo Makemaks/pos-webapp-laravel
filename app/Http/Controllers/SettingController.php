@@ -131,7 +131,7 @@ class SettingController extends Controller
 
             $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id);
             foreach ($this->stockList  as $key => $value) {
-                $stockModel->stock_merchandise['category_id']
+                //$stockModel->stock_merchandise['category_id']
             }
 
             return view('menu.setting.settingStockGroup', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');

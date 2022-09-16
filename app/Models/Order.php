@@ -31,13 +31,14 @@ class Order extends Model
 
         "order_setting_vat" => '{}',
         "order_status" => 0,
-        "order_finalise_key" => '{}'
-
+        "order_finalise_key" => '{}',
+        "order_group" => '{}',
     ];
 
     protected $casts = [
         "order_finalise_key" => 'array',
-        "order_setting_vat" => 'array'
+        "order_setting_vat" => 'array',
+        "order_group" => 'array'
     ];
 
 
@@ -266,6 +267,7 @@ class Order extends Model
             }
             
         
+            //"order_group" => '{}',
 
             //$orderData = DatabaseHelper::MergeArray($orderData, DatabaseHelper::Timestamp());
             $orderID = Order::insertGetId($orderData);

@@ -21,15 +21,15 @@ return new class extends Migration
             $table->bigInteger('ordertable_id')->nullable();
             $table->string('ordertable_type')->nullable()->comment('user');
             $table->tinyInteger('order_status')->comment('cancelled::refunded'); 
-            $table->json('order_offer')->nullable();
+            $table->json('order_group')->nullable();
             $table->tinyInteger('order_type')->default(0)->comment('internal::external'); 
             $table->float('order_amount_received')->nullable();
             $table->text('order_note')->nullable();
             $table->json('order_delivery')->nullable(); //order details::shipped at
-            $table->json('order_discount')->nullable();
+            $table->json('order_discount')->nullable(); //extra discount can be added
             $table->json('order_finalise_key')->nullable();
             $table->bigInteger('order_setting_pos_id');
-            $table->json('order_setting_vat')->nullable();
+            $table->json('order_setting_vat')->nullable(); //extra vat can be added
 
            
             $table->timestamps();

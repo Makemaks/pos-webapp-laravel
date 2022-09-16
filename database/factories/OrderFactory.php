@@ -35,6 +35,10 @@ class OrderFactory extends Factory
             }
         }
 
+        $order_group = [
+            'order_total' => $this->faker->numberBetween($min = 100, $max = 200),
+        ];
+
         return [
             'order_setting_pos_id' => $this->faker->numberBetween($min = 1, $max = 2),
             'order_store_id' => $this->faker->numberBetween($min = 1, $max = 2),
@@ -44,8 +48,8 @@ class OrderFactory extends Factory
             'order_status' => $this->faker->numberBetween($min = 0, $max = 7),
             'order_type' => $this->faker->numberBetween($min = 0, $max = 1), //online,takeaway
             'order_finalise_key' => $order_finalise_key,
-            'order_setting_vat' => $order_vat
-
+            'order_setting_vat' => $order_vat,
+            'order_group' => $order_group
         ];
     }
 }

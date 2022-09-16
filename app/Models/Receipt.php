@@ -201,8 +201,6 @@ class Receipt extends Model
 
         if ($loop->last) {
             
-            
-
             //final discount
              //calculate overall vat
             

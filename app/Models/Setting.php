@@ -289,6 +289,7 @@ class Setting extends Model
             "1": {
                 "status": "",
                 "description": "",
+                "value": "",
                 "group": "",
                 "setting_key_type": ""
             }

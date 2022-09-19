@@ -18,6 +18,7 @@ class PersonController extends Controller
     private $personModel;
     private $userModel;
     private $storeModel;
+    private $settingModel;
     
 
     public function __construct()

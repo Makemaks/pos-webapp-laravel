@@ -72,7 +72,10 @@
         <label class="uk-form-label" for="form-stacked-text">Preferred Name <span class="uk-text-danger"></span></label>
      
 
-        <input type="text" class="uk-input" name="person_preferred_name[]" id="person_preferred_name" value="{{ old('person_preferred_name[]' , $person_preferred_name) }}"></input>
+        <div class="uk-form-controls">
+            <input type="text" class="uk-input" name="person_preferred_name[]" id="person_preferred_name" value="{{ old('person_preferred_name[]' , $person_preferred_name) }}"></input>
+        </div>
+        
             
         @error('person_name[person_preferred_name]')
             <div class="uk-text-danger">{{ $message }}</div>

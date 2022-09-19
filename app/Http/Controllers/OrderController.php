@@ -29,7 +29,6 @@ class OrderController extends Controller
     private $userModel;
    
     private $orderModel;
-   
 
 
     public function __construct()
@@ -38,7 +37,6 @@ class OrderController extends Controller
     }
 
     public function Index(Request $request){
-      
       
         if ($request->session()->has('setting_finalise_key')) {
             $request->session()->reflash('order_finalise_key');

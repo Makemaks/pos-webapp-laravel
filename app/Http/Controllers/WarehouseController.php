@@ -36,7 +36,8 @@ class WarehouseController extends Controller
 
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-
+        $this->Init();
+        
        
         $request->session()->reflash('view');
 
@@ -47,7 +48,7 @@ class WarehouseController extends Controller
             ->paginate(20);
         }
         elseif ($request->session()->get('view') != 'Ins-&-Out') {
-            $this->warehouseList =  Warehouse::where('warehouse_type', $request->session()->get('view'))->paginate(20);
+            $this->warehouseList =  Warehouse::where('warehouse_type', $request->session()->get('view'))->get();
         }
         else {
 
@@ -57,10 +58,12 @@ class WarehouseController extends Controller
 
             $this->warehouseList = Warehouse::Store()
             ->whereIn('warehouse_user_id', $accountList->pluck('user_id'))
-            ->paginate(20);
+            ->get();
 
-            $this->Init();
+            
         }
+
+       
          
        return view('warehouse.index', ['data' => $this->Data()]); 
     }

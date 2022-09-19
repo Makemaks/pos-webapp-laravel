@@ -3,6 +3,9 @@
     use App\Models\User;
     use App\Models\Store;
     $action =  Str::after(Request::route()->getName(), '.');
+
+ 
+
 @endphp
 
 
@@ -10,6 +13,7 @@
 <div class="">
     <h3>TRANSFERS</h3>
     
+      
 
         @php
            
@@ -20,8 +24,13 @@
         @endphp
     
         
-        <input name="form[warehouse][warehouse_user_id]" value="{{$data['userModel']->user_id}}" hidden>
-        <input name="form[warehouse][warehouse_stock_id]" value="{{$data['stockModel']->stock_id}}" hidden>
+        
+        
+            <input name="form[warehouse][warehouse_user_id]" value="{{$data['userModel']->user_id}}" hidden>
+           @if ($data['stockModel'])
+                <input name="form[warehouse][warehouse_stock_id]" value="{{$data['stockModel']->stock_id}}" hidden>
+           @endif
+       
         
        @isset($data['warehouseList'])
             @foreach ($data['warehouseList']->toArray() as $keyStockTransfer => $warehouseList)

@@ -60,8 +60,8 @@
                 "bill",
             ],
             "customer" => [
-                "person",
-                "company"
+               "list",
+               "groups"
             ],
             "ticket" => [],
             

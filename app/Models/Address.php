@@ -115,11 +115,21 @@ class Address extends Model
         ];
     }
 
-     public function AddressType(){
+     public function BuildingType(){
          return [
             "Home",
             "Work"
          ];
      }
+
+     public function DeliveryType(){
+        return [
+            'Billing + Shipping',
+            'Billing',
+            'Shipping',
+            
+        ];
+    
+    }
   
 }

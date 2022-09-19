@@ -64,6 +64,7 @@ class AddressFactory extends Factory
            'address_email' => $address_email,
            'address_phone' => $address_phone,
            'address_website' => $address_website,
+           'address_building_type' => $this->faker->numberBetween($min=0, $max=1),
            'address_delivery_type' => $this->faker->numberBetween($min=0, $max=1),
            'addresstable_id' => $this->faker->numberBetween($min=1, $max=100),
            'addresstable_type' => $this->faker->randomElement($array = array ('Person','Company')),

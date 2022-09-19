@@ -74,7 +74,7 @@ Route::get('admin-store/{store}', [AuthenticationController::class, 'adminStore'
 Route::resource('home', HomeController::class);
 Route::resource('user', UserController::class);
 Route::resource('company', CompanyController::class);
-// Route::resource('address', AddressController::class);
+Route::resource('address', AddressController::class);
 Route::resource('person', PersonController::class);
 Route::resource('store', StoreController::class);
 Route::resource('order', OrderController::class);

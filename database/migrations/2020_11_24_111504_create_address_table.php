@@ -24,7 +24,7 @@ class CreateAddressTable extends Migration
             $table->json('address_email')->nullable();
             $table->json('address_phone')->nullable();
             $table->json('address_website')->nullable();
-            $table->tinyInteger('address_type')->nullable()->comment('Yes::No');
+            $table->tinyInteger('address_building_type')->nullable()->comment('home::hork');
             $table->tinyInteger('address_delivery_type')->nullable()->comment('billing::shipping');
             $table->bigInteger('addresstable_id')->comment('person::company::store');
             $table->string('addresstable_type'); //person/company

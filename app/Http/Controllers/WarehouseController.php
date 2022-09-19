@@ -41,11 +41,11 @@ class WarehouseController extends Controller
 
         $request->session()->reflash('view');
 
-        if($request->has('action')){
-             $warehouse = Warehouse::find($request->warehouse_id);
-             $warehouse_quantity = $warehouse->warehouse_quantity - $request->receipt_quantity;
-             Warehouse::where('warehouse_id',$request->warehouse_id)->update(['warehouse_quantity'=>$warehouse_quantity]);
-             return redirect()->back();
+        if ($request->has('action')) {
+            $warehouse = Warehouse::find($request->warehouse_id);
+            $warehouse_quantity = $warehouse->warehouse_quantity - $request->receipt_quantity;
+            Warehouse::where('warehouse_id', $request->warehouse_id)->update(['warehouse_quantity' => $warehouse_quantity]);
+            return redirect()->back();
         }
 
         if ($request->session()->get('view') == 'Ins-&-Out') {
@@ -69,6 +69,27 @@ class WarehouseController extends Controller
         }
 
         return view('warehouse.index', ['data' => $this->Data()]);
+    }
+
+    /**
+     * This function adjust the warehoust quantity
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse|void
+     */
+    public function AdjustQuantity(Request $request)
+    {
+        if ($request->has('receipt_quantity')) {
+            foreach ($request->warehouse_id as $wareHouseKey => $warehouseId) {
+                foreach ($request->receipt_quantity as $receiptQuantityKey => $receiptQuantity) {
+                    if ($wareHouseKey == $receiptQuantityKey) {
+                        $warehouse = Warehouse::find($warehouseId);
+                        $warehouse_quantity = $warehouse->warehouse_quantity - $receiptQuantity;
+                        Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_quantity' => $warehouse_quantity]);
+                    }
+                }
+            }
+            return redirect()->back();
+        }
     }
 
     public function Create()

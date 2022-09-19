@@ -10,7 +10,6 @@
     <script src="{{ asset('js/app.js') }}"></script> 
 @endpush
 
-
 <div class="" uk-height-viewport="offset-top: true; offset-bottom: 50px">
     <div class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
             <table class="uk-table uk-table-small uk-table-divider">
@@ -28,17 +27,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                
                     @foreach ($data['orderList'] as $order)
-                        
                         @php
                             $orderList = Order::Receipt('order_id', $order->order_id)->get();
                             $orderTotal = Stock::OrderTotal($orderList);
                             $userPerson = User::Person('user_id', $order->receipt_user_id)->first();
-            
                         @endphp
-            
-                        
                         <tr>
                             <td><a href="{{route('order.edit', $order->order_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$order->order_id}}</a></td>
                             <td>{{Order::OrderType()[$order->order_type]}}</td>
@@ -59,17 +53,13 @@
                             <td>{{ json_decode($userPerson->person_name, true)['person_firstname'] }}</td>
                             <td>{{$order->created_at}}</td>
                             <td>
-                                <a href="" class="uk-button uk-button-default uk-border-rounded">Check Availaibility</a>
+                                <a href="{{route('order.index', ['order_id'=>$order->order_id, 'view' =>'availaibility'])}}" class="uk-button uk-button-default uk-border-rounded">Check Availaibility</a>
                             </td>
                         </tr>
-                        
                     @endforeach
-            
                 </tbody>
             </table>
-            
     </div>
-
     <div class="uk-margin-large">
         @isset($data['orderList'])
             @include('partial.paginationPartial', ['paginator' => $data['orderList']])

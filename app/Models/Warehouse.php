@@ -42,7 +42,7 @@ class Warehouse extends Model
     public static function Available($id){
         $stockList = Warehouse::where('warehouse_stock_id', $id )
         ->where('warehouse_quantity','>', 0)
-        ->first();
+        ->get();
 
         return $stockList;
     }

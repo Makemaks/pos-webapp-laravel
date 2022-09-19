@@ -45,6 +45,12 @@ class OrderController extends Controller
             $this->store($request);
         }
 
+        if($request->has('view')) {
+            $this->init();
+            $this->orderList = Order::Receipt('receipt_order_id', $request->order_id)
+            ->get();
+            return view('order.availability', ['data' => $this->Data()]);
+        }
         $this->init();
         $todayDate = Carbon::now()->toDateTimeString();
        

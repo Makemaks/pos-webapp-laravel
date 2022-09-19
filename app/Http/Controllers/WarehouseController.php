@@ -28,87 +28,99 @@ class WarehouseController extends Controller
     private $warehouseModel;
     private $warehouseList;
     private $storeModel;
-    
 
-   
 
-    public function Index(Request $request){
+
+
+    public function Index(Request $request)
+    {
 
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
-        ->first();
+            ->first();
 
-       
+
         $request->session()->reflash('view');
+
+        if($request->has('action')){
+             $warehouse = Warehouse::find($request->warehouse_id);
+             $warehouse_quantity = $warehouse->warehouse_quantity - $request->receipt_quantity;
+             Warehouse::where('warehouse_id',$request->warehouse_id)->update(['warehouse_quantity'=>$warehouse_quantity]);
+             return redirect()->back();
+        }
 
         if ($request->session()->get('view') == 'Ins-&-Out') {
             $this->warehouseList =  Warehouse::Store()
-            ->orwhere('warehouse_type', 'In')
-            ->orwhere('warehouse_type', 'Out')
-            ->paginate(20);
-        }
-        elseif ($request->session()->get('view') != 'Ins-&-Out') {
+                ->orwhere('warehouse_type', 'In')
+                ->orwhere('warehouse_type', 'Out')
+                ->paginate(20);
+        } elseif ($request->session()->get('view') != 'Ins-&-Out') {
             $this->warehouseList =  Warehouse::where('warehouse_type', $request->session()->get('view'))->paginate(20);
-        }
-        else {
+        } else {
 
             $accountList = User::Account('store_id',  $this->userModel->store_id)
-            ->where('person_type', 0)
-            ->get();
+                ->where('person_type', 0)
+                ->get();
 
             $this->warehouseList = Warehouse::Store()
-            ->whereIn('warehouse_user_id', $accountList->pluck('user_id'))
-            ->paginate(20);
+                ->whereIn('warehouse_user_id', $accountList->pluck('user_id'))
+                ->paginate(20);
 
             $this->Init();
         }
-         
-       return view('warehouse.index', ['data' => $this->Data()]); 
+
+        return view('warehouse.index', ['data' => $this->Data()]);
     }
 
-    public function Create(){
+    public function Create()
+    {
 
-        $this->warehouseModel = New warehouse();
-        return view('warehouse.create', ['data' => $this->Data()]);  
+        $this->warehouseModel = new warehouse();
+        return view('warehouse.create', ['data' => $this->Data()]);
     }
 
-    public function Store(Request $request){
+    public function Store(Request $request)
+    {
 
 
         Warehouse::insert($request->except('_token', '_method'));
         return view('warehouse.index', ['data' => $this->Data()]);
     }
 
-    public function Edit($warehouse){
+    public function Edit($warehouse)
+    {
         $this->warehouseList = Warehouse::where('warehouse_id', $warehouse)->get();
         $this->stockModel = Stock::find($this->warehouseList->first()->warehouse_stock_id);
 
         $this->Init();
 
-        return view('warehouse.edit', ['data' => $this->Data()]);  
+        return view('warehouse.edit', ['data' => $this->Data()]);
     }
 
-    public function Update(Request $request, $warehouse){
+    public function Update(Request $request, $warehouse)
+    {
 
-       Warehouse::find($warehouse)
-       ->update($request->except('_token', '_method'));
+        Warehouse::find($warehouse)
+            ->update($request->except('_token', '_method'));
 
-        return view('warehouse.edit', ['data' => $this->Data()]);  
+        return view('warehouse.edit', ['data' => $this->Data()]);
     }
 
-    public function Destroy($warehouse){
+    public function Destroy($warehouse)
+    {
         Warehouse::destroy($warehouse);
         PersonWarehouse::where('person_warehouse_warehouse_id', $warehouse)
-        ->destroy();
+            ->destroy();
 
-        return redirect()->route('warehouse.index');  
+        return redirect()->route('warehouse.index');
     }
 
-    private function Init(){
+    private function Init()
+    {
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
-        ->first();
+            ->first();
 
         $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
-        
+
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
         $this->settingModel = Setting::find($this->settingModel->setting_id);
 
@@ -116,19 +128,20 @@ class WarehouseController extends Controller
 
 
         $this->storeList = Store::List('root_store_id', $this->userModel->store_id);
-        
+
         $this->storeModel = Store::Account('store_id', $this->userModel->store_id)
-        ->first();
+            ->first();
 
         //$this->storeList->prepend($storeModel);
     }
-  
 
-     private function Data(){
+
+    private function Data()
+    {
 
         return [
-           
-            'userModel'=> $this->userModel,
+
+            'userModel' => $this->userModel,
             'categoryList' => $this->categoryList,
             'stockList' => $this->stockList,
             'stockModel' => $this->stockModel,
@@ -140,6 +153,5 @@ class WarehouseController extends Controller
             'warehouseList' => $this->warehouseList,
             'warehouseModel' => $this->warehouseModel
         ];
-       
     }
 }

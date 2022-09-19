@@ -40,7 +40,7 @@ class OrderController extends Controller
     public function Index(Request $request){
       
       
-        if ($request->session()->has('setting_finalise_key')) {
+         if ($request->session()->has('setting_finalise_key')) {
             $request->session()->reflash('order_finalise_key');
             $this->store($request);
         }
@@ -48,7 +48,8 @@ class OrderController extends Controller
         $this->init();
         $todayDate = Carbon::now()->toDateTimeString();
        
-        $this->orderList = Receipt::Order('stock_store_id',  $this->userModel->store_id)
+      
+        $this->orderList = Receipt::Order('stock_store_id',  1)
         ->orderByDesc('order_id')
         ->groupBy('order_id')
         ->paginate(10);

@@ -207,7 +207,7 @@ class SettingFactory extends Factory
     
         $isoCount = count(CountryHelper::ISO());
         $setting_group = [
-            'default_country' => $this->faker->numberBetween($min = 1, $max = $isoCount)
+            'default_country' => $this->faker->numberBetween($min = 0, $max = $isoCount - 1)
         ];
 
        

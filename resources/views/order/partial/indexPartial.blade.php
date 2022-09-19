@@ -59,7 +59,7 @@
                             <td>{{ json_decode($userPerson->person_name, true)['person_firstname'] }}</td>
                             <td>{{$order->created_at}}</td>
                             <td>
-                            
+                                <a href="" class="uk-button uk-button-default uk-border-rounded">Check Availaibility</a>
                             </td>
                         </tr>
                         

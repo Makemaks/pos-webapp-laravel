@@ -53,13 +53,18 @@
                         @endif
     
                         <td>
-                            @foreach (json_decode($person->address_email) as $address_email)
-                                <div>{{$address_email}}</div>
-                              
-                            @endforeach
-                            @foreach (json_decode($person->address_phone) as $address_phone)
-                                <p class="uk-margin-remove-top">{{$address_phone}}</p>
-                            @endforeach
+                            @if ($person->address_email)
+                                @foreach (json_decode($person->address_email) as $address_email)
+                                    <div>{{$address_email}}</div>
+                                
+                                @endforeach
+                            @endif
+
+                            @if ($person->address_phone)
+                                @foreach (json_decode($person->address_phone) as $address_phone)
+                                    <p class="uk-margin-remove-top">{{$address_phone}}</p>
+                                @endforeach
+                            @endif
                         </td>
                        
                         <td>

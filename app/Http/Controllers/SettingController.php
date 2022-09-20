@@ -44,7 +44,6 @@ class SettingController extends Controller
 
     public function Store(Request $request)
     {
-        // dd($request->form['setting_offer']);
         // Check condition from request to add new setting_stock_group
         if ($request->code) {
             $this->settingModel = Setting::find($request['setting_id']);
@@ -97,8 +96,9 @@ class SettingController extends Controller
 
     public function Edit(Request $request, $setting)
     {
+        // dd($request->stock_offer['index']);
         $this->settingModel = Setting::find($setting);
-
+        
         // Check condition from url to edit setting_stock_group
         if($request->has('index')) {
             $request->session()->reflash();
@@ -106,13 +106,19 @@ class SettingController extends Controller
             $this->settingModel['setting_stock_group'] = $this->settingModel['setting_stock_group'][$request->index];
             $this->settingModel['edit'] = true;
             return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
+        } else if($request->stock_offer['index']) {
+            // dd($this->settingModel['setting_offer'][$request->stock_offer['index']]);
+            $this->settingModel['setting_offer'] = $this->settingModel['setting_offer'][$request->stock_offer['index']];
+            $this->settingModel['edit'] = true;
+            // dd($this->settingModel['setting_offer']);
+            return view('stock.partial.offerPartial', ['data' => $this->Data()]);
         }
         return view('Setting.edit', ['project' => $setting]);
     }
 
     public function Update(Request $request, $setting)
     {
-        // dd($request->all());
+        dd($request->all());
         $this->settingModel = Setting::find($setting);
         $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
 

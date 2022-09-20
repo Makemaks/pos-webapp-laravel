@@ -61,11 +61,13 @@ class WarehouseController extends Controller
 
             $this->Init();
         }
-         
+
        return view('warehouse.index', ['data' => $this->Data()]); 
     }
 
-    public function Create(){
+    public function Create()
+    {
+
 
         $this->warehouseModel = New warehouse();
         return view('warehouse.create', ['data' => $this->Data()]);  

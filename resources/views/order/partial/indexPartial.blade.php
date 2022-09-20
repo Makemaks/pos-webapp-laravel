@@ -59,7 +59,7 @@
                             <td>{{ json_decode($userPerson->person_name, true)['person_firstname'] }}</td>
                             <td>{{$order->created_at}}</td>
                             <td>
-                            
+                                <a href="{{route('order.index', ['order_id'=>$order->order_id, 'action' =>'stock'])}}" class="uk-button uk-button-default uk-border-rounded">Stock</a>
                             </td>
                         </tr>
                         

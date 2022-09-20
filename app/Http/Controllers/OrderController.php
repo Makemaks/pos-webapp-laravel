@@ -40,11 +40,30 @@ class OrderController extends Controller
     }
 
     public function Index(Request $request){
-      
+
         $this->init();
         $todayDate = Carbon::now()->toDateTimeString();
        
-        $this->orderList = Receipt::Order('stock_store_id',  $this->userModel->store_id)
+
+      
+         if ($request->session()->has('setting_finalise_key')) {
+            $request->session()->reflash('order_finalise_key');
+            $this->store($request);
+        }
+
+        if($request->has('action') && $request->action == 'stock') {
+            $this->init();
+            $this->orderList = Order::Receipt('receipt_order_id', $request->order_id)
+            ->get()
+            ->groupBy('receipttable_id');
+
+            return view('order.stock.index', ['data' => $this->Data()]);
+        }
+        $this->init();
+        $todayDate = Carbon::now()->toDateTimeString();
+       
+      
+        $this->orderList = Receipt::Order('stock_store_id', $this->userModel->store_id)
         ->orderByDesc('order_id')
         ->groupBy('order_id')
         ->paginate(10);
@@ -77,6 +96,24 @@ class OrderController extends Controller
         Order::Process($request, $this->Data());
         
         return redirect()->route('home.index')->with('success', 'Order Completed Successfully');
+    }
+
+
+    public function Update(Request $request, $order){
+
+       $requestInput = $request->all();
+
+        if ($request->receipt_quantity && $request->receipt_warehouse_id) {
+            foreach ($request->receipt_warehouse_id as $wareHouseKey => $warehouse_id) {
+               
+                    $warehouse = Warehouse::find($warehouse_id);
+                    $warehouse_quantity = $warehouse->warehouse_quantity - $request->receipt_quantity[$wareHouseKey];
+                    Warehouse::where('warehouse_id', $warehouse_id)->update(['warehouse_quantity' => $warehouse_quantity]);
+            }
+            
+        }
+
+        return redirect()->back();
     }
 
     public function Delete($order){

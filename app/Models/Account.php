@@ -39,7 +39,7 @@ class Account extends Model
 
     protected $casts = [
         'account_blacklist' => 'array',
-        'account_date' => 'array'
+        'account_date' => 'array',
     ];
 
     public static function List($column,  $filter)

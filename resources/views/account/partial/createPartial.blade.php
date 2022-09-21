@@ -20,22 +20,22 @@
         <div class="uk-text-danger">{{ $message }}</div>
     @enderror
 
-    <div class="uk-margin">
+{{--     <div class="uk-margin">
         <input class="uk-input" type="text" placeholder="Vat" name="account_vat" value="{{ old('account_vat', $data['accountModel']->account_vat ) }}"/>
     </div>
     @error('account_vat')
         <div class="uk-text-danger">{{ $message }}</div>
-    @enderror
+    @enderror --}}
 
-    <div class="uk-margin">
+ {{--    <div class="uk-margin">
         <input class="uk-input" type="text" placeholder="Business Hours" name="account_business_hours" value="{{ old('account_business_hours', $data['accountModel']->account_business_hours ) }}"/>
     </div>
     @error('account_business_hours')
         <div class="uk-text-danger">{{ $message }}</div>
-    @enderror
+    @enderror --}}
 
 
-   @if ($data['accountList'] && count($data['accountList']) > 0)
+   @if (isset( $data['accountList'] ) && count($data['accountList']) > 0)
         <div class="uk-margin">
             <label for="">
                 <input class="uk-checkbox" type="checkbox" name="account_is_main" value="{{ old('account_is_main') }}"/>

@@ -8,6 +8,7 @@
 
     use App\Models\Address;
     use App\Models\Account;
+    use App\Models\User;
     $personType = ['Employee', 'Ex-Employee', 'Non-Employee'];
     $pageTipList = [
        
@@ -34,13 +35,20 @@
     </div>
 
 
-    @if ($data['personModel']->user_account_id)
-        @php
-            $data['accountModel'] = Account::find($data['personModel']->user_account_id);
-        @endphp 
+   
+   <div>
         <h3>Account</h3>
-        @include('account.partial.createPartial')
-    @endif
+
+      
+            @php
+                $userModel = User::find($data['personModel']->person_id);
+                $data['accountModel'] = Account::find($userModel->user_account_id);
+               
+            @endphp 
+            @include('account.partial.createPartial')
+        
+        
+   </div>
 
 
     @php
@@ -48,15 +56,16 @@
     @endphp
 
 
-
-    @if($data['addressList'])
-
+    <div>
         <h3>Address</h3>
-        @include('address.partial.indexPartial')
-    @endif
+        @if($data['addressList'])
+            @include('address.partial.indexPartial')
+        @endif
+    </div>
 
     <div>
         <h3>Options</h3>
+        Get this from account table
     </div>
 
 </form>

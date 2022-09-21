@@ -48,7 +48,7 @@ class AccountFactory extends Factory
             "start_date" => $this->faker->dateTimeBetween($startDate = '1 years', $endDate = '2 years', $timezone = null)->format('Y-m-d H:i:s'),
             "end_date" => $this->faker->dateTimeBetween($startDate = '3 years', $endDate = '4 years', $timezone = null)->format('Y-m-d H:i:s'),
            
-        ],
+        ];
 
 
         return [
@@ -58,7 +58,7 @@ class AccountFactory extends Factory
             'account_type' => $account_type,
             'account_description' => $this->faker->sentence,
             'account_blacklist' => $this->faker->randomElement($array = array(NULL, $account_blacklist)),
-            'account_date' => $ccount_date
+            'account_date' => $account_date
         ];
     }
 }

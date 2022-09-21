@@ -23,7 +23,7 @@ class CreateAccountTable extends Migration
             $table->string('account_description');
             $table->bigInteger('parent_account_id')->nullable();
             $table->json('account_blacklist')->nullable();
-            
+            $table->json('account_date')->nullable();
             $table->timestamps();
         });
     }

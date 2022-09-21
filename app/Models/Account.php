@@ -27,13 +27,19 @@ class Account extends Model
                     "blocked_access": {} 
                 }
 
-            }'
+        }',
+
+        "account_date" => '{
+            "end_date": "",
+            "start_date": ""
+        }',
     ];
 
 
 
     protected $casts = [
-        'account_blacklist' => 'array'
+        'account_blacklist' => 'array',
+        'account_date' => 'array'
     ];
 
     public static function List($column,  $filter)

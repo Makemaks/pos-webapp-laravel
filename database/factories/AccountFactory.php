@@ -37,11 +37,18 @@ class AccountFactory extends Factory
         $account_blacklist = [
             "type" => $this->faker->numberBetween($min = 0, $max = 1),
             "description" => $this->faker->word,
-            "start_time" => "",
-            "end_time" => "",
+            "start_date" => "",
+            "end_date" => "",
             "user_id" => [],
             "blocked_access" => []
         ];
+
+
+        $account_date = [
+            "start_date" => $this->faker->dateTimeBetween($startDate = '1 years', $endDate = '2 years', $timezone = null)->format('Y-m-d H:i:s'),
+            "end_date" => $this->faker->dateTimeBetween($startDate = '3 years', $endDate = '4 years', $timezone = null)->format('Y-m-d H:i:s'),
+           
+        ],
 
 
         return [
@@ -50,7 +57,8 @@ class AccountFactory extends Factory
             'accountable_type' => $accountable_type,
             'account_type' => $account_type,
             'account_description' => $this->faker->sentence,
-            'account_blacklist' => $this->faker->randomElement($array = array(NULL, $account_blacklist))
+            'account_blacklist' => $this->faker->randomElement($array = array(NULL, $account_blacklist)),
+            'account_date' => $ccount_date
         ];
     }
 }

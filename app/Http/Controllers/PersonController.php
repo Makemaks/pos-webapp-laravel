@@ -74,7 +74,7 @@ class PersonController extends Controller
 
     public function Update(Request $request, $person){
 
-       Person::find($person)
+       Person::where('person_id', $person)
        ->update($request->except('_token', '_method'));
 
         return view('person.edit', ['data' => $this->Data()]);  

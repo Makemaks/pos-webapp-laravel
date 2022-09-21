@@ -27,7 +27,7 @@
 
 
 @section('content')
-<form method="POST" id="submitForm" action="{{ route('person.update', $data['personModel']->person_id) }}" class="uk-form-horizontal">
+<form method="POST" id="person-update" action="{{ route('person.update', $data['personModel']->person_id) }}" class="uk-form-horizontal">
     @csrf
     @method('PATCH')
     <div class="">

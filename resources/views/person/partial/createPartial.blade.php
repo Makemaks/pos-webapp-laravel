@@ -26,22 +26,7 @@
 
     <legend class="uk-legend">{{$person_firstname}} {{$person_lastname}}</legend>
 
-    <div class="uk-margin">
-        
-        <label class="uk-form-label" for="form-stacked-text" for="line-1">Credit<span class="uk-text-danger">*</span></label>
-       
-        <div class="uk-form-controls">
-            @if ($data['personModel'])
-                <input type="text" class="uk-input" id="form-stacked-text" name="person_credit" value="{{ old('person_credit', $data['personModel']->person_credit) }}"></input>
-            @else
-                <input type="text" class="uk-input" id="form-stacked-text" name="person_credit" value="{{ old('person_credit') }}"></input>
-            @endif
-        </div>
-        
-        @error('person_credit')
-            <div class="uk-text-danger">{{ $message }}</div>
-        @enderror
-    </div>
+    
 
     <div class="uk-margin">
         
@@ -58,7 +43,7 @@
 
     <div class="uk-margin">
         
-        <label class="uk-form-label" for="form-stacked-text">Firstname<span class="uk-text-danger">*</span></label>
+        <label class="uk-form-label" for="form-stacked-text">Lastname<span class="uk-text-danger">*</span></label>
       
         <div class="uk-form-controls">
             <input type="text" class="uk-input" id="form-stacked-text" name="person_name[person_lastname]" value="{{ old('person_name[person_lastname]' , $person_lastname) }}"></input>

@@ -14,6 +14,13 @@
     @enderror
 
     <div class="uk-margin">
+        <input type="text" class="uk-input" placeholder="credit" name="account_credit" value="{{ old('account_credit', $data['personModel']->account_credit) }}"></input>
+    </div>
+    @error('account_credit')
+        <div class="uk-text-danger">{{ $message }}</div>
+    @enderror
+    
+    <div class="uk-margin">
         <input class="uk-input" type="text" placeholder="Location" name="account_location" value="{{ old('account_location', $data['accountModel']->account_location ) }}"/>
     </div>
     @error('account_location')

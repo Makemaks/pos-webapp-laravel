@@ -18,6 +18,7 @@ $a = $data['settingModel'];
         @endif
             @csrf
             @foreach ((array) $data['settingModel']->setting_offer as $keyStockoffer => $itemStockoffer)
+            {{-- {{dd($data['settingModel']->setting_offer )}} --}}
                 @foreach ($itemStockoffer as $key => $stock)
                     @if ($key == 'integer' || $key == 'points' || $key == 'usage' || $key == 'decimal')
                         @foreach ($stock as $stockkey => $stockitem)

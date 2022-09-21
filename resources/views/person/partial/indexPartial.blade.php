@@ -7,16 +7,8 @@
     $route = Str::before(Request::route()->getName(), '.');
 @endphp
 
-{{-- <div class="uk-grid-small" uk-grid>
-    <div class="uk-width-expand">
-        <input type="text" class="uk-input uk-form-width-expand" value="{{Session::get('searchSearch')}}" onchange="searchCustomer(this)">
-    </div>
-    <div class="uk-width-auto">
-        <button uk-icon="plus" class="uk-button uk-button-default uk-border-rounded" onclick="createCustomer()"></button>
-    </div>
-</div> --}}
 
-<div class="uk-overflow-auto uk-height-large" uk-height-viewport="offset-top: true; offset-bottom: 10">
+<div @if ($route != 'person') class="uk-overflow-auto uk-height-large" uk-height-viewport="offset-top: true; offset-bottom: 10" @endif>
 
     <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
         <thead>

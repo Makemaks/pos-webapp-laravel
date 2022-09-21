@@ -270,12 +270,14 @@ class MenuController extends Controller
         $request->session()->flash('view', $request->view);
         $request->session()->flash('action', $request->route()->getActionMethod());
         
+       
+
         switch ($request->view):
-            case 'person':
+            case 'list':
                 return redirect()->route('person.index');
                 break;
-
-            case 'company':
+          
+            case 'group':
                 return redirect()->route('company.index');
                 break;
 

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('person', function (Blueprint $table) {
             $table->bigIncrements('person_id');
             $table->bigInteger('person_user_id');  //user that added this account
-            $table->bigInteger('person_organisation_id');  //user that added this account
+         
             
             $table->bigInteger('persontable_id')->comment('Store id'); // store id
             $table->string('persontable_type')->comment('Store::Company');

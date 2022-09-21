@@ -27,13 +27,30 @@ class PersonController extends Controller
         $this->middleware('sessionMiddleware');
     }
 
-    public function Index(){
+    public function Index(Request $request){
 
         $this->init();
 
         $userList = User::Store('user_account_id', $this->userModel->account_id)->pluck('user_id');
 
-        $this->personList = Person::whereIn('person_user_id', $userList)->paginate(20);
+        $a = $request->session()->all();
+
+        if ($request->session()->has('action') && $request->session()->get('action') == 'Customer') {
+            //customer
+            $this->personList = Person::whereIn('person_user_id', $userList)
+            ->where('persontable_type', 'Company')
+            ->where('person_type', 2) //see person model type function
+            ->paginate(20);
+
+            $request->session()->reflash();
+        }else{
+            //employees
+            $this->personList = Person::whereIn('person_user_id', $userList)
+            ->where('persontable_type', 'Store')
+            ->paginate(20);
+        }
+       
+
         return view('person.index', ['data' => $this->Data()]);        
     }
 

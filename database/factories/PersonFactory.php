@@ -62,7 +62,7 @@ class PersonFactory extends Factory
 
         return [
             //
-            'person_organisation_id' => $this->faker->numberBetween($min = 1, $max = 2),
+            
             'person_message_notification' => $person_message_notification,
             'person_message_group' => $person_message_group,
             'person_type' => $this->faker->numberBetween($min = 0, $max = 2),
@@ -74,9 +74,7 @@ class PersonFactory extends Factory
             'persontable_type' => $this->faker->randomElement($array = array('Store', 'Company')),
             'person_user_id' => $this->faker->numberBetween($min = 1, $max = 1),
             'person_dob' =>  $this->faker->dateTimeBetween($startDate = '-60 years', $endDate = '-3 years', $timezone = null),
-            /* 'person_stock_cost' => $person_stock_cost,
-            'person_offer' => $person_offer,
-            'person_credit' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 1, $max = 500), */
+            
         ];
     }
 }

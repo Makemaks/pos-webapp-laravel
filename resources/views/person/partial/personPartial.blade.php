@@ -16,7 +16,7 @@ use App\Models\User;
 <div uk-grid>
                            
     <div>
-        <a class="uk-link-text" href="{{route('person.edit', $data['personModel']->person_id)}}">
+        <a class="uk-link-text" href="{{route('person.edit', $data['personModel']->person_id)}}"  title="{{$data['personModel']->person_id}}">
             {{$data['personModel']->person_name['person_firstname']}} {{$data['personModel']->person_name['person_lastname']}}
         </a>
     

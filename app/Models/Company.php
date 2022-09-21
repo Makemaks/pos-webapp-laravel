@@ -31,7 +31,7 @@ class Company extends Model
 
     public static function Person(){
         return Company::
-        leftJoin('person', 'person.person_company_id', 'company.company_id');
+        leftJoin('person', 'person.persontable_id', 'company.company_id');
     }
 
   

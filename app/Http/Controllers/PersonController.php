@@ -1,12 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-
-
 use App\Models\Store;
 use App\Models\Person;
 use App\Models\User;
@@ -69,6 +65,7 @@ class PersonController extends Controller
 
     public function Edit($person){
         $this->personModel = Person::find($person);
+    
         return view('person.edit', ['data' => $this->Data()]);  
     }
 
@@ -76,6 +73,7 @@ class PersonController extends Controller
 
        Person::where('person_id', $person)
        ->update($request->except('_token', '_method'));
+     
 
         return view('person.edit', ['data' => $this->Data()]);  
     }

@@ -111,7 +111,7 @@ class SettingController extends Controller
             $this->settingModel['setting_offer'] = $this->settingModel['setting_offer'][$request->stock_offer['index']];
             $this->settingModel['edit'] = true;
             // dd($this->settingModel['setting_offer']);
-            return view('stock.partial.offerPartial', ['data' => $this->Data()]);
+            return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
         }
         return view('Setting.edit', ['project' => $setting]);
     }

@@ -48,10 +48,9 @@ class WarehouseController extends Controller
             ->paginate(20);
         }
         elseif ($request->session()->get('view') != 'Ins-&-Out') {
-            $this->warehouseList =  Warehouse::where('warehouse_type', $request->session()->get('view'))->get();
+            $this->warehouseList =  Warehouse::where('warehouse_type', $request->session()->get('view'))->orderby('warehouse_id','desc')->get();
         }
         else {
-
             $accountList = User::Account('store_id',  $this->userModel->store_id)
             ->where('person_type', 0)
             ->get();
@@ -75,35 +74,93 @@ class WarehouseController extends Controller
     }
 
     public function Store(Request $request){
+        if($request->warehouse_user_id){
+            $warehouse_type = $this->getWarehouse_type($request->warehouse_type);
+            $warehouse_status = $this->getWarehouse_status($request->warehouse_status);
+            $insert = [
+                "warehouse_status" => $warehouse_status,
+                "warehouse_type" => $warehouse_type,
+                "warehouse_quantity" => $request->warehouse_quantity,
+                "warehouse_user_id" => $request->warehouse_user_id,
+                "warehouse_reference" => $request->warehouse_reference,
+                "warehouse_note" => $request->warehouse_note,
+                "warehouse_store_id" => 1,
+                "warehouse_company_id" => 1,
+                "warehouse_stock_id" => 1,
+                "created_at" => $request->created_at,
+                "updated_at" => $request->updated_at,
+            ];
+            Warehouse::insert($insert);
+        }
 
-
-        Warehouse::insert($request->except('_token', '_method'));
-        return view('warehouse.index', ['data' => $this->Data()]);
+        return redirect()->back()->with('success', 'Transfer added Successfuly');
     }
 
+    public function getWarehouse_status($status = '')
+    {
+        switch ($status) {
+            case 'FIFO':
+                return 0;
+                break;
+            case 'Average Cost Price':
+                return 1;
+                break;
+            default:
+                return 0;
+                break;
+        }
+    }
+    public function getWarehouse_type($type = '')
+    {
+        switch ($type) {
+            case 'return':
+                return 0;
+                break;
+            case 'delivery':
+                return 1;
+                break;
+            case 'transfer':
+                return 2;
+                break;
+            case 'wastage':
+                return 3;
+                break;
+            default:
+                return 0;
+                break;
+        }
+    }
     public function Edit($warehouse){
         $this->warehouseList = Warehouse::where('warehouse_id', $warehouse)->get();
         $this->stockModel = Stock::find($this->warehouseList->first()->warehouse_stock_id);
-
+        $this->stockModel['edit'] = true;
         $this->Init();
 
         return view('warehouse.edit', ['data' => $this->Data()]);  
     }
 
     public function Update(Request $request, $warehouse){
-
-       Warehouse::find($warehouse)
-       ->update($request->except('_token', '_method'));
-
-        return view('warehouse.edit', ['data' => $this->Data()]);  
+        foreach ($request->warehouse as $key => $value) {
+            $warehouse = Warehouse::find($value['warehouse_id']);
+            $warehouse->warehouse_reference = $value['warehouse_reference'];
+            $warehouse->warehouse_quantity = $value['warehouse_quantity'];
+            $warehouse->warehouse_note = $value['warehouse_note'];
+            $warehouse->save();
+        }
+    
+       return redirect()->back()->with('success', 'Transfer Updated Successfuly');
     }
 
-    public function Destroy($warehouse){
-        Warehouse::destroy($warehouse);
-        PersonWarehouse::where('person_warehouse_warehouse_id', $warehouse)
-        ->destroy();
-
-        return redirect()->route('warehouse.index');  
+    public function Destroy(Request $request,$warehouse){
+        if($request->id){
+            $data = explode(",",$request->id);
+            foreach ($data as $key => $value) {
+                Warehouse::destroy($value);
+            }
+        }
+        return response()->json([
+            'success'=>'Stock transer deleted successfully.'
+        ]);
     }
 
     private function Init(){

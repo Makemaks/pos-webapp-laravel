@@ -26,9 +26,9 @@
         
         
         
-            <input name="form[warehouse][warehouse_user_id]" value="{{$data['userModel']->user_id}}" hidden>
+            <input name="warehouse_user_id" value="{{$data['userModel']->user_id}}" hidden>
            @if ($data['stockModel'])
-                <input name="form[warehouse][warehouse_stock_id]" value="{{$data['stockModel']->stock_id}}" hidden>
+           <input name="warehouse_stock_id" value="{{$data['stockModel']->stock_id}}" hidden>
            @endif
        
         
@@ -41,17 +41,17 @@
                         @if ($keystock == 'warehouse_reference')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
-                                <input class="uk-input" type="text" name="form[warehouse][{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
+                                <input class="uk-input" type="text" name="{{$keystock}}" value="{{$stock}}">
                             </div>
                         @elseif($keystock == 'warehouse_price' || $keystock == 'warehouse_quantity')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
-                                <input class="uk-input" type="number" name="form[warehouse][{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
+                                <input class="uk-input" type="number" name="{{$keystock}}" value="{{$stock}}">
                             </div>
                         @elseif($keystock == 'warehouse_store_id')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
-                                <select class="uk-select" id="form-stacked-select" name="form[warehouse][{{$keyStockTransfer}}][{{$keystock}}]">
+                                <select class="uk-select" id="form-stacked-select" name="{{$keystock}}">
                                     <option value="" selected disabled>SELECT ...</option>
                                     
                                         @foreach ($storeList as $store)
@@ -65,7 +65,7 @@
                         @elseif($keystock == 'warehouse_status')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
-                                <select class="uk-select" id="form-stacked-select" name="form[warehouse][{{$keyStockTransfer}}][{{$keystock}}]" value="{{ old('') }}">
+                                <select class="uk-select" id="form-stacked-select" name="{{$keystock}}" value="{{ old('') }}">
                                     <option value="" selected disabled>SELECT ...</option>
                                     
                                         @foreach (Warehouse::WarehouseStatus() as $key => $status)
@@ -79,7 +79,7 @@
                         @elseif($keystock == 'warehouse_type')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
-                                <select class="uk-select" id="form-stacked-select" name="form[warehouse][{{$keyStockTransfer}}][{{$keystock}}]">
+                                <select class="uk-select" id="form-stacked-select" name="{{$keystock}}">
                                     <option value="" selected disabled>SELECT ...</option>
                                     
                                         @foreach (Warehouse::WarehouseType() as $key => $type)
@@ -99,7 +99,7 @@
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
                                 <div class="uk-form-controls">
-                                    <textarea name="form[warehouse][{{$keyStockTransfer}}][{{$keystock}}]" class="uk-textarea" id="" cols="30" rows="10">{{$stock}}</textarea>
+                                    <textarea name="{{$keystock}}" class="uk-textarea" id="" cols="30" rows="10">{{$stock}}</textarea>
                                 </div>
                             </div>
                         @endif

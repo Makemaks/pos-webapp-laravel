@@ -9,9 +9,20 @@
 
     
 @endphp
-
-@if (count($data['warehouseList']))
-    
+@if (count($data['warehouseList']) )
+    <ul class="uk-subnav">
+        <li>
+            <template></template>
+            <button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="stockTransaferUpdate" value="stockTransaferUpdate">
+            Save
+            </button>
+        </li>
+        <li>
+            <div>
+                <button class="uk-button uk-button-default uk-border-rounded" type="button" onclick="stockTranferList()">DELETE</button>
+            </div>
+        </li>
+    </ul>
     <ul class="uk-subnav uk-subnav-pill" uk-switcher>
         <li><a href="#" uk-icon="list"></a></li>
         <li><a href="#" uk-icon="plus"></a></li>
@@ -19,99 +30,107 @@
 
     <ul class="uk-switcher uk-margin">
         <li>
-            <h3>TRANSFERS</h3>
-            <table class="uk-table uk-table-small uk-table-divider uk-table-responsive uk-table-responsive">
-                <thead>
-                    <tr>
-                        <th>REF</th>
+            <form id="stockTransaferUpdate" action="{{route('warehouse.update', $data['warehouseList']->toarray()[1]['warehouse_id'])}}" method="POST">
+                @csrf
+                @method('PATCH')
+                <div>
+                <h3>TRANSFERS</h3>
+                    <table class="uk-table uk-table-small uk-table-divider uk-table-responsive uk-table-responsive">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>REF</th>
 
-                            @isset($data['warehouseList'])
-                                @foreach ($data['warehouseList']->toArray()[1] as $keystock => $item)
-                                    @if ($keystock != 'warehouse_id' && $keystock != 'warehouse_stock_id' && $keystock != 'created_at' &&	$keystock != 'updated_at')
-                                        <th>{{Str::after($keystock, 'warehouse_')}}</th>
-                                    @endif
-                                @endforeach
-                            @endisset
-                        
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                
-                    
-                        @isset($data['warehouseList'])
-                            @foreach ($data['warehouseList']->toArray() as $keyStockTransfer => $warehouseList)
-                                
-                                <tr>
-                                
-                                    @foreach ($warehouseList as $keystock => $stock)
-                                    
-                                            @if ($keystock == 'warehouse_id')
-                                                <input class="uk-input" type="text" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}" hidden>
-                                            <td>
-                                                    <button class="uk-button uk-button-default uk-border-rounded" onclick="">{{$stock}}</button>
-                                            </td>
-                                        
-                                            @elseif ($keystock == 'warehouse_note' || $keystock == 'warehouse_description' || $keystock == 'warehouse_reference')
-                                                <td>
-                                                    <input class="uk-input" type="text" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
-                                                </td>
-                                            @elseif($keystock == 'warehouse_price' || $keystock == 'warehouse_quantity')
-                                                <td>
-                                                    <input class="uk-input" type="number" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
-                                                </td>
-                                            @elseif($keystock == 'warehouse_status')
-                                                <td>
-                                                    <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
-                                                        <option value="" selected disabled>SELECT ...</option>
-                                                        
-                                                            @foreach (Warehouse::WarehouseStatus() as $store)
-                                                                <option value="{{$stock}}" class="uk-input">
-                                                                    {{$store}}
-                                                                </option>
-                                                            @endforeach
-                                                        
-                                                    </select>
-                                                </td>
-                                            @elseif($keystock == 'warehouse_type')
-                                                <td>
-                                                    <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
-                                                        <option value="" selected disabled>SELECT ...</option>
-                                                        
-                                                            @foreach (Warehouse::WarehouseType() as $key => $stock)
-                                                                <option value="{{$stock}}" class="uk-input">
-                                                                    {{$stock}}
-                                                                </option>
-                                                            @endforeach
-                                                    
-                                                    </select>
-                                                </td>
-                                            @elseif($keystock == 'warehouse_store_id' || $keystock == 'warehouse_user_id')
-                                                <td>
-                                                    <a href="{{route('store.edit', $stock)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock}}</a>
-                                                </td>
+                                    @isset($data['warehouseList'])
+                                        @foreach ($data['warehouseList']->toArray()[1] as $keystock => $item)
+                                            @if ($keystock != 'warehouse_id' && $keystock != 'warehouse_stock_id' && $keystock != 'created_at' &&	$keystock != 'updated_at')
+                                                <th>{{Str::after($keystock, 'warehouse_')}}</th>
                                             @endif
-
-                                            
-                                            
                                         @endforeach
-                                    <td>
-                                        <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockTransfer({{$stock}})"></button>
-                                    </td>
-                                </tr>    
-                            @endforeach
-                        @endisset
-                
-                </tbody>
-            </table>
+                                    @endisset
+                            </tr>
+                        </thead>
+                        <tbody>
+                                @isset($data['warehouseList'])
+                                    @foreach ($data['warehouseList']->toArray() as $keyStockTransfer => $warehouseList)
+                                        <tr>
+                                            <td>
+                                                <div class="uk-margin stock_checkbox">
+                                                    <div class="uk-form-controls">
+                                                        <input class="uk-checkbox" type="checkbox"
+                                                            value="{{ $warehouseList['warehouse_id'] }}"
+                                                            name="stock_transfer_chk" data-id="{{ $warehouseList['warehouse_id'] }}" >
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            @foreach ($warehouseList as $keystock => $stock)
+                                                    @if ($keystock == 'warehouse_id')
+                                                        <input class="uk-input" type="text" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}" hidden>
+                                                    <td>
+                                                            <button class="uk-button uk-button-default uk-border-rounded" onclick="">{{$stock}}</button>
+                                                    </td>
+                                                
+                                                    @elseif ($keystock == 'warehouse_note' || $keystock == 'warehouse_description' || $keystock == 'warehouse_reference')
+                                                        <td>
+                                                            <input class="uk-input" type="text" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
+                                                        </td>
+                                                    @elseif($keystock == 'warehouse_price' || $keystock == 'warehouse_quantity')
+                                                        <td>
+                                                            <input class="uk-input" type="number" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
+                                                        </td>
+                                                    @elseif($keystock == 'warehouse_status')
+                                                        <td>
+                                                            <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
+                                                                <option value="" selected disabled>SELECT ...</option>
+                                                                
+                                                                    @foreach (Warehouse::WarehouseStatus() as $store)
+                                                                        <option value="{{$stock}}" class="uk-input">
+                                                                            {{$store}}
+                                                                        </option>
+                                                                    @endforeach
+                                                                
+                                                            </select>
+                                                        </td>
+                                                    @elseif($keystock == 'warehouse_type')
+                                                        <td>
+                                                            <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
+                                                                <option value="" selected disabled>SELECT ...</option>
+                                                                
+                                                                    @foreach (Warehouse::WarehouseType() as $key => $stock)
+                                                                        <option value="{{$stock}}" class="uk-input">
+                                                                            {{$stock}}
+                                                                        </option>
+                                                                    @endforeach
+                                                            
+                                                            </select>
+                                                        </td>
+                                                    @elseif($keystock == 'warehouse_store_id' || $keystock == 'warehouse_user_id')
+                                                        <td>
+                                                            <a href="{{route('warehouse.edit', $stock)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock}}</a>
+                                                        </td>
+                                                    @endif
+                                                @endforeach
+                                        </tr>    
+                                    @endforeach
+                                @endisset
+                        
+                        </tbody>
+                    </table>
+                </div>
+            </form>
         </li>
 
         <li>
-                <form action="">
-                    @include('warehouse.partial.createPartial')
-                    <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button>
-            
-                </form>
+            <form action="{{ route('warehouse.store') }}" method="POST">
+                @csrf
+                @method('POST')
+                @include('warehouse.partial.createPartial')
+                <div class="uk-child-width-expand@m" uk-grid>
+                    <div>
+                        <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push" type="submit"></button>
+                    </div>     
+                </div>
+            </form>
         </li>
     </ul>
 

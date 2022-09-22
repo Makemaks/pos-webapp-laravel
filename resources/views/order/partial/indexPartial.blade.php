@@ -44,13 +44,12 @@ use App\Models\User;
                         @endif
                         <td>
                             <select class="uk-select" id="select-{{$order->order_id}}"
-                                onchange="OrderStatus(this, {{$order->order_id}})">
+                                onchange="OrderStatus(this, {{$order->order_id}})" name="order[{{$orderKey}}][order_status]">
                                 @foreach (Order::OrderStatus() as $status)
-                                <option value="{{$loop->iteration}}" @if($order->order_status == $loop->iteration)
+                                <option  value="{{$loop->iteration}}" @if($order->order_status == $loop->iteration)
                                     selected = 'selected' @endif>{{$status}}</option>
                                 @endforeach
                             </select>
-                            <input type="text" value="{{$order->order_status}}" name="order[{{$orderKey}}][order_status]" hidden>
                             <input type="text" value="{{$order->order_id}}" name="order[{{$orderKey}}][order_id]" hidden>
                         </td>
                         <td>{{ MathHelper::FloatRoundUp($orderTotal, 2) }}</td>

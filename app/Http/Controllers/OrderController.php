@@ -137,16 +137,12 @@ class OrderController extends Controller
      */
     public function OrderStatusUpdate(Request $request)
     {   
-        $data = $request->all();
         if($request->has('order')) {
             foreach($request->order as $orderData) {
-                dd($orderData['order_status']);
+                Order::where('order_id',$orderData['order_id'])->update(['order_status'=>$orderData['order_status']]);
             }
-
+            return redirect()->back();
         }
     }
-
-
-    
 
 }

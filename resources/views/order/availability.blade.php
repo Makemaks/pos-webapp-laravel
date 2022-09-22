@@ -38,7 +38,7 @@
                                 <td>{{$warehouse->warehouse_id}}</td>
                                 <td>{{$warehouse->warehouse_quantity}}</td>
                                 <td><input type="number" class="uk-input"  max="{{$orderList->warehouse_quantity}}"  min="0" name="receipt_quantity[]" value="{{$orderList->receipt_quantity}}"><input type="text" name="warehouse_id[]" hidden value="{{$warehouse->warehouse_id}}"></td>
-                                <td> <a  class="uk-button-default uk-border-rounded uk-button-primary" href="{{route('warehouse.index',['warehouse_id'=>$warehouse->warehouse_id,'action'=>'use','receipt_quantity'=>$orderList->receipt_quantity])}}">Use</a></td>
+                                <td> <a  class="uk-button uk-button-primary uk-border-rounded" href="{{route('warehouse.index',['warehouse_id'=>$warehouse->warehouse_id,'action'=>'use','receipt_quantity'=>$orderList->receipt_quantity])}}">Use</a></td>
                             </tr>
                             @endforeach
                         </tbody>

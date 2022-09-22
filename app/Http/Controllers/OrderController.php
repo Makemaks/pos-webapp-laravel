@@ -129,6 +129,23 @@ class OrderController extends Controller
        
     }
 
+    /**
+     * This function update the order status
+     * @param Request $request
+     * @method POST order/status/update
+     * @return null
+     */
+    public function OrderStatusUpdate(Request $request)
+    {   
+        $data = $request->all();
+        if($request->has('order')) {
+            foreach($request->order as $orderData) {
+                dd($orderData['order_status']);
+            }
+
+        }
+    }
+
 
     
 

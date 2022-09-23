@@ -119,14 +119,14 @@ class SettingController extends Controller
 
     public function Update(Request $request, $setting)
     {
-        dd('update');
-        // dd($request->setting_offer);
-        // dd($request->all());
+      
         $this->settingModel = Setting::find($setting);
         $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
-        // dd($request->all());
-        // Check condition from request to update particular index of setting_stock_group
-        if ($request->setting_stock_group) {
+       
+        if ($request->settingDelete) {
+            $this->Destroy($request, $setting);
+        }
+        else if ($request->setting_stock_group) {
             $this->settingModel->setting_stock_group = $settingInput['setting_stock_group'];
         } else if($request->code) {
             $setting_stock_group = $this->settingModel->setting_stock_group;
@@ -145,9 +145,14 @@ class SettingController extends Controller
 
     public function Destroy(Request $request, $setting)
     {
-        dd($request->all());
+     
         $currentRoute = explode('-', $setting);
-        if(is_array($currentRoute)) {
+        if($request->settingDelete){
+            foreach($request->setting_offer_delete as $setting_offer_delete){
+                
+            }
+        }
+        else if(is_array($currentRoute)) {
             $this->settingModel = Setting::find($currentRoute[0]);
             $setting_stock_group = $this->settingModel->setting_stock_group;
             unset($setting_stock_group[$currentRoute[1]]);

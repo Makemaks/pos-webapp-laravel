@@ -20,7 +20,7 @@
                 </button>
             @endif
 
-            <button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="settingDelete" value="settingDelete">
+            <button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="settingUpdate" value="settingDelete" name="settingDelete">
                 Delete
             </button>
 
@@ -74,9 +74,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <form id="settingDelete" action="{{route('setting.destroy', $data['settingModel']->setting_id)}}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
+                                  
                                         @foreach ($data['settingModel']->setting_offer as $keyStockoffer => $itemStockoffer)
                                             <tr>
                                                 <td>
@@ -222,7 +220,7 @@
                                                 </td>    
                                             </tr>
                                         @endforeach
-                                    </form>
+                                    
                                 </tbody>
                             </table>
                         </form>

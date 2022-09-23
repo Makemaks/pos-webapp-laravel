@@ -39,10 +39,20 @@ class Warehouse extends Model
         ->where($column,  $filter);
     }
 
-    public static function Available($id){
-        $stockList = Warehouse::where('warehouse_stock_id', $id )
-        ->where('warehouse_quantity','>', 0)
-        ->get();
+    public static function Available($id, $store_id = null){
+       
+        if ($store_id) {
+            $stockList = Warehouse::where('warehouse_stock_id', $id )
+            ->where('warehouse_quantity','>', 0)
+            ->where('warehouse_store_id', $store_id)
+            ->get();
+        } else {
+            $stockList = Warehouse::where('warehouse_stock_id', $id )
+            ->where('warehouse_quantity','>', 0)
+            ->get();
+           
+        }
+        
 
         return $stockList;
     }

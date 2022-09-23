@@ -202,14 +202,16 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                                         <div class="uk-align-right">
                                             @php
                                                 $color = '';
-                                                $warehouseStock = Warehouse::Available($stock->stock_id);
+                                                $warehouseStock = Warehouse::Available($stock->stock_id)->where();
                                                 
-                                                if ($warehouseStock) {
-                                                    if (Warehouse::WarehouseType()[$warehouseStock->warehouse_type] == 'transfer') {
-                                                        $color = 'uk-text-warning';
-                                                    }
-                                                    else{
-                                                        $color = 'uk-text-danger';
+                                                foreach ($variable as $key => $value) {
+                                                    if ($warehouseStock) {
+                                                        if (Warehouse::WarehouseType()[$warehouseStock->warehouse_type] == 'transfer') {
+                                                            $color = 'uk-text-warning';
+                                                        }
+                                                        else{
+                                                            $color = 'uk-text-danger';
+                                                        }
                                                     }
                                                 }
                                         

@@ -13,22 +13,19 @@
 <div class="">
     <h3>TRANSFERS</h3>
     
-      
-
         @php
            
             $storeModel = Store::Account('store_id',$data['userModel']->store_id)->first();
             $storeList = Store::List('root_store_id', $data['storeModel']->store_id)
             ->get();
           
+         
         @endphp
     
-        
-        
-        
+
             <input name="warehouse_user_id" value="{{$data['userModel']->user_id}}" hidden>
            @if ($data['stockModel'])
-           <input name="warehouse_stock_id" value="{{$data['stockModel']->stock_id}}" hidden>
+                <input name="warehouse_stock_id" value="{{$data['stockModel']->stock_id}}" hidden>
            @endif
        
         

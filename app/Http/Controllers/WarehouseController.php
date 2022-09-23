@@ -74,24 +74,7 @@ class WarehouseController extends Controller
     }
 
     public function Store(Request $request){
-        if($request->warehouse_user_id){
-            $warehouse_type = $this->getWarehouse_type($request->warehouse_type);
-            $warehouse_status = $this->getWarehouse_status($request->warehouse_status);
-            $insert = [
-                "warehouse_status" => $warehouse_status,
-                "warehouse_type" => $warehouse_type,
-                "warehouse_quantity" => $request->warehouse_quantity,
-                "warehouse_user_id" => $request->warehouse_user_id,
-                "warehouse_reference" => $request->warehouse_reference,
-                "warehouse_note" => $request->warehouse_note,
-                "warehouse_store_id" => 1,
-                "warehouse_company_id" => 1,
-                "warehouse_stock_id" => 1,
-                "created_at" => $request->created_at,
-                "updated_at" => $request->updated_at,
-            ];
-            Warehouse::insert($insert);
-        }
+        Warehouse::insert($request->except('_token', '_method'));
 
         return redirect()->back()->with('success', 'Transfer added Successfuly');
     }
@@ -140,27 +123,32 @@ class WarehouseController extends Controller
     }
 
     public function Update(Request $request, $warehouse){
-        foreach ($request->warehouse as $key => $value) {
-            $warehouse = Warehouse::find($value['warehouse_id']);
-            $warehouse->warehouse_reference = $value['warehouse_reference'];
-            $warehouse->warehouse_quantity = $value['warehouse_quantity'];
-            $warehouse->warehouse_note = $value['warehouse_note'];
-            $warehouse->save();
+      
+        $request->session()->reflash();
+        //used to remember the route
+
+        if ($request->has('deleteButton')) {
+            $this->Destroy($request, $warehouse);
+        } else {
+            foreach ($request->warehouse as $key => $value) {
+                Warehouse::where('warehouse_id', $value['warehouse_id'])->update($value);
+            }
         }
+        
     
        return redirect()->back()->with('success', 'Transfer Updated Successfuly');
     }
 
     public function Destroy(Request $request,$warehouse){
-        if($request->id){
-            $data = explode(",",$request->id);
-            foreach ($data as $key => $value) {
+        if($request->has('deleteButton')){
+            foreach ($request->get('stock_transfer_checkbox') as $key => $value) {
                 Warehouse::destroy($value);
             }
+        }else{
+            Warehouse::destroy($warehouse);
         }
-        return response()->json([
-            'success'=>'Stock transer deleted successfully.'
-        ]);
+
+        return redirect()->back()->with('success', 'Transfer Updated Successfuly');
     }
 
     private function Init(){

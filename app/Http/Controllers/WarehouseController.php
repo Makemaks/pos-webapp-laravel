@@ -119,7 +119,18 @@ class WarehouseController extends Controller
 
     public function Update(Request $request, $warehouse)
     {
-
+        if ($request->has('receipt_quantity')) {
+            foreach ($request->warehouse_id as $wareHouseKey => $warehouseId) {
+                foreach ($request->receipt_quantity as $receiptQuantityKey => $receiptQuantity) {
+                    if ($wareHouseKey == $receiptQuantityKey) {
+                        $warehouse = Warehouse::find($warehouseId);
+                        $warehouse_quantity = $warehouse->warehouse_quantity - $receiptQuantity;
+                        Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_quantity' => $warehouse_quantity]);
+                    }
+                }
+            }
+            return redirect()->back();
+        }
         Warehouse::find($warehouse)
             ->update($request->except('_token', '_method'));
 

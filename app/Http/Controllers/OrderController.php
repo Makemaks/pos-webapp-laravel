@@ -27,9 +27,9 @@ class OrderController extends Controller
     private $settingModel;
     private $schemeList;
     private $userModel;
-   
+
     private $orderModel;
-   
+
 
 
     public function __construct()
@@ -37,59 +37,63 @@ class OrderController extends Controller
         $this->middleware('auth');
     }
 
-    public function Index(Request $request){
-      
-      
-         if ($request->session()->has('setting_finalise_key')) {
+    public function Index(Request $request)
+    {
+
+
+        if ($request->session()->has('setting_finalise_key')) {
             $request->session()->reflash('order_finalise_key');
             $this->store($request);
         }
 
-        if($request->has('view')) {
+        if ($request->has('view')) {
             $this->init();
             $this->orderList = Order::Receipt('receipt_order_id', $request->order_id)
-            ->get();
+                ->get();
             return view('order.availability', ['data' => $this->Data()]);
         }
         $this->init();
         $todayDate = Carbon::now()->toDateTimeString();
-       
-      
+
+
         $this->orderList = Receipt::Order('stock_store_id',  1)
-        ->orderByDesc('order_id')
-        ->groupBy('order_id')
-        ->paginate(10);
+            ->orderByDesc('order_id')
+            ->groupBy('order_id')
+            ->paginate(10);
 
-        return view('order.index', ['data' => $this->Data()]);   
-      
+        return view('order.index', ['data' => $this->Data()]);
     }
 
-    public function Show(Request $request, $order){
+    public function Show(Request $request, $order)
+    {
         $this->init();
         $this->orderList = Order::Receipt('receipt_order_id', $order)
-        ->get();
+            ->get();
 
-        return view('order.show', ['data' => $this->Data()]);   
+        return view('order.show', ['data' => $this->Data()]);
     }
 
-    public function Edit(Request $request, $order){
+    public function Edit(Request $request, $order)
+    {
         $this->init();
         $this->orderList = Order::Receipt('receipt_order_id', $order)
-        ->get();
+            ->get();
 
-        
-        return view('order.edit', ['data' => $this->Data()]);   
+
+        return view('order.edit', ['data' => $this->Data()]);
     }
 
-    public function Store(Request $request){
+    public function Store(Request $request)
+    {
 
         $this->init();
         Order::Process($request, $this->Data());
-        
-        return view('home.index' ,['data' => $this->Data()]);
+
+        return view('home.index', ['data' => $this->Data()]);
     }
 
-    public function Delete($order){
+    public function Delete($order)
+    {
 
         Receipt::where('receipt_order_id', $order)->delete();
 
@@ -98,25 +102,26 @@ class OrderController extends Controller
         return redirect()->route('index')->with('success', 'Order Deleted Successfully');
     }
 
-    private function init(){
+    private function init()
+    {
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
-        ->first();
+            ->first();
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
     }
 
-    private function ProcessOrder(){
-       
+    private function ProcessOrder()
+    {
 
-        foreach( $this->sessionCartList as $cart){
-           
-           
+
+        foreach ($this->sessionCartList as $cart) {
         }
     }
 
 
 
 
-    private function Data(){
+    private function Data()
+    {
 
         return [
             'authenticatedUser' => $this->authenticatedUser,
@@ -126,23 +131,20 @@ class OrderController extends Controller
             'userModel' => $this->userModel,
             'settingModel' => $this->settingModel
         ];
-       
     }
 
     /**
      * This function update the order status
      * @param Request $request
-     * @method POST order/status/update
      * @return null
      */
-    public function OrderStatusUpdate(Request $request)
-    {   
-        if($request->has('order')) {
-            foreach($request->order as $orderData) {
-                Order::where('order_id',$orderData['order_id'])->update(['order_status'=>$orderData['order_status']]);
+    public function Update(Request $request)
+    {
+        if ($request->has('order')) {
+            foreach ($request->order as $orderData) {
+                Order::where('order_id', $orderData['order_id'])->update(['order_status' => $orderData['order_status']]);
             }
             return redirect()->back();
         }
     }
-
 }

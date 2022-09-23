@@ -117,7 +117,8 @@ class SettingController extends Controller
     {
         $this->settingModel = Setting::find($setting);
         $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
-       
+        $request->session()->reflash();
+
         if ($request->settingDelete) {
             $this->settingModel = Setting::find($setting);
             $setting_offers = $this->settingModel->setting_offer;
@@ -128,7 +129,7 @@ class SettingController extends Controller
             }
             $this->settingModel->setting_offer = $setting_offers;
             $this->settingModel->update();
-            $request->session()->reflash();
+            
          
             return view('menu.setting.mix-&-match', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
             // $this->Destroy($request, $setting);
@@ -145,7 +146,10 @@ class SettingController extends Controller
         } else if ($request->setting_offer) {
             // dd($settingInput['setting_offer']);
             $this->settingModel->setting_offer = $settingInput['setting_offer'];
+            $this->settingModel->update();
+            return view('menu.setting.mix-&-match', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         }
+        
         $this->settingModel->update();
         return redirect()->back()->with('success', 'Setting Updated Successfuly');
     }

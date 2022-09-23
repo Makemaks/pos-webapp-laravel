@@ -42,35 +42,23 @@
                                 <thead>
                                     <tr>
                                                         
-
                                         @php
-                                            // $collection = collect($data['settingModel']->setting_offer[1]);
                                             $collection = collect(Arr::first($data['settingModel']->setting_offer));
-                                            // dd($collection['available_day']);
                                             $available_day = $collection['available_day'] ? true : false;
-                                            // dd(collect($collection)->except('available_day'));
                                             $collection = $collection->except('available_day')->collapse();
-                                            // dd($collection);
                                         @endphp
                                     
-
+                                        <th></th>
                                         <th>REF</th>
-                                            @foreach ( $collection->except(['exception']) as $key => $item)
-                                                    <th>{{$key}}</th>
-                                            @endforeach
+                                        @foreach ( $collection->except(['exception']) as $key => $item)
+                                                <th>{{$key}}</th>
+                                        @endforeach
 
-                                            @if($available_day)
-                                                <th>Sun</th>
-                                                <th>Mon</th>
-                                                <th>Tue</th>
-                                                <th>Wed</th>
-                                                <th>Thu</th>
-                                                <th>Fri</th>
-                                                <th>Sat</th>
-                                            @endif
-                                        
-                                        {{-- <th>Apply</th> --}}
-                                        <th>Delete</th>
+                                        @if($available_day)
+                                            @foreach (Carbon::getDays() as $key_days => $item_days)
+                                                <th>{{Str::upper( Str::limit($item_days, 3 , '') )}}</th>
+                                            @endforeach
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -78,16 +66,16 @@
                                         @foreach ($data['settingModel']->setting_offer as $keyStockoffer => $itemStockoffer)
                                             <tr>
                                                 <td>
+                                                    <input type="checkbox" name="setting_offer_delete[]" value="{{$keyStockoffer}}">
+                                                </td>    
+                                                <td>
                                                     <button class="uk-button uk-button-default uk-border-rounded">{{$keyStockoffer}}</button>
                                                 </td>
                                                 @foreach ($itemStockoffer as $key => $stock)
-
-                                                    {{-- {{dd($itemStockoffer)}}  --}}
                                                 
                                                     @if($key == 'integer' || $key == 'decimal')
                                                         @foreach ($stock as $stockkey => $stockitem)
-                                                        @if ($stockkey == 'set_menu')
-                                                            {{-- {{dd($stock)}} --}}
+                                                            @if ($stockkey == 'set_menu')
                                                                 <td>
                                                                     <select class="uk-select" id="form-stacked-select" name="setting_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
                                                                         <option value="" selected disabled></option>
@@ -108,10 +96,8 @@
                                                                 <td><input name="setting_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-input" type="number" value="{{$stockitem}}"></td>
                                                             @endif 
                                                         @endforeach
-                                                        
                                                     @endif
 
-                                                    
                                                     @if($key == 'default')
                                                         @foreach ($stock as $stockkey => $stockitem)
                                                                 
@@ -177,29 +163,12 @@
                                                     @endif
 
                                                     @if($key == 'available_day')
-                                                        <td>
-                                                            <input type="checkbox" name="setting_offer[{{$keyStockoffer}}][available_day][]" value="1" {{in_array(1,$stock) ? 'checked' : ''}}>
-                                                        </td>
-                                                        <td>
-                                                            <input type="checkbox" name="setting_offer[{{$keyStockoffer}}][available_day][]" value="2" {{in_array(2,$stock) ? 'checked' : ''}}>
-                                                        </td>
-                                                        <td>
-                                                            <input type="checkbox" name="setting_offer[{{$keyStockoffer}}][available_day][]" value="3" {{in_array(3,$stock) ? 'checked' : ''}}>
-                                                        </td>
-                                                        <td>
-                                                            <input type="checkbox" name="setting_offer[{{$keyStockoffer}}][available_day][]" value="4" {{in_array(4,$stock) ? 'checked' : ''}}>
-                                                        </td>
-                                                        <td>
-                                                            <input type="checkbox" name="setting_offer[{{$keyStockoffer}}][available_day][]" value="5" {{in_array(5,$stock) ? 'checked' : ''}}>
-                                                        </td>
-                                                        <td>
-                                                            <input type="checkbox" name="setting_offer[{{$keyStockoffer}}][available_day][]" value="6" {{in_array(6,$stock) ? 'checked' : ''}}>
-                                                        </td>
-                                                        <td>
-                                                            <input type="checkbox" name="setting_offer[{{$keyStockoffer}}][available_day][]" value="7" {{in_array(7,$stock) ? 'checked' : ''}}>
-                                                        </td>
+                                                        @foreach (Carbon::getDays() as $key_days => $item_days)
+                                                            <td>
+                                                                <input class="uk-checkbox" type="checkbox" name="setting_offer[{{$keyStockoffer}}][available_day][]" value="{{++$key_days}}" {{in_array($key_days,$stock) ? 'checked' : ''}}>
+                                                            </td>
+                                                        @endforeach
                                                     @endif
-                                                
                                             
                                                 @endforeach    
 
@@ -208,16 +177,6 @@
                                                         <input class="uk-radio" type="radio" name="stock_merchandise[stock_offer]" value="{{$keyStockoffer}}" @if(isset($data['stockModel']->stock_merchandise['stock_offer']) == $keyStockoffer) checked @endif>
                                                     </td>
                                                 @endisset
-                                                
-                                            
-                                                <td>
-                                                    {{-- <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockoffer({{$keyStockoffer}})"></button> --}}
-                                                    {{-- <form id="settingDelete" action="{{route('setting.destroy', $data['settingModel']->setting_id)}}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE') --}}
-                                                    <input type="checkbox" name="setting_offer_delete[]" value="{{$keyStockoffer}}">
-                                                    {{-- </form> --}}
-                                                </td>    
                                             </tr>
                                         @endforeach
                                     

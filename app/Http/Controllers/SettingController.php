@@ -44,7 +44,6 @@ class SettingController extends Controller
 
     public function Store(Request $request)
     {
-        dd('store');
         // Check condition from request to add new setting_stock_group
         if ($request->code) {
             $this->settingModel = Setting::find($request['setting_id']);
@@ -57,12 +56,10 @@ class SettingController extends Controller
                 $stock_group[1] = $settingInput;
             }
             $this->settingModel->setting_stock_group = $stock_group;
-            // dd($this->settingModel);
             $this->settingModel->save();
             return back()->with('success', 'Added Successfuly');
         } else if($request->form['setting_offer']) {
             $this->settingModel = Setting::find($request['setting_id']);
-            dd($request['setting_id']);
             $stock_offer = $this->settingModel->setting_offer;
             if(!empty($stock_offer)){
                 $last_key = (int)collect($stock_offer)->keys()->last();
@@ -73,7 +70,6 @@ class SettingController extends Controller
             $this->settingModel->setting_offer = $stock_offer;
             $this->settingModel->save();
             return back()->with('success', 'Added Successfuly');
-            // dd($this->settingModel->setting_offer);
         }
 
         if ($request->hasFile('setting_logo_url')) {
@@ -119,12 +115,23 @@ class SettingController extends Controller
 
     public function Update(Request $request, $setting)
     {
-      
         $this->settingModel = Setting::find($setting);
         $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
        
         if ($request->settingDelete) {
-            $this->Destroy($request, $setting);
+            $this->settingModel = Setting::find($setting);
+            $setting_offers = $this->settingModel->setting_offer;
+            foreach($setting_offers as $key => $offer) {
+                if(in_array($key, $request->setting_offer_delete)) {
+                    unset($setting_offers[$key]);
+                }
+            }
+            $this->settingModel->setting_offer = $setting_offers;
+            $this->settingModel->update();
+            $request->session()->reflash();
+         
+            return view('menu.setting.mix-&-match', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
+            // $this->Destroy($request, $setting);
         }
         else if ($request->setting_stock_group) {
             $this->settingModel->setting_stock_group = $settingInput['setting_stock_group'];
@@ -145,7 +152,6 @@ class SettingController extends Controller
 
     public function Destroy(Request $request, $setting)
     {
-     
         $currentRoute = explode('-', $setting);
         if($request->settingDelete){
             foreach($request->setting_offer_delete as $setting_offer_delete){

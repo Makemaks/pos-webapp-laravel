@@ -79,40 +79,6 @@ class WarehouseController extends Controller
         return redirect()->back()->with('success', 'Transfer added Successfuly');
     }
 
-    public function getWarehouse_status($status = '')
-    {
-        switch ($status) {
-            case 'FIFO':
-                return 0;
-                break;
-            case 'Average Cost Price':
-                return 1;
-                break;
-            default:
-                return 0;
-                break;
-        }
-    }
-    public function getWarehouse_type($type = '')
-    {
-        switch ($type) {
-            case 'return':
-                return 0;
-                break;
-            case 'delivery':
-                return 1;
-                break;
-            case 'transfer':
-                return 2;
-                break;
-            case 'wastage':
-                return 3;
-                break;
-            default:
-                return 0;
-                break;
-        }
-    }
     public function Edit($warehouse){
         $this->warehouseList = Warehouse::where('warehouse_id', $warehouse)->get();
         $this->stockModel = Stock::find($this->warehouseList->first()->warehouse_stock_id);

@@ -121,18 +121,21 @@ class SettingController extends Controller
 
         if ($request->settingDelete) {
             $this->settingModel = Setting::find($setting);
-            $setting_offers = $this->settingModel->setting_offer;
-            foreach($setting_offers as $key => $offer) {
-                if(in_array($key, $request->setting_offer_delete)) {
-                    unset($setting_offers[$key]);
-                }
+            if($request->setting_offer_delete) {
+                $setting_offers = $this->settingModel->setting_offer;
+
+                $setting_offer = $this->DeleteColumnIndex($request->setting_offer_delete, $setting_offers);
+                $this->settingModel->setting_offer = $setting_offer;
+                $view = 'menu.setting.mix-&-match';
+            } else if ($request->setting_stock_group_delete) {
+                $setting_stock_groups = $this->settingModel->setting_stock_group;
+
+                $setting_stock_group = $this->DeleteColumnIndex($request->setting_stock_group_delete, $setting_stock_groups);
+                $this->settingModel->setting_stock_group = $setting_stock_group;
+                $view = 'menu.setting.settingStockGroup';
             }
-            $this->settingModel->setting_offer = $setting_offers;
             $this->settingModel->update();
-            
-         
-            return view('menu.setting.mix-&-match', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
-            // $this->Destroy($request, $setting);
+            return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         }
         else if ($request->setting_stock_group) {
             $this->settingModel->setting_stock_group = $settingInput['setting_stock_group'];
@@ -176,6 +179,16 @@ class SettingController extends Controller
         }
         
        
+    }
+
+    private function DeleteColumnIndex($request_delete, $setting_column)
+    {
+        foreach($setting_column as $key => $setting) {
+            if(in_array($key, $request_delete)) {
+                unset($setting_column[$key]);
+            }
+        }
+        return $setting_column;
     }
 
     private function Data()

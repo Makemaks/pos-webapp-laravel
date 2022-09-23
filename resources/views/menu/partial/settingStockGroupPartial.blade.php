@@ -9,6 +9,10 @@
     </button>
 @endif
 
+<button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="settingUpdate" value="settingDelete" name="settingDelete">
+    Delete
+</button>
+
 <ul class="uk-subnav uk-subnav-pill" uk-switcher>
     <li>
        
@@ -35,6 +39,7 @@
     
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>REF</th>
                                 @foreach ($data['settingModel']->setting_stock_group as $items)
                                     @foreach($items as $key => $item)
@@ -52,6 +57,9 @@
                             @foreach ($data['settingModel']->setting_stock_group  as $keysetting_stock_group => $setting_stock_group)
                                 @if ($setting_stock_group['type'] == Session::get('type'))
                                     <tr>
+                                        <td>
+                                            <input type="checkbox" name="setting_stock_group_delete[]" value="{{$keysetting_stock_group}}">
+                                        </td>
                                         <td>
                                             <button class="uk-button uk-button-default uk-border-rounded">{{$keysetting_stock_group}}</button>
                                         </td>
@@ -87,11 +95,11 @@
     
                                         @endforeach
     
-                                        <td>
+                                        {{-- <td>
                                     
                                             <div class="uk-width-auto"><a class="uk-button uk-button-default uk-border-rounded" uk-icon="icon: pencil" href="{{route('setting.edit', ['setting' => $data['settingModel']->setting_id,  'index' => $keysetting_stock_group])}}"></a></div>
                                            
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                    
                                 @endif

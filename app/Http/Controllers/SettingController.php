@@ -44,6 +44,7 @@ class SettingController extends Controller
 
     public function Store(Request $request)
     {
+        dd('store');
         // Check condition from request to add new setting_stock_group
         if ($request->code) {
             $this->settingModel = Setting::find($request['setting_id']);
@@ -111,17 +112,19 @@ class SettingController extends Controller
             $this->settingModel['setting_offer'] = $this->settingModel['setting_offer'][$request->stock_offer['index']];
             $this->settingModel['edit'] = true;
             // dd($this->settingModel['setting_offer']);
-            return view('stock.partial.offerPartial', ['data' => $this->Data()]);
+            return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
         }
-        return view('Setting.edit', ['project' => $setting]);
+        return view('Setting.edit', ['project' => $settingsetting.update]);
     }
 
     public function Update(Request $request, $setting)
     {
-        dd($request->all());
+        dd('update');
+        // dd($request->setting_offer);
+        // dd($request->all());
         $this->settingModel = Setting::find($setting);
         $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
-
+        // dd($request->all());
         // Check condition from request to update particular index of setting_stock_group
         if ($request->setting_stock_group) {
             $this->settingModel->setting_stock_group = $settingInput['setting_stock_group'];
@@ -132,6 +135,9 @@ class SettingController extends Controller
             $update_setting_stock_group_data['name'] = $request->name;
             $setting_stock_group[$request->index] = $update_setting_stock_group_data;
             $this->settingModel->setting_stock_group = $setting_stock_group;
+        } else if ($request->setting_offer) {
+            // dd($settingInput['setting_offer']);
+            $this->settingModel->setting_offer = $settingInput['setting_offer'];
         }
         $this->settingModel->update();
         return redirect()->back()->with('success', 'Setting Updated Successfuly');
@@ -139,6 +145,7 @@ class SettingController extends Controller
 
     public function Destroy(Request $request, $setting)
     {
+        dd($request->all());
         $currentRoute = explode('-', $setting);
         if(is_array($currentRoute)) {
             $this->settingModel = Setting::find($currentRoute[0]);

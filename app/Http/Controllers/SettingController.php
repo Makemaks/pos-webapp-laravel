@@ -44,6 +44,7 @@ class SettingController extends Controller
 
     public function Store(Request $request)
     {
+        dd('store');
         // Check condition from request to add new setting_stock_group
         if ($request->code) {
             $this->settingModel = Setting::find($request['setting_id']);
@@ -56,8 +57,23 @@ class SettingController extends Controller
                 $stock_group[1] = $settingInput;
             }
             $this->settingModel->setting_stock_group = $stock_group;
+            // dd($this->settingModel);
             $this->settingModel->save();
             return back()->with('success', 'Added Successfuly');
+        } else if($request->form['setting_offer']) {
+            $this->settingModel = Setting::find($request['setting_id']);
+            dd($request['setting_id']);
+            $stock_offer = $this->settingModel->setting_offer;
+            if(!empty($stock_offer)){
+                $last_key = (int)collect($stock_offer)->keys()->last();
+                $stock_offer[$last_key + 1] = $request->form['setting_offer'];
+            } else {
+                $stock_offer[1] = $request->form['setting_offer'];
+            }
+            $this->settingModel->setting_offer = $stock_offer;
+            $this->settingModel->save();
+            return back()->with('success', 'Added Successfuly');
+            // dd($this->settingModel->setting_offer);
         }
 
         if ($request->hasFile('setting_logo_url')) {
@@ -81,8 +97,9 @@ class SettingController extends Controller
 
     public function Edit(Request $request, $setting)
     {
+        // dd($request->stock_offer['index']);
         $this->settingModel = Setting::find($setting);
-
+        
         // Check condition from url to edit setting_stock_group
         if($request->has('index')) {
             $request->session()->reflash();
@@ -90,16 +107,24 @@ class SettingController extends Controller
             $this->settingModel['setting_stock_group'] = $this->settingModel['setting_stock_group'][$request->index];
             $this->settingModel['edit'] = true;
             return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
+        } else if($request->stock_offer['index']) {
+            // dd($this->settingModel['setting_offer'][$request->stock_offer['index']]);
+            $this->settingModel['setting_offer'] = $this->settingModel['setting_offer'][$request->stock_offer['index']];
+            $this->settingModel['edit'] = true;
+            // dd($this->settingModel['setting_offer']);
+            return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
         }
-        return view('Setting.edit', ['project' => $setting]);
+        return view('Setting.edit', ['project' => $settingsetting.update]);
     }
 
     public function Update(Request $request, $setting)
     {
+        dd('update');
+        // dd($request->setting_offer);
         // dd($request->all());
         $this->settingModel = Setting::find($setting);
         $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
-
+        // dd($request->all());
         // Check condition from request to update particular index of setting_stock_group
         if ($request->setting_stock_group) {
             $this->settingModel->setting_stock_group = $settingInput['setting_stock_group'];
@@ -110,6 +135,9 @@ class SettingController extends Controller
             $update_setting_stock_group_data['name'] = $request->name;
             $setting_stock_group[$request->index] = $update_setting_stock_group_data;
             $this->settingModel->setting_stock_group = $setting_stock_group;
+        } else if ($request->setting_offer) {
+            // dd($settingInput['setting_offer']);
+            $this->settingModel->setting_offer = $settingInput['setting_offer'];
         }
         $this->settingModel->update();
         return redirect()->back()->with('success', 'Setting Updated Successfuly');
@@ -117,6 +145,7 @@ class SettingController extends Controller
 
     public function Destroy(Request $request, $setting)
     {
+        dd($request->all());
         $currentRoute = explode('-', $setting);
         if(is_array($currentRoute)) {
             $this->settingModel = Setting::find($currentRoute[0]);

@@ -93,8 +93,7 @@ Route::resource('ticket', TicketController::class);
 Route::resource('warehouse', WarehouseController::class);
 Route::resource('receipt', ReceiptController::class);
 
-Route::post('warehouse/adjust/quantity', [WarehouseController::class,'AdjustQuantity'])->name('adjust.quantity');
-Route::post('order/status/update', [OrderController::class,'OrderStatusUpdate'])->name('order.status.update');
+
 
 
 

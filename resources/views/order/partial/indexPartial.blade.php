@@ -9,8 +9,9 @@ use App\Models\User;
 @push('scripts')
 <script src="{{ asset('js/app.js') }}"></script>
 @endpush
-<form action="{{route('order.status.update')}}" method="post">
+<form action="{{route('order.update',$data['orderList']->first()->order_id)}}">
 @csrf
+@method('PATCH')
 <button type="submit" class="uk-button uk-button-default uk-border-rounded uk-button-primary">Save</button>
 <div class="" uk-height-viewport="offset-top: true; offset-bottom: 50px">
     <div class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">

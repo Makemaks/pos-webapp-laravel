@@ -118,7 +118,8 @@ class WarehouseController extends Controller
     }
 
     public function Update(Request $request, $warehouse)
-    {
+    {   
+        dd('sfs');
         if ($request->has('receipt_quantity')) {
             foreach ($request->warehouse_id as $wareHouseKey => $warehouseId) {
                 foreach ($request->receipt_quantity as $receiptQuantityKey => $receiptQuantity) {

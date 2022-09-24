@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('warehouse_reference')->nullable();
             $table->float('warehouse_price_override')->nullable();
             $table->bigInteger('warehouse_quantity');
+            $table->bigInteger('warehousetable_id')->nullable();
+            $table->string('warehousetable_type')->nullable();
             $table->smallInteger('warehouse_status');
             $table->smallInteger('warehouse_type');
             $table->bigInteger('warehouse_store_id');

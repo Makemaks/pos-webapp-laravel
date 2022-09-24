@@ -23,9 +23,13 @@ class WarehouseFactory extends Factory
             ];
         }
 
+        $table->bigInteger('warehousetable_id')->nullable();
+            $table->string('warehousetable_type')->nullable();
+
         return [
 
-
+                "warehousetable_id" => $this->faker->numberBetween($min = 1, $max = 10),
+                "warehousetable_type" =>  $this->faker->randomElement($array = array ('Store')),
                 "warehouse_reason" => $stock_reason,
                 "warehouse_store_id" => $this->faker->numberBetween($min = 1, $max = 10),
                 "warehouse_stock_id"=> $this->faker->numberBetween($min = 1, $max = 100),
@@ -36,6 +40,8 @@ class WarehouseFactory extends Factory
                 "warehouse_note" => $this->faker->randomElement($array = array (NULL,$this->faker->sentence)),
                 "warehouse_type" => $this->faker->numberBetween($min = 0, $max = 3),
                 "warehouse_company_id" => $this->faker->numberBetween($min = 1, $max = 10),
+
+            
         ];
     }
 }

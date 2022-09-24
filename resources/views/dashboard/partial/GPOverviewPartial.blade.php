@@ -1,4 +1,4 @@
-@php
+{{-- @php
 
 use App\Models\Stock;
 $totalCostPrice = 0;
@@ -96,3 +96,4 @@ if (count($orderList) > 0) {
         </table>
    
 </div>
+ --}}

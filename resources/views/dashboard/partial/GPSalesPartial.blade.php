@@ -13,18 +13,22 @@ if (count($orderList) > 0) {
         $totalCostPrice = Stock::OrderTotal($receiptList);
 
         $quantity = $receiptList->count();
-        $rrpTotalCostPrice = $quantity * json_decode($receiptList->first()->stock_gross_profit)->rrp;
 
-        $totalGP = $rrpTotalCostPrice - $totalCostPrice;
+        if (json_decode($receiptList->first()->stock_gross_profit)) {
+            $rrpTotalCostPrice = $quantity * json_decode($receiptList->first()->stock_gross_profit)->rrp;
 
-        $GPpercentage = ($totalGP / $quantity) * 100;
+            $totalGP = $rrpTotalCostPrice - $totalCostPrice;
 
-        $arrayGPList[] = [
-            'Number' => $receiptList->first()->stock_id,
-            'Descriptor' => json_decode($receiptList->first()->stock_merchandise)->stock_name,
-            'Profit' => App\Helpers\MathHelper::FloatRoundUp($totalGP, 2),
-            'GP' => App\Helpers\MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
-        ];
+            $GPpercentage = ($totalGP / $quantity) * 100;
+
+            $arrayGPList[] = [
+                'Number' => $receiptList->first()->stock_id,
+                'Descriptor' => json_decode($receiptList->first()->stock_merchandise)->stock_name,
+                'Profit' => App\Helpers\MathHelper::FloatRoundUp($totalGP, 2),
+                'GP' => App\Helpers\MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
+            ];
+        }
+       
     }
 
     $sortarraytopGPList = collect($arrayGPList)

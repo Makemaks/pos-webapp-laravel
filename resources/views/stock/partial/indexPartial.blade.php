@@ -103,7 +103,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
 
     <div class="uk-overflow-auto uk-height-large" uk-height-viewport="offset-top: true; offset-bottom: 10">
 
-        <div class="uk-grid-match uk-child-width-1-4@s uk-grid-small" uk-grid>
+        <div class="uk-grid-match uk-child-width-1-4@s uk-grid-small uk-padding-small" uk-grid>
         
             @isset($data['stockList'])
                 @foreach ($data['stockList'] as $stock)
@@ -138,7 +138,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
     
                     <div>
 
-                        <div class="uk-padding-small uk-background-muted uk-border-rounded" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
+                        <div class="uk-padding uk-box-shadow-small" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
                             <div class="">
                                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                                     <div class="uk-width-auto" title="{{$stock->stock_id}}" >
@@ -181,43 +181,40 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                             </div>
 
                             <div>
-                                <div class="uk-child-width-1-3" uk-grid title="Offer" >
+                                <div class="uk-child-width-1-3" uk-grid>
                                     <div>
                                         @if ($stockCurrentOffer)
                                             <span class="uk-text-success" uk-icon="icon: star; ratio: 1.5"></span>
                                         @endif
                                    </div>
 
-                                    <div>
+                                    <div title="Offer">
                                         @if (count($stockOffer) > 0)
-
-                                        
                                            {{ MathHelper::FloatRoundUp( $stockOfferMin['decimal']['discount_value'], 2)}}
-                                            
-                                        
                                         @endif
                                     </div>
                                     
-                                    <div>
+                                    <div title="Qty">
                                         <div class="uk-align-right">
                                             @php
                                                 $color = '';
-                                                $warehouseStock = Warehouse::Available($stock->stock_id)->where();
+                                                $warehouseStockList = Warehouse::Available($stock->stock_id, $storeID);
                                                 
-                                                foreach ($variable as $key => $value) {
-                                                    if ($warehouseStock) {
-                                                        if (Warehouse::WarehouseType()[$warehouseStock->warehouse_type] == 'transfer') {
+
+                                                if($warehouseStockList->count() > 0) {
+                                                  
+                                                        if (Warehouse::WarehouseType()[$warehouseStockList->first()->warehouse_type] == 'transfer') {
                                                             $color = 'uk-text-warning';
                                                         }
                                                         else{
                                                             $color = 'uk-text-danger';
                                                         }
-                                                    }
+                                                   
                                                 }
                                         
                                             @endphp
-                                            @if ($warehouseStock)
-                                                <h3 {{$color}}">{{$warehouseStock->warehouse_quantity}}</h6>
+                                            @if ($warehouseStockList->count() > 0)
+                                                <h3 {{$color}}">{{$warehouseStockList->first()->warehouse_quantity}}</h6>
                                             @endif
                                         </div>
                                     </div>

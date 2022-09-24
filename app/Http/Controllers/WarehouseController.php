@@ -39,7 +39,7 @@ class WarehouseController extends Controller
         $this->Init();
         
        
-        $request->session()->reflash('view');
+        $request->session()->reflash();
 
         if ($request->session()->get('view') == 'Ins-&-Out') {
             $this->warehouseList =  Warehouse::Store()
@@ -68,14 +68,14 @@ class WarehouseController extends Controller
     }
 
     public function Create(){
-
+       
         $this->warehouseModel = New warehouse();
         return view('warehouse.create', ['data' => $this->Data()]);  
     }
 
     public function Store(Request $request){
+        $request->session()->reflash();
         Warehouse::insert($request->except('_token', '_method'));
-
         return redirect()->back()->with('success', 'Transfer added Successfuly');
     }
 
@@ -106,6 +106,7 @@ class WarehouseController extends Controller
     }
 
     public function Destroy(Request $request,$warehouse){
+        $request->session()->reflash();
         if($request->has('deleteButton')){
             foreach ($request->get('stock_transfer_checkbox') as $key => $value) {
                 Warehouse::destroy($value);

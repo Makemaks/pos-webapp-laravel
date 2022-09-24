@@ -1,20 +1,17 @@
-
-
-
 @php
     use App\Helpers\StringHelper;
+    use App\Models\Setting;
 @endphp
 
-@foreach ($data['settingModel']->setting_key  as $keySettingKey => $itemSettingKey)
-    @foreach ($itemSettingKey as $key => $stock)
-                            
-        @if($key == 'integer' || $key == 'decimal')
-
-            @foreach ($stock as $stockkey => $stockitem)
-                @if ($stockkey == 'type')
+<form action="{{ route('setting.store') }}" method="POST">
+    @csrf
+    <div class="uk-child-width-1-2" uk-grid>
+        @foreach ($data['settingModel']->setting_key  as $keySettingKey => $itemSettingKey)
+            @foreach ($itemSettingKey as $keyItemSettingKey => $valueItemSettingKey)
+                @if ($keyItemSettingKey == 'type')
                     <div class ="uk-margin">
-                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                        <select class="uk-select" id="form-stacked-select" name="form[setting_key][{{$key}}][{{$stockkey}}]">
+                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($keyItemSettingKey)}}</label>
+                        <select class="uk-select" id="form-stacked-select" name="form[setting_key][{{$key}}][{{$keyItemSettingKey}}]">
                             <option value="" selected disabled>SELECT ...</option>
                             @if ($data['settingModel']->setting_stock_set_menu)
                                 @foreach ($data['settingModel']->setting_stock_set_menu  as $key_setting_stock_set_menu  => $item_setting_stock_set_menu)
@@ -28,15 +25,15 @@
                             
                         </select>
                     </div>
-                @elseif ($stockkey == 'setting_key_type')
+                @elseif ($keyItemSettingKey == 'setting_key_type')
                     <div class ="uk-margin">
-                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                        <select class="uk-select" id="form-stacked-select" name="form[setting_key][{{$key}}][{{$stockkey}}]">
+                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($keyItemSettingKey)}}</label>
+                        <select class="uk-select" id="form-stacked-select" name="form[setting_key][{{$keyItemSettingKey}}]">
                             <option value="" selected disabled>SELECT ...</option>
                             @if ($data['settingModel']->setting_key_type)
                                 @foreach ($data['settingModel']->setting_key_type  as $key_setting_key_type  => $item_setting_key_type)
                                         
-                                    <option value="{{$key_setting_key_type}}" @if($key_setting_key_type == $stock) selected @endif>
+                                    <option value="{{$key_setting_key_type}}" @if($key_setting_key_type == $valueItemSettingKey) selected @endif>
                                         {{$item_setting_key_type}}
                                     </option>
                                         
@@ -45,34 +42,68 @@
                             
                         </select>
                     </div>
-                @elseif ($stockkey == 'value')
+                @elseif ($keyItemSettingKey == 'group')
                     <div class ="uk-margin">
-                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                        <textarea name="" id="" cols="30" rows="10"  name="form[setting_key][{{$key}}][{{$stockkey}}]"></textarea>
+                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($keyItemSettingKey)}}</label>
+                        <select class="uk-select" id="form-stacked-select" name="form[setting_key][{{$keyItemSettingKey}}]">
+                            <option value="" selected disabled>SELECT ...</option>
+                            @if ($data['settingModel']->setting_key_type)
+                                @foreach (Setting::SettingKeyGroup() as $keySettingKeyGroup =>$valueSettingKeyGroup)
+                                        
+                                    <option value="{{$keySettingKeyGroup}}" @if($keySettingKeyGroup == $valueItemSettingKey) selected @endif>
+                                        {{$valueSettingKeyGroup}}
+                                    </option>
+                                        
+                                @endforeach
+                            @endif
+                            
+                        </select>
+                    </div>
+                @elseif ($keyItemSettingKey == 'value')
+                    <div class ="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($keyItemSettingKey)}}</label>
+                        <input type="number" class="uk-input" name="form[setting_key][{{$keyItemSettingKey}}]">
                     </div>
 
-                @elseif ($stockkey == 'description')
+                @elseif ($keyItemSettingKey == 'description')
                     <div class ="uk-margin">
-                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                        <textarea name="" id="" cols="30" rows="10"  name="form[setting_key][{{$key}}][{{$stockkey}}]"></textarea>
+                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($keyItemSettingKey)}}</label>
+                        <textarea class="uk-textarea" name="form[setting_key][{{$keyItemSettingKey}}]"></textarea>
+                    </div>
+                @elseif ($keyItemSettingKey == 'status')
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($keyItemSettingKey)}}</label>
+                        <select class="uk-select" id="form-stacked-select" name="form[setting_key][{{$keyItemSettingKey}}]">
+                            <option value="" selected disabled>SELECT ...</option>
+                            @foreach (Setting::SettingOfferStatus()  as $keySettingOfferStatus  => $valueSettingOfferStatus)
+                                    
+                                <option value="{{$keySettingOfferStatus}}" @if($keySettingOfferStatus == $valueItemSettingKey) selected @endif>
+                                    {{$valueSettingOfferStatus}}
+                                </option>
+                                    
+                            @endforeach
+                        </select>  
                     </div>
                 @else
                     <div class ="uk-margin">
-                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                        <input name="form[setting_key][{{$key}}][{{$stockkey}}]" class="uk-input" type="number" value="">
+                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($keyItemSettingKey)}}</label>
+                        <input name="form[setting_key][{{$keyItemSettingKey}}]" class="uk-input" type="number" value="">
                     </div>
                 @endif 
-
             @endforeach
-            
-        @endif
+            @break
+        @endforeach
+        <input name="setting_id" class="uk-input" type="hidden" value="{{$data['settingModel']->setting_id}}">
+    </div>
 
-    @endforeach
-
-@break
-
-@endforeach
-
+    <div class="uk-child-width-expand@m" uk-grid>
+        <div>
+            <button class="uk-button uk-button-default uk-border-rounded uk-width-1-1 uk-button-danger" type="submit">
+                SAVE
+            </button>
+        </div>     
+    </div>
+</form>
 
 @if (Session::get('setting_finalise_key') == 'cash')
 

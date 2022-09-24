@@ -96,7 +96,6 @@ class MenuController extends Controller
         ->first();
     
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
-        
 
         switch ($request->view):
             case (in_array($request->view, Setting::SettingStockGroup())):
@@ -111,14 +110,14 @@ class MenuController extends Controller
           
            
             case 'mix-&-match':
-                // dd($this->Data()['settingModel']->setting_offer);
                 return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
 
                 break;
             
-            case 'finalise-keys':
-
-                return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
+            case 'finalise-key':
+                $group = array_search( $request->view, Setting::SettingKeyGroup());
+                $request->session()->flash('group', $group);
+                return view('menu.setting.key', ['data' => $this->Data()]);
                 break;
 
                     

@@ -58,17 +58,11 @@ class SettingController extends Controller
             $this->settingModel->setting_stock_group = $stock_group;
             $this->settingModel->save();
             return back()->with('success', 'Added Successfuly');
-        } else if($request->form['setting_offer']) {
-            $this->settingModel = Setting::find($request['setting_id']);
-            $stock_offer = $this->settingModel->setting_offer;
-            if(!empty($stock_offer)){
-                $last_key = (int)collect($stock_offer)->keys()->last();
-                $stock_offer[$last_key + 1] = $request->form['setting_offer'];
-            } else {
-                $stock_offer[1] = $request->form['setting_offer'];
-            }
-            $this->settingModel->setting_offer = $stock_offer;
-            $this->settingModel->save();
+        } else if(isset($request->form['setting_offer'])) {
+            $this->StoreSettingColumn($request['setting_id'],'setting_offer',$request->form['setting_offer']);
+            return back()->with('success', 'Added Successfuly');
+        } else if(isset($request->form['setting_key'])) {
+            $this->StoreSettingColumn($request['setting_id'],'setting_key',$request->form['setting_key']);
             return back()->with('success', 'Added Successfuly');
         }
 
@@ -93,21 +87,17 @@ class SettingController extends Controller
 
     public function Edit(Request $request, $setting)
     {
-        // dd($request->stock_offer['index']);
         $this->settingModel = Setting::find($setting);
         
         // Check condition from url to edit setting_stock_group
         if($request->has('index')) {
             $request->session()->reflash();
-           
             $this->settingModel['setting_stock_group'] = $this->settingModel['setting_stock_group'][$request->index];
             $this->settingModel['edit'] = true;
             return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
         } else if($request->stock_offer['index']) {
-            // dd($this->settingModel['setting_offer'][$request->stock_offer['index']]);
             $this->settingModel['setting_offer'] = $this->settingModel['setting_offer'][$request->stock_offer['index']];
             $this->settingModel['edit'] = true;
-            // dd($this->settingModel['setting_offer']);
             return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
         }
         return view('Setting.edit', ['project' => $settingsetting.update]);
@@ -133,6 +123,12 @@ class SettingController extends Controller
                 $setting_stock_group = $this->DeleteColumnIndex($request->setting_stock_group_delete, $setting_stock_groups);
                 $this->settingModel->setting_stock_group = $setting_stock_group;
                 $view = 'menu.setting.settingStockGroup';
+            } else if($request->setting_key_delete) {
+                $setting_keys = $this->settingModel->setting_key;
+
+                $setting_key = $this->DeleteColumnIndex($request->setting_key_delete, $setting_keys);
+                $this->settingModel->setting_key = $setting_key;
+                $view = 'menu.setting.key';
             }
             $this->settingModel->update();
             return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
@@ -147,10 +143,13 @@ class SettingController extends Controller
             $setting_stock_group[$request->index] = $update_setting_stock_group_data;
             $this->settingModel->setting_stock_group = $setting_stock_group;
         } else if ($request->setting_offer) {
-            // dd($settingInput['setting_offer']);
             $this->settingModel->setting_offer = $settingInput['setting_offer'];
             $this->settingModel->update();
             return view('menu.setting.mix-&-match', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
+        } else if ($request->setting_key) {
+            $this->settingModel->setting_key = $settingInput['setting_key'];
+            $this->settingModel->update();
+            return view('menu.setting.key', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         }
         
         $this->settingModel->update();
@@ -179,6 +178,21 @@ class SettingController extends Controller
         }
         
        
+    }
+
+    private function StoreSettingColumn($id,$column_type,$form_request)
+    {
+        $this->settingModel = Setting::find($id);
+        $columns = $this->settingModel->$column_type;
+        if(!empty($columns)){
+            $last_key = (int)collect($columns)->keys()->last();
+            $columns[$last_key + 1] = $form_request;
+        } else {
+            $columns[1] = $form_request;
+        }
+        $this->settingModel->$column_type = $columns;
+        $this->settingModel->save();
+        return true;
     }
 
     private function DeleteColumnIndex($request_delete, $setting_column)

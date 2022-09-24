@@ -176,8 +176,14 @@ class SettingFactory extends Factory
             $setting_key[$i + 1] = [
                 "status" => $this->faker->numberBetween($min = 0, $max = 1),
                 "description" => $this->faker->sentence(),
-                "value" => $value,
+                "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
                 "setting_key_type" => $this->faker->numberBetween($min = 1, $max = 7),
+                "group" => $this->faker->numberBetween($min = 1, $max = 7),
+                "image" => ''
+                // "status" => $this->faker->numberBetween($min = 0, $max = 1),
+                // "description" => $this->faker->sentence(),
+                // "value" => $value,
+                // "setting_key_type" => $this->faker->numberBetween($min = 1, $max = 7),
             ];
         }
 

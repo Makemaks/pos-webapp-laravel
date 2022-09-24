@@ -287,6 +287,7 @@ class Setting extends Model
 
         'setting_key' => '{
             "1": {
+                "group": "",
                 "status": "",
                 "description": "",
                 "value": "",
@@ -770,6 +771,14 @@ class Setting extends Model
         
 
         return $total;
+    }
+
+    public static function SettingKeyGroup(){
+        return [
+            '1' => 'finalise-key', //coupons
+            '2' => 'status-key', //one offs
+            '3' =>'transaction-key'
+        ];
     }
 
 

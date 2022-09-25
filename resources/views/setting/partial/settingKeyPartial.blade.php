@@ -43,6 +43,7 @@
                         </select>
                     </div>
                 @elseif ($keyItemSettingKey == 'group')
+                    {{-- {{dd($valueItemSettingKey)}} --}}
                     <div class ="uk-margin">
                         <label class="uk-form-label" for="form-stacked-text">{{Str::upper($keyItemSettingKey)}}</label>
                         <select class="uk-select" id="form-stacked-select" name="form[setting_key][{{$keyItemSettingKey}}]">
@@ -50,7 +51,7 @@
                             @if ($data['settingModel']->setting_key_type)
                                 @foreach (Setting::SettingKeyGroup() as $keySettingKeyGroup =>$valueSettingKeyGroup)
                                         
-                                    <option value="{{$keySettingKeyGroup}}" @if($keySettingKeyGroup == $valueItemSettingKey) selected @endif>
+                                    <option value="{{$keySettingKeyGroup}}" @if($keySettingKeyGroup == Session::get('group')) selected @endif>
                                         {{$valueSettingKeyGroup}}
                                     </option>
                                         

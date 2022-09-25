@@ -42,9 +42,11 @@
                                 <th></th>
                             </tr>
                         </thead>
-
+                        
                         <tbody>
                             @foreach ($data['settingModel']->setting_key  as $keysetting_key => $setting_key)
+                            {{-- {{dd($setting_key['group'])}} --}}
+                            {{-- {{dd(Session::get('group'))}} --}}
                                 @if ($setting_key['group'] == Session::get('group'))
                                     <tr>
                                         <td>

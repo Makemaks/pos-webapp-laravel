@@ -37,7 +37,7 @@
                 "mix-&-match",
                 "mix-&-match-2",
                 "finalise-key",
-                "status-keys",
+                "status-key",
                 "transaction-key",
                 "fixed-character",
                 "fixed-totaliser",

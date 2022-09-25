@@ -97,6 +97,8 @@ class MenuController extends Controller
     
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
 
+        // dd($request->view);
+
         switch ($request->view):
             case (in_array($request->view, Setting::SettingStockGroup())):
             
@@ -120,7 +122,18 @@ class MenuController extends Controller
                 return view('menu.setting.key', ['data' => $this->Data()]);
                 break;
 
-                    
+            case 'status-key':
+                $group = array_search( $request->view, Setting::SettingKeyGroup());
+                $request->session()->flash('group', $group);
+                return view('menu.setting.key', ['data' => $this->Data()]);
+                break;
+
+            case 'transaction-key':
+                $group = array_search( $request->view, Setting::SettingKeyGroup());
+                $request->session()->flash('group', $group);
+                return view('menu.setting.key', ['data' => $this->Data()]);
+                break;
+
             case 'receipt':
                 
 

@@ -22,7 +22,6 @@
                                         
                                 @endforeach
                             @endif
-                            
                         </select>
                     </div>
                 @elseif ($keyItemSettingKey == 'setting_key_type')
@@ -39,7 +38,6 @@
                                         
                                 @endforeach
                             @endif
-                            
                         </select>
                     </div>
                 @elseif ($keyItemSettingKey == 'group')
@@ -56,7 +54,6 @@
                                         
                                 @endforeach
                             @endif
-                            
                         </select>
                     </div>
                 @elseif ($keyItemSettingKey == 'value')

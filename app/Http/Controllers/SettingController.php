@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\Setting;
 use App\Models\User;
+use Illuminate\Support\Arr;
 
 class SettingController extends Controller
 {
@@ -45,18 +46,8 @@ class SettingController extends Controller
     public function Store(Request $request)
     {
         // Check condition from request to add new setting_stock_group
-        if ($request->code) {
-            $this->settingModel = Setting::find($request['setting_id']);
-            $settingInput = $request->except('_token', '_method', 'setting_id', 'created_at', 'updated_at');
-            $stock_group = $this->settingModel->setting_stock_group;
-            if(!empty($stock_group)){
-                $last_key = (int)collect($stock_group)->keys()->last();
-                $stock_group[$last_key + 1] = $settingInput;
-            } else {
-                $stock_group[1] = $settingInput;
-            }
-            $this->settingModel->setting_stock_group = $stock_group;
-            $this->settingModel->save();
+        if (isset($request->form['setting_stock_group'])) {
+            $this->StoreSettingColumn($request['setting_id'],'setting_stock_group',$request->form['setting_stock_group']);
             return back()->with('success', 'Added Successfuly');
         } else if(isset($request->form['setting_offer'])) {
             $this->StoreSettingColumn($request['setting_id'],'setting_offer',$request->form['setting_offer']);
@@ -134,23 +125,27 @@ class SettingController extends Controller
             return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         }
         else if ($request->setting_stock_group) {
-            $this->settingModel->setting_stock_group = $settingInput['setting_stock_group'];
-        } else if($request->code) {
-            $setting_stock_group = $this->settingModel->setting_stock_group;
-            $update_setting_stock_group_data = $setting_stock_group[$request->index];
-            $update_setting_stock_group_data['code'] = $request->code;
-            $update_setting_stock_group_data['name'] = $request->name;
-            $setting_stock_group[$request->index] = $update_setting_stock_group_data;
-            $this->settingModel->setting_stock_group = $setting_stock_group;
+            $filter = Arr::except($this->settingModel->setting_stock_group, array_keys($request->setting_stock_group));
+            $this->settingModel->setting_stock_group = collect($settingInput['setting_stock_group']+$filter)->sortKeys();
         } else if ($request->setting_offer) {
-            $this->settingModel->setting_offer = $settingInput['setting_offer'];
+            $filter = Arr::except($this->settingModel->setting_offer, array_keys($request->setting_offer));
+            $this->settingModel->setting_offer = collect($settingInput['setting_offer']+$filter)->sortKeys();
             $this->settingModel->update();
             return view('menu.setting.mix-&-match', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         } else if ($request->setting_key) {
-            $this->settingModel->setting_key = $settingInput['setting_key'];
+            $filter = Arr::except($this->settingModel->setting_key, array_keys($request->setting_key));
+            $this->settingModel->setting_key = collect($settingInput['setting_key']+$filter)->sortKeys();
             $this->settingModel->update();
             return view('menu.setting.key', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
-        }
+        } 
+        // else if($request->code) {
+        //     $setting_stock_group = $this->settingModel->setting_stock_group;
+        //     $update_setting_stock_group_data = $setting_stock_group[$request->index];
+        //     $update_setting_stock_group_data['code'] = $request->code;
+        //     $update_setting_stock_group_data['name'] = $request->name;
+        //     $setting_stock_group[$request->index] = $update_setting_stock_group_data;
+        //     $this->settingModel->setting_stock_group = $setting_stock_group;
+        // } 
         
         $this->settingModel->update();
         return redirect()->back()->with('success', 'Setting Updated Successfuly');

@@ -3,7 +3,7 @@
     use App\Models\Warehouse;
 @endphp
 @section('content')
-<form action="{{route('adjust.quantity')}}" method="POST">
+<form action="{{route('warehouse.store')}}" method="post">
     @csrf
     <button type="submit" class="uk-button uk-button-default uk-border-rounded uk-button-primary">Save</button>
     <table class="uk-table uk-table-small uk-table-divider">

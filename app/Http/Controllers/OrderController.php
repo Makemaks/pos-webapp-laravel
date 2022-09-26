@@ -136,10 +136,11 @@ class OrderController extends Controller
     /**
      * This function update the order status
      * @param Request $request
+     * @param int $order
      * @return null
      */
-    public function Update(Request $request)
-    {
+    public function Update(Request $request,$order)
+    {   
         if ($request->has('order')) {
             foreach ($request->order as $orderData) {
                 Order::where('order_id', $orderData['order_id'])->update(['order_status' => $orderData['order_status']]);

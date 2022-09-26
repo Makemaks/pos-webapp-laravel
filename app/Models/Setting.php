@@ -272,7 +272,7 @@ class Setting extends Model
             "1": {
                 "tag": "",
                 "name": "",
-                "stock_tag_group_id": ""
+                "setting_stock_tag_group_id": ""
             }
         }',
 

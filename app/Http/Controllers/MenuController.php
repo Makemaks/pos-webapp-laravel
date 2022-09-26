@@ -145,8 +145,8 @@ class MenuController extends Controller
 
                 break;
 
-            case 'tags':
-                
+            case 'tag':
+                // dd('here');
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }

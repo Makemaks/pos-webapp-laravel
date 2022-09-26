@@ -53,17 +53,19 @@ class OrderController extends Controller
 
         if($request->has('action') && $request->action == 'stock') {
             $this->init();
+          
+
             $this->orderList = Order::Receipt('receipt_order_id', $request->order_id)
             ->get()
             ->groupBy('receipttable_id');
 
             return view('order.stock.index', ['data' => $this->Data()]);
         }
-        $this->init();
-        $todayDate = Carbon::now()->toDateTimeString();
+       
+       
        
       
-        $this->orderList = Receipt::Order('stock_store_id', $this->userModel->store_id)
+        $this->orderList = Receipt::Order('order_store_id', $this->userModel->store_id)
         ->orderByDesc('order_id')
         ->groupBy('order_id')
         ->paginate(10);

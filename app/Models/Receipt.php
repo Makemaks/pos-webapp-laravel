@@ -51,7 +51,7 @@ class Receipt extends Model
         return Receipt::
         leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
         ->leftJoin('order', 'order.order_id', '=', 'receipt.receipt_order_id')
-        ->leftJoin('store', 'store.store_id', '=', 'stock.stock_store_id')
+        ->leftJoin('store', 'store.store_id', '=', 'order.order_store_id')
         ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
         ->where($column,  $filter);
     }

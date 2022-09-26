@@ -180,7 +180,7 @@ class HomeAPIController extends Controller
 
         elseif ($request->has('action') && $request['action'] == 'showOrder' || $request['view'] == "0") {
             
-            $this->orderList = Receipt::Order('stock_store_id',  $this->userModel->store_id)
+            $this->orderList = Receipt::Order('order_store_id', $this->userModel->store_id)
             ->orderByDesc('order_id')
             ->groupBy('order_id')
             ->paginate(20);

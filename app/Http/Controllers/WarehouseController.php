@@ -47,6 +47,12 @@ class WarehouseController extends Controller
             ->orwhere('warehouse_type', 'Out')
             ->paginate(20);
         }
+        elseif ($request->session()->get('view') == 'transfer') {
+            $this->warehouseList =  Warehouse::where('warehouse_type', 2)->orderby('warehouse_id','desc')->get();
+        }
+        elseif ($request->session()->get('view') == 'wastage') {
+            $this->warehouseList =  Warehouse::where('warehouse_type', 3)->orderby('warehouse_id','desc')->get();
+        }
         elseif ($request->session()->get('view') != 'Ins-&-Out') {
             $this->warehouseList =  Warehouse::where('warehouse_type', $request->session()->get('view'))->orderby('warehouse_id','desc')->get();
         }

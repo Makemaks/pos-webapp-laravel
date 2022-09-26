@@ -30,7 +30,7 @@
 
     <ul class="uk-switcher uk-margin">
         <li>
-            <form id="stockTransaferUpdate" action="{{route('warehouse.update', $data['warehouseList']->toarray()[1]['warehouse_id'])}}" method="POST">
+            <form id="stockTransaferUpdate" action="{{route('warehouse.update', $data['warehouseList']->toarray()[0]['warehouse_id'])}}" method="POST">
                 @csrf
                 @method('PATCH')
                 <div>

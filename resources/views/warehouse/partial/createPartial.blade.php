@@ -80,7 +80,7 @@
                                     <option value="" selected disabled>SELECT ...</option>
                                     
                                         @foreach (Warehouse::WarehouseType() as $key => $type)
-                                            <option value="{{$type}}" class="uk-input" @if($key== $stock) selected @endif>
+                                            <option value="{{$key}}" class="uk-input" @if($key== $stock) selected @endif>
                                                 {{Str::upper($type)}}
                                             </option>
                                         @endforeach

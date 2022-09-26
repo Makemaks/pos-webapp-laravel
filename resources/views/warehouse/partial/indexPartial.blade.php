@@ -17,7 +17,7 @@
             <th>REF</th>
 
                 @isset($data['warehouseList'])
-                    @foreach ($data['warehouseList']->toArray()[1] as $keystock => $item)
+                    @foreach ($data['warehouseList']->toArray()[0] as $keystock => $item)
                         @if ($keystock != 'warehouse_id' && $keystock != 'warehouse_stock_id' && $keystock != 'created_at' &&	$keystock != 'updated_at')
                             <th>{{Str::after($keystock, 'warehouse_')}}</th>
                         @endif
@@ -34,7 +34,7 @@
                                 <div class="uk-form-controls">
                                     <input class="uk-checkbox" type="checkbox"
                                         value="{{ $warehouseList['warehouse_id'] }}"
-                                        name="stock_transfer_checkbox[]">
+                                        name="stock_transfer_checkbox[]" checked>
                                 </div>
                             </div>
                         </td>
@@ -72,7 +72,7 @@
                                             <option value="" selected disabled>SELECT ...</option>
                                             
                                                 @foreach (Warehouse::WarehouseType() as $key => $stock)
-                                                    <option value="{{$stock}}" class="uk-input">
+                                                    <option value="{{$key}}" class="uk-input">
                                                         {{$stock}}
                                                     </option>
                                                 @endforeach

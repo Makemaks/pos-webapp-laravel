@@ -55,6 +55,9 @@ class SettingController extends Controller
         } else if(isset($request->form['setting_key'])) {
             $this->StoreSettingColumn($request['setting_id'],'setting_key',$request->form['setting_key']);
             return back()->with('success', 'Added Successfuly');
+        } else if(isset($request->form['setting_stock_tag'])) {
+            $this->StoreSettingColumn($request['setting_id'],'setting_stock_tag',$request->form['setting_stock_tag']);
+            return back()->with('success', 'Added Successfuly');
         }
 
         if ($request->hasFile('setting_logo_url')) {
@@ -120,6 +123,12 @@ class SettingController extends Controller
                 $setting_key = $this->DeleteColumnIndex($request->setting_key_delete, $setting_keys);
                 $this->settingModel->setting_key = $setting_key;
                 $view = 'menu.setting.key';
+            } else if($request->setting_stock_tag_delete) {
+                $setting_stock_tags = $this->settingModel->setting_stock_tag;
+
+                $setting_stock_tag = $this->DeleteColumnIndex($request->setting_stock_tag_delete, $setting_stock_tags);
+                $this->settingModel->setting_stock_tag = $setting_stock_tag;
+                $view = 'menu.setting.settingStockTag';
             }
             $this->settingModel->update();
             return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
@@ -137,6 +146,11 @@ class SettingController extends Controller
             $this->settingModel->setting_key = collect($settingInput['setting_key']+$filter)->sortKeys();
             $this->settingModel->update();
             return view('menu.setting.key', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
+        } else if ($request->setting_stock_tag) {
+            $filter = Arr::except($this->settingModel->setting_stock_tag, array_keys($request->setting_stock_tag));
+            $this->settingModel->setting_stock_tag = collect($settingInput['setting_stock_tag']+$filter)->sortKeys();
+            $this->settingModel->update();
+            return view('menu.setting.settingStockTag', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         } 
         // else if($request->code) {
         //     $setting_stock_group = $this->settingModel->setting_stock_group;

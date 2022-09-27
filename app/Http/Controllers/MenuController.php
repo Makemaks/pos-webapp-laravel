@@ -151,7 +151,9 @@ class MenuController extends Controller
                     $this->settingModel = new Setting();
                 }
                 
-                return view('menu.setting.receipt', ['data' => $this->Data()]);
+                // dd($this->settingModel);
+
+                return view('menu.setting.settingStockTag', ['data' => $this->Data()]);
 
                 break;
             

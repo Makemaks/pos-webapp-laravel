@@ -47,6 +47,29 @@ class SettingController extends Controller
 
     public function Store(Request $request)
     {
+        if ($request->get('resource_type') == 'voucher') {
+            $default_structure = (new Setting())->getAttribute('setting_offer')[1];
+            $settingInput = $request->except('_token', '_method', 'resource_type', 'setting_id', 'created_at', 'updated_at');
+            if (strtotime($settingInput['date']['end_date']) <= strtotime($settingInput['date']['start_date'])) {
+                return back()->withInput()->withErrors(['error' => trans('End date must be more than start date')]);
+            }
+            $new_voucher = array_replace_recursive($default_structure, $settingInput);
+            if ($this->settingModel = Setting::find($request->get('setting_id'))) {
+                $setting_offer = $this->settingModel->setting_offer;
+                if (!empty($setting_offer)) {
+                    $last_key = (int)collect($setting_offer)->keys()->last();
+                    $setting_offer[$last_key + 1] = $new_voucher;
+                } else {
+                    $setting_offer[1] = $new_voucher;
+                }
+                $this->settingModel->setting_offer = $setting_offer;
+                $this->settingModel->save();
+                return back()->with('success', 'Added Successfuly');
+            } else {
+                return back()->withInput()->withErrors(['error' => trans('Setting not found')]);
+            }
+        }
+
         // Check condition from request to add new setting_stock_group
         if ($request->code) {
             $this->settingModel = Setting::find($request['setting_id']);
@@ -64,10 +87,10 @@ class SettingController extends Controller
         }
 
         if ($request->hasFile('setting_logo_url')) {
-            
+
             $upload = $request->setting_logo_url->store('/images/uploads');
         }
-        
+
         $settingInput = $request->except('_token', '_method');
         $settingInput['setting_logo_url'] = $upload;
 
@@ -86,6 +109,13 @@ class SettingController extends Controller
     {
         $setting = Setting::find($setting);
 
+        if ($request->get('resource_type') == 'voucher') {
+            $this->settingModel['setting_id'] = $setting->setting_id;
+            $this->settingModel['setting_offer'] = $setting->setting_offer[$request->get('index')];
+            $this->settingModel['edit'] = true;
+            return view('menu.setting.vouchers.edit', ['data' => $this->Data(), 'index' => $request->get('index')]);
+        }
+
         // Check condition from url to edit setting_stock_group
         if($request->has('index')) {
             $edit_setting_stock_group = $setting->setting_stock_group;
@@ -102,6 +132,15 @@ class SettingController extends Controller
         $this->settingModel = Setting::find($setting);
         $settingInput = $request->except('_token', '_method');
 
+        if ($request->get('resource_type') == 'voucher') {
+            $setting_offer = $this->settingModel->setting_offer;
+            $settingInput = $request->except('_token', '_method', 'resource_type', 'setting_id', 'index', 'created_at', 'updated_at');
+            $setting_offer[$request->get('index')] = array_replace_recursive($setting_offer[$request->get('index')], $settingInput);
+            $this->settingModel->setting_offer = $setting_offer;
+            $this->settingModel->update();
+            return redirect()->back();
+        }
+
         // Check condition from request to update particular index of setting_stock_group
         if ($request->code) {
             $setting_stock_group = $this->settingModel->setting_stock_group;
@@ -116,8 +155,26 @@ class SettingController extends Controller
         return view('Setting.edit', ['project' => $setting]);
     }
 
-    public function Destroy($setting)
+    public function Destroy(Request $request, $setting)
     {
+        if ($request->get('resource_type') == 'voucher') {
+            if (empty($request->get('setting_offer_indexes'))) {
+                return back()->with('message', 'Please, select vouchers');
+            }
+
+            $setting_offer_indexes = $request->get('setting_offer_indexes');
+            $setting = Setting::find($setting);
+            $setting_offer = $setting->setting_offer;
+            foreach ($setting_offer_indexes as $setting_offer_index => $tmp) {
+                if (isset($setting_offer[$setting_offer_index])) {
+                    unset($setting_offer[$setting_offer_index]);
+                }
+            }
+            $setting->setting_offer = $setting_offer;
+            $setting->update();
+            return back()->with('success', 'Setting offers Deleted Successfuly');
+        }
+
         $currentRoute = explode('-', $setting);
         if(is_array($currentRoute)) {
             $setting_stock_groups = Setting::find($currentRoute[0]);
@@ -128,7 +185,7 @@ class SettingController extends Controller
         } else {
             Setting::destroy($setting);
         }
-        
+
         return back()->with('success', 'Setting Deleted Successfuly');
     }
 

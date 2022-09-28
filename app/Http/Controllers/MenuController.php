@@ -41,14 +41,14 @@ class MenuController extends Controller
 
              break;
          case (in_array($request->view, Warehouse::WarehouseType())):
-             
+
              $type = array_search( $request->view, Warehouse::WarehouseType());
              $request->session()->flash('type', $type);
 
              return redirect()->route('warehouse.index');
 
              break;
-         
+
          case 'ins-&-out':
 
 
@@ -59,7 +59,7 @@ class MenuController extends Controller
         case 'case-sizes':
 
             $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
-           
+
 
             return redirect()->route('setting.index');
 
@@ -68,7 +68,7 @@ class MenuController extends Controller
         case 'recipes':
 
             $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
-            
+
 
             return redirect()->route('setting.index');
 
@@ -77,131 +77,132 @@ class MenuController extends Controller
         case 'stock-variance':
 
             $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
-            
+
 
             return redirect()->route('setting.index');
 
             break;
-       
+
          default:
              echo "i is not equal to 0, 1 or 2";
      endswitch;
-    
+
    }
 
    public function setting(Request $request){
-    $request->session()->flash('view', $request->view);
-    $request->session()->flash('action', $request->route()->getActionMethod());
-        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
-        ->first();
-    
+       if (!Auth::user()) {
+           return redirect()->route('authentication.login');
+       }
+       $request->session()->flash('view', $request->view);
+       $request->session()->flash('action', $request->route()->getActionMethod());
+       $this->userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
+
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
-        
+
 
         switch ($request->view):
             case (in_array($request->view, Setting::SettingStockGroup())):
-            
+
                 $type = array_search( $request->view, Setting::SettingStockGroup());
                 $request->session()->flash('type', $type);
-                
-               
+
+
                 return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
 
                 break;
-          
-           
+
+
             case 'mix-&-match':
-                
-                
+
+
                 return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
 
                 break;
-            
+
             case 'finalise-keys':
 
                 return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
                 break;
 
-                    
+
             case 'receipt':
-                
+
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
-                
+
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
                 break;
 
             case 'tags':
-                
+
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
-                
+
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
                 break;
-            
+
 
             case 'tag-groups':
-                
+
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
-                
+
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
                 break;
 
             case 'vouchers':
-                
+
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
-                
-                return view('menu.setting.receipt', ['data' => $this->Data()]);
+                return view('menu.setting.vouchers.index', ['data' => $this->Data()]);
 
                 break;
 
             case 'reasons':
-                
+
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
-                
+
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
                 break;
 
             case 'tax':
-                
+
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
-                
+
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
                     break;
 
             case 'reasons':
-                
+
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
-                
+
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
                 break;
 
             case (in_array($request->view, Warehouse::WarehouseType())):
-                
+
                 $view = array_search( $request->view, Warehouse::WarehouseType());
                 return redirect()->route('warehouse.index');
 
@@ -210,14 +211,14 @@ class MenuController extends Controller
             default:
                 echo "i is not equal to 0, 1 or 2";
         endswitch;
-    
+
    }
 
    public function order(Request $request){
 
     $request->session()->flash('view', $request->view);
     $request->session()->flash('action', $request->route()->getActionMethod());
-    
+
     switch ($request->view):
         case 'sale':
             return redirect()->route('order.index');
@@ -234,14 +235,14 @@ class MenuController extends Controller
         default:
             echo "i is not equal to 0, 1 or 2";
     endswitch;
-    
+
    }
 
    public function home(Request $request){
 
     $request->session()->flash('view', $request->view);
     $request->session()->flash('action', $request->route()->getActionMethod());
-    
+
     switch ($request->view):
         case 'category':
             return redirect()->route('order.index');
@@ -262,14 +263,14 @@ class MenuController extends Controller
         default:
             echo "i is not equal to 0, 1 or 2";
     endswitch;
-    
+
    }
 
    public function customer(Request $request){
 
         $request->session()->flash('view', $request->view);
         $request->session()->flash('action', $request->route()->getActionMethod());
-        
+
         switch ($request->view):
             case 'person':
                 return redirect()->route('person.index');
@@ -298,7 +299,7 @@ class MenuController extends Controller
 
 
       $this->storeList = Store::List('root_store_id', $this->userModel->store_id);
-      
+
       $storeModel = Store::Account('store_id', $this->userModel->store_id)
       ->first();
 
@@ -307,7 +308,7 @@ class MenuController extends Controller
 
    private function Data(){
         return [
-            
+
             'userModel'=> $this->userModel,
             'categoryList' => $this->categoryList,
             'stockList' => $this->stockList,

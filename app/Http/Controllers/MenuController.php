@@ -164,7 +164,7 @@ class MenuController extends Controller
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
-                return view('menu.setting.vouchers.index', ['data' => $this->Data()]);
+                return view('menu.setting.vouchers', ['data' => $this->Data()]);
 
                 break;
 

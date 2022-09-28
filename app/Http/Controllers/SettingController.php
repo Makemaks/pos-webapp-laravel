@@ -133,12 +133,37 @@ class SettingController extends Controller
         $settingInput = $request->except('_token', '_method');
 
         if ($request->get('resource_type') == 'voucher') {
-            $setting_offer = $this->settingModel->setting_offer;
-            $settingInput = $request->except('_token', '_method', 'resource_type', 'setting_id', 'index', 'created_at', 'updated_at');
-            $setting_offer[$request->get('index')] = array_replace_recursive($setting_offer[$request->get('index')], $settingInput);
-            $this->settingModel->setting_offer = $setting_offer;
-            $this->settingModel->update();
-            return redirect()->back();
+            if ($request->has('voucherUpdate')) {
+                if (!$request->has('setting_offer') || !count($request->get('setting_offer'))) {
+                    return back()->withErrors(['error' => trans('Vouchers not found')]);
+                }
+                $setting_offer = $this->settingModel->setting_offer;
+                $settingInput = $request->except('_token', '_method', 'resource_type', 'setting_id', 'index', 'created_at', 'updated_at');
+                foreach ($settingInput['setting_offer'] as $setting_offer_id => $setting_offer_values) {
+                    $setting_offer[$setting_offer_id] = array_replace_recursive($setting_offer[$setting_offer_id], $setting_offer_values);
+                }
+                $this->settingModel->setting_offer = $setting_offer;
+                $this->settingModel->update();
+                return back()->with('success', trans('Success'));
+            } elseif ($request->has('voucherDelete')) {
+                if (empty($request->get('setting_offer_delete_indexes'))) {
+                    return back()->withErrors(['error' => trans('Please, select vouchers')]);
+                }
+
+                $setting_offer_delete_indexes = $request->get('setting_offer_delete_indexes');
+                $setting = Setting::find($setting);
+                $setting_offer = $setting->setting_offer;
+                foreach ($setting_offer_delete_indexes as $setting_offer_index => $tmp) {
+                    if (isset($setting_offer[$setting_offer_index])) {
+                        unset($setting_offer[$setting_offer_index]);
+                    }
+                }
+                $setting->setting_offer = $setting_offer;
+                $setting->update();
+                return back()->with('success', trans('Success'));
+            } else {
+                return back()->with('message', trans('Action not found'));
+            }
         }
 
         // Check condition from request to update particular index of setting_stock_group
@@ -158,21 +183,21 @@ class SettingController extends Controller
     public function Destroy(Request $request, $setting)
     {
         if ($request->get('resource_type') == 'voucher') {
-            if (empty($request->get('setting_offer_indexes'))) {
+            if (empty($request->get('setting_offer_delete_indexes'))) {
                 return back()->with('message', 'Please, select vouchers');
             }
 
-            $setting_offer_indexes = $request->get('setting_offer_indexes');
+            $setting_offer_delete_indexes = $request->get('setting_offer_delete_indexes');
             $setting = Setting::find($setting);
             $setting_offer = $setting->setting_offer;
-            foreach ($setting_offer_indexes as $setting_offer_index => $tmp) {
+            foreach ($setting_offer_delete_indexes as $setting_offer_index => $tmp) {
                 if (isset($setting_offer[$setting_offer_index])) {
                     unset($setting_offer[$setting_offer_index]);
                 }
             }
             $setting->setting_offer = $setting_offer;
             $setting->update();
-            return back()->with('success', 'Setting offers Deleted Successfuly');
+            return back()->with('success', 'Success');
         }
 
         $currentRoute = explode('-', $setting);

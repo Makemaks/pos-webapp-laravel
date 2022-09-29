@@ -14,7 +14,7 @@
             name="voucherDelete"
             id="button-delete-vouchers"
             class="uk-button uk-button-danger uk-border-rounded"
-            disabled>{{ __('Delete') }}</button>
+    >{{ __('Delete') }}</button>
 
     <ul class="uk-subnav uk-subnav-pill" uk-switcher>
         <li><a id="tab-vouchers-list" href="#">{{Str::upper(Request::get('view'))}}</a></li>
@@ -26,9 +26,6 @@
             <li>
                 <div>
                     @if (isset($data['settingModel']->setting_offer) && !empty($data['settingModel']->setting_offer))
-                        @php
-                        $voucher_count = 0;
-                        @endphp
                         <form id="form-vouchers" action="{{ route('setting.update', ['setting' => $data['settingModel']->setting_id]) }}" method="POST">
                             @csrf
                             @method('PATCH')
@@ -40,12 +37,18 @@
                                     <tr>
                                         <th></th>
                                         <th>{{ __('REF') }}</th>
-                                        <th>{{ __('Date start') }}</th>
-                                        <th>{{ __('Date end') }}</th>
+                                        <th>{{ __('Start Date') }}</th>
+                                        <th>{{ __('End Date') }}</th>
                                         <th>{{ __('Code') }}</th>
                                         <th>{{ __('Name') }}</th>
+                                        <th>{{ __('Barcode') }}</th>
+                                        <th>{{ __('Description') }}</th>
+                                        <th>{{ __('Gain') }}</th>
+                                        <th>{{ __('Collect') }}</th>
                                         <th>{{ __('Discount value') }}</th>
                                         <th>{{ __('Quantity') }}</th>
+                                        <th>{{ __('Per usage') }}</th>
+                                        <th>{{ __('Per person') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -53,31 +56,48 @@
                                     @if($setting_offer['boolean']['type'] != 0)
                                         @continue
                                     @endif
-                                    @php $voucher_count++; @endphp
                                     <tr>
                                         <td>
-                                            <input type="checkbox" name="setting_offer_delete_indexes[{{ $setting_offer_key }}]" onchange="document.getElementById('form-vouchers').querySelectorAll('input:checked').length > 0 ? document.getElementById('button-delete-vouchers').removeAttribute('disabled') : document.getElementById('button-delete-vouchers').setAttribute('disabled', 'disabled')">
+                                            <input type="checkbox" name="setting_offer_delete_indexes[{{ $setting_offer_key }}]">
                                         </td>
                                         <td>
                                             <button class="uk-button uk-button-default uk-border-rounded">{{ $setting_offer_key }}</button>
                                         </td>
                                         <td>
-                                            <input name="setting_offer[{{ $setting_offer_key }}][date][start_date]" class="uk-input uk-width-small" type="date" min="{{ date('Y-m-d') }}" value="{{ $setting_offer['date']['start_date'] ?? '' }}" required>
+                                            <input name="setting_offer[{{ $setting_offer_key }}][date][start_date]" class="uk-input uk-width-small" type="date" value="{{ $setting_offer['date']['start_date'] ?? '' }}">
                                         </td>
                                         <td>
-                                            <input name="setting_offer[{{ $setting_offer_key }}][date][end_date]" class="uk-input uk-width-small" type="date" min="{{ date('Y-m-d') }}" value="{{ $setting_offer['date']['end_date'] ?? '' }}" required>
+                                            <input name="setting_offer[{{ $setting_offer_key }}][date][end_date]" class="uk-input uk-width-small" type="date" value="{{ $setting_offer['date']['end_date'] ?? '' }}">
                                         </td>
                                         <td>
-                                            <input name="setting_offer[{{ $setting_offer_key }}][string][code]" class="uk-input uk-width-small" type="text" value="{{ $setting_offer['string']['code'] ?? '' }}" required>
+                                            <input name="setting_offer[{{ $setting_offer_key }}][string][code]" class="uk-input uk-width-small" type="text" value="{{ $setting_offer['string']['code'] ?? '' }}">
                                         </td>
                                         <td>
-                                            <input name="setting_offer[{{ $setting_offer_key }}][string][name]" class="uk-input uk-width-small" type="text" value="{{ $setting_offer['string']['name'] ?? '' }}" required>
+                                            <input name="setting_offer[{{ $setting_offer_key }}][string][name]" class="uk-input uk-width-small" type="text" value="{{ $setting_offer['string']['name'] ?? '' }}">
                                         </td>
                                         <td>
-                                            <input name="setting_offer[{{ $setting_offer_key }}][decimal][discount_value]" class="uk-input" type="number" min="0" step="0.01" value="{{ $setting_offer['decimal']['discount_value'] ?? '' }}">
+                                            <input name="setting_offer[{{ $setting_offer_key }}][string][barcode]" class="uk-input uk-width-small" type="text" value="{{ $setting_offer['string']['barcode'] ?? '' }}">
                                         </td>
                                         <td>
-                                            <input name="setting_offer[{{ $setting_offer_key }}][integer][quantity]" class="uk-input" type="number" min="0" step="1" value="{{ $setting_offer['integer']['quantity'] ?? '' }}">
+                                            <textarea name="setting_offer[{{ $setting_offer_key }}][string][description]" class="uk-textarea uk-width-medium">{{ $setting_offer['string']['description'] ?? '' }}</textarea>
+                                        </td>
+                                        <td>
+                                            <input name="setting_offer[{{ $setting_offer_key }}][decimal][gain]" class="uk-input uk-width-small" type="number" value="{{ $setting_offer['decimal']['gain'] ?? '' }}">
+                                        </td>
+                                        <td>
+                                            <input name="setting_offer[{{ $setting_offer_key }}][decimal][collect]" class="uk-input uk-width-small" type="number" value="{{ $setting_offer['decimal']['collect'] ?? '' }}">
+                                        </td>
+                                        <td>
+                                            <input name="setting_offer[{{ $setting_offer_key }}][decimal][discount_value]" class="uk-input uk-width-small" type="number" value="{{ $setting_offer['decimal']['discount_value'] ?? '' }}">
+                                        </td>
+                                        <td>
+                                            <input name="setting_offer[{{ $setting_offer_key }}][integer][quantity]" class="uk-input uk-width-small" type="number" value="{{ $setting_offer['integer']['quantity'] ?? '' }}">
+                                        </td>
+                                        <td>
+                                            <input name="setting_offer[{{ $setting_offer_key }}][usage][per_usage]" class="uk-input uk-width-small" type="number" value="{{ $setting_offer['usage']['per_usage'] ?? '' }}">
+                                        </td>
+                                        <td>
+                                            <input name="setting_offer[{{ $setting_offer_key }}][usage][per_person]" class="uk-input uk-width-small" type="number" value="{{ $setting_offer['usage']['per_person'] ?? '' }}">
                                         </td>
                                     </tr>
                                 @endforeach
@@ -115,32 +135,64 @@
                     @endif
                     <div uk-grid>
                         <div class="uk-form-width-medium">
-                            <label>{{ __('Start date') }}</label>
-                            <input name="date[start_date]" class="uk-input" type="date" min="{{ date('Y-m-d') }}" value="{{ $setting_offer['date']['start_date'] ?? '' }}" required>
+                            <label>{{ __('Start Date') }}</label>
+                            <input name="date[start_date]" class="uk-input" type="date" value="{{ $setting_offer['date']['start_date'] ?? '' }}">
                         </div>
                         <div class="uk-form-width-medium">
-                            <label>{{ __('End date') }}</label>
-                            <input name="date[end_date]" class="uk-input" type="date" min="{{ date('Y-m-d') }}" value="{{ $setting_offer['date']['end_date'] ?? '' }}" required>
+                            <label>{{ __('End Date') }}</label>
+                            <input name="date[end_date]" class="uk-input" type="date" value="{{ $setting_offer['date']['end_date'] ?? '' }}">
                         </div>
                     </div>
                     <div uk-grid>
                         <div class="uk-form-width-medium">
                             <label>{{ __('Code') }}</label>
-                            <input name="string[code]" class="uk-input" type="text" value="{{ $setting_offer['string']['code'] ?? '' }}" required>
+                            <input name="string[code]" class="uk-input" type="text" value="{{ $setting_offer['string']['code'] ?? '' }}">
                         </div>
                         <div class="uk-form-width-medium">
                             <label>{{ __('Name') }}</label>
-                            <input name="string[name]" class="uk-input" type="text" value="{{ $setting_offer['string']['name'] ?? '' }}" required>
+                            <input name="string[name]" class="uk-input" type="text" value="{{ $setting_offer['string']['name'] ?? '' }}">
+                        </div>
+                    </div>
+                    <div uk-grid>
+                        <div class="uk-form-width-medium">
+                            <label>{{ __('Barcode') }}</label>
+                            <input name="string[barcode]" class="uk-input" type="text" value="{{ $setting_offer['string']['barcode'] ?? '' }}">
+                        </div>
+                    </div>
+                    <div uk-grid>
+                        <div class="uk-form-width-large">
+                            <label>{{ __('Description') }}</label>
+                            <textarea name="string[description]" class="uk-textarea">{{ $setting_offer['string']['description'] ?? '' }}</textarea>
+                        </div>
+                    </div>
+                    <div uk-grid>
+                        <div class="uk-form-width-medium">
+                            <label>{{ __('Gain') }}</label>
+                            <input name="decimal[gain]" class="uk-input" type="number" value="{{ $setting_offer['decimal']['gain'] ?? '' }}">
+                        </div>
+                        <div class="uk-form-width-medium">
+                            <label>{{ __('Collect') }}</label>
+                            <input name="decimal[collect]" class="uk-input" type="number" value="{{ $setting_offer['decimal']['collect'] ?? '' }}">
                         </div>
                     </div>
                     <div uk-grid>
                         <div class="uk-form-width-medium">
                             <label>{{ __('Discount value') }}</label>
-                            <input name="decimal[discount_value]" class="uk-input" type="number" min="0" step="0.01" value="{{ $setting_offer['decimal']['discount_value'] ?? '' }}">
+                            <input name="decimal[discount_value]" class="uk-input" type="number" value="{{ $setting_offer['decimal']['discount_value'] ?? '' }}">
                         </div>
                         <div class="uk-form-width-medium">
                             <label>{{ __('Quantity') }}</label>
-                            <input name="integer[quantity]" class="uk-input" type="number" min="0" step="1" value="{{ $setting_offer['integer']['quantity'] ?? '' }}">
+                            <input name="integer[quantity]" class="uk-input" type="number" value="{{ $setting_offer['integer']['quantity'] ?? '' }}">
+                        </div>
+                    </div>
+                    <div uk-grid>
+                        <div class="uk-form-width-medium">
+                            <label>{{ __('Per usage') }}</label>
+                            <input name="usage[per_usage]" class="uk-input" type="number" value="{{ $setting_offer['usage']['per_usage'] ?? '' }}">
+                        </div>
+                        <div class="uk-form-width-medium">
+                            <label>{{ __('Per person') }}</label>
+                            <input name="usage[per_person]" class="uk-input" type="number" value="{{ $setting_offer['usage']['per_person'] ?? '' }}">
                         </div>
                     </div>
 

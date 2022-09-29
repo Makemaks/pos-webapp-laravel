@@ -50,9 +50,6 @@ class SettingController extends Controller
         if ($request->get('resource_type') == 'voucher') {
             $default_structure = (new Setting())->getAttribute('setting_offer')[1];
             $settingInput = $request->except('_token', '_method', 'resource_type', 'setting_id', 'created_at', 'updated_at');
-            if (strtotime($settingInput['date']['end_date']) <= strtotime($settingInput['date']['start_date'])) {
-                return back()->withInput()->withErrors(['error' => trans('End date must be more than start date')]);
-            }
             $new_voucher = array_replace_recursive($default_structure, $settingInput);
             if ($this->settingModel = Setting::find($request->get('setting_id'))) {
                 $setting_offer = $this->settingModel->setting_offer;
@@ -182,23 +179,6 @@ class SettingController extends Controller
 
     public function Destroy(Request $request, $setting)
     {
-        if ($request->get('resource_type') == 'voucher') {
-            if (empty($request->get('setting_offer_delete_indexes'))) {
-                return back()->with('message', 'Please, select vouchers');
-            }
-
-            $setting_offer_delete_indexes = $request->get('setting_offer_delete_indexes');
-            $setting = Setting::find($setting);
-            $setting_offer = $setting->setting_offer;
-            foreach ($setting_offer_delete_indexes as $setting_offer_index => $tmp) {
-                if (isset($setting_offer[$setting_offer_index])) {
-                    unset($setting_offer[$setting_offer_index]);
-                }
-            }
-            $setting->setting_offer = $setting_offer;
-            $setting->update();
-            return back()->with('success', 'Success');
-        }
 
         $currentRoute = explode('-', $setting);
         if(is_array($currentRoute)) {

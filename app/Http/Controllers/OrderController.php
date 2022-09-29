@@ -41,16 +41,12 @@ class OrderController extends Controller
     {
         if ($request->session()->has('view') && $request->session()->get('view') == 'till') {
             $this->init();
-            // dd($this->settingModel->setting_pos);
-            // foreach($thi)
+            $tillData = $this->settingModel->setting_pos;
             $this->orderList = Receipt::Order('order_setting_pos_id',  1)
             ->orderByDesc('order_id')
             ->groupBy('order_id')
-            ->get();
-            dd($this->orderList);
-            // $this->orderList = Order::Receipt('receipt_order_id', $request->order_id)
-            //     ->get();
-            // return view('order.availability', ['data' => $this->Data()]);
+            ->paginate(10);
+            return view('order.tillIndex', ['data' => $this->Data(), 'tillData'=>$tillData]);
         }
 
         if ($request->session()->has('setting_finalise_key')) {

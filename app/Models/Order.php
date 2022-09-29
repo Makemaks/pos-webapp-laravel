@@ -14,6 +14,7 @@ use App\Models\Person;
 use App\Models\Receipt;
 use App\Models\Order;
 use App\Models\Warehouse;
+use App\Models\Store;
 
 use App\Helpers\MathHelper;
 use Carbon\Carbon;
@@ -304,6 +305,15 @@ class Order extends Model
        
         //empty sessions
         Receipt::Empty($request);
+    }
+
+
+    /**
+     * Get the store associated with the order.
+     */
+    public function store()
+    {
+        return $this->hasOne(Store::class,'order_store_id','store_id');
     }
 
    

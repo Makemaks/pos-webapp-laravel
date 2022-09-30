@@ -249,7 +249,7 @@ class SettingFactory extends Factory
             'setting_key_type' => $setting_key_type,
             'setting_group' => $setting_group,
             'setting_customer' => $setting_customer,
-           
+            'setting_stock_tag_group' => $setting_stock_tag_group
             
         ];
     }

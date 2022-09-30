@@ -96,7 +96,8 @@ class MenuController extends Controller
         ->first();
     
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
-        
+
+        // dd($request->view);
 
         switch ($request->view):
             case (in_array($request->view, Setting::SettingStockGroup())):
@@ -111,18 +112,28 @@ class MenuController extends Controller
           
            
             case 'mix-&-match':
-                
-                
                 return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
 
                 break;
             
-            case 'finalise-keys':
-
-                return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
+            case 'finalise-key':
+                $group = array_search( $request->view, Setting::SettingKeyGroup());
+                $request->session()->flash('group', $group);
+                return view('menu.setting.key', ['data' => $this->Data()]);
                 break;
 
-                    
+            case 'status-key':
+                $group = array_search( $request->view, Setting::SettingKeyGroup());
+                $request->session()->flash('group', $group);
+                return view('menu.setting.key', ['data' => $this->Data()]);
+                break;
+
+            case 'transaction-key':
+                $group = array_search( $request->view, Setting::SettingKeyGroup());
+                $request->session()->flash('group', $group);
+                return view('menu.setting.key', ['data' => $this->Data()]);
+                break;
+
             case 'receipt':
                 
 
@@ -134,25 +145,27 @@ class MenuController extends Controller
 
                 break;
 
-            case 'tags':
-                
+            case 'tag':
+                // dd('here');
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
                 
-                return view('menu.setting.receipt', ['data' => $this->Data()]);
+                // dd($this->settingModel);
+
+                return view('menu.setting.settingStockTag', ['data' => $this->Data()]);
 
                 break;
             
 
-            case 'tag-groups':
+            case 'tag-group':
                 
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
                 
-                return view('menu.setting.receipt', ['data' => $this->Data()]);
+                return view('menu.setting.settingStockTagGroup', ['data' => $this->Data()]);
 
                 break;
 
@@ -185,7 +198,18 @@ class MenuController extends Controller
                     $this->settingModel = new Setting();
                 }
                 
-                return view('menu.setting.receipt', ['data' => $this->Data()]);
+                return view('menu.setting.settingVat', ['data' => $this->Data()]);
+
+                    break;
+
+            case 'set-menu':
+        
+
+                if ($this->settingModel == null) {
+                    $this->settingModel = new Setting();
+                }
+                
+                return view('menu.setting.settingStockSetMenu', ['data' => $this->Data()]);
 
                     break;
 

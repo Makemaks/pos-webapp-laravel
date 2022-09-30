@@ -272,7 +272,7 @@ class Setting extends Model
             "1": {
                 "tag": "",
                 "name": "",
-                "stock_tag_group_id": ""
+                "setting_stock_tag_group_id": ""
             }
         }',
 
@@ -287,6 +287,7 @@ class Setting extends Model
 
         'setting_key' => '{
             "1": {
+                "group": "",
                 "status": "",
                 "description": "",
                 "value": "",
@@ -778,6 +779,8 @@ class Setting extends Model
 
         return $total;
     }
+
+    
 
 
 

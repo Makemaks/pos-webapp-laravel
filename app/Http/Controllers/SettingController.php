@@ -143,21 +143,7 @@ class SettingController extends Controller
                 $this->settingModel->update();
                 return back()->with('success', trans('Success'));
             } elseif ($request->has('voucherDelete')) {
-                if (empty($request->get('setting_offer_delete_indexes'))) {
-                    return back()->withErrors(['error' => trans('Please, select vouchers')]);
-                }
-
-                $setting_offer_delete_indexes = $request->get('setting_offer_delete_indexes');
-                $setting = Setting::find($setting);
-                $setting_offer = $setting->setting_offer;
-                foreach ($setting_offer_delete_indexes as $setting_offer_index => $tmp) {
-                    if (isset($setting_offer[$setting_offer_index])) {
-                        unset($setting_offer[$setting_offer_index]);
-                    }
-                }
-                $setting->setting_offer = $setting_offer;
-                $setting->update();
-                return back()->with('success', trans('Success'));
+                return $this->Destroy($request, $setting);
             } else {
                 return back()->with('message', trans('Action not found'));
             }
@@ -179,6 +165,24 @@ class SettingController extends Controller
 
     public function Destroy(Request $request, $setting)
     {
+
+        if ($request->get('resource_type') == 'voucher') {
+            if (empty($request->get('setting_offer_delete_indexes'))) {
+                return back()->with('message', 'Please, select vouchers');
+            }
+
+            $setting_offer_delete_indexes = $request->get('setting_offer_delete_indexes');
+            $setting = Setting::find($setting);
+            $setting_offer = $setting->setting_offer;
+            foreach ($setting_offer_delete_indexes as $setting_offer_index => $tmp) {
+                if (isset($setting_offer[$setting_offer_index])) {
+                    unset($setting_offer[$setting_offer_index]);
+                }
+            }
+            $setting->setting_offer = $setting_offer;
+            $setting->update();
+            return back()->with('success', 'Success');
+        }
 
         $currentRoute = explode('-', $setting);
         if(is_array($currentRoute)) {

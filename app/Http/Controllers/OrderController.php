@@ -39,7 +39,15 @@ class OrderController extends Controller
 
     public function Index(Request $request)
     {
-
+        if ($request->session()->has('view') && $request->session()->get('view') == 'till') {
+            $this->init();
+            $tillData = $this->settingModel->setting_pos;
+            $this->orderList = Receipt::Order('order_setting_pos_id',  1)
+            ->orderByDesc('order_id')
+            ->groupBy('order_id')
+            ->paginate(10);
+            return view('order.tillIndex', ['data' => $this->Data(), 'tillData'=>$tillData]);
+        }
 
         if ($request->session()->has('setting_finalise_key')) {
             $request->session()->reflash('order_finalise_key');

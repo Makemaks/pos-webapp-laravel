@@ -6,12 +6,12 @@
 @endphp
 
 <div>
-{{-- <div class="uk-grid-match uk-grid-small uk-child-width-auto@xl" uk-grid> --}}
+
 
     <div>
         <div class="uk-card uk-card-default uk-padding">
        
-            <ul class="uk-subnav uk-subnav-pill">
+            <ul class="uk-subnav uk-subnav-pill" uk-switcher>
                 <li><a href="#" uk-icon="list"></a></li>
                 <li><a href="#" uk-icon="plus"></a></li>
             </ul>
@@ -32,10 +32,10 @@
                                 
 
                                     <th>REF</th>
-                                        @foreach ( $collection->except(['exception']) as $key => $item)
+                                        @foreach ( $data['settingModel']->setting_offer as $key => $item)
                                             
                                                 <th>{{$key}}</th>
-                                           
+                                            @break;
                                         @endforeach
                                     
                                     <th>Apply</th>

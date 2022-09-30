@@ -39,8 +39,8 @@ class Company extends Model
    
     public static function CompanyType(){
         return [
-            'Customer',
             'Supplier',
+            'Customer',
             'Contractor'
         ];
     }

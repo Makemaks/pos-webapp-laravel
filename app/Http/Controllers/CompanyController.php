@@ -8,34 +8,38 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Company;
 use App\Models\User;
 use App\Models\Store;
+use App\Models\Stock;
 use App\Models\Setting;
 
 class CompanyController extends Controller
 {
 
+    private $userModel;
+    private $stockList;
+    private $stockModel;
+    private $storeList;
+    private $storeModel;
+    private $categoryList;
+    private $settingModel;
     private $companyModel;
     private $companyList;
-    private  $userModel;
     private  $orderList;
 
     public function Index(Request $request){
 
-        $this->init();
-       
-
-      if ($request->session()->get('view') == 'supplier') {
-            $this->companyList = Company::List()
-            ->where('store_id',  $this->userModel->store_id)
-            ->where('company_type', 0)
-            ->paginate(20);
-      } else {
+        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+        ->first();
+        $this->Init();
+        $request->session()->reflash();
+        if ($request->session()->get('view') == 'supplier') {
+            $this->companyList = Company::where('company_type', 0)
+            ->get();
+        } else {
             $this->companyList = Company::Address()
             ->where('store_id',  $this->userModel->store_id)
             ->where('address_type', 0)
             ->paginate(20);
-      }
-      
-
+        }
         return view('company.index', ['data' => $this->Data()]);
     }
 
@@ -45,47 +49,43 @@ class CompanyController extends Controller
     }
 
     public function Store(Request $request){
-
-        $requestinput = $request->except('_token', '_method');
-        $requestInput['project_account_id'] = Auth::user()->user_account_id;
-
-        Company::insert($requestInput);
+        $request->session()->reflash();
+        Company::insert($request->except('_token', '_method'));
         return redirect()->route('company.index')->with('success', 'Company Successfully Added');
     }
 
     public function Edit($company){
-        $this->companyModel = Company::find($company);
-        return view('company.edit', ['data' => $this->Data()]);
+        $this->companyList = Company::where('company_id', $company)->get();
+        $this->stockModel = Stock::find($this->companyList->first()->company_stock_id);
+        $this->stockModel['edit'] = true;
+        $this->Init();
+
+        return view('company.edit', ['data' => $this->Data()]); 
     }
 
     public function Update(Request $request, $company){
-
-      Company::find($company)
-       ->update($request->except('_token', '_method'));
-
-        return view('company.edit', ['company' => $company]);
+        $request->session()->reflash();
+        if ($request->has('deleteButton')) {
+            $this->Destroy($request, $company);
+        } else {
+            foreach ($request->company as $key => $value) {
+                Company::where('company_id', $value['company_id'])->update($value);
+            }
+        }
+        return redirect()->back()->with('success', 'Supplier Updated Successfuly');
     }
 
-    public function Destroy($company){
-        Company::destroy($company);
-        $contactList = Contact::where('contact_company_id', $company)->get();
+    public function Destroy(Request $request, $company){
+        $request->session()->reflash();
+        if($request->has('deleteButton')){
+            foreach ($request->get('company_checkbox') as $key => $value) {
+                Company::destroy($value);
+            }
+        }else{
+            Company::destroy($company);
+        }
 
-        $personList = $contactList
-        ->where('contact_contactable_type', 'person')
-        ->pluck('contact_contactable_id');
-
-        $addressList = $contactList
-        ->where('contact_contactable_type', 'address')
-        ->pluck('contact_contactable_id');
-
-        Person::whereIn('contact_contactable_id', $personList)->destroy();
-        Address::whereIn('contact_contactable_id', $addressList)->destroy();
-
-        Contact::whereIn('contact_company_id', $company)
-        ->destroy();
-
-
-        return redirect()->route('company.index')->with('success', '');
+        return redirect()->back()->with('success', 'Supplier Updated Successfuly');
     }
 
     private function Init(){
@@ -102,16 +102,22 @@ class CompanyController extends Controller
   
         $this->storeList = Store::List('root_store_id', $this->userModel->store_id);
         
-        $storeModel = Store::Account('store_id', $this->userModel->store_id)
+        $this->storeModel = Store::Account('store_id', $this->userModel->store_id)
         ->first();
-  
-        //$this->storeList->prepend($storeModel);
+        // $this->storeList->prepend($storeModel);
      }
 
     private function Data(){
         return [
+            'userModel'=> $this->userModel,
+            'categoryList' => $this->categoryList,
+            'stockList' => $this->stockList,
+            'stockModel' => $this->stockModel,
+            'settingModel' =>  $this->settingModel,
+            'storeList' => $this->storeList,
+            'storeModel' => $this->storeModel,
             'companyModel' => $this->companyModel,
-            'companyList' => $this->companyList
+            'companyList' => $this->companyList,
         ];
     }
 

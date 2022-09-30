@@ -56,6 +56,11 @@ class MenuController extends Controller
 
              break;
 
+        case 'supplier':
+            return redirect()->route('company.index');
+
+            break;
+
         case 'case-sizes':
 
             $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();

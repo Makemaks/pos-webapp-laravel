@@ -1,10 +1,9 @@
 @extends('layout.master')
 
-@inject ('personModel', 'App\Models\Person')
-@inject('dateTimeHelper', 'App\Helpers\DateTimeHelper')
-
 @section('content')
-    <div class="">
+    <form action="company.store" method="POST">
+        @csrf
+        @method('PATCH')
         @include('company.partial.createPartial')
-    </div>
+    </form>
 @endsection

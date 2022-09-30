@@ -209,7 +209,7 @@ class SettingController extends Controller
 
     public function Destroy(Request $request, $setting)
     {
-        $currentRoute = explode('-', $setting);
+        /* $currentRoute = explode('-', $setting);
         if($request->settingDelete){
             foreach($request->setting_offer_delete as $setting_offer_delete){
                 
@@ -226,7 +226,7 @@ class SettingController extends Controller
             return view('menu.setting.settingStockGroup', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         } else {
             Setting::destroy($setting);
-        }
+        } */
         
        
     }

@@ -96,7 +96,7 @@ class SettingController extends Controller
             $this->settingModel['edit'] = true;
             return view('menu.setting.settingStockGroupEdit', ['data' => $this->Data()]);
         }
-        return view('Setting.edit', ['project' => $setting]);
+        return back()->with('success', 'Setting Added Successfuly');
     }
 
     public function Update(Request $request, $setting)
@@ -115,7 +115,7 @@ class SettingController extends Controller
             $this->settingModel->update();
             return redirect()->back();
         }
-        return view('Setting.edit', ['project' => $setting]);
+        return back()->with('success', 'Setting Added Successfuly');
     }
 
     public function Destroy($setting)

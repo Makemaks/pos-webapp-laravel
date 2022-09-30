@@ -51,7 +51,7 @@
                 "tax",
                 "set-menu",
                 "non-plu",
-                "kp-categorie",
+                "kp-category",
                 "preset-message",
                 "price-level-scheduler",
             ],

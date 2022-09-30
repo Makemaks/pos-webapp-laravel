@@ -46,7 +46,7 @@
                 "receipt",
                 "tag",
                 "tag-group",
-                "vouchers",
+                "voucher",
                 "reason",
                 "tax",
                 "non-plu",

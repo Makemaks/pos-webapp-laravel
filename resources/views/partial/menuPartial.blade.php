@@ -49,6 +49,7 @@
                 "voucher",
                 "reason",
                 "tax",
+                "set-menu",
                 "non-plu",
                 "kp-categorie",
                 "preset-message",

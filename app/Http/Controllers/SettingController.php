@@ -61,6 +61,12 @@ class SettingController extends Controller
         } else if(isset($request->form['setting_stock_tag_group'])) {
             $this->StoreSettingColumn($request['setting_id'],'setting_stock_tag_group',$request->form['setting_stock_tag_group']);
             return back()->with('success', 'Added Successfuly');
+        } else if(isset($request->form['setting_vat'])) {
+            $this->StoreSettingColumn($request['setting_id'],'setting_vat',$request->form['setting_vat']);
+            return back()->with('success', 'Added Successfuly');
+        } else if(isset($request->form['setting_stock_set_menu'])) {
+            $this->StoreSettingColumn($request['setting_id'],'setting_stock_set_menu',$request->form['setting_stock_set_menu']);
+            return back()->with('success', 'Added Successfuly');
         }
 
         if ($request->hasFile('setting_logo_url')) {
@@ -102,7 +108,6 @@ class SettingController extends Controller
 
     public function Update(Request $request, $setting)
     {
-        // dd($request->all());
         $this->settingModel = Setting::find($setting);
         $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
         $request->session()->reflash();
@@ -139,6 +144,18 @@ class SettingController extends Controller
                 $setting_stock_tag_group = $this->DeleteColumnIndex($request->setting_stock_tag_group_delete, $setting_stock_tag_groups);
                 $this->settingModel->setting_stock_tag_group = $setting_stock_tag_group;
                 $view = 'menu.setting.settingStockTagGroup';
+            } else if($request->setting_vat_delete) {
+                $setting_vats = $this->settingModel->setting_vat;
+
+                $setting_vat = $this->DeleteColumnIndex($request->setting_vat_delete, $setting_vats);
+                $this->settingModel->setting_vat = $setting_vat;
+                $view = 'menu.setting.settingVat';
+            } else if($request->setting_stock_set_menu_delete) {
+                $setting_stock_set_menus = $this->settingModel->setting_stock_set_menu;
+
+                $setting_stock_set_menu = $this->DeleteColumnIndex($request->setting_stock_set_menu_delete, $setting_stock_set_menus);
+                $this->settingModel->setting_stock_set_menu = $setting_stock_set_menu;
+                $view = 'menu.setting.settingStockSetMenu';
             }
             $this->settingModel->update();
             return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
@@ -166,7 +183,17 @@ class SettingController extends Controller
             $this->settingModel->setting_stock_tag_group = collect($settingInput['setting_stock_tag_group']+$filter)->sortKeys();
             $this->settingModel->update();
             return view('menu.setting.settingStockTagGroup', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
-        } 
+        } else if ($request->setting_vat) {
+            $filter = Arr::except($this->settingModel->setting_vat, array_keys($request->setting_vat));
+            $this->settingModel->setting_vat = collect($settingInput['setting_vat']+$filter)->sortKeys();
+            $this->settingModel->update();
+            return view('menu.setting.settingVat', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
+        } else if ($request->setting_stock_set_menu) {
+            $filter = Arr::except($this->settingModel->setting_stock_set_menu, array_keys($request->setting_stock_set_menu));
+            $this->settingModel->setting_stock_set_menu = collect($settingInput['setting_stock_set_menu']+$filter)->sortKeys();
+            $this->settingModel->update();
+            return view('menu.setting.settingStockSetMenu', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
+        }
         // else if($request->code) {
         //     $setting_stock_group = $this->settingModel->setting_stock_group;
         //     $update_setting_stock_group_data = $setting_stock_group[$request->index];

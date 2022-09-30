@@ -227,6 +227,8 @@ class SettingController extends Controller
         } else {
             Setting::destroy($setting);
         } */
+
+        Setting::destroy($setting);
         
        
     }

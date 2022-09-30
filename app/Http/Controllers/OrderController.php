@@ -27,7 +27,7 @@ class OrderController extends Controller
     private $settingModel;
     private $schemeList;
     private $userModel;
-   
+
     private $orderModel;
     private $request;
 
@@ -39,86 +39,72 @@ class OrderController extends Controller
         $this->middleware('auth');
     }
 
-    public function Index(Request $request){
+    public function Index(Request $request)
+    {
+        if ($request->session()->has('view') && $request->session()->get('view') == 'till') {
+            $this->init();
+            $tillData = $this->settingModel->setting_pos;
+            $this->orderList = Receipt::Order('order_setting_pos_id',  1)
+            ->orderByDesc('order_id')
+            ->groupBy('order_id')
+            ->paginate(10);
+            return view('order.tillIndex', ['data' => $this->Data(), 'tillData'=>$tillData]);
+        }
 
-        $this->init();
-        $todayDate = Carbon::now()->toDateTimeString();
-       
-
-      
-         if ($request->session()->has('setting_finalise_key')) {
+        if ($request->session()->has('setting_finalise_key')) {
             $request->session()->reflash('order_finalise_key');
             $this->store($request);
         }
 
-        if($request->has('action') && $request->action == 'stock') {
+        if ($request->has('view')) {
             $this->init();
-          
-
             $this->orderList = Order::Receipt('receipt_order_id', $request->order_id)
-            ->get()
-            ->groupBy('receipttable_id');
-
-            return view('order.stock.index', ['data' => $this->Data()]);
+                ->get();
+            return view('order.availability', ['data' => $this->Data()]);
         }
-       
-       
-       
-      
-        $this->orderList = Receipt::Order('order_store_id', $this->userModel->store_id)
-        ->orderByDesc('order_id')
-        ->groupBy('order_id')
-        ->paginate(10);
+        $this->init();
+        $todayDate = Carbon::now()->toDateTimeString();
 
-        return view('order.index', ['data' => $this->Data()]);   
-      
+
+        $this->orderList = Receipt::Order('stock_store_id',  1)
+            ->orderByDesc('order_id')
+            ->groupBy('order_id')
+            ->paginate(10);
+
+        return view('order.index', ['data' => $this->Data()]);
     }
 
-    public function Show(Request $request, $order){
+    public function Show(Request $request, $order)
+    {
         $this->init();
         $this->orderList = Order::Receipt('receipt_order_id', $order)
-        ->get();
+            ->get();
 
-        return view('order.show', ['data' => $this->Data()]);   
+        return view('order.show', ['data' => $this->Data()]);
     }
 
-    public function Edit(Request $request, $order){
+    public function Edit(Request $request, $order)
+    {
         $this->init();
         $this->request = Receipt::SessionInitialize($request);
         $this->orderList = Order::Receipt('receipt_order_id', $order)
-        ->get();
+            ->get();
 
-        
-        return view('order.edit', ['data' => $this->Data()]);   
+
+        return view('order.edit', ['data' => $this->Data()]);
     }
 
-    public function Store(Request $request){
+    public function Store(Request $request)
+    {
 
         $this->init();
         Order::Process($request, $this->Data());
-        
-        return redirect()->route('home.index')->with('success', 'Order Completed Successfully');
+
+        return view('home.index', ['data' => $this->Data()]);
     }
 
-
-    public function Update(Request $request, $order){
-
-       $requestInput = $request->all();
-
-        if ($request->receipt_quantity && $request->receipt_warehouse_id) {
-            foreach ($request->receipt_warehouse_id as $wareHouseKey => $warehouse_id) {
-               
-                    $warehouse = Warehouse::find($warehouse_id);
-                    $warehouse_quantity = $warehouse->warehouse_quantity - $request->receipt_quantity[$wareHouseKey];
-                    Warehouse::where('warehouse_id', $warehouse_id)->update(['warehouse_quantity' => $warehouse_quantity]);
-            }
-            
-        }
-
-        return redirect()->back();
-    }
-
-    public function Delete($order){
+    public function Delete($order)
+    {
 
         Receipt::where('receipt_order_id', $order)->delete();
 
@@ -127,25 +113,26 @@ class OrderController extends Controller
         return redirect()->route('order.index')->with('success', 'Order Deleted Successfully');
     }
 
-    private function init(){
+    private function init()
+    {
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
-        ->first();
+            ->first();
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
     }
 
-    private function ProcessOrder(){
-       
+    private function ProcessOrder()
+    {
 
-        foreach( $this->sessionCartList as $cart){
-           
-           
+
+        foreach ($this->sessionCartList as $cart) {
         }
     }
 
 
 
 
-    private function Data(){
+    private function Data()
+    {
 
         return [
             'authenticatedUser' => $this->authenticatedUser,
@@ -156,10 +143,21 @@ class OrderController extends Controller
             'settingModel' => $this->settingModel,
             'request' => $this->request
         ];
-       
     }
 
-
-    
-
+    /**
+     * This function update the order status
+     * @param Request $request
+     * @param int $order
+     * @return null
+     */
+    public function Update(Request $request,$order)
+    {   
+        if ($request->has('order')) {
+            foreach ($request->order as $orderData) {
+                Order::where('order_id', $orderData['order_id'])->update(['order_status' => $orderData['order_status']]);
+            }
+            return redirect()->back();
+        }
+    }
 }

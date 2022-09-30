@@ -94,6 +94,9 @@ Route::resource('warehouse', WarehouseController::class);
 Route::resource('receipt', ReceiptController::class);
 
 
+
+
+
 // Route::get('mail/', [MailController::class, 'Index'])->name('mail.index');
 // Route::post('mail/send', [MailController::class, 'Send'])->name('mail.send');
 

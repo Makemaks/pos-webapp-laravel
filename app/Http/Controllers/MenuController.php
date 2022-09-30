@@ -158,14 +158,14 @@ class MenuController extends Controller
                 break;
             
 
-            case 'tag-groups':
+            case 'tag-group':
                 
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();
                 }
                 
-                return view('menu.setting.receipt', ['data' => $this->Data()]);
+                return view('menu.setting.settingStockTagGroup', ['data' => $this->Data()]);
 
                 break;
 

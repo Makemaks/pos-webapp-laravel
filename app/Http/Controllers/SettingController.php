@@ -106,24 +106,40 @@ class SettingController extends Controller
         $settingInput = $request->except('_token', '_method');
 
         // Check condition from request to update particular index of setting_stock_group
-        if ($request->code) {
-            $setting_stock_group = $this->settingModel->setting_stock_group;
-            $update_setting_stock_group_data = $setting_stock_group[$request->index];
-            $update_setting_stock_group_data['code'] = $request->code;
-            $update_setting_stock_group_data['name'] = $request->name;
-            $setting_stock_group[$request->index] = $update_setting_stock_group_data;
-            $this->settingModel->setting_stock_group = $setting_stock_group;
-            $this->settingModel->update();
-            return redirect()->back();
-        }
-        else if ($request->setting_offer) {
-            $a = Arr::flatten($request->setting_offer_delete);
-            $filter = Arr::except($this->settingModel->setting_offer, array_keys($request->setting_offer_delete));
-            $this->settingModel->setting_offer = collect($settingInput['setting_offer']+$filter)->sortKeys();
-            $this->settingModel->update();
-        }
 
-        return back()->with('success', 'Setting Added Successfuly');
+        if ($request->settingDelete) {
+            if ($request->setting_offer_delete) {
+                $setting_offers = $this->settingModel->setting_offer;
+                $setting_offer = $this->DeleteColumnIndex($request->setting_offer_delete, $setting_offers);
+                $this->settingModel->setting_offer = $setting_offer;
+                $view = 'menu.setting.mix-&-match';
+            }
+
+            $this->settingModel->update();
+            return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
+        } else {
+            if ($request->code) {
+                $setting_stock_group = $this->settingModel->setting_stock_group;
+                $update_setting_stock_group_data = $setting_stock_group[$request->index];
+                $update_setting_stock_group_data['code'] = $request->code;
+                $update_setting_stock_group_data['name'] = $request->name;
+                $setting_stock_group[$request->index] = $update_setting_stock_group_data;
+                $this->settingModel->setting_stock_group = $setting_stock_group;
+                $this->settingModel->update();
+                return redirect()->back();
+            }
+            else if ($request->setting_offer) {
+                $filter = Arr::except($this->settingModel->setting_offer, array_keys($request->setting_offer));
+                $this->settingModel->setting_offer = collect($settingInput['setting_offer']+$filter)->sortKeys();
+                $this->settingModel->update();
+                return view('menu.setting.mix-&-match', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
+            }
+        }
+        
+       
+
+        $this->settingModel->update();
+        return redirect()->back()->with('success', 'Setting Updated Successfuly');
     }
 
     public function Destroy($setting)
@@ -140,6 +156,31 @@ class SettingController extends Controller
         }
         
         return back()->with('success', 'Setting Deleted Successfuly');
+    }
+
+    private function StoreSettingColumn($id,$column_type,$form_request)
+    {
+        $this->settingModel = Setting::find($id);
+        $columns = $this->settingModel->$column_type;
+        if(!empty($columns)){
+            $last_key = (int)collect($columns)->keys()->last();
+            $columns[$last_key + 1] = $form_request;
+        } else {
+            $columns[1] = $form_request;
+        }
+        $this->settingModel->$column_type = $columns;
+        $this->settingModel->save();
+        return true;
+    }
+
+    private function DeleteColumnIndex($request_delete, $setting_column)
+    {
+        foreach($setting_column as $key => $setting) {
+            if(in_array($key, $request_delete)) {
+                unset($setting_column[$key]);
+            }
+        }
+        return $setting_column;
     }
 
     private function Data()

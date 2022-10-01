@@ -13,6 +13,7 @@ use App\Models\Store;
 use App\Models\Setting;
 use App\Models\Account;
 use App\Models\Company;
+use Illuminate\Support\Arr;
 
 class MenuController extends Controller
 {
@@ -213,6 +214,37 @@ class MenuController extends Controller
 
                     break;
 
+            case 'preset-message':
+
+
+                if ($this->settingModel == null) {
+                    $this->settingModel = new Setting();
+                }
+
+                return view('menu.setting.settingPresetMessage', ['data' => $this->Data()]);
+
+                    break;
+
+            case 'price-level-scheduler':
+
+
+                if ($this->settingModel == null) {
+                    $this->settingModel = new Setting();
+                }
+                
+                $stock_costs = [];
+                $stockCosts = Stock::first('stock_cost');
+                foreach($stockCosts->stock_cost as $key => $stockCost) {
+                    $stock_costs[$key] = count($stockCost);
+                }
+                
+                $this->settingModel['stock_costs'] = $stock_costs;
+                // dd($this->settingModel);
+
+                return view('menu.setting.settingPriceLevelScheduler', ['data' => $this->Data()]);
+
+                    break;
+
             case 'reasons':
                 
 
@@ -340,7 +372,7 @@ class MenuController extends Controller
             'fileModel' => $this->fileModel,
             'storeList' => $this->storeList,
             'companyList' => $this->companyList,
-            'warehouseList' => $this->warehouseList
+            'warehouseList' => $this->warehouseList,
         ];
    }
 

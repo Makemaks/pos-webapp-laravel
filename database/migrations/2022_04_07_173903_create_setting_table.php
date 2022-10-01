@@ -60,7 +60,9 @@ return new class extends Migration
             
             $table->json('setting_group')->nullable();
             $table->json('setting_customer')->nullable();
-          
+
+            $table->json('setting_preset_message')->nullable();
+            $table->json('setting_price_level_scheduler')->nullable();
 
            
            

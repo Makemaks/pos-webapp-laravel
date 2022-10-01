@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Arr;
 use App\Models\Setting;
 use App\Models\User;
 
@@ -115,6 +116,12 @@ class SettingController extends Controller
             $this->settingModel->update();
             return redirect()->back();
         }
+        else if ($request->setting_offer) {
+            $filter = Arr::except($this->settingModel->setting_offer, array_keys($request->setting_offer));
+            $this->settingModel->setting_offer = collect($settingInput['setting_offer']+$filter)->sortKeys();
+            $this->settingModel->update();
+        }
+
         return back()->with('success', 'Setting Added Successfuly');
     }
 

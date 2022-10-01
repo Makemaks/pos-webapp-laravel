@@ -117,7 +117,8 @@ class SettingController extends Controller
             return redirect()->back();
         }
         else if ($request->setting_offer) {
-            $filter = Arr::except($this->settingModel->setting_offer, array_keys($request->setting_offer));
+            $a = Arr::flatten($request->setting_offer_delete);
+            $filter = Arr::except($this->settingModel->setting_offer, array_keys($request->setting_offer_delete));
             $this->settingModel->setting_offer = collect($settingInput['setting_offer']+$filter)->sortKeys();
             $this->settingModel->update();
         }

@@ -160,7 +160,7 @@ class SettingController extends Controller
             $this->settingModel->update();
             return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         }
-        else if ($request->setting_stock_group) {
+        else if ($request->setting_stock_group) { //update
             $filter = Arr::except($this->settingModel->setting_stock_group, array_keys($request->setting_stock_group));
             $this->settingModel->setting_stock_group = collect($settingInput['setting_stock_group']+$filter)->sortKeys();
         } else if ($request->setting_offer) {

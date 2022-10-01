@@ -6,9 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Arr;
 use App\Models\Setting;
 use App\Models\User;
-use Illuminate\Support\Arr;
+
 
 class SettingController extends Controller
 {
@@ -73,6 +74,8 @@ class SettingController extends Controller
             
             $upload = $request->setting_logo_url->store('/images/uploads');
         }
+
+        
         
         $settingInput = $request->except('_token', '_method');
         $settingInput['setting_logo_url'] = $upload;
@@ -265,6 +268,8 @@ class SettingController extends Controller
         }
         return $setting_column;
     }
+
+    
 
     private function Data()
     {

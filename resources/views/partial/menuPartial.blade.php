@@ -65,13 +65,13 @@
                 "company"
             ],
             "ticket" => [],
-            
+
 
         ];
    } else {
         $arrayAdminMenu = [
-         /*   
-            
+         /*
+
             "home" => [
                 "category",
                 "group",
@@ -81,12 +81,12 @@
                 "tag",
                 "tag-group",
             ],
-            
+
              */
 
         ];
    }
-   
+
 
 @endphp
 
@@ -94,9 +94,9 @@
 @if ($route != 'home')
     <div>
         <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
-                
+
                 @foreach ( $arrayAdminMenu as $key => $arrayMenu)
-                        
+
                     @php
                         $keyReplace = $key;
 
@@ -112,16 +112,16 @@
                         elseif($key == 'sale'){
                             $keyReplace = 'order';
                         }
-                    
-                        
+
+
 
                         $uk_open ='';
                         if(Str::lower(Session::get('action')) == $keyReplace || $keyReplace == $route){
                             $uk_open = 'uk-open';
                         }
-                            
+
                     @endphp
-                    
+
 
                     @if (count($arrayMenu) == 0)
                         <li>
@@ -130,7 +130,7 @@
                             </a>
                         </li>
                     @else
-                            
+
                         <li class="uk-parent {{$uk_open}}">
                             <a href="#">{{Str::upper($keyReplace)}}</a>
 
@@ -142,23 +142,23 @@
                                             $active = 'uk-text-danger';
                                         }
                                     @endphp
-                                        
+
                                     <li>
                                         <a href="{{route('menu.'.$keyReplace,['view' => $item])}}">
                                             <span class="{{$active}}">{{Str::upper(Str::replace('-', ' ', $item))}}</span>
                                         </a>
                                     </li>
-                                        
+
                                 @endforeach
                             </ul>
-                                
+
                         </li>
                     @endif
 
                 @endforeach
-                
+
             <li class="uk-nav-divider"></li>
-                
+
         </ul>
     </div>
 

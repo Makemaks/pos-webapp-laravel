@@ -10,7 +10,7 @@
 
 
 <div>
-    <h3>OFFERS</h3>
+    {{-- <h3>OFFERS</h3> --}}
     <form action="{{route('setting.store')}}" method="POST">
         <div class="uk-child-width-1-2" uk-grid>
 

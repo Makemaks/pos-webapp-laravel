@@ -38,6 +38,8 @@
                             @method('PATCH')
                             <h3>OFFERS</h3>
                                 
+                        
+                            
                             <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                                 <thead>
                                     <tr>

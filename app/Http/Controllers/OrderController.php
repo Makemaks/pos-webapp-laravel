@@ -39,14 +39,19 @@ class OrderController extends Controller
 
     public function Index(Request $request)
     {
+
         if ($request->session()->has('view') && $request->session()->get('view') == 'till') {
             $this->init();
             $tillData = $this->settingModel->setting_pos;
             $this->orderList = Receipt::Order('order_setting_pos_id',  1)
-            ->orderByDesc('order_id')
-            ->groupBy('order_id')
-            ->paginate(10);
-            return view('order.tillIndex', ['data' => $this->Data(), 'tillData'=>$tillData]);
+                ->orderByDesc('order_id')
+                ->groupBy('order_id')
+                ->when($request->has('start_date'), function ($query) use ($request) {
+                    if ($request->categories != 'all') {
+                        $query->whereBetween('order.created_at', [$request->start_date, $request->end_date]);
+                    }
+                })->paginate(10);
+            return view('order.tillIndex', ['data' => $this->Data(), 'tillData' => $tillData]);
         }
 
         if ($request->session()->has('setting_finalise_key')) {
@@ -147,8 +152,8 @@ class OrderController extends Controller
      * @param int $order
      * @return null
      */
-    public function Update(Request $request,$order)
-    {   
+    public function Update(Request $request, $order)
+    {
         if ($request->has('order')) {
             foreach ($request->order as $orderData) {
                 Order::where('order_id', $orderData['order_id'])->update(['order_status' => $orderData['order_status']]);

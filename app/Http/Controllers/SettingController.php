@@ -178,13 +178,7 @@ class SettingController extends Controller
                 $this->settingModel->update();
                 
                 // To show stock in index
-                $stock_costs = [];
-                $stockCosts = Stock::first('stock_cost');
-                foreach($stockCosts->stock_cost as $key => $stockCost) {
-                    $stock_costs[$key] = count($stockCost);
-                }
-                
-                $this->settingModel['stock_costs'] = $stock_costs;
+                $this->StockCost();
                 
                 $view = 'menu.setting.settingPriceLevelScheduler';
                 return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
@@ -234,15 +228,10 @@ class SettingController extends Controller
             $filter = Arr::except($this->settingModel->setting_price_level_scheduler, array_keys($request->setting_price_level_scheduler));
             $this->settingModel->setting_price_level_scheduler = collect($settingInput['setting_price_level_scheduler']+$filter)->sortKeys();
             $this->settingModel->update();
-            
+
             // To show stock in index
-            $stock_costs = [];
-            $stockCosts = Stock::first('stock_cost');
-            foreach($stockCosts->stock_cost as $key => $stockCost) {
-                $stock_costs[$key] = count($stockCost);
-            }
+            $this->StockCost();
             
-            $this->settingModel['stock_costs'] = $stock_costs;
             return view('menu.setting.settingPriceLevelScheduler', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
         }
         // else if($request->code) {
@@ -307,6 +296,27 @@ class SettingController extends Controller
             }
         }
         return $setting_column;
+    }
+
+    private function StockCost()
+    {
+        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
+
+        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->paginate(20);
+
+        $stockCosts = $this->stockList->first()->stock_cost;
+
+        $stock_cost_count = 0;
+        $stock_cost_key = 0;
+        foreach($stockCosts as $key => $stockCost) {
+            if($stock_cost_count < count($stockCost)) {
+                $stock_cost_key = $key;
+                $stock_cost_count = count($stockCost);
+            }
+        }
+        
+        $this->settingModel['stock_costs'] = collect($stockCosts[$stock_cost_key])->keys();
+        return true;
     }
 
     private function Data()

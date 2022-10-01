@@ -98,7 +98,6 @@ class Setting extends Model
 
         'setting_price_level_scheduler' => '{
             "1": {
-                "day": ,
                 "time": "",
                 "price_level": 
             }

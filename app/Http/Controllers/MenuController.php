@@ -13,6 +13,7 @@ use App\Models\Store;
 use App\Models\Setting;
 use App\Models\Account;
 use App\Models\Company;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
 class MenuController extends Controller
@@ -93,11 +94,15 @@ class MenuController extends Controller
    public function setting(Request $request){
     $request->session()->flash('view', $request->view);
     $request->session()->flash('action', $request->route()->getActionMethod());
-    $this->Init();
-    
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->Init();
+        // dd($this->userModel->store_id);
+        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
+            ->paginate(20);
 
         // dd($request->view);
+        if ($this->settingModel == null) {
+            $this->settingModel = new Setting();
+        }
 
         switch ($request->view):
             case (in_array($request->view, Setting::SettingStockGroup())):
@@ -135,23 +140,12 @@ class MenuController extends Controller
                 break;
 
             case 'receipt':
-                
 
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
-                
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
                 break;
 
             case 'tag':
-                // dd('here');
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
-                
-                // dd($this->settingModel);
 
                 return view('menu.setting.settingStockTag', ['data' => $this->Data()]);
 
@@ -159,33 +153,18 @@ class MenuController extends Controller
             
 
             case 'tag-group':
-                
 
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
-                
                 return view('menu.setting.settingStockTagGroup', ['data' => $this->Data()]);
 
                 break;
 
             case 'vouchers':
                 
-
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
-                
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
                 break;
 
             case 'reasons':
-                
-
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
                 
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
@@ -193,21 +172,11 @@ class MenuController extends Controller
 
             case 'tax':
                 
-
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
-                
                 return view('menu.setting.settingVat', ['data' => $this->Data()]);
 
                     break;
 
             case 'set-menu':
-        
-
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
                 
                 return view('menu.setting.settingStockSetMenu', ['data' => $this->Data()]);
 
@@ -215,41 +184,30 @@ class MenuController extends Controller
 
             case 'preset-message':
 
-
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
-
                 return view('menu.setting.settingPresetMessage', ['data' => $this->Data()]);
 
                     break;
 
             case 'price-level-scheduler':
+                
+                $stockCosts = $this->stockList->first()->stock_cost;
 
-
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
+                $stock_cost_count = 0;
+                $stock_cost_key = 0;
+                foreach($stockCosts as $key => $stockCost) {
+                    if($stock_cost_count < count($stockCost)) {
+                        $stock_cost_key = $key;
+                        $stock_cost_count = count($stockCost);
+                    }
                 }
                 
-                $stock_costs = [];
-                $stockCosts = Stock::first('stock_cost');
-                foreach($stockCosts->stock_cost as $key => $stockCost) {
-                    $stock_costs[$key] = count($stockCost);
-                }
-                
-                $this->settingModel['stock_costs'] = $stock_costs;
-                // dd($this->settingModel);
+                $this->settingModel['stock_costs'] = collect($stockCosts[$stock_cost_key])->keys();
 
                 return view('menu.setting.settingPriceLevelScheduler', ['data' => $this->Data()]);
 
                     break;
 
             case 'reasons':
-                
-
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
                 
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 

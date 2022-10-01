@@ -48,19 +48,18 @@
                                                 <th></th>
                                                 <th>REF</th>
                                                 @foreach (Arr::first($data['settingModel']->setting_price_level_scheduler) as $key => $item)
-                                                    @if($key != 'day')
-                                                        <th>{{$key}}</th>
-                                                    @endif
+                                                    <th>{{$key}}</th>
                                                 @endforeach
                                                 <th></th>
                                             </tr>
                                         </thead>
                     
                                         <tbody>
-                                            @php ++$key_days @endphp
                                             @foreach ($data['settingModel']->setting_price_level_scheduler  as $keysetting_price_level_scheduler => $setting_price_level_scheduler)
                                                 {{-- @if ($setting_price_level_scheduler['type'] == Session::get('type')) --}}
-                                                    @if($setting_price_level_scheduler['day'] == $key_days)
+                                            
+                                                    {{-- {{dd(Carbon::createFromFormat('Y-m-d', date("Y-m-d", strtotime($setting_price_level_scheduler['time'])))->format('w'))}} --}}
+                                                    @if(date("w", strtotime($setting_price_level_scheduler['time'])) == $key_days)
                                                         <tr>
                                                             <td>
                                                                 <input type="checkbox" name="setting_price_level_scheduler_delete[]" value="{{$keysetting_price_level_scheduler}}">
@@ -69,22 +68,18 @@
                                                                 <button class="uk-button uk-button-default uk-border-rounded">{{$keysetting_price_level_scheduler}}</button>
                                                             </td>
                                                             @foreach ($setting_price_level_scheduler as $key => $value) 
-                                                                @if($key != 'day')
-                                                                    <td>
-                                                                        @if($key == 'price_level')
-                                                                            <select name="setting_price_level_scheduler[{{$keysetting_price_level_scheduler}}][{{$key}}]" class="uk-select">
-                                                                                <option value="" selected disabled>SELECT...</option>
-                                                                                @foreach($data['settingModel']['stock_costs'] as $keyStockCost => $stock_cost)
-                                                                                    <option value="{{$stock_cost}}" {{$value == $stock_cost ? 'selected' : ''}}>{{$stock_cost}}</option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                        @else  
-                                                                            <input class="uk-input" type="text" name="setting_price_level_scheduler[{{$keysetting_price_level_scheduler}}][{{$key}}]" value="{{$value}}">
-                                                                        @endif
-                                                                    </td>
-                                                                @else 
-                                                                <input type="hidden" value="{{$key_days}}" name="setting_price_level_scheduler[{{$keysetting_price_level_scheduler}}][{{$key}}]">
-                                                                @endif
+                                                                <td>
+                                                                    @if($key == 'price_level')
+                                                                        <select name="setting_price_level_scheduler[{{$keysetting_price_level_scheduler}}][{{$key}}]" class="uk-select">
+                                                                            <option value="" selected disabled>SELECT...</option>
+                                                                            @foreach($data['settingModel']['stock_costs'] as $keyStockCost => $stock_cost)
+                                                                                <option value="{{$stock_cost}}" {{$value == $stock_cost ? 'selected' : ''}}>{{$stock_cost}}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    @else  
+                                                                        <input class="uk-input" type="text" name="setting_price_level_scheduler[{{$keysetting_price_level_scheduler}}][{{$key}}]" value="{{$value}}">
+                                                                    @endif
+                                                                </td>
                                                             @endforeach
                                                         </tr>
                                                     @endif
@@ -111,16 +106,6 @@
                 <div>
                     <label class="uk-form-label" for="form-stacked-text">Time</label>
                     <input name="form[setting_price_level_scheduler][time]" class="uk-input" type="text" placeholder="Date & Time">
-                </div>
-            
-                <div>
-                    <label class="uk-form-label" for="form-stacked-text">Day</label>
-                    <select class="uk-select" id="form-stacked-select" name="form[setting_price_level_scheduler][day]">
-                        <option value="" selected disabled>SELECT ...</option>
-                        @foreach (Carbon::getDays() as $key_days => $item_days)
-                            <option value="{{++$key_days}}">{{$item_days}}</option>
-                        @endforeach
-                    </select>
                 </div>
                 
                 <div>

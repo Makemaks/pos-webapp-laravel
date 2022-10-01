@@ -236,7 +236,6 @@ class SettingFactory extends Factory
             $setting_price_level_scheduler[$i+1] = [
                 "time" => $this->faker->dateTimeBetween('1 years', '2 years', $timezone = null)->format('Y-m-d H:i:s'),
                 "price_level" => $this->faker->numberBetween($min = 1, $max = 10),
-                "day" => $this->faker->numberBetween($min = 1, $max = 7),
             ];
         }
 

@@ -36,34 +36,6 @@ use App\Models\User;
                             $orderTotal = Stock::OrderTotal($orderList);
                             $userPerson = User::Person('user_id', $order->receipt_user_id)->first();
                         @endphp
-<<<<<<< HEAD
-            
-                        
-                        <tr>
-                            <td><a href="{{route('order.edit', $order->order_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$order->order_id}}</a></td>
-                            <td>{{Order::OrderType()[$order->order_type]}}</td>
-                            @if ($order->payment_type)
-                                <td>{{$order->payment_type}}</td>
-                            @endif
-                            <td>
-                                <select class="uk-select" id="select-{{$order->order_id}}" onchange="OrderStatus(this, {{$order->order_id}})">
-                                    @foreach (Order::OrderStatus() as $status)
-                                        <option value="{{$loop->iteration}}" @if($order->order_status == $loop->iteration) selected = 'selected' @endif>{{$status}}</option>
-                                    @endforeach
-                                </select>
-                            
-                            </td>
-                            <td>{{ MathHelper::FloatRoundUp($orderTotal, 2) }}</td>
-                            <td>{{$order->store_name}}</td>
-                            <td>{{$data['settingModel']->setting_pos[1]['name']}}</td>
-                            <td>{{ json_decode($userPerson->person_name, true)['person_firstname'] }}</td>
-                            <td>{{$order->created_at}}</td>
-                            <td>
-                                <a href="{{route('order.index', ['order_id'=>$order->order_id, 'action' =>'stock'])}}" class="uk-button uk-button-default uk-border-rounded">Stock</a>
-                            </td>
-                        </tr>
-                        
-=======
                     <tr>
                         <td><a href="{{route('order.edit', $order->order_id)}}"
                                 class="uk-button uk-button-default uk-border-rounded">{{$order->order_id}}</a></td>
@@ -91,7 +63,6 @@ use App\Models\User;
                                 class="uk-button uk-button-default uk-border-rounded">Check Availaibility</a>
                         </td>
                     </tr>
->>>>>>> shaiv
                     @endforeach
             </tbody>
         </table>

@@ -91,14 +91,16 @@
      
     </div>
 
-    <div id="modal-lock-screen-center" class="uk-flex-top" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
-    
-            <button class="uk-modal-close-default" type="button" uk-close></button>
-            <h1>Locked <span uk-icon="icon: lock"></span></h1>
-            @include('partial.userAuthCheckPartial')
+    @auth
+        <div id="modal-lock-screen-center" class="uk-flex-top" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+        
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                <h1>Locked <span uk-icon="icon: lock"></span></h1>
+                @include('partial.userAuthCheckPartial')
+            </div>
         </div>
-    </div>
+    @endauth
 
 
 

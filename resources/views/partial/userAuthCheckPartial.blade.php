@@ -3,8 +3,7 @@
     use App\Helpers\NumpadHelper;
 
     $lockScreenMenu = [
-        'log out',
-        'break',
+        
         'cancel',
         
     ];

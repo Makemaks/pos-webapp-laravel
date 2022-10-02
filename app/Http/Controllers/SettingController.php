@@ -53,7 +53,7 @@ class SettingController extends Controller
             $this->settingModel = Setting::find($request['setting_id']);
             $settingInput = $request->except('_token', '_method', 'setting_id', 'created_at', 'updated_at');
             $stock_group = $this->settingModel->setting_stock_group;
-            if(!empty($stock_group)){
+            if (!empty($stock_group)) {
                 $last_key = (int)collect($stock_group)->keys()->last();
                 $stock_group[$last_key + 1] = $settingInput;
             } else {
@@ -61,28 +61,37 @@ class SettingController extends Controller
             }
             $this->settingModel->setting_stock_group = $stock_group;
             $this->settingModel->save();
-            return back()->with('success', 'Added Successfuly');
+            return back()->with('success', 'Added Successfully');
+        } else if ($request->setting_reason) {
+            $this->settingModel = Setting::find($request['setting_id']);
+            $setting_reason = $this->settingModel->setting_reason;
+            if (!empty($setting_reason)) {
+                $last_key = (int)collect($setting_reason)->keys()->last();
+                $setting_reason[$last_key + 1] = $request->get('setting_reason');
+            } else {
+                $setting_reason[1] = $request->get('setting_reason');
+            }
+            $this->settingModel->setting_reason = $setting_reason;
+            $this->settingModel->save();
+            return back()->with('success', 'Added Successfully');
         }
 
         if ($request->hasFile('setting_logo_url')) {
-            
             $upload = $request->setting_logo_url->store('/images/uploads');
         }
 
-        
-        
+
         $settingInput = $request->except('_token', '_method');
         $settingInput['setting_logo_url'] = $upload;
 
 
-
-        $settingInput['created_at'] =  \Carbon\Carbon::now();
+        $settingInput['created_at'] = \Carbon\Carbon::now();
         $settingInput['updated_at'] = \Carbon\Carbon::now();
 
 
         Setting::insert($settingInput);
 
-        return back()->with('success', 'Setting Added Successfuly');
+        return back()->with('success', 'Setting Added Successfully');
     }
 
     public function Edit(Request $request, $setting)
@@ -97,7 +106,7 @@ class SettingController extends Controller
             $this->settingModel['edit'] = true;
             return view('menu.setting.settingStockGroupEdit', ['data' => $this->Data()]);
         }
-        return back()->with('success', 'Setting Added Successfuly');
+        return back()->with('success', 'Setting Added Successfully');
     }
 
     public function Update(Request $request, $setting)
@@ -113,10 +122,18 @@ class SettingController extends Controller
                 $setting_offer = $this->DeleteColumnIndex($request->setting_offer_delete, $setting_offers);
                 $this->settingModel->setting_offer = $setting_offer;
                 $view = 'menu.setting.mix-&-match';
+            } else if ($request->setting_reason_delete) {
+                $this->settingModel->setting_reason = $this->DeleteColumnIndex($request->setting_reason_delete, $this->settingModel->setting_reason);
+                $this->settingModel->update();
+                return back()->with('success', 'Setting Destroy Successfully');
             }
 
             $this->settingModel->update();
-            return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
+            if (!isset($view)) {
+                return redirect()->back();
+            } else {
+                return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfully');
+            }
         } else {
             if ($request->code) {
                 $setting_stock_group = $this->settingModel->setting_stock_group;
@@ -132,14 +149,17 @@ class SettingController extends Controller
                 $filter = Arr::except($this->settingModel->setting_offer, array_keys($request->setting_offer));
                 $this->settingModel->setting_offer = collect($settingInput['setting_offer']+$filter)->sortKeys();
                 $this->settingModel->update();
-                return view('menu.setting.mix-&-match', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
+                return view('menu.setting.mix-&-match', ['data' => $this->Data()])->with('success', 'Setting Updated Successfully');
+            } else if ($request->setting_reason) {
+                $filter = Arr::except($this->settingModel->setting_reason, array_keys($request->setting_reason));
+                $this->settingModel->setting_reason = collect($settingInput['setting_reason'] + $filter)->sortKeys();
+                $this->settingModel->update();
+                return redirect()->back()->with('success', 'Setting Updated Successfully');
             }
         }
-        
-       
 
         $this->settingModel->update();
-        return redirect()->back()->with('success', 'Setting Updated Successfuly');
+        return redirect()->back()->with('success', 'Setting Updated Successfully');
     }
 
     public function Destroy($setting)
@@ -154,8 +174,8 @@ class SettingController extends Controller
         } else {
             Setting::destroy($setting);
         }
-        
-        return back()->with('success', 'Setting Deleted Successfuly');
+
+        return back()->with('success', 'Setting Deleted Successfully');
     }
 
     private function StoreSettingColumn($id,$column_type,$form_request)

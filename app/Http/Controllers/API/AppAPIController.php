@@ -12,9 +12,16 @@ class AppAPIController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+
+     private $html;
+
+    public function index(Request $request)
     {
-        //
+        if ($request->has('lock_screen')){
+          
+        }
+
+       
     }
 
     /**
@@ -81,5 +88,13 @@ class AppAPIController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    private function Data(){
+
+        return [
+            'html' => $this->html,
+        ];
     }
 }

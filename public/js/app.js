@@ -34,6 +34,19 @@ $(document).ready(function() {
                 lockScreen =0;
                 count = 0;
                 UIkit.modal($('#modal-lock-screen-center')).show();
+                /* $.ajax({        
+                    url:"app-api/",
+                    method: 'GET',
+                    data: {
+                        lock_screen: true
+                    },      
+                    success:function(data){
+                        document.getElementById('lockScreenID').innerHTML = data['html'];
+                        UIkit.modal($('#modal-lock-screen-center')).show();
+                    }
+                }); */
+    
+                
             }
         } else {
             count = 1;
@@ -49,3 +62,4 @@ $(document).ready(function() {
 function lockScreen() {
     UIkit.modal($('#modal-lock-screen-center')).show();
 }
+

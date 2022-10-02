@@ -1,8 +1,7 @@
 @php
-use App\Models\Store;
-use App\Models\User;
-$route = Str::before(Request::route()->getName(), '.');
-
+    use App\Models\Store;
+    use App\Models\User;
+    $route = Str::before(Request::route()->getName(), '.');
 @endphp
 
 <!DOCTYPE html>
@@ -97,9 +96,10 @@ $route = Str::before(Request::route()->getName(), '.');
     
             <button class="uk-modal-close-default" type="button" uk-close></button>
             <h1>Locked <span uk-icon="icon: lock"></span></h1>
-    
+            @include('partial.userAuthCheckPartial')
         </div>
     </div>
+
 
 
    @if ($route == 'home')

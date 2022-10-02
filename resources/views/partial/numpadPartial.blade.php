@@ -23,7 +23,9 @@
         <div class="uk-navbar-center">
             
             <div class="uk-navbar-item">
-                <input autofocus class="uk-input uk-form-width-large" type="text" id="keypadInputID" hidden>
+                <input id="searchInputID" class="uk-input uk-form-width-large" type="text" autofocus onclick="showKeypad()" 
+                onchange="searchInput(this)" autocomplete="off">
+                {{-- <input autofocus class="uk-input uk-form-width-large" type="text" id="keypadInputID" hidden> --}}
             </div>
         </div>
         
@@ -163,15 +165,18 @@
     
     }
 
-    function showKeypad(element){
-        document.getElementById('navigationBottomID').hidden = true;
+    function showKeypad(element, type = null){
+       
+        if (type != 'lockScreen') {
+            document.getElementById('navigationBottomID').hidden = true;
+           
+        }
+
         document.getElementById('keypadID').hidden = false;
         document.getElementById('layoutUpperID').hidden = true;
         document.getElementById('layoutCharacterID').hidden = true;
         document.getElementById('layoutLowerID').hidden = false;
         letterType = 'lowercase';
-
-      
         //sessionStorage.setItem('buttonType', element.id);
         sessionStorage.setItem('openKeypad', true);
       

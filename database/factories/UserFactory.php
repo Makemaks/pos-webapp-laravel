@@ -18,12 +18,21 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $type = $this->faker->numberBetween($min = 0, $max = 2);
+
+        if ($type == 0) { //pin
+            $value = $this->faker->numberBetween($min = 1000, $max = 9000);
+        }else{
+            $value = $this->faker->ean13;
+        }
+
         for ($i = 0; $i < 10; $i++) {
             $user_auth_check[$i+1] = [
-                "type" => $this->faker->numberBetween($min = 0, $max = 2),
-                "value" => $this->faker->randomDigit
+                "type" => $type,
+                "value" => $value
             ];
         }
+
         return [
             'user_account_id' => $this->faker->numberBetween($min = 1, $max = 1),
             'user_person_id' => $this->faker->unique(true)->numberBetween(1, 10),

@@ -15,15 +15,15 @@
 </div>
 
 <div class="uk-margin">
-    <div class="uk-grid-small uk-child-width-1-4@s uk-text-center" uk-grid>
-        @for ($i = 0; $i < count(NumpadHelper::Numpad()); $i++)
+    <div class="uk-grid-small uk-child-width-1-3@s uk-text-center" uk-grid>
+        @for ($i = 0; $i < count(NumpadHelper::Lockpad()); $i++)
             
             
-            @for ($j = 0; $j < count(NumpadHelper::Numpad()[$i]); $j++)
+            @for ($j = 0; $j < count(NumpadHelper::Lockpad()[$i]); $j++)
                 
                     <div>
                         <div class="uk-padding-small uk-box-shadow-small uk-border-rounded" onclick="numpad(this)">
-                            {{ NumpadHelper::Numpad()[$i][$j]}}
+                            {{ NumpadHelper::Lockpad()[$i][$j]}}
                         </div>
                     </div>
             @endfor

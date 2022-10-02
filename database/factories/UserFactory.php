@@ -18,6 +18,12 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        for ($i = 0; $i < 10; $i++) {
+            $user_auth_check[$i+1] = [
+                "type" => $this->faker->numberBetween($min = 0, $max = 2),
+                "value" => $this->faker->randomDigit
+            ];
+        }
         return [
             'user_account_id' => $this->faker->numberBetween($min = 1, $max = 1),
             'user_person_id' => $this->faker->unique(true)->numberBetween(1, 10),
@@ -27,6 +33,7 @@ class UserFactory extends Factory
             'email' => $this->faker->safeEmail,
             'email_verified_at' => now(),
             'password' => bcrypt('test1234'), // password
+            'user_auth_check' => $user_auth_check,
             'remember_token' => Str::random(10),
 
         ];

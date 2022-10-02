@@ -167,11 +167,8 @@
 
     function showKeypad(element, type = null){
        
-        if (type != 'lockScreen') {
-            document.getElementById('navigationBottomID').hidden = true;
-           
-        }
-
+        
+        document.getElementById('navigationBottomID').hidden = true;
         document.getElementById('keypadID').hidden = false;
         document.getElementById('layoutUpperID').hidden = true;
         document.getElementById('layoutCharacterID').hidden = true;

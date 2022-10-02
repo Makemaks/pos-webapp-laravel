@@ -22,7 +22,7 @@
             @for ($j = 0; $j < count(NumpadHelper::Lockpad()[$i]); $j++)
                 
                     <div>
-                        <div class="uk-padding-small uk-box-shadow-small uk-border-rounded" onclick="numpad(this)">
+                        <div class="uk-padding-small uk-box-shadow-small uk-border-rounded" onclick="lockscreen(this)">
                             {{ NumpadHelper::Lockpad()[$i][$j]}}
                         </div>
                     </div>
@@ -32,3 +32,9 @@
         @endfor
     </div>
 </div>
+
+<script>
+    function lockscreen(element){
+        var = element.innerText;
+    }
+</script>

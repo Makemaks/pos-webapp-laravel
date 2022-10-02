@@ -54,6 +54,20 @@ class OrderController extends Controller
             return view('order.tillIndex', ['data' => $this->Data(), 'tillData' => $tillData]);
         }
 
+        if ($request->session()->has('view') && $request->session()->get('view') == 'bill') {
+            $this->init();
+            $tillData = $this->settingModel->setting_pos;
+            $this->orderList = Receipt::Order('order_setting_pos_id',  1)
+                ->orderByDesc('order_id')
+                ->groupBy('order_id')
+                ->when($request->has('start_date'), function ($query) use ($request) {
+                    if ($request->categories != 'all') {
+                        $query->whereBetween('order.created_at', [$request->start_date, $request->end_date]);
+                    }
+                })->paginate(10);
+            return view('order.billIndex', ['data' => $this->Data(), 'tillData' => $tillData]);
+        }
+
         if ($request->session()->has('setting_finalise_key')) {
             $request->session()->reflash('order_finalise_key');
             $this->store($request);

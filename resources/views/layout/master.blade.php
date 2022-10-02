@@ -29,11 +29,11 @@ $route = Str::before(Request::route()->getName(), '.');
     <script src="https://jsuites.net/v4/jsuites.webcomponents.js"></script>
     <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
 
-
+    <script src="{{asset('js/app.js')}}"></script>
    
 </head>
 
-<body>
+<body id="screen-lock">
 
     <div class="uk-box-shadow-small">
         @include('partial.navigationPartial')
@@ -90,6 +90,15 @@ $route = Str::before(Request::route()->getName(), '.');
         @endif
 
      
+    </div>
+
+    <div id="modal-lock-screen-center" class="uk-flex-top" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+    
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h1>Locked <span uk-icon="icon: lock"></span></h1>
+    
+        </div>
     </div>
 
 

@@ -170,6 +170,10 @@ use App\Helpers\DateTimeHelper;
                                     <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded"
                                             href="{{ route('authentication.logout') }}">Logout</a></li>
 
+                                    <li class="uk-nav-header" uk-icon="icon: lock"></li>
+                                    <li class="uk-nav-divider"></li>
+                                    <li><button class="uk-margin-small uk-button uk-button-default uk-border-rounded" onclick="lockScreen()">Lock Screen</button></li>
+
                                     <li class="uk-nav-header" uk-icon="icon: clock"></li>
                                     <li class="uk-nav-divider"></li>
                                     <li><a class="uk-margin-small uk-button uk-button-default uk-text-danger uk-border-rounded"

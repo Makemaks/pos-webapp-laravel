@@ -82,7 +82,6 @@ class OrderController extends Controller
         $this->init();
         $todayDate = Carbon::now()->toDateTimeString();
 
-
         $this->orderList = Receipt::Order('stock_store_id',  1)
             ->orderByDesc('order_id')
             ->groupBy('order_id')

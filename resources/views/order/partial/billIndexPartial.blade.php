@@ -5,20 +5,34 @@
 use App\Models\Store;
 use App\Models\Person;
 @endphp
+<form class="uk-form" action="{{route('order.index')}}">
+    @csrf
+    @method('PUT')
+    <div uk-grid>
+        <div>Start Date * <input type="date" required name="start_date"  class="uk-input" ></div>
+        <div>End Date *<input type="date" required name="end_date" class="uk-input" ></div>
+        <div class="uk-margin-top"><button class="uk-button uk-button-default uk-border-rounded uk-button-primary">Submit</button>
+            <button  type="reset" class="uk-button uk-button-default uk-border-rounded uk-button-primary">Reset</button></div>
+    </div>
+    <div uk-grid>
+        {{-- <div>Start Time<input type="time" name="start_time" class="uk-input" ></div>
+        <div>End Time<input type="time" name="end_time" class="uk-input" ></div> --}}
+        {{-- <div class="uk-margin-top"><button class="uk-button uk-button-default uk-border-rounded uk-button-primary">Submit</button>
+            <button class="uk-button uk-button-default uk-border-rounded uk-button-primary">Reset</button></div> --}}
+    </div>
+</form>
 <div class="" uk-height-viewport="offset-top: true; offset-bottom: 50px">
     <div class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
         <table class="uk-table uk-table-small uk-table-divider">
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>ReportID</th>
+                    <th>BillID</th>
                     <th>Site</th>
-                    <th>Till</th>
-                    <th>Clerk</th>
-                    <th>Mode</th>
-                    <th>Period</th>
-                    <th>Code</th>
-                    <th>MC No</th>
+                    <th>Table</th>
+                    <th>Name</th>
+                    <th>Check</th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,12 +46,10 @@ use App\Models\Person;
                             <td>{{$orderList->created_at}}</td>
                             <td></td>
                             <td>{{$storeName}}</td>
-                            @foreach($tillData as $tillKey => $till)
-                                @if(isset($tillKey) && $tillKey == $orderList->order_setting_pos_id)
-                                    <td>{{$till['name']}}</td>
-                                @endif
-                            @endforeach
-                            <td>{{$personName['person_firstname'].' '.$personName['person_lastname']}}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     @endforeach
             </tbody>

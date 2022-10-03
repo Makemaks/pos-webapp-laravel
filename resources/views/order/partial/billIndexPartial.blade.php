@@ -5,7 +5,6 @@
 use App\Models\Store;
 use App\Models\Person;
 @endphp
-
 <form class="uk-form" action="{{route('order.index')}}">
     @csrf
     @method('PUT')
@@ -28,14 +27,12 @@ use App\Models\Person;
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>ReportID</th>
+                    <th>BillID</th>
                     <th>Site</th>
-                    <th>Till</th>
-                    <th>Clerk</th>
-                    <th>Mode</th>
-                    <th>Period</th>
-                    <th>Code</th>
-                    <th>MC No</th>
+                    <th>Table</th>
+                    <th>Name</th>
+                    <th>Check</th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,12 +46,10 @@ use App\Models\Person;
                             <td>{{$orderList->created_at}}</td>
                             <td></td>
                             <td>{{$storeName}}</td>
-                            @foreach($tillData as $tillKey => $till)
-                                @if(isset($tillKey) && $tillKey == $orderList->order_setting_pos_id)
-                                    <td>{{$till['name']}}</td>
-                                @endif
-                            @endforeach
-                            <td>{{$personName['person_firstname'].' '.$personName['person_lastname']}}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     @endforeach
             </tbody>

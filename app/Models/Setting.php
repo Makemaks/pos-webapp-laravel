@@ -300,7 +300,7 @@ class Setting extends Model
 
         'setting_group' => '{
             "default_country": "",
-            "stock_cost": "",
+            "stock_cost_group": "",
             "special_stock_cost": ""
         }',
 

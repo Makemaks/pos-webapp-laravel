@@ -212,7 +212,7 @@ class SettingFactory extends Factory
         $isoCount = count(CountryHelper::ISO());
         $setting_group = [
             'default_country' => $this->faker->numberBetween($min = 1, $max = $isoCount),
-            'setting_stock_cost_group' => 5,
+            'stock_cost_group' => 5,
             'special_stock_cost' => 2
         ];
 

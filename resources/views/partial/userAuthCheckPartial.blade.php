@@ -11,7 +11,7 @@
 
 
 <div class="uk-margin">
-    <input class="uk-input" type="text" placeholder="xxxx" type="password">
+    <input class="uk-input" type="text" placeholder="xxxx" type="password" id="lockInputID">
 </div>
 
 <div class="uk-margin">
@@ -35,6 +35,8 @@
 
 <script>
     function lockscreen(element){
-        var = element.innerText;
+
+        var lockInputID = document.getElementById('lockInputID')
+        lockInputID.value = lockInputID.value + element.innerText;
     }
 </script>

@@ -82,7 +82,7 @@ class Setting extends Model
         'setting_reason' => '{
             "1": {
                 "name": "",
-                "setting_stock_group": ""
+                "setting_key_type_id": ""
             }
         }',
 

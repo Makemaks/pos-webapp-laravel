@@ -32,7 +32,7 @@
                                         <th></th>
                                         <th>REF</th>
                                         <th>NAME</th>
-                                        <th>SETTING STOCK GROUP</th>
+                                        <th>KEY TYPE</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -48,11 +48,11 @@
                                                 <input name="setting_reason[{{ $setting_reason_key }}][name]" class="uk-input" type="text" value="{{ $setting_reason_item['name'] ?? '' }}">
                                             </td>
                                             <td>
-                                                <select class="uk-select" id="form-stacked-select" name="setting_reason[{{ $setting_reason_key }}][setting_stock_group]">
+                                                <select class="uk-select" id="form-stacked-select" name="setting_reason[{{ $setting_reason_key }}][setting_key_type_id]">
                                                     <option value="" selected disabled>SELECT ...</option>
-                                                    @foreach ($data['settingModel']->setting_stock_group  as $setting_stock_group_key  => $setting_stock_group_item)
-                                                        <option value="{{ $setting_stock_group_key }}" {{ isset($setting_reason_item['setting_stock_group']) && $setting_stock_group_key == $setting_reason_item['setting_stock_group'] ? 'selected' : '' }}>
-                                                            {{ $setting_stock_group_item['name'] }}
+                                                    @foreach ($data['settingModel']->setting_key_type  as $setting_key_type_id  => $setting_key_type_name)
+                                                        <option value="{{ $setting_key_type_id }}" {{ isset($setting_reason_item['setting_key_type_id']) && $setting_key_type_id == $setting_reason_item['setting_key_type_id'] ? 'selected' : '' }}>
+                                                            {{ $setting_key_type_name }}
                                                         </option>
                                                      @endforeach
                                                 </select>
@@ -74,12 +74,12 @@
                                 <input name="setting_reason[name]" id="setting_reason_name" class="uk-input" type="text" value="">
                             </div>
                             <div>
-                                <label class="uk-form-label" for="setting_reason_setting_stock_group">SETTING STOCK GROUP</label>
-                                <select class="uk-select" id="setting_reason_setting_stock_group" name="setting_reason[setting_stock_group]">
+                                <label class="uk-form-label" for="setting_reason_setting_key_type_id">KEY TYPE</label>
+                                <select class="uk-select" id="setting_reason_setting_key_type_id" name="setting_reason[setting_key_type_id]">
                                     <option value="" selected disabled>SELECT ...</option>
-                                    @foreach ($data['settingModel']->setting_stock_group  as $setting_stock_group_key => $setting_stock_group_item)
-                                        <option value="{{ $setting_stock_group_key }}">
-                                            {{ $setting_stock_group_item['name'] }}
+                                    @foreach ($data['settingModel']->setting_key_type  as $setting_key_type_id => $setting_key_type_name)
+                                        <option value="{{ $setting_key_type_id }}">
+                                            {{ $setting_key_type_name }}
                                         </option>
                                     @endforeach
                                 </select>

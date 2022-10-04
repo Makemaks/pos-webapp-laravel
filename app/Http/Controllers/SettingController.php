@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Arr;
 use App\Models\Setting;
+use App\Models\Stock;
 use App\Models\User;
 
 
@@ -68,8 +69,13 @@ class SettingController extends Controller
         } else if(isset($request->form['setting_stock_set_menu'])) {
             $this->StoreSettingColumn($request['setting_id'],'setting_stock_set_menu',$request->form['setting_stock_set_menu']);
             return back()->with('success', 'Added Successfuly');
+        } else if(isset($request->form['setting_preset_message'])) {
+            $this->StoreSettingColumn($request['setting_id'],'setting_preset_message',$request->form['setting_preset_message']);
+            return back()->with('success', 'Added Successfuly');
+        } else if(isset($request->form['setting_price_level_scheduler'])) {
+            $this->StoreSettingColumn($request['setting_id'],'setting_price_level_scheduler',$request->form['setting_price_level_scheduler']);
+            return back()->with('success', 'Added Successfuly');
         }
-
         if ($request->hasFile('setting_logo_url')) {
             
             $upload = $request->setting_logo_url->store('/images/uploads');
@@ -111,6 +117,7 @@ class SettingController extends Controller
 
     public function Update(Request $request, $setting)
     {
+        // dd($request->all());
         $this->settingModel = Setting::find($setting);
         $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
         $request->session()->reflash();
@@ -159,11 +166,30 @@ class SettingController extends Controller
                 $setting_stock_set_menu = $this->DeleteColumnIndex($request->setting_stock_set_menu_delete, $setting_stock_set_menus);
                 $this->settingModel->setting_stock_set_menu = $setting_stock_set_menu;
                 $view = 'menu.setting.settingStockSetMenu';
-            }
+            } else if($request->setting_preset_message_delete) {
+                $setting_preset_messages = $this->settingModel->setting_preset_message;
+
+                $setting_preset_message = $this->DeleteColumnIndex($request->setting_preset_message_delete, $setting_preset_messages);
+                $this->settingModel->setting_preset_message = $setting_preset_message;
+                $view = 'menu.setting.settingPresetMessage';
+            } else if($request->setting_price_level_scheduler_delete) {
+                $setting_price_level_schedulers = $this->settingModel->setting_price_level_scheduler;
+
+                $setting_price_level_scheduler = $this->DeleteColumnIndex($request->setting_price_level_scheduler_delete, $setting_price_level_schedulers);
+                $this->settingModel->setting_price_level_scheduler = $setting_price_level_scheduler;
+
+                $this->settingModel->update();
+                
+                // To show stock in index
+                $this->StockCost();
+                
+                $view = 'menu.setting.settingPriceLevelScheduler';
+                return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
+            } 
             $this->settingModel->update();
             return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         }
-        else if ($request->setting_stock_group) {
+        else if ($request->setting_stock_group) { //update
             $filter = Arr::except($this->settingModel->setting_stock_group, array_keys($request->setting_stock_group));
             $this->settingModel->setting_stock_group = collect($settingInput['setting_stock_group']+$filter)->sortKeys();
         } else if ($request->setting_offer) {
@@ -196,6 +222,20 @@ class SettingController extends Controller
             $this->settingModel->setting_stock_set_menu = collect($settingInput['setting_stock_set_menu']+$filter)->sortKeys();
             $this->settingModel->update();
             return view('menu.setting.settingStockSetMenu', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
+        } else if ($request->setting_preset_message) {
+            $filter = Arr::except($this->settingModel->setting_preset_message, array_keys($request->setting_preset_message));
+            $this->settingModel->setting_preset_message = collect($settingInput['setting_preset_message']+$filter)->sortKeys();
+            $this->settingModel->update();
+            return view('menu.setting.settingPresetMessage', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
+        } else if ($request->setting_price_level_scheduler) {
+            $filter = Arr::except($this->settingModel->setting_price_level_scheduler, array_keys($request->setting_price_level_scheduler));
+            $this->settingModel->setting_price_level_scheduler = collect($settingInput['setting_price_level_scheduler']+$filter)->sortKeys();
+            $this->settingModel->update();
+
+            // To show stock in index
+            $this->StockCost();
+            
+            return view('menu.setting.settingPriceLevelScheduler', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
         }
         // else if($request->code) {
         //     $setting_stock_group = $this->settingModel->setting_stock_group;
@@ -269,7 +309,30 @@ class SettingController extends Controller
         return $setting_column;
     }
 
+<<<<<<< HEAD
     
+=======
+    private function StockCost()
+    {
+        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
+
+        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->paginate(20);
+
+        $stockCosts = $this->stockList->first()->stock_cost;
+
+        $stock_cost_count = 0;
+        $stock_cost_key = 0;
+        foreach($stockCosts as $key => $stockCost) {
+            if($stock_cost_count < count($stockCost)) {
+                $stock_cost_key = $key;
+                $stock_cost_count = count($stockCost);
+            }
+        }
+        
+        $this->settingModel['stock_costs'] = collect($stockCosts[$stock_cost_key])->keys();
+        return true;
+    }
+>>>>>>> santosh
 
     private function Data()
     {

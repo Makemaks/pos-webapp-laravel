@@ -16,7 +16,7 @@
     
     <ul class="uk-switcher uk-margin">
         <li>@include('stock.partial.infoPartial')</li>
-        <li>@include('stock.partial.offerPartial.')</li>
+        <li>@include('stock.partial.offerPartial')</li>
         <li>@include('stock.partial.stockPartial')</li>
         <li>@include('stock.partial.flagPartial')</li>
         <li>@include('stock.partial.webPartial')</li>

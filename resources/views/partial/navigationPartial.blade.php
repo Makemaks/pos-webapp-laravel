@@ -103,8 +103,7 @@ use App\Helpers\DateTimeHelper;
             @if ($route == 'home')
                 <div class="uk-navbar-item">
                     <div class="uk-button-group">
-                        <input id="searchInputID" class="uk-input uk-form-width-large" type="text" autofocus onclick="showKeypad()" 
-                        onchange="searchInput(this)" autocomplete="off">
+                       
 
                         <div class="uk-button-group">
                         {{--  <button class="uk-button uk-button-default">Dropdown</button> --}}
@@ -169,6 +168,10 @@ use App\Helpers\DateTimeHelper;
                                             href="{{ route('user.show', $userModel->user_id) }}">Profile</a></li>
                                     <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded"
                                             href="{{ route('authentication.logout') }}">Logout</a></li>
+
+                                    <li class="uk-nav-header" uk-icon="icon: lock"></li>
+                                    <li class="uk-nav-divider"></li>
+                                    <li><button class="uk-margin-small uk-button uk-button-default uk-border-rounded" onclick="lockScreen()">Lock Screen</button></li>
 
                                     <li class="uk-nav-header" uk-icon="icon: clock"></li>
                                     <li class="uk-nav-divider"></li>

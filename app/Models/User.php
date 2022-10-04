@@ -40,6 +40,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'user_auth_check' => 'array'
     ];
 
     protected $table = 'user';
@@ -50,7 +51,12 @@ class User extends Authenticatable
     protected $attributes = [
 
         "user_account_id" => 1,
-
+        'user_auth_check' => '{
+            "1": {
+                "type": "",
+                "value": "",
+            }
+        }',
     ];
 
 

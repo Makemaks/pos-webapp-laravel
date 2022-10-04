@@ -76,6 +76,8 @@ class Setting extends Model
         'setting_printer' => '{}',
         'setting_stock_tag_group' => '{}',
 
+        'setting_preset_message' => '{}',
+
         'setting_message_notification_category' => '{}',
 
 
@@ -91,6 +93,13 @@ class Setting extends Model
                 "name": "",
                 "rate": "",
                 "default": ""
+            }
+        }',
+
+        'setting_price_level_scheduler' => '{
+            "1": {
+                "time": "",
+                "price_level": 
             }
         }',
 
@@ -360,8 +369,9 @@ class Setting extends Model
         'setting_key' => 'array',
         'setting_key_type' => 'array',
         'setting_group' => 'array',
-       'setting_customer' => 'array',
-
+        'setting_customer' => 'array',
+        'setting_preset_message' => 'array',
+        'setting_price_level_scheduler' => 'array'
     ];
 
     public static function SettingTable(){

@@ -20,6 +20,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\InitController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\API\AppAPIController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StockController;
@@ -154,6 +155,7 @@ Route::apiResources([
     'cart-api' => CartAPIController::class,
     'scheme-api' => SchemeAPIController::class,
     'order-api' => OrderAPIController::class,
+    'app-api' =>AppAPIController::class,
 ]);
 
 /* Route::get('order-manager/checkout/', [OrderManagerController::class, 'Checkout'])->name('order-manager.checkout');

@@ -70,7 +70,13 @@
                                                     <select class="uk-select" name="setting_stock_tag[{{$keysetting_stock_tag}}][{{$key}}]">
                                                         <option selected="selected" disabled>SELECT ...</option>
 
-                                                        @foreach ($data['settingModel']->setting_stock_group  as $key_setting_stock_group  => $item_setting_stock_group)
+                                                        @foreach($data['settingModel']->setting_stock_tag_group as $key_setting_stock_tag_group => $item_setting_stock_tag_group)
+                                                            <option {{$key_setting_stock_tag_group == $value ? 'selected' : ''}} value="{{$key_setting_stock_tag_group}}">
+                                                                {{$item_setting_stock_tag_group['name']}}
+                                                            </option>
+                                                        @endforeach
+
+                                                        {{-- @foreach ($data['settingModel']->setting_stock_group  as $key_setting_stock_group  => $item_setting_stock_group)
                                                             @foreach (Setting::SettingStockGroup() as $key => $setting_group)
                                                                 @if($key == $item_setting_stock_group['type'])                             
                                                                     <option {{$key_setting_stock_group == $setting_stock_tag['setting_stock_tag_group_id'] ? 'selected' : ''}} value="{{$key_setting_stock_group}}">
@@ -79,15 +85,15 @@
                                                                     @break
                                                                 @endif 
                                                             @endforeach
-                                                        @endforeach
+                                                        @endforeach --}}
                                                     
-                                                        @foreach (Setting::SettingStockGroup() as $key => $setting_group)
+                                                        {{-- @foreach (Setting::SettingStockGroup() as $key => $setting_group)
                                                                 
                                                             <option @if($key == $setting_stock_tag['setting_stock_tag_group_id']) selected @endif value="{{$key}}">
                                                                 {{Str::upper($setting_group)}}
                                                             </option>
                                                                 
-                                                        @endforeach
+                                                        @endforeach --}}
                                                     
                                                     </select>
                                                 @elseif ($key == 'name')
@@ -126,7 +132,12 @@
                     <label class="uk-form-label" for="form-stacked-text">Setting Stock Group</label>
                     <select class="uk-select" id="form-stacked-select" name="form[setting_stock_tag][setting_stock_tag_group_id]">
                         <option value="" selected disabled>SELECT ...</option>
-                        @foreach ($data['settingModel']->setting_stock_group  as $key_setting_stock_group  => $item_setting_stock_group)
+                        @foreach($data['settingModel']->setting_stock_tag_group as $key_setting_stock_tag_group => $item_setting_stock_tag_group)
+                            <option value="{{$key_setting_stock_tag_group}}">
+                                {{$item_setting_stock_tag_group['name']}}
+                            </option>
+                        @endforeach
+                        {{-- @foreach ($data['settingModel']->setting_stock_group  as $key_setting_stock_group  => $item_setting_stock_group)
                             @foreach (Setting::SettingStockGroup() as $key => $setting_group)
                                 @if($key == $item_setting_stock_group['type'])                             
                                     <option selected value="{{$key_setting_stock_group}}">
@@ -135,7 +146,7 @@
                                     @break
                                 @endif 
                             @endforeach
-                        @endforeach
+                        @endforeach --}}
                     </select>
                     <input name="setting_id" class="uk-input" type="hidden" value="{{$data['settingModel']->setting_id}}">
                 </div>

@@ -48,7 +48,7 @@
                                                             
                                                                 @foreach ($data['settingModel']->setting_stock_group as $keyPLU => $setting_stock_plu)
                                                                         @if ($setting_stock_plu['type'] == '2')
-                                                                            <option value="{{$stock}}" @if($stock == $keyPLU) selected @endif>{{$setting_stock_plu['description']}}</option>
+                                                                            <option value="{{$stock}}" @if($stock == $keyPLU) selected @endif>{{$setting_stock_plu['name']}}</option>
                                                                         @endif
                                                                         
                                                                 @endforeach
@@ -105,7 +105,7 @@
                                                    
                                                     @foreach ($data['settingModel']->setting_stock_group as $key => $setting_stock_plu)
                                                                         
-                                                            <option value="{{$key}}">{{$setting_stock_plu['description']}}</option>
+                                                            <option value="{{$key}}">{{$setting_stock_plu['name']}}</option>
                                                     @endforeach
                                                    
                                                 </select>

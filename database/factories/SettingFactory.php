@@ -154,8 +154,6 @@ class SettingFactory extends Factory
                 "link" => $this->faker->randomElement($array = array (NULL,$this->faker->url)),
                 "default" => 1,
             ];
-
-           
         }
 
         for ($i=0; $i < 20; $i++) { 
@@ -209,7 +207,9 @@ class SettingFactory extends Factory
     
         $isoCount = count(CountryHelper::ISO());
         $setting_group = [
-            'default_country' => $this->faker->numberBetween($min = 0, $max = $isoCount - 1)
+            'default_country' => $this->faker->numberBetween($min = 1, $max = $isoCount),
+            'stock_cost_group' => 5,
+            'special_stock_cost' => 2
         ];
 
        
@@ -223,6 +223,17 @@ class SettingFactory extends Factory
             "customer_print" => $customer_print, //ConfigHelper::SettingCustomerPrint(),
             "customer_marketing" => $this->faker->numberBetween($min = 0, $max = 1),
         ];
+
+        for ($i = 0; $i < 10; $i++) {
+            $setting_preset_message[$i+1] = [
+                "message" => $this->faker->word,
+            ];
+
+            $setting_price_level_scheduler[$i+1] = [
+                "time" => $this->faker->dateTimeBetween('1 years', '2 years', $timezone = null)->format('Y-m-d H:i:s'),
+                "price_level" => $this->faker->numberBetween($min = 1, $max = 10),
+            ];
+        }
 
 
         return [
@@ -249,8 +260,9 @@ class SettingFactory extends Factory
             'setting_key_type' => $setting_key_type,
             'setting_group' => $setting_group,
             'setting_customer' => $setting_customer,
-            'setting_stock_tag_group' => $setting_stock_tag_group
-            
+            'setting_stock_tag_group' => $setting_stock_tag_group,
+            'setting_preset_message' => $setting_preset_message,
+            'setting_price_level_scheduler' => $setting_price_level_scheduler,
         ];
     }
 }

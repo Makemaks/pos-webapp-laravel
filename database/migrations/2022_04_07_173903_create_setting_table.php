@@ -65,7 +65,7 @@ return new class extends Migration
 
             $table->json('setting_blacklist')->nullable();
 
-
+            $table->json('setting_floorplan')->nullable()->comment('id::code::status::capacity::name::description'); 
            
            
             $table->timestamps();

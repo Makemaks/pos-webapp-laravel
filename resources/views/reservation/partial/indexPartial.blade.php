@@ -1,4 +1,4 @@
-
+<a class="uk-button uk-button-primary uk-border-rounded" href="{{route('reservation.create')}}">Create</a>
     <table class="uk-table uk-table-small uk-table-divider">
         <thead>
             <tr>
@@ -9,6 +9,7 @@
             </tr>
         </thead>
         <tbody>
+            @isset($data['reservationList'])
             @foreach ($data['reservationList'] as $item)
                 <tr>
                     <td>
@@ -27,10 +28,12 @@
                     <td></td>
                 </tr>
             @endforeach
+            @endisset
         </tbody>
     </table>
-
+@isset($data['reservationList'])
 @include('partial.paginationPartial', ['paginator' => $data['reservationList']])
+@endisset
 
 
 

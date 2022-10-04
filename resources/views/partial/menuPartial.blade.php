@@ -64,6 +64,7 @@
                 "company"
             ],
             "ticket" => [],
+            "reservation" => [],
             
 
         ];

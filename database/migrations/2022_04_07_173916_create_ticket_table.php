@@ -14,7 +14,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ticket', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('ticket_id');
+            $table->bigInteger('ticket_account_id');
+            $table->bigInteger('ticket_user_id');
+            $table->string('ticket_name');
+            $table->text('ticket_description');
+            $table->json('ticket_note');
+            $table->json('ticket_group')->commenmt('name::type::quantity');
+            $table->json('ticket_file')->comment('name::location::type');
+            $table->json('ticket_seating_plan')->comment('');
             $table->timestamps();
         });
     }

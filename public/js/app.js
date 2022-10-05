@@ -30,18 +30,20 @@ $(document).ready(function() {
     });
 
     // var isRefresh = false;
-    setTimeout(function() {
-        const lockTimerScreen= localStorage.getItem('lock_screen');
-        if(lockTimerScreen) 
-        {
-              UIkit.modal('#modal-lock-screen-center', {
-                 escClose: false,
-                 bgClose: false,
-             }).show();
+    // setTimeout(function() {
+    //     const lockTimerScreen= localStorage.getItem('lock_screen');
+    //     // alert(lockTimerScreen);
+
+    //     if(lockTimerScreen == 1) 
+    //     {
+    //           UIkit.modal('#modal-lock-screen-center', {
+    //              escClose: false,
+    //              bgClose: false,
+    //          }).show();
  
-            //  isRefresh = true;
-        }
-    },100)
+    //         //  isRefresh = true;
+    //     }
+    // },100)
 
     setInterval(function() {
         // if(!isRefresh) {
@@ -56,7 +58,18 @@ $(document).ready(function() {
                         escClose: false,
                         bgClose: false,
                     }).show();
-                    localStorage.setItem('lock_screen', true);
+                    // localStorage.setItem('lock_screen', 1);
+
+                    $.ajax({        
+                        url:"app-api/",
+                        method: 'GET',
+                        data: {
+                            lock_screen_enabled: true,
+                        },      
+                        success:function(data){
+                         alert('hello');
+                        }
+                    });  
                 }
             } else {
                 // alert(timer);
@@ -68,7 +81,7 @@ $(document).ready(function() {
         //     isRefresh = false;
         //     popUp = 1;
         // }
-    }, 3000); 
+    }, 10000); 
 
 
 
@@ -81,7 +94,6 @@ function lockScreen() {
     var modal = UIkit.modal('#modal-lock-screen-center', {
         escClose: false,
         bgClose: false,
-        stack: false
     });
 
     modal.show();

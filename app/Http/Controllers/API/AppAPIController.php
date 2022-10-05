@@ -38,7 +38,9 @@ class AppAPIController extends Controller
           return response()->json(['status' => $status]);
         }
 
-       
+       if($request->has('lock_screen_enabled')) {
+            $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'lock_screen_enabled', true);
+       }
     }
 
     /**

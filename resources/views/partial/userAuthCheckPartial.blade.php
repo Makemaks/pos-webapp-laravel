@@ -57,6 +57,7 @@
                 success:function(data){
                     if(data.status) {
                         UIkit.modal($('#modal-lock-screen-center')).hide();
+                        localStorage.setItem('lock_screen', 0);
                     }
                 }
             });  

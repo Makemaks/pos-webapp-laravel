@@ -52,7 +52,7 @@ use App\Http\Controllers\API\SchemeAPIController;
 use App\Http\Controllers\API\OrderAPIController;
 
 
-Route::middleware(['datetimeMiddleware'])->group(function () {
+Route::middleware(['datetimeMiddleware','sessionMiddleware'])->group(function () {
   
     
 Route::get('/', function () {

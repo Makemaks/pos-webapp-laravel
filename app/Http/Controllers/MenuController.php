@@ -160,16 +160,7 @@ class MenuController extends Controller
 
             case 'voucher':
                 
-<<<<<<< HEAD
-
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
-                
-                return view('menu.setting.voucher', ['data' => $this->Data()]);
-=======
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
->>>>>>> santosh
 
                 break;
 

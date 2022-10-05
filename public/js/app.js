@@ -33,7 +33,8 @@ $(document).ready(function() {
             {
                 lockScreen =0;
                 count = 0;
-                UIkit.modal($('#modal-lock-screen-center')).show();
+                //UIkit.modal($('#modal-lock-screen-center')).show();
+                
                 /* $.ajax({        
                     url:"app-api/",
                     method: 'GET',

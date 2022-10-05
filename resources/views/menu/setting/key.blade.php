@@ -5,15 +5,11 @@
 @endphp
 
 @section('content')
+
+@include('menu.partial.crudPartial')
+
 <div>
-    <button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="settingUpdate" value="settingUpdate">
-        Save
-    </button>
-
-    <button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="settingUpdate" value="settingDelete" name="settingDelete">
-        Delete
-    </button>
-
+  
     <ul class="uk-subnav uk-subnav-pill" uk-switcher>
         <li>
            

@@ -12,5 +12,15 @@ class Reservation extends Model
     protected $table = 'reservation';
 
     protected $primaryKey = 'reservation_id';
+
+    protected $guarded = [''];
+
+    public $timestamps = true;
+
+
+    public function User()
+    {
+        return $this->hasOne(User::class,'user_id','reservation_user_id');
+    }
     
 }

@@ -20,7 +20,7 @@ class CreatereservationTable extends Migration
             $table->bigInteger('reservation_user_id');
             $table->bigInteger('reservation_account_id');
             $table->DateTime('reservation_timestamp')->nullable();
-            $table->DateTime('reservation_quantity');
+            $table->bigInteger('reservation_quantity');
             $table->bigInteger('reservation_payment_id')->nullable();
             $table->mediumText('reservation_note')->nullable();
             $table->float('reservation_no_show_fee')->nulable();

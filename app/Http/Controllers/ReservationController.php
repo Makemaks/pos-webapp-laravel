@@ -3,18 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservation;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ReservationController extends Controller
 {   
 
-    
     public function __construct()
     {
         $this->middleware('auth');
     }
-
-
 
     /**
      * Display a listing of the resource.
@@ -24,8 +22,7 @@ class ReservationController extends Controller
     public function index()
     {
         $reservationList = Reservation::paginate(10);
-
-        return view('reservation.index', ['data' => $reservationList]);
+        return view('reservation.index', compact('reservationList'));
     }
 
     /**
@@ -34,8 +31,9 @@ class ReservationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        return view('reservation.create');
+    {   
+        $users =  User::get();
+        return view('reservation.create',compact('users'));
     }
 
     /**
@@ -45,20 +43,12 @@ class ReservationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    {  
+        $reservation = $request->except('_token');
+        Reservation::create($reservation);
+        return redirect()->route('reservation.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -67,8 +57,10 @@ class ReservationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        //
+    {   
+        $users =  User::get();    
+        $reservation = Reservation::find($id);
+        return view('reservation.edit', compact('reservation','users'));
     }
 
     /**
@@ -80,7 +72,9 @@ class ReservationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $reservation = $request->except('_token','_method');
+        Reservation::where('reservation_id',$id)->update($reservation);
+        return redirect()->route('reservation.index');
     }
 
     /**
@@ -91,6 +85,7 @@ class ReservationController extends Controller
      */
     public function destroy($id)
     {
-        //
+       Reservation::destroy($id);
+       return redirect()->route('reservation.index');
     }
 }

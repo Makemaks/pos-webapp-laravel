@@ -142,4 +142,9 @@ class User extends Authenticatable
 
         ];
     }
+
+    public function UserPerson()
+    {
+        return $this->hasOne(Person::class,'person_id','user_person_id');
+    }
 }

@@ -20,45 +20,27 @@ function OrderStatus(element, order_id){
 
 $(document).ready(function() {
     var count = 1;
-    var lockScreen = 1;
-    var popUp = 0;
+    var screenlock = false;
+  
 
     $('#screen-lock').on('mousedown mouseup mousemove onkeyup onkeydown', function(e){
         count = 0;
         popUp = 1;
-        // isRefresh = true;
+       
     });
 
-    // var isRefresh = false;
-    // setTimeout(function() {
-    //     const lockTimerScreen= localStorage.getItem('lock_screen');
-    //     // alert(lockTimerScreen);
-
-    //     if(lockTimerScreen == 1) 
-    //     {
-    //           UIkit.modal('#modal-lock-screen-center', {
-    //              escClose: false,
-    //              bgClose: false,
-    //          }).show();
- 
-    //         //  isRefresh = true;
-    //     }
-    // },100)
-
     setInterval(function() {
-        // if(!isRefresh) {
-            if(count)
+        
+            if(count == 1)
             {
-                if(lockScreen && !popUp)
-                {
-                    lockScreen =0;
-                    count = 0;
-                    popUp = 1;
-                    UIkit.modal($('#modal-lock-screen-center'), {
+                   
+                if (screenlock == false) {
+                    var modal = UIkit.modal('#modal-lock-screen-center', {
                         escClose: false,
                         bgClose: false,
-                    }).show();
-                    // localStorage.setItem('lock_screen', 1);
+                    });
+                    modal.show();
+                    screenlock = true;
 
                     $.ajax({        
                         url:"app-api/",
@@ -67,27 +49,25 @@ $(document).ready(function() {
                             lock_screen_enabled: true,
                         },      
                         success:function(data){
-                         alert('hello');
+                            if (data['status'] == 'screenlock' && screenlock == true) {
+                                clearInterval();
+                            }
+                        
+                        
                         }
                     });  
                 }
+                
+                   
+                  
             } else {
                 // alert(timer);
                 count = 1;
-                lockScreen = 1;
-                popUp = 0;
+                //lockScreen = 1;
+              
             }
-        // } else {
-        //     isRefresh = false;
-        //     popUp = 1;
-        // }
     }, 10000); 
 
-
-
-//     $('#lock-screen').click(function(){
-//         UIkit.modal($('#modal-lock-screen-center')).show();
-//   });
 });
 
 function lockScreen() {
@@ -98,4 +78,6 @@ function lockScreen() {
 
     modal.show();
 }
+
+
 

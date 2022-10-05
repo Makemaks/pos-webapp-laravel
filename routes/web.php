@@ -51,6 +51,13 @@ use App\Http\Controllers\API\CartAPIController;
 use App\Http\Controllers\API\SchemeAPIController;
 use App\Http\Controllers\API\OrderAPIController;
 
+Route::get('login', [AuthenticationController::class, 'Login'])->name('authentication.login');
+Route::get('forgot-password', [AuthenticationController::class, 'ForgotPassword'])->name('authentication.forgot-password');
+Route::get('reset-password/{id}', [AuthenticationController::class, 'ResetPassword'])->name('authentication.reset-password');
+Route::get('logout', [AuthenticationController::class, 'Logout'])->name('authentication.logout');
+Route::get('clock-out', [AuthenticationController::class, 'ClockOut'])->name('authentication.clock-out');
+Route::get('register', [AuthenticationController::class, 'Register'])->name('authentication.register');
+Route::get('admin-store/{store}', [AuthenticationController::class, 'adminStore'])->name('authentication.admin-store');
 
 Route::middleware(['datetimeMiddleware','sessionMiddleware'])->group(function () {
   
@@ -63,13 +70,7 @@ Route::get('/menu', function () {
     return view('menu.index');
 })->name('menu');
 
-Route::get('login', [AuthenticationController::class, 'Login'])->name('authentication.login');
-Route::get('forgot-password', [AuthenticationController::class, 'ForgotPassword'])->name('authentication.forgot-password');
-Route::get('reset-password/{id}', [AuthenticationController::class, 'ResetPassword'])->name('authentication.reset-password');
-Route::get('logout', [AuthenticationController::class, 'Logout'])->name('authentication.logout');
-Route::get('clock-out', [AuthenticationController::class, 'ClockOut'])->name('authentication.clock-out');
-Route::get('register', [AuthenticationController::class, 'Register'])->name('authentication.register');
-Route::get('admin-store/{store}', [AuthenticationController::class, 'adminStore'])->name('authentication.admin-store');
+
 
 
 Route::resource('home', HomeController::class);

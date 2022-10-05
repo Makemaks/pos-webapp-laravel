@@ -20,6 +20,8 @@ class AppAPIController extends Controller
 
     public function index(Request $request)
     {
+        //$request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'lock_screen_enabled');
+
         // dd($request->all());
         if ($request->has('lock_screen')){
             $unlock = User::find(Auth::id())->user_auth_check;
@@ -38,8 +40,11 @@ class AppAPIController extends Controller
           return response()->json(['status' => $status]);
         }
 
-       if($request->has('lock_screen_enabled')) {
+        $lock_screen_enabled = $request->session()->has('user-session-'.Auth::user()->user_id.'.'.'lock_screen_enabled');
+
+       if($request->has('lock_screen_enabled') && $lock_screen_enabled == false) {
             $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'lock_screen_enabled', true);
+            return response()->json(['status' => 'screenlock']);
        }
     }
 

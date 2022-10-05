@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 class AppAPIController extends Controller
 {
@@ -17,8 +20,22 @@ class AppAPIController extends Controller
 
     public function index(Request $request)
     {
+        // dd($request->all());
         if ($request->has('lock_screen')){
-          
+            $unlock = User::find(Auth::id())->user_auth_check;
+            $pin = $request->pin;
+            $is_unlock = Arr::where($unlock, function ($value, $key) use($pin) {
+                if($value['type'] == 0 && $value['value'] == $pin) {
+                    return true;
+                }
+            });
+
+            if(empty($is_unlock)) {
+                $status = 0;
+            } else {
+                $status = 1;
+            }
+          return response()->json(['status' => $status]);
         }
 
        

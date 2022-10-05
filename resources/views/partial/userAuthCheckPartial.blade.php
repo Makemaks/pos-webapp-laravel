@@ -11,7 +11,7 @@
 
 
 <div class="uk-margin">
-    <input class="uk-input" type="text" placeholder="xxxx" type="password" id="lockInputID">
+    <input class="uk-input" type="text" placeholder="xxxx" type="password" id="lockInputID" onkeyup="unlockScreen(this)">
 </div>
 
 <div class="uk-margin">
@@ -35,8 +35,33 @@
 
 <script>
     function lockscreen(element){
-
         var lockInputID = document.getElementById('lockInputID')
-        lockInputID.value = lockInputID.value + element.innerText;
+        if(element.innerText != "Back") {
+            lockInputID.value = lockInputID.value + element.innerText;
+        } else {
+            lockInputID.value = lockInputID.value.length >= 1 ? lockInputID.value.substr(0, lockInputID.value.length - 1) : '';
+        }
+        unlockScreen(lockInputID);
+    }
+
+    function unlockScreen(lockInput){
+        const value = lockInput.value;
+        if(value.length == 4) {
+            $.ajax({        
+                url:"app-api/",
+                method: 'GET',
+                data: {
+                    lock_screen: true,
+                    pin: value
+                },      
+                success:function(data){
+                    if(data.status) {
+                        UIkit.modal($('#modal-lock-screen-center')).hide();
+                    }
+                }
+            });  
+        } else {
+            console.log('Pin code should be length of 4 digits.');
+        }
     }
 </script>

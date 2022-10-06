@@ -18,11 +18,11 @@ return new class extends Migration
             $table->bigInteger('ticket_account_id');
             $table->bigInteger('ticket_user_id');
             $table->string('ticket_name');
-            $table->text('ticket_description');
-            $table->json('ticket_note')->comment('user_id::description::datetimne'); //
-            $table->json('ticket_group')->commenmt('name::type::quantity');
-            $table->json('ticket_file')->comment('name::location::type');
-            $table->json('ticket_seating_plan')->comment('');
+            $table->text('ticket_description')->nullable();
+            $table->json('ticket_note')->nullable()->comment('user_id::description::created_at'); //
+            $table->json('ticket_group')->nullable()->commenmt('name::type::quantity');
+            $table->json('ticket_file')->nullable()->comment('user_id::name::location::type');
+            $table->json('ticket_seating_plan')->nullable()->comment('');
             $table->timestamps();
         });
     }

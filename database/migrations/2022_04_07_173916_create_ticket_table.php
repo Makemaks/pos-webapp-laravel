@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('ticket_user_id');
             $table->string('ticket_name');
             $table->text('ticket_description');
-            $table->json('ticket_note');
+            $table->json('ticket_note')->comment('user_id::description::datetimne'); //
             $table->json('ticket_group')->commenmt('name::type::quantity');
             $table->json('ticket_file')->comment('name::location::type');
             $table->json('ticket_seating_plan')->comment('');

@@ -34,10 +34,19 @@
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
                                 <input class="uk-input" type="text" name="{{$keystock}}" value="{{$stock}}">
                             </div>
-                        @elseif($keystock == 'company_opening_hour' || $keystock == 'company_contact')
+                        @elseif($keystock == 'company_contact')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
                                 <input class="uk-input" type="number" name="{{$keystock}}" value="{{$stock}}">
+                            </div>
+                        @elseif($keystock == 'company_opening_hour')
+                            <div class="uk-margin">
+                                <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}_From</label>
+                                <input type="datetime-local" name="{{$keystock}}[start_from]" class="uk-input" placeholder="Start Date" value="{{ json_decode($stock)->start_from }}">
+                            </div>
+                            <div class="uk-margin">
+                                <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}_TO</label>
+                                <input type="datetime-local" name="{{$keystock}}[end_to]" class="uk-input" placeholder="End Date" value="{{ json_decode($stock)->end_to }}" >
                             </div>
                         @elseif($keystock == 'company_store_id')
                             <div class="uk-margin">

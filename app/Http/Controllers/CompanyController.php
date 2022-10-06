@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Store;
 use App\Models\Stock;
 use App\Models\Setting;
+use Illuminate\Support\Arr; 
 
 class CompanyController extends Controller
 {
@@ -50,6 +51,7 @@ class CompanyController extends Controller
 
     public function Store(Request $request){
         $request->session()->reflash();
+        $request['company_opening_hour'] = json_encode($request['company_opening_hour']);
         Company::insert($request->except('_token', '_method'));
         return redirect()->route('company.index')->with('success', 'Company Successfully Added');
     }
@@ -69,7 +71,14 @@ class CompanyController extends Controller
             $this->Destroy($request, $company);
         } else {
             foreach ($request->company as $key => $value) {
-                Company::where('company_id', $value['company_id'])->update($value);
+                $value['company_opening_hour'] = [
+                    'start_from' => $value['start_from'],
+                    'end_to' => $value['end_to']
+                ];
+                $value['company_opening_hour'] = json_encode($value['company_opening_hour']);
+                $input = Arr::except($value,['start_from','end_to']);
+                
+                Company::where('company_id', $value['company_id'])->update($input);
             }
         }
         return redirect()->back()->with('success', 'Supplier Updated Successfuly');

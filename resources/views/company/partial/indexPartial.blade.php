@@ -29,7 +29,7 @@
                             <div class="uk-form-controls">
                                 <input class="uk-checkbox" type="checkbox"
                                     value="{{ $companyList['company_id'] }}"
-                                    name="company_checkbox[]" checked>
+                                    name="company_checkbox[]">
                             </div>
                         </div>
                     </td>
@@ -44,9 +44,16 @@
                                 <td>
                                     <input class="uk-input" type="text" name="company[{{$keyStockSupplier}}][{{$keystock}}]" value="{{$stock}}">
                                 </td>
-                            @elseif($keystock == 'company_opening_hour' || $keystock == 'company_contact' || $keystock == 'parent_company_id')
+                            @elseif($keystock == 'company_contact' || $keystock == 'parent_company_id')
                                 <td>
                                     <input class="uk-input" type="number" name="company[{{$keyStockSupplier}}][{{$keystock}}]" value="{{$stock}}">
+                                </td>
+                            @elseif($keystock == 'company_opening_hour')
+                                <td>
+                                    <input type="datetime-local" name="company[{{$keyStockSupplier}}][start_from]" class="uk-input" placeholder="Start Date" value="{{ isset(json_decode($stock)->start_from) ? json_decode($stock)->start_from : '' }}">
+                                </td>
+                                <td>
+                                    <input type="datetime-local" name="company[{{$keyStockSupplier}}][end_to]" class="uk-input" placeholder="End Date" value="{{ isset(json_decode($stock)->end_to) ? json_decode($stock)->end_to : '' }}" >
                                 </td>
                             @elseif($keystock == 'company_type')
                                 <td>
@@ -54,7 +61,7 @@
                                         <option value="" selected disabled>SELECT ...</option>
                                         
                                             @foreach (Company::CompanyType() as $key => $type)
-                                            <option value="{{$key}}" class="uk-input">
+                                            <option @if($key == $stock) selected @endif value="{{$key}}" class="uk-input">
                                                 {{Str::upper($type)}}
                                             </option>
                                         @endforeach

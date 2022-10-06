@@ -11,7 +11,12 @@ class Company extends Model
 
     protected $table = 'company';
     protected $primaryKey = 'company_id';
-
+    protected $attributes = [
+        'company_opening_hour' => '{
+            "start_from": "",
+            "end_to": ""
+        }'
+    ];
     public static function Account(){
         return Company::
         leftJoin('account', 'account.accountable_id', 'company.company_id');

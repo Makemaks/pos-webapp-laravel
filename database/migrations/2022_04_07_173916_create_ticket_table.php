@@ -22,7 +22,8 @@ return new class extends Migration
             $table->json('ticket_note')->nullable()->comment('user_id::description::created_at'); //
             $table->json('ticket_group')->nullable()->commenmt('name::type::quantity');
             $table->json('ticket_file')->nullable()->comment('user_id::name::location::type');
-            $table->json('ticket_seating_plan')->nullable()->comment('');
+            $table->json('ticket_floorplan')->nullable()->comment('setting_building_id::setting_room_id'); 
+            
             $table->timestamps();
         });
     }

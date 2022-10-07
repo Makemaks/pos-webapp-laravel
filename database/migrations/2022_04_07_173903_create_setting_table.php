@@ -61,8 +61,9 @@ return new class extends Migration
             $table->json('setting_group')->nullable();
             $table->json('setting_customer')->nullable();
           
-            $table->json('setting_floorplan')->nullable()->comment('id::code::status::capacity::name::description'); 
-            
+            $table->json('setting_building')->nullable()->comment('status::capacity::name::description');
+            $table->json('setting_room')->nullable()->comment('setting_building_id::status::capacity::name::description::size[]::section[]');
+           
            
            
             $table->timestamps();

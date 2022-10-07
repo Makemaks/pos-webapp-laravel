@@ -84,7 +84,7 @@ Route::resource('stock', StockController::class);
 // Route::resource('subscription', SubscriptionController::class);
 Route::resource('setting', SettingController::class);
 Route::resource('dashboard', DashboardController::class);
-// Route::resource('reservation', ReservationController::class);
+Route::resource('reservation', ReservationController::class);
 // Route::resource('scheme', SchemeController::class);
 // Route::resource('plan', PlanController::class);
 

@@ -1,4 +1,5 @@
 @extends('layout.master')
+
 @php
   
 @endphp
@@ -6,6 +7,6 @@
   @include('reservation.partial.menuPartial')
 
   <div class="uk-container uk-container-xsmall">
-      @include('reservation.partial.createPartial')
+      @include('reservation.partial.editPartial')
   </div>
 @endsection

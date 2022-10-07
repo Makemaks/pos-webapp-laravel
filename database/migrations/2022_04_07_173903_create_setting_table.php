@@ -64,6 +64,9 @@ return new class extends Migration
             $table->json('setting_preset_message')->nullable();
             $table->json('setting_price_level_scheduler')->nullable();
 
+          
+            $table->json('setting_floorplan')->nullable()->comment('status::capacity::name::description'); 
+            
            
            
             $table->timestamps();

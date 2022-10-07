@@ -65,7 +65,12 @@
                 "company"
             ],
             "ticket" => [],
+<<<<<<< HEAD
 
+=======
+            "reservation" => [],
+            
+>>>>>>> 69bdebc2783befcbca737a05db548c5d1ed0a557
 
         ];
    } else {

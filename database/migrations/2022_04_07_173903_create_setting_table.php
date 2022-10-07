@@ -65,8 +65,8 @@ return new class extends Migration
 
             $table->json('setting_blacklist')->nullable();
 
-            $table->json('setting_building')->nullable()->comment('code::status::capacity::name::description');
-            $table->json('setting_room')->nullable()->comment('setting_building_id::code::status::capacity::name::description');
+            $table->json('setting_building')->nullable()->comment('status::capacity::name::description');
+            $table->json('setting_room')->nullable()->comment('setting_building_id::status::capacity::name::description::size[]::section[]');
            
             $table->timestamps();
         });

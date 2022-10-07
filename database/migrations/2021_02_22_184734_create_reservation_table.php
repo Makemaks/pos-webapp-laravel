@@ -25,6 +25,7 @@ class CreatereservationTable extends Migration
             $table->mediumText('reservation_note')->nullable();
             $table->float('reservation_no_show_fee')->nulable();
             $table->float('reservation_deposit')->nullable();
+            $table->json('reservation_datetime')->comment('start_date', 'end_date');
             $table->timestamps();
         });
     }

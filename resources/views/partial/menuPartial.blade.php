@@ -54,6 +54,8 @@
                 "kp-category",
                 "preset-message",
                 "price-level-scheduler",
+                "nutrition",
+                "allergen"
             ],
             "sale" => [
                 "sale",

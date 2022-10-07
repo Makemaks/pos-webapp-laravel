@@ -62,19 +62,6 @@
                 </select>
             </div>
             
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">{{Str::upper('set menu')}}</label>
-                <select class="uk-select" name="stock_merchandise[set_menu]">
-                    <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_set_menu)
-                        @foreach ($data['settingModel']->setting_stock_set_menu as $key => $stock_set_menu)
-                            <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_merchandise['set_menu'])) selected @endif>{{$stock_set_menu['name']}}</option>
-                            
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-            
             <div>
                 @php
                     $exclude = [

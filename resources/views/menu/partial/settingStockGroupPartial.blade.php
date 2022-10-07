@@ -1,6 +1,9 @@
 @php
     use App\Models\Setting;
+    $route = Str::before(Request::route()->getName(), '.');
+
 @endphp
+
 
 <ul class="uk-subnav uk-subnav-pill" uk-switcher>
     <li>
@@ -103,52 +106,42 @@
     
        
     <li>
-        {{-- @if ($data['settingModel']->edit == false) --}}
-            <form action="{{ route('setting.store') }}" method="POST">
-        {{-- @else
-            <form action="{{ route('setting.update', $data['settingModel']->setting_id) }}" method="POST">
-             @method('PATCH')   
-        @endif --}}
-                @csrf
-                <div uk-grid>
-                    <div>
-                        <label class="uk-form-label" for="form-stacked-text">Code</label>
-                        <input name="form[setting_stock_group][code]" class="uk-input" type="number" placeholder="Code" value="{{$data['settingModel']['edit'] ? $data['settingModel']['setting_stock_group']['code'] : ''}}">
-                    </div>
-                
-                    <div>
-                        <label class="uk-form-label" for="form-stacked-text">Name</label>
-                        <input name="form[setting_stock_group][name]" class="uk-input" type="text" placeholder="Name" value="{{$data['settingModel']['edit'] ? $data['settingModel']['setting_stock_group']['name'] : ''}}">
+        
+
+            @if ($route == 'menu')
+                <form action="{{ route('setting.store') }}" method="POST">
+        
+                    @csrf
+                    <div uk-grid>
+                        <div>
+                            <label class="uk-form-label" for="form-stacked-text">Code</label>
+                            <input name="form[setting_stock_group][code]" class="uk-input" type="number" placeholder="Code" value="{{$data['settingModel']['edit'] ? $data['settingModel']['setting_stock_group']['code'] : ''}}">
+                        </div>
+                    
+                        <div>
+                            <label class="uk-form-label" for="form-stacked-text">Name</label>
+                            <input name="form[setting_stock_group][name]" class="uk-input" type="text" placeholder="Name" value="{{$data['settingModel']['edit'] ? $data['settingModel']['setting_stock_group']['name'] : ''}}">
+                        </div>
+                        
+                        <div>
+                            @if($data['settingModel']['edit'])
+                                <input name="index" class="uk-input" type="hidden" value="{{ request("index") }}">
+                            @else 
+                                <input name="form[setting_stock_group][type]" class="uk-input" type="hidden" value="{{Session::get('type')}}">
+                                <input name="setting_id" class="uk-input" type="hidden" value="{{$data['settingModel']->setting_id}}">
+                            @endif
+                        </div>
                     </div>
                     
-                    <div>
-                        @if($data['settingModel']['edit'])
-                            <input name="index" class="uk-input" type="hidden" value="{{ request("index") }}">
-                        @else 
-                            <input name="form[setting_stock_group][type]" class="uk-input" type="hidden" value="{{Session::get('type')}}">
-                            <input name="setting_id" class="uk-input" type="hidden" value="{{$data['settingModel']->setting_id}}">
-                        @endif
+                    <div class="uk-child-width-expand@m" uk-grid>
+                        <div>
+                            <button class="uk-button uk-button-default uk-border-rounded uk-width-1-1 uk-button-danger" type="submit">
+                                SAVE
+                            </button>
+                        </div>     
                     </div>
-                </div>
-                
-                <div class="uk-child-width-expand@m" uk-grid>
-                    <div>
-                        <button class="uk-button uk-button-default uk-border-rounded uk-width-1-1 uk-button-danger" type="submit">
-                            SAVE
-                        </button>
-                    </div>     
-                </div>
-            </form>
-
-        {{-- <div class="uk-margin">
-            @if ($data['settingModel']->edit)
-                <a uk-toggle="target: #modal-{{$data['settingModel']->setting_id}}-{{ request("index") }}" class="uk-button uk-width-1-1 uk-button-default uk-border-rounded uk-text-danger">
-                    DELETE
-                </a>
-
-                @include('partial.modalPartial', [
-                    'model_id' => $data['settingModel']->setting_id.'-'. request("index")])
+                </form>
             @endif
-        </div> --}}
+            
     </li>
 </ul>

@@ -9,16 +9,31 @@
     
     <ul class="uk-switcher uk-margin">
         <li>
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">PLU</label>
-                <select class="uk-select" name="form[stock_nutrition]" id="">
-                    <option selected disabled>SELECT...</option>
-                    {{-- 
-                    @foreach ($data['settingModel']->setting_stock_nutrition as $item)
-                            <option value="">{{$item}}</option>
-                    @endforeach --}}
-                </select>
-            </div>
+            <table class="uk-table uk-table-small uk-table-divider">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>PLU</th>
+                        <th>Table Heading</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @isset($data['stockModel']->stock_merchandise['plu_id'])
+                        @foreach ($data['stockModel']->stock_merchandise['plu_id']  as $keyPlu => $itemPlu)
+                            <tr>
+                                <td>
+                                    <input type="checkbox">
+                                </td>
+                                <td>
+                                    <select class="uk-select" name="stock_merchandise[plu_id]">
+                                        <option selected="selected" disabled>SELECT ...</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endisset
+                </tbody>
+            </table>
         </li>
         <li>
             

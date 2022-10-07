@@ -75,25 +75,7 @@
                     @endif
                 </select>
             </div>
-        
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">PLU</label>
-                <select class="uk-select" name="stock_merchandise[plu_id]">
-                    <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_group)
-                        @foreach ($data['settingModel']->setting_stock_group as $key => $plu)
-                            @if ($plu['type'] == 2)
-                                    @isset($data['stockModel']->stock_merchandise['plu_id'])
-                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]', $data['stockModel']->stock_merchandise['plu_id']) ) selected @endif>{{$plu['name']}}</option>
-                                    @else
-                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]') ) selected @endif>{{$plu['name']}}</option>
-                                    @endisset
-                            @endif
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-
+            
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">BRAND</label>
                 <select class="uk-select" name="stock_merchandise[brand_id]">

@@ -66,7 +66,7 @@ class Stock extends Model
             "unit_size": "",
             "recipe_link": "",
             "case_size": "",
-            "plu_id": "",
+            "plu_id": {},
             
             "current_stock": "",
             "days_to_order": "",
@@ -97,7 +97,7 @@ class Stock extends Model
 
         "stock_web" => '{
             "1": {
-                "plu": "",
+                "plu_id": {},
                 "min": "",
                 "max": "",
                 "price": ""

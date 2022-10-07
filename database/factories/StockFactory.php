@@ -33,9 +33,12 @@ class StockFactory extends Factory
             ];
 
           
+            for ($i = 0; $i < $this->faker->numberBetween($min = 1, $max = 5); $i++) {
+                $setting_plu[$i + 1] = $this->faker->numberBetween($min = 1, $max = 5);
+            }
 
             $stock_web[$i + 1] = [
-                "plu" => $this->faker->numberBetween($min = 1, $max = 50),
+                "plu" => $setting_plu,
                 "min" => $this->faker->numberBetween($min = 1, $max = 50),
                 "max" => $this->faker->numberBetween($min = 1, $max = 50),
                 "price" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 500),
@@ -72,7 +75,7 @@ class StockFactory extends Factory
             "minimum_stock" => $this->faker->numberBetween($min = 1, $max = 50),
             "maximum_stock" => $this->faker->numberBetween($min = 50, $max = 100),
             "days_to_order" => $this->faker->numberBetween($min = 1, $max = 5),
-            "plu_id" => $this->faker->numberBetween($min = 1, $max = 20),
+            "plu_id" => $setting_plu,
             "qty_adjustment" => $this->faker->numberBetween($min = 100, $max = 800),
 
             "unit_size" => $this->faker->numberBetween($min = 1, $max = 20),

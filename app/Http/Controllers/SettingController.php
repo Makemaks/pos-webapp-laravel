@@ -59,7 +59,20 @@ class SettingController extends Controller
             $this->settingModel->save();
             return back()->with('success', 'Added Successfuly');
         }
-
+        if($request->session()->get('view') == 'case-size'){
+            $this->settingModel = Setting::find($request['setting_id']);
+            $settingInput = $request->except('_token', '_method', 'setting_id', 'created_at', 'updated_at');
+            $case_size = $this->settingModel->setting_stock_case_size;
+            if(!empty($case_size)){
+                $last_key = (int)collect($case_size)->keys()->last();
+                $case_size[$last_key + 1] = $settingInput;
+            } else {
+                $case_size[1] = $settingInput;
+            }
+            $this->settingModel->setting_stock_case_size = $case_size;
+            $this->settingModel->save();
+            return back()->with('success', 'Added Successfuly');
+        }
         if ($request->hasFile('setting_logo_url')) {
             
             $upload = $request->setting_logo_url->store('/images/uploads');
@@ -86,30 +99,53 @@ class SettingController extends Controller
         // Check condition from url to edit setting_stock_group
         if($request->has('index')) {
             $request->session()->reflash();
-           
-            $this->settingModel['setting_stock_group'] = $this->settingModel['setting_stock_group'][$request->index];
-            $this->settingModel['edit'] = true;
-            return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
+            if($request->session()->get('view') == 'case-size'){
+                $this->settingModel['setting_stock_case_size'] = $this->settingModel['setting_stock_case_size'][$request->index];
+                $this->settingModel['edit'] = true;
+                return view('menu.setting.settingCaseSize', ['data' => $this->Data()]);
+            }else{
+                $this->settingModel['setting_stock_group'] = $this->settingModel['setting_stock_group'][$request->index];
+                $this->settingModel['edit'] = true;
+                return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
+            }
         }
         return view('Setting.edit', ['project' => $setting]);
     }
 
     public function Update(Request $request, $setting)
     {
-        // dd($request->all());
-        $this->settingModel = Setting::find($setting);
-        $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
-
-        // Check condition from request to update particular index of setting_stock_group
-        if ($request->setting_stock_group) {
-            $this->settingModel->setting_stock_group = $settingInput['setting_stock_group'];
-        } else if($request->code) {
-            $setting_stock_group = $this->settingModel->setting_stock_group;
-            $update_setting_stock_group_data = $setting_stock_group[$request->index];
-            $update_setting_stock_group_data['code'] = $request->code;
-            $update_setting_stock_group_data['name'] = $request->name;
-            $setting_stock_group[$request->index] = $update_setting_stock_group_data;
-            $this->settingModel->setting_stock_group = $setting_stock_group;
+        $request->session()->reflash();
+        if($request->session()->get('view') == 'case-size'){
+            $this->settingModel = Setting::find($setting);
+            $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
+            
+            // Check condition from request to update particular index of setting_stock_case_size
+            if ($request->setting_stock_case_size) {
+                $this->settingModel->setting_stock_case_size = $settingInput['setting_stock_case_size'];
+            } else if($request->index) {
+                $setting_stock_case_size = $this->settingModel->setting_stock_case_size;
+                $update_setting_stock_case_size_data = $setting_stock_case_size[$request->index];
+                $update_setting_stock_case_size_data['description'] = $request->description;
+                $update_setting_stock_case_size_data['size'] = $request->size;
+                $update_setting_stock_case_size_data['default'] = $request->default;
+                $setting_stock_case_size[$request->index] = $update_setting_stock_case_size_data;
+                $this->settingModel->setting_stock_case_size = $setting_stock_case_size;
+            }
+        }else{
+            $this->settingModel = Setting::find($setting);
+            $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
+            
+            // Check condition from request to update particular index of setting_stock_group
+            if ($request->setting_stock_group) {
+                $this->settingModel->setting_stock_group = $settingInput['setting_stock_group'];
+            } else if($request->code) {
+                $setting_stock_group = $this->settingModel->setting_stock_group;
+                $update_setting_stock_group_data = $setting_stock_group[$request->index];
+                $update_setting_stock_group_data['code'] = $request->code;
+                $update_setting_stock_group_data['name'] = $request->name;
+                $setting_stock_group[$request->index] = $update_setting_stock_group_data;
+                $this->settingModel->setting_stock_group = $setting_stock_group;
+            }
         }
         $this->settingModel->update();
         return redirect()->back()->with('success', 'Setting Updated Successfuly');
@@ -120,13 +156,23 @@ class SettingController extends Controller
         $currentRoute = explode('-', $setting);
         if(is_array($currentRoute)) {
             $this->settingModel = Setting::find($currentRoute[0]);
-            $setting_stock_group = $this->settingModel->setting_stock_group;
-            unset($setting_stock_group[$currentRoute[1]]);
-            $this->settingModel->setting_stock_group = $setting_stock_group;
-            $this->settingModel->update();
-            $request->session()->reflash();
-         
-            return view('menu.setting.settingStockGroup', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
+            if($request->session()->get('view') == 'case-size'){
+                $setting_stock_case_size = $this->settingModel->setting_stock_case_size;
+                unset($setting_stock_case_size[$currentRoute[1]]);
+                $this->settingModel->setting_stock_case_size = $setting_stock_case_size;
+                $this->settingModel->update();
+                $request->session()->reflash();
+             
+                return view('menu.setting.settingCaseSize', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
+            }else{
+                $setting_stock_group = $this->settingModel->setting_stock_group;
+                unset($setting_stock_group[$currentRoute[1]]);
+                $this->settingModel->setting_stock_group = $setting_stock_group;
+                $this->settingModel->update();
+                $request->session()->reflash();
+             
+                return view('menu.setting.settingStockGroup', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
+            }
         } else {
             Setting::destroy($setting);
         }

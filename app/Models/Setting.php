@@ -9,7 +9,6 @@ use Session;
 use Illuminate\Support\Str;
 
 use App\Models\Expertise;
-use App\Models\Setting;
 use App\Models\User;
 
 use App\Helpers\MathHelper;
@@ -307,6 +306,25 @@ class Setting extends Model
                 "reason": ""
 
             }
+        }',
+        'setting_building' => '{
+            "1": {
+                "status": "",
+                "capacity": "",
+                "name": "",
+                "description": ""
+            }
+        }',
+        'setting_room' => '{
+            "1": {
+                "setting_building_id": "",
+                "status": "",
+                "capacity": "",
+                "name": "",
+                "description": "",
+                "size": {},
+                "section": {}
+            }
         }'
 
     ];
@@ -357,6 +375,9 @@ class Setting extends Model
         'setting_key' => 'array',
         'setting_key_type' => 'array',
         'setting_group' => 'array',
+
+        'setting_building' => 'array',
+        'setting_room' => 'array'
 
 
     ];
@@ -500,6 +521,18 @@ class Setting extends Model
             'discount', //one offs
             'multiple-buy',
             'mix-match'
+        ];
+    }
+
+    public static function buildingStatus() {
+        return [
+            ''
+        ];
+    }
+
+    public static function roomStatus() {
+        return [
+            ''
         ];
     }
 

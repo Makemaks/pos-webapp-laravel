@@ -19,11 +19,11 @@ return new class extends Migration
             $table->bigInteger('event_user_id');
             $table->string('event_name');
             $table->text('event_description')->nullable();
-            $table->json('event_note')->nullable()->comment('user_id::description::created_at'); //
-            $table->json('event_ticket')->nullable()->commenmt('name::type::quantity::cost::row');
+            $table->json('event_note')->nullable()->comment('user_id::description::created_at');
+            $table->json('event_ticket')->nullable()->comment('name::type::quantity::cost::row');
             $table->json('event_file')->nullable()->comment('user_id::name::location::type');
-            $table->json('event_floorplan')->nullable()->comment('setting_building_id::setting_room_id'); 
-            
+            $table->json('event_floorplan')->nullable()->comment('setting_building_id::setting_room_id');
+
             $table->timestamps();
         });
     }

@@ -63,7 +63,7 @@
                 "person",
                 "company"
             ],
-            "ticket" => [],
+            "event" => [],
 
 
         ];

@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             OrderSeeder::class,
             PersonSeeder::class,
             StoreSeeder::class,
-
+            EventSeeder::class,
         ]);
     }
 }

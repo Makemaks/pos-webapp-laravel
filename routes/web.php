@@ -39,7 +39,7 @@ use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ContactManagerController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\TicketController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\WarehouseController;
 
@@ -52,8 +52,8 @@ use App\Http\Controllers\API\OrderAPIController;
 
 
 Route::middleware(['datetimeMiddleware'])->group(function () {
-  
-    
+
+
 Route::get('/', function () {
     return view('welcome.index');
 });
@@ -89,7 +89,7 @@ Route::resource('dashboard', DashboardController::class);
 
 // Route::resource('account', AccountController::class);
 Route::resource('report', ReportController::class);
-Route::resource('ticket', TicketController::class);
+Route::resource('event', EventController::class);
 Route::resource('warehouse', WarehouseController::class);
 Route::resource('receipt', ReceiptController::class);
 

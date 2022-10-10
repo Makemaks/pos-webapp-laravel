@@ -20,9 +20,10 @@ class ReservationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {   
+        $users =  User::get();
         $reservationList = Reservation::paginate(10);
-        return view('reservation.index', compact('reservationList'));
+        return view('reservation.index', compact('reservationList','users'));
     }
 
     /**

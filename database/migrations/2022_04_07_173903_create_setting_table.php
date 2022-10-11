@@ -65,8 +65,9 @@ return new class extends Migration
             $table->json('setting_price_level_scheduler')->nullable();
 
           
-            $table->json('setting_floorplan')->nullable()->comment('status::capacity::name::description'); 
-            
+            $table->json('setting_building')->nullable()->comment('address_id::status::capacity::name::description::note[]');
+            $table->json('setting_room')->nullable()->comment('setting_building_id::status::capacity::name::description::size[]::section[]::note[]');
+           
            
            
             $table->timestamps();

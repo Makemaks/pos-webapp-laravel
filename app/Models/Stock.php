@@ -219,30 +219,38 @@ class Stock extends Model
     public static function ReceiptTotal($receiptList, $totalCostPrice)
     {
 
-        $price = $receiptList->receipt_stock_cost;
+        $price = 0;
+        $stock_cost = $receiptList->receipt_stock_cost;
 
         if ($receiptList->receipt_discount) {
 
-            foreach (json_decode($receiptList->receipt_discount) as $keyOverride => $valueDiscount) {
-
-
-                if (Receipt::ReceiptCostOverrideType()[$valueDiscount->type] == 'percentage') {
-                    //percentage at checkout
-                    $price = MathHelper::Discount($valueDiscount->value, $receiptList->receipt_stock_cost);
-                    
-                } 
-                elseif(Receipt::ReceiptCostOverrideType()[$valueDiscount->type] == 'amount') {
-                    //minus the amount at checkout
-                    $price = $price - $valueDiscount->value;
-                }
-            }
-            
+            $price = Stock::Discount($stock_cost, $receiptList->receipt_discount);
         }
        
         $price = $price * $receiptList->receipt_quantity;
         $totalCostPrice = $totalCostPrice + $price;
 
         return $totalCostPrice;
+    }
+
+    public static function Discount($stock_cost, $discount){
+
+        $price = 0;
+
+        foreach (json_decode($discount) as $keyOverride => $valueDiscount) {
+
+            if (Receipt::ReceiptCostOverrideType()[ $valueDiscount->type ] == 'percentage') {
+                //percentage at checkout
+                $price = $price + MathHelper::Discount($discount_value, $stock_cost);
+                
+            } 
+            elseif(Receipt::ReceiptCostOverrideType()[ $valueDiscount->type ] == 'amount') {
+                //minus the amount at checkout
+                $price = $price + $stock_cost - $discount_value;
+            }
+        }
+        
+        return $price;
     }
 
     public static function GrossProfitTotal($orderList){

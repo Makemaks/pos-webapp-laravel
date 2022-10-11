@@ -1,6 +1,6 @@
 @php
-use App\Models\User;
-$action = Str::after(Request::route()->getName(), '.');
+    use App\Models\User;
+    $action = Str::after(Request::route()->getName(), '.');
 @endphp
 <div class="">
     <fieldset class="uk-fieldset">

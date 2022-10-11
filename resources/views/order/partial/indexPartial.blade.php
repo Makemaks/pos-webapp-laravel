@@ -1,20 +1,22 @@
 @php
-use App\Helpers\MathHelper;
-use App\Models\Order;
-use App\Models\Stock;
-use App\Models\Receipt;
-use App\Models\User;
+    $route = Str::before(Request::route()->getName(), '.');
+    use App\Helpers\MathHelper;
+    use App\Models\Order;
+    use App\Models\Stock;
+    use App\Models\Receipt;
+    use App\Models\User;
 @endphp
 
 @push('scripts')
-<script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 @endpush
+
 <form action="{{route('order.update',$data['orderList']->first()->order_id)}}">
 @csrf
 @method('PATCH')
 <button type="submit" class="uk-button uk-button-default uk-border-rounded uk-button-primary">Save</button>
 <div class="" uk-height-viewport="offset-top: true; offset-bottom: 50px">
-    <div class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
+    <div class="uk-overflow-auto uk-height-small" @if($route != 'order') uk-height-viewport="offset-top: true; offset-bottom: 30" @endif>
         <table class="uk-table uk-table-small uk-table-divider">
             <thead>
                 <tr>
@@ -69,7 +71,7 @@ use App\Models\User;
     </div>
     <div class="uk-margin-large">
         @isset($data['orderList'])
-        @include('partial.paginationPartial', ['paginator' => $data['orderList']])
+            @include('partial.paginationPartial', ['paginator' => $data['orderList']])
         @endisset
     </div>
 </div>

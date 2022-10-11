@@ -65,6 +65,7 @@
                     @foreach ($stockList as $stockKey => $stockItem)
                         @php
                             $receipt = Receipt::Calculate( $data, $stockItem, $loop, $receipt );
+                           
                         @endphp
                         
                             <tr id="cartItemID-{{$loop->index}}">
@@ -85,7 +86,7 @@
         
                                     <td>
                                        @if ($stockItem['stock_discount'])
-                                            {{$stockItem['stock_discount']}}
+                                            {{ Stock::Discount($receipt['price'], $stock_discount['type'], $stock_discount['value']) }}
                                        @endif
                                     </td>
         

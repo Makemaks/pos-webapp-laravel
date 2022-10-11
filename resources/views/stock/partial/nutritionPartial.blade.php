@@ -25,7 +25,7 @@
                                     <th></th>
                                     <th>REF</th>
                                     
-                                        @foreach ($data['stockModel']->stock_nutrition as $key => $item)
+                                        @foreach (collect($data['stockModel']->stock_nutrition)->first() as $key => $item)
                                             <th>{{$key}}</th>
                                         @endforeach
                                    
@@ -34,8 +34,31 @@
                             </thead>
                             <tbody>
                              
+                                @foreach ($data['stockModel']->stock_nutrition as $keyStock => $stock)
+                                                    
+                                        <tr>
+                                            <td>
+
+                                                @if($keyStock == 'ref')
+                                                    <select class="uk-select" name="stock_nutrition[{{$key_etting_stock_nutrition}}][{{$keyStock}}]" id="">
+                                                        <option selected disabled>SELECT ...</option>
+                                                        @foreach ($data['settingModel']->setting_stock_nutrition as $key_setting_stock_nutrition => $item)
+                                                            <option value="{{$key_setting_stock_nutrition}}" @if($key_setting_stock_nutrition == $stock) selected @endif>{{$item}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                @elseif($keyStock == 'value')
+                                                    <input name="stock_nutrition[{{$key}}][{{$keyStock}}]" class="uk-input" type="number" value="{{$stock['value']}}">
+                                                
+                                                @else
+                                                    <input name="stock_nutrition[{{$key}}][{{$keyStock}}]" class="uk-input" type="text" value="{{$stock['measurement']}}">
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        
                                 
-                                    @foreach ($data['settingModel']->setting_stock_nutrition as $key_etting_stock_nutrition => $item_etting_stock_nutrition)
+                                @endforeach 
+                                
+                                    {{-- @foreach ($data['settingModel']->setting_stock_nutrition as $key_etting_stock_nutrition => $item_etting_stock_nutrition)
                                         
                                           
                                         <tr>
@@ -45,8 +68,8 @@
                                             <td>
                                                 <button class="uk-button uk-button-default uk-border-rounded">{{$key_etting_stock_nutrition}}</button>
                                             </td>
-                                            @foreach ($data['stockModel']->stock_nutrition as $keyStock => $stock)
-                                            
+                                                @foreach ($data['stockModel']->stock_nutrition as $keyStock => $stock)
+                                                    
                                                     <td>
 
                                                         @if($keyStock == 'ref')
@@ -57,10 +80,10 @@
                                                                 @endforeach
                                                             </select>
                                                         @elseif($keyStock == 'value')
-                                                            <input name="stock_nutrition[{{$key}}][{{$keyStock}}]" class="uk-input" type="number" value="{{$stock}}">
+                                                            <input name="stock_nutrition[{{$key}}][{{$keyStock}}]" class="uk-input" type="number" value="{{$stock['value']}}">
                                                         
                                                         @else
-                                                            <input name="stock_nutrition[{{$key}}][{{$keyStock}}]" class="uk-input" type="text" value="{{$stock}}">
+                                                            <input name="stock_nutrition[{{$key}}][{{$keyStock}}]" class="uk-input" type="text" value="{{$stock['measurement']}}">
                                                         @endif
                                                     </td>
                                                     
@@ -68,7 +91,7 @@
                                             @endforeach
                                         </tr>
                                     
-                                    @endforeach
+                                    @endforeach --}}
                                 
                               
                             </tbody>

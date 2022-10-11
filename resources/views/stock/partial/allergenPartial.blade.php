@@ -17,14 +17,10 @@
                     
                 @endphp
             
-            
-                    
             <div class="uk-form-controls">
                 <input class="uk-checkbox" type="checkbox" name="stock_allergen[{{$loop->iteration}}]" value="{{$key}}" {{$checked}}>
                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper($setting_stock_allergen)}}</label>
             </div>
-                
-            
         @endforeach
         
     </div>

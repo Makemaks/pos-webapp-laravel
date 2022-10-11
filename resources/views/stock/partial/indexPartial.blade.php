@@ -26,15 +26,13 @@
         'Price',
         'Qty',
     ];
-
     
 @endphp
 
 
 
 
-@if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && 
-User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
+@if ($route != 'home-api')
 
     <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
         <thead>
@@ -49,11 +47,10 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                 <tr>
                     <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock->stock_id}}</a></td>
                     <td>{{$stock->stock_merchandise['stock_name']}}</td>
-
                     <td>
-                        @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_group) )
+                        {{-- @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_group) )
                             {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['plu_id']]['name']}}
-                        @endif
+                        @endi --}}
                     </td>
 
                     <td>{{$stock->stock_merchandise['random_code']}}</td>

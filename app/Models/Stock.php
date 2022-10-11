@@ -106,7 +106,7 @@ class Stock extends Model
 
         'stock_allergen' => '{}',
         'stock_nutrition' => '{
-            "ref": "",
+            "setting_stock_id": "",
             "value": "",
             "measurement": ""
         }',

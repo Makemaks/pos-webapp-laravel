@@ -31,7 +31,7 @@ class Order extends Model
     protected $attributes = [
 
         "order_setting_vat" => '{}',
-        "order_status" => 0,
+        "order_status" => '{}',
         "order_finalise_key" => '{}',
         "order_group" => '{}',
     ];
@@ -39,7 +39,8 @@ class Order extends Model
     protected $casts = [
         "order_finalise_key" => 'array',
         "order_setting_vat" => 'array',
-        "order_group" => 'array'
+        "order_group" => 'array',
+        "order_status" => 'array',
     ];
 
 

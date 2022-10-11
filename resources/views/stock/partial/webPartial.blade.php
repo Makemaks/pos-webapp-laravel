@@ -1,6 +1,8 @@
 @php
    use App\Models\Stock;
    use App\Helpers\ConfigHelper;
+  
+
 @endphp
 
 
@@ -22,10 +24,9 @@
                                 <thead>
                                     <tr>
                                         <th>REF</th>
-                                        @foreach ($data['stockModel']->stock_web[1] as $key => $item)
-                                            <th>{{$key}}</th>
-                                        @endforeach
-                                        
+                                            @foreach (collect($data['stockModel']->stock_web)->first() as $key => $item)
+                                                <th>{{$key}}</th>
+                                            @endforeach
                                         <th></th>
                                     </tr>
                                 </thead>

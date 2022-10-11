@@ -5,13 +5,14 @@
     use App\Models\Stock;
     use App\Models\Receipt;
     use App\Models\User;
+   
 @endphp
 
 @push('scripts')
     <script src="{{ asset('js/app.js') }}"></script>
 @endpush
 
-<form action="{{route('order.update', $data['orderList']->first()->order_id)}}" method="POST">
+<form action="{{route('order.update', 0)}}" method="POST">
     @csrf
     @method('PATCH')
     <button type="submit" class="uk-button uk-button-default uk-border-rounded uk-button-primary">Save</button>
@@ -37,6 +38,7 @@
                                 $orderList = Order::Receipt('order_id', $order->order_id)->get();
                                 $orderTotal = Stock::OrderTotal($orderList);
                                 $userPerson = User::Person('user_id', $order->receipt_user_id)->first();
+                                dd(collect($order->order_status)->sortBy('updated_at')->first());
                             @endphp
                         <tr>
                             <td><a href="{{route('order.edit', $order->order_id)}}"
@@ -46,11 +48,10 @@
                             <td>{{$order->payment_type}}</td>
                             @endif
                             <td>
-                                <select class="uk-select" id="select-{{$order->order_id}}"
-                                    onchange="OrderStatus(this, {{$order->order_id}})" name="order[{{$orderKey}}][order_status]">
+                                <select class="uk-select">
                                     @foreach (Order::OrderStatus() as $status)
-                                    <option  value="{{$loop->iteration}}" @if($order->order_status == $loop->iteration)
-                                        selected = 'selected' @endif>{{$status}}</option>
+                                        <option  value="{{$loop->iteration}}" @if(collect($order->order_status)->sortBy('updated_at')->first()->status == $loop->iteration)
+                                            selected = 'selected' @endif>{{$status}}</option>
                                     @endforeach
                                 </select>
                                 <input type="text" value="{{$order->order_id}}" name="order[{{$orderKey}}][order_id]" hidden>

@@ -65,7 +65,7 @@
             <div>
                 @php
                     $exclude = [
-                        "non_stock","set_menu","case_size","recipe_link","stock_name","group_id","category_id","brand_id","stock_vat_id","stock_description","stock_quantity","plu_id"
+                        "setting_offer_id","non_stock","set_menu","case_size","recipe_link","stock_name","group_id","category_id","brand_id","stock_vat_id","stock_description","stock_quantity","plu_id"
                     ];
                 @endphp
                

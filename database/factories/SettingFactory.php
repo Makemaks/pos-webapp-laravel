@@ -222,6 +222,14 @@ class SettingFactory extends Factory
             "customer_marketing" => $this->faker->numberBetween($min = 0, $max = 1),
         ];
 
+        $setting_building = [
+            'address_id' => $this->faker->numberBetween($min = 1, $max = 20),
+            'status' => 'true',
+            'capacity' =>  $this->faker->numberBetween($min = 20, $max = 100),
+            'name' => $this->faker->word,
+            'description' => $this->faker->sentence,
+            'note'=> [$this->faker->sentence]
+        ];
 
         return [
             
@@ -247,6 +255,7 @@ class SettingFactory extends Factory
             'setting_key_type' => $setting_key_type,
             'setting_group' => $setting_group,
             'setting_customer' => $setting_customer,
+            'setting_building' => json_encode($setting_building)
            
             
         ];

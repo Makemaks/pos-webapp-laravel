@@ -53,6 +53,7 @@
                 "kp-categorie",
                 "preset-message",
                 "price-level-scheduler",
+                "floo plan",
             ],
             "sale" => [
                 "sale",

@@ -1,5 +1,8 @@
-<a class="uk-button uk-button-danger uk-border-rounded" href="{{route('reservation.create')}}">Save</a>
-<a class="uk-button uk-button-danger uk-border-rounded" href="{{route('reservation.create')}}">Delete</a>
+
+<form action="{{route('reservation.store')}}" method="post">
+    @csrf
+    <button class="uk-button uk-button-default uk-border-rounded uk-button-primary save-btn">Save</button>
+    <a class="uk-button uk-button-danger uk-border-rounded delete-btn">Delete</a>
 <table class="uk-table uk-table-small uk-table-divider">
     <thead>
         <tr>
@@ -12,13 +15,15 @@
             <th>Deposit</th>
         </tr>
     </thead>
+   
     <tbody>
+        <div id="appendDelete" style="display: none"></div>
         @isset($reservationList)
-        @foreach ($reservationList as $item)
+        @foreach ($reservationList as $key => $item)
         <tr>
-            <td><input class="uk-checkbox" type="checkbox"></td>
+            <td><input class="uk-checkbox" type="checkbox" name="reservation[{{$key}}][checked_row]"></td>
             <td>
-                <select class="uk-select" name="reservation_user_id">
+                <select class="uk-select" name="reservation[{{$key}}][reservation_user_id]">
                     @foreach($users as $user)
                         <option value="{{$user->user_id}}" {{ $user->user_id == $item->reservation_user_id ? 'selected' : '' }}>{{$user->UserPerson->person_name['person_firstname']}} {{$user->UserPerson->person_name['person_lastname']}}</option>
                     @endforeach
@@ -32,18 +37,19 @@
                     {{$item->reservation_started_at}} - {{$item->reservation_ended_at}}
                 </p>
             </td>
-            <td><input class="uk-input" type="text" name="reservation_quantity" value="{{$item->reservation_description ?? ''}}"></td>
+            <input class="uk-input" type="hidden" name="reservation[{{$key}}][reservation_id]" value="{{$item->reservation_id ?? ''}}">
+            <td><input class="uk-input" type="text" name="reservation[{{$key}}][reservation_description]" value="{{$item->reservation_description ?? ''}}"></td>
             <td>
-                <input class="uk-input" type="text" name="reservation_quantity" value="{{$item->reservation_quantity ?? ''}}">
+                <input class="uk-input" type="text" name="reservation[{{$key}}][reservation_quantity]" value="{{$item->reservation_quantity ?? ''}}">
             </td>
             <td>
-                <input class="uk-input" type="text" name="reservation_note" value="{{$item->reservation_note ?? ''}}">
+                <input class="uk-input" type="text" name="reservation[{{$key}}][reservation_note]" value="{{$item->reservation_note ?? ''}}">
             </td>
             <td>
-                <input class="uk-input" type="text" name="reservation_no_show_fee" value="{{$item->reservation_no_show_fee ?? ''}}">
+                <input class="uk-input" type="text" name="reservation[{{$key}}][reservation_no_show_fee]" value="{{$item->reservation_no_show_fee ?? ''}}">
             </td>
             <td>
-                <input class="uk-input" type="text" name="reservation_deposit" value="{{$item->reservation_deposit ?? ''}}">
+                <input class="uk-input" type="text" name="reservation[{{$key}}][reservation_deposit]" value="{{$item->reservation_deposit ?? ''}}">
             </td>
             {{-- <td>
                 <form action="{{route('reservation.destroy', $item->reservation_id)}}" method="POST">
@@ -56,12 +62,17 @@
         @endforeach
         @endisset
     </tbody>
+    </form>
 </table>
 @isset($reservationList)
 @include('partial.paginationPartial', ['paginator' => $reservationList])
 <script>
     $(document).on('click','.reserve-checkbox',function(){
         $(':checkbox').each(function () { this.checked = !this.checked; });
+    });
+    $(document).on('click','.delete-btn',function(){
+        $('#appendDelete').append("<input type='text' name='is_delete_request' value='true'></td>");
+        $('.save-btn').click();
     });
 </script>
 @endisset

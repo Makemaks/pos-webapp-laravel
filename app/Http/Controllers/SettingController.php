@@ -120,7 +120,9 @@ class SettingController extends Controller
             $settingInput = $request->except('_token', '_method', 'created_at', 'updated_at');
             
             // Check condition from request to update particular index of setting_stock_case_size
-            if ($request->setting_stock_case_size) {
+            if ($request->has('deleteButton')) {
+                $this->Destroy($request, $setting);
+            }elseif ($request->setting_stock_case_size) {
                 $this->settingModel->setting_stock_case_size = $settingInput['setting_stock_case_size'];
             } else if($request->index) {
                 $setting_stock_case_size = $this->settingModel->setting_stock_case_size;
@@ -157,10 +159,19 @@ class SettingController extends Controller
         if(is_array($currentRoute)) {
             $this->settingModel = Setting::find($currentRoute[0]);
             if($request->session()->get('view') == 'case-size'){
-                $setting_stock_case_size = $this->settingModel->setting_stock_case_size;
-                unset($setting_stock_case_size[$currentRoute[1]]);
-                $this->settingModel->setting_stock_case_size = $setting_stock_case_size;
-                $this->settingModel->update();
+                if($request->has('deleteButton')){
+                    foreach ($request->get('caseSize_checkbox') as $key => $value) {
+                        $setting_stock_case_size = $this->settingModel->setting_stock_case_size;
+                        unset($setting_stock_case_size[$value]);
+                        $this->settingModel->setting_stock_case_size = $setting_stock_case_size;
+                        $this->settingModel->update();
+                    }
+                }else{
+                    $setting_stock_case_size = $this->settingModel->setting_stock_case_size;
+                    unset($setting_stock_case_size[$currentRoute[1]]);
+                    $this->settingModel->setting_stock_case_size = $setting_stock_case_size;
+                    $this->settingModel->update();
+                }
                 $request->session()->reflash();
              
                 return view('menu.setting.settingCaseSize', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');

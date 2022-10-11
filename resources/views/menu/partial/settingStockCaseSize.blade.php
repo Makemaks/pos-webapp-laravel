@@ -4,9 +4,19 @@
 
 
 @if ($data['settingModel']->edit == false)
-    <button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="settingUpdate" value="settingUpdate">
-        Save
-    </button>
+    <ul class="uk-subnav">
+        <li>
+            <template></template>
+            <button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="settingUpdate" value="settingUpdate">
+            Save
+            </button>
+        </li>
+        <li>
+            <div>
+                <button class="uk-button uk-button-default uk-border-rounded" type="submit" form="settingUpdate" name="deleteButton" value="deleteButton">DELETE</button>
+            </div>
+        </li>
+    </ul>
 @endif
 
 <ul class="uk-subnav uk-subnav-pill" uk-switcher>
@@ -35,6 +45,7 @@
     
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>REF</th>
                                 @foreach ($data['settingModel']->setting_stock_case_size as $items)
                                     @foreach($items as $key => $item)
@@ -51,16 +62,25 @@
                             @foreach ($data['settingModel']->setting_stock_case_size  as $keysetting_stock_case_size => $setting_stock_case_size)
                                 <tr>
                                     <td>
+                                        <div class="uk-margin">
+                                            <div class="uk-form-controls">
+                                                <input class="uk-checkbox" type="checkbox"
+                                                    value="{{ $keysetting_stock_case_size}}"
+                                                    name="caseSize_checkbox[]">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
                                         <button class="uk-button uk-button-default uk-border-rounded">{{$keysetting_stock_case_size}}</button>
                                     </td>
                                     
                                     @foreach ($setting_stock_case_size as $key => $value)        
 
                                             <td>
-                                                @if ($key == 'size' || $key == 'default')
-                                                    
+                                                @if ($key == 'size')
                                                     <input class="uk-input" type="number" name="setting_stock_case_size[{{$keysetting_stock_case_size}}][{{$key}}]" value="{{$value}}">
-                                                
+                                                @elseif($key == 'default')
+                                                    <input class="uk-radio" type="radio" name="setting_stock_case_size[{{$keysetting_stock_case_size}}][{{$key}}]" value="{{$value}}" @if($value == 1) checked @endif>
                                                 @elseif ($key == 'description')
                                                     
                                                         <textarea class="uk-textarea" name="setting_stock_case_size[{{$keysetting_stock_case_size}}][{{$key}}]"> {{$value}}</textarea>
@@ -106,7 +126,9 @@
 
                 <div>
                     <label class="uk-form-label" for="form-stacked-text">Default</label>
-                    <input name="default" class="uk-input" type="number" placeholder="Default" value="{{$data['settingModel']['edit'] ? $data['settingModel']['setting_stock_case_size']['default'] : ''}}">
+                    <div>
+                        <input class="uk-radio" type="radio" name="default" value="{{$data['settingModel']['edit'] ? $data['settingModel']['setting_stock_case_size']['default'] : ''}}" checked>
+                    </div>
                 </div>
 
                 <div>

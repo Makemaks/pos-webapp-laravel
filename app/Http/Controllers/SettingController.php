@@ -16,7 +16,13 @@ class SettingController extends Controller
     private $settingList;
 
     public function Index(Request $request)
-    {
+    {       
+        //floor Plan code
+        if ($request->session()->has('view') && $request->session()->get('view') == 'floor-plan') {
+
+            dd('hello');
+
+        }
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
 

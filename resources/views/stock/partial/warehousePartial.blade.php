@@ -24,7 +24,7 @@
                     <th>REF</th>
 
                         @isset($data['warehouseList'])
-                            @foreach ($data['warehouseList']->toArray()[1] as $keystock => $item)
+                            @foreach (collect($data['warehouseList']->toArray())->first() as $keystock => $item)
                                 @if ($keystock != 'warehouse_id' && $keystock != 'warehouse_stock_id' && $keystock != 'created_at' &&	$keystock != 'updated_at')
                                     <th>{{Str::after($keystock, 'warehouse_')}}</th>
                                 @endif

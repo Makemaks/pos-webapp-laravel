@@ -68,6 +68,7 @@ class Stock extends Model
             "case_size": "",
             "plu_id": {},
             
+            "alternative_text": "",
             "current_stock": "",
             "days_to_order": "",
             "maximum_stock": "",

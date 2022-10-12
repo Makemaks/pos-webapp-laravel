@@ -1,16 +1,16 @@
 
 @php
-$data['settingModel']->setting_stock_group = collect($data['settingModel']->setting_stock_group)->where('type', '3');
-$data['settingModel']->edit = false;
-Session::flash('type', '3');
-Session::flash('view', 'plu');
-$data['settingModel']->setting_offer = collect($data['settingModel']->setting_offer)->where('boolean.type', '1');
+    $data['settingModel']->setting_stock_group = collect($data['settingModel']->setting_stock_group)->where('type', '3');
+    $data['settingModel']->edit = false;
+    Session::flash('type', '3');
+    Session::flash('view', 'plu');
+    $data['settingModel']->setting_offer = collect($data['settingModel']->setting_offer)->where('boolean.type', '1');
 
 @endphp
 
 <div  class="uk-card uk-card-default uk-padding">
 <h3>GENERAL</h3>
-@include('menu.partial.settingStockGroupPartial')
+    @include('menu.partial.settingStockGroupPartial')
 </div>
 
 

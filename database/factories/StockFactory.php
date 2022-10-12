@@ -89,6 +89,8 @@ class StockFactory extends Factory
             "setting_offer_id" => $this->faker->randomElement($array = array(NULL, $setting_offer_id)),
             "stock_type"=> $this->faker->numberBetween($min = 0, $max = 1),
             "stock_maximum_cart_quantity" => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 2) )),
+            "alternative_text" => '',
+            "master_plu_id" =>  $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 20) )),
         ];
 
         for ($i = 0; $i < 15; $i++) {

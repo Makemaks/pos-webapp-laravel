@@ -118,8 +118,16 @@
                     @endforeach
                 </select>
             </div>
+
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-stacked-text">RANDOM CODE</label> 
+                <input class="uk-input" type="text" value="{{  old('stock_merchandise[random_code]',  isset($data['stockModel']->stock_merchandise['random_code']) )}}" name="stock_merchandise[random_code]">
+            </div>
         
-            
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-stacked-text">TAG</label> 
+                <input class="uk-input" type="text" value="{{  old('stock_merchandise[stock_tag]',  isset($data['stockModel']->stock_merchandise['stock_tag']) )}}" name="stock_merchandise[stock_tag]">
+            </div>
         </div>
     </div>
     

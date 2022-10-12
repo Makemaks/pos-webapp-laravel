@@ -2,14 +2,11 @@
    use App\Models\Stock;
    use App\Models\User;
    use App\Models\Company;
-
+ 
 
   $userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
-
-
-     
-  /* $companyList = Company::Contact('company_store_id',$userModel->person_user_id)->get(); */
 @endphp
+
 
 <div class="uk-grid-match uk-grid-small uk-child-width-1-2@xl" uk-grid>
     <div>
@@ -21,16 +18,18 @@
                 <input name="stock_merchandise[non_stock]" value="0" class="uk-checkbox" type="checkbox" @if (isset($data['stockModel']->stock_merchandise['non_stock']) == 0)checked @endif>
             </div>
         
-            
             <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">{{Str::upper('plu_id')}}</label>
-                <select class="uk-select" name="stock_merchandise[stock_plu_id]">
+                <label class="uk-form-label" for="form-stacked-text">{{Str::upper('current stock')}}</label>
+                <input name="stock_merchandise[non_stock]" value="0" class="uk-checkbox" type="checkbox" @if (isset($data['stockModel']->stock_merchandise['non_stock']) == 0)checked @endif>
+            </div>
+
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-stacked-text">{{Str::upper('master plu')}}</label>
+                <select class="uk-select" name="stock_merchandise['master_plu_id]">
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_group)
-                        @foreach ($data['settingModel']->setting_stock_group as $key => $plu)
-                            @if ($plu['type'] == 2)
-                                <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_merchandise['plu_id'])) selected @endif>{{$plu['name']}}</option>
-                            @endif
+                        @foreach (collect($data['settingModel']->setting_stock_group)->where('type', 3) as $key => $plu)
+                           <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_merchandise['master_plu_id'])) selected @endif>{{$plu['name']}}</option>
                         @endforeach
                     @endif
                 </select>
@@ -94,7 +93,7 @@
     
     <div>
         <div class="uk-card uk-card-default uk-padding">
-            @include('stock.partial.transferPartial')
+            @include('stock.partial.warehousePartial')
         </div>
     </div>
 

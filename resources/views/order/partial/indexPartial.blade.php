@@ -55,7 +55,7 @@ use App\Models\User;
                         </td>
                         <td>{{ MathHelper::FloatRoundUp($orderTotal, 2) }}</td>
                         <td>{{$order->store_name}}</td>
-                        <td>{{$data['settingModel']->setting_pos[1]['name']}}</td>
+                        <td>{{$data['settingModel']->setting_pos[1]['name'] ?? ''}}</td>
                         <td>{{ json_decode($userPerson->person_name, true)['person_firstname'] }}</td>
                         <td>{{$order->created_at}}</td>
                         <td>

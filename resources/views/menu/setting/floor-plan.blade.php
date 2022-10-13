@@ -14,8 +14,8 @@
             <th>Name</th>
             <th>Description</th>
             <th>Note</th>
-            <th>Add Room</th>
-
+            <th>Room</th>
+            {{-- <th></th> --}}
         </tr>
     </thead>
     <tbody>
@@ -31,7 +31,8 @@
            <td>{{$decodeBuildingData->name}}</td>
            <td>{{$decodeBuildingData->description}}</td>
            <td>{{$decodeBuildingData->note[0]}}</td>
-           <td><a class="uk-button uk-button-primary uk-border-rounded delete-btn">Add</a></td>
+           <td><input class="uk-input" step="0.01" type="number" name="reservation_deposit"></td></td>
+           {{-- <td><input class="uk-input" step="0.01" type="number" name="reservation_deposit"></td> --}}
        </tr>
        @endforeach
     </tbody>

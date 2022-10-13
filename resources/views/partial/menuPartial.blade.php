@@ -56,6 +56,7 @@
                 "price-level-scheduler",
                 "nutrition",
                 "allergen"
+                "floor-plan",
             ],
             "sale" => [
                 "sale",

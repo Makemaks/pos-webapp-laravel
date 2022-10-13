@@ -4,13 +4,15 @@
 @endpush
 
 @php
-$route = Str::before(Request::route()->getName(), '.');
+    $route = Str::before(Request::route()->getName(), '.');
 @endphp
 
 @section('content')
     <div class="">
-        <div>
-            @include('dashboard.partial.datePeriodPartial')
+        
+     
+        <div class="uk-margin">
+            @include('partial.reportPartial')
         </div>
 
         <div class="uk-child-width-1-2@s uk-grid-match" uk-grid>

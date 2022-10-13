@@ -5,11 +5,6 @@
         <fieldset class="uk-fieldset">
     
             <legend class="uk-legend"></legend>
-        
-            {{-- <div class="uk-margin">
-                <label for="">Guest</label>
-                <input class="uk-input" type="text"  name="reservation_guest" value="">
-            </div> --}}
             <div class="uk-margin">
                 <label for="">Choose User</label>
                 <select class="uk-select" name="reservation_user_id">

@@ -20,9 +20,10 @@ class ReservationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {   
+        $users =  User::get();
         $reservationList = Reservation::paginate(10);
-        return view('reservation.index', compact('reservationList'));
+        return view('reservation.index', compact('reservationList','users'));
     }
 
     /**
@@ -43,10 +44,25 @@ class ReservationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {  
-        $reservation = $request->except('_token');
-        Reservation::create($reservation);
-        return redirect()->route('reservation.index');
+    {   
+        if(isset($request->is_delete_request)) {
+            foreach($request->reservation as $reservationData) {
+                if(isset($reservationData['checked_row'])) {
+                    Reservation::where('reservation_id',$reservationData['reservation_id'])->delete();
+                }
+            }
+            return redirect()->route('reservation.index');
+        }
+        if($request->has('reservation')) {
+            foreach($request->reservation as $reservationData) {
+                Reservation::where('reservation_id',$reservationData['reservation_id'])->update($reservationData);
+                return redirect()->route('reservation.index');
+            }
+        } else {
+            $reservation = $request->except('_token');
+            Reservation::create($reservation);
+            return redirect()->route('reservation.index');
+        }
     }
 
 
@@ -83,8 +99,9 @@ class ReservationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy(Request $request,$id)
+    {   
+    dd($request->all());
        Reservation::destroy($id);
        return redirect()->route('reservation.index');
     }

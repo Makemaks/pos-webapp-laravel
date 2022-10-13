@@ -16,57 +16,20 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     private $datePeriod;
+
     public function index(Request $request)
     {
 
-        $datePeriod = Store::DatePeriod($request);
-
-        // orderSetting List
-        $this->orderSettingList = $datePeriod['orderSettingList'];
-
-        // Stock Each Receipt List
-        $this->orderListASC = $datePeriod['orderListASC'];
-
-        // clerk List
-        $this->clerkList = $datePeriod['clerkList'];
-
-        // attendance by trail
-        $this->attendanceModel = $datePeriod['attendanceModel'];
-
-        // Account Last Used
-        $this->accountModel = $datePeriod['accountModel'];
-
-        // Account Company
-        $this->accountCompanyModel = $datePeriod['accountCompanyModel'];
-
-        // clerk Payrate
-        $this->employmentList = $datePeriod['employmentList'];
-
-        // dropdown option
-        $this->clerkBreakdownOption = $datePeriod['clerkBreakdownOption'];
-
-        // title and table each report
-        $this->title = $datePeriod['title'];
-        $this->table = $datePeriod['table'];
-
-        // date period
-        $this->started = $datePeriod['started'];
-        $this->ended = $datePeriod['ended'];
-
-        // addresses
-        $this->addressCompany = $datePeriod['addressCompany'];
-        $this->addressPerson = $datePeriod['addressPerson'];
-
-        // dept average
-        $this->settingModel = $datePeriod['settingModel'];
-        $this->orderList = $datePeriod['orderList'];
+        $this->Init($request);
 
         // If its export PDF / CSV
         if ($request->fileName) {
             // If PDF
             $this->title = $request->session()->get('title')['title'];
             if ($request->format === 'pdf') {
-                $this->pdfView = view('report.partial.pages.' . $request->fileName, ['data' => $this->Data()])->render();
+                $this->pdfView = view('report.partial.' . $request->fileName, ['data' => $this->Data()])->render();
                 $render = \view('report.create', ['data' => $this->Data()])->render();
                 $pdf = App::make('dompdf.wrapper');
                 $pdf->loadHTML($render)->setPaper('a4', 'portrait')->setWarnings(false)->save('myfile.pdf');
@@ -80,28 +43,23 @@ class ReportController extends Controller
             $request->session()->forget('user');
 
             // New Session, If user Filter 
-            if ($datePeriod['user_id']) {
+            if ($request->has('report') && $this->datePeriod['user_id']) {
 
                 $request->session()->flash('user', [
-                    'started_at' => $datePeriod['started'],
-                    'ended_at' => $datePeriod['ended'],
-                    'user_id' => $datePeriod['user_id'],
-                    'title' => $datePeriod['title'],
+                    'started_at' => $this->datePeriod['started'],
+                    'ended_at' => $this->datePeriod['ended'],
+                    'user_id' => $this->datePeriod['user_id'],
+                    'title' => $this->datePeriod['title'],
                 ]);
             } elseif ($request->started_at && $request->ended_at) {
 
                 // if period/date range only
                 $request->session()->flash('date', [
-                    'started_at' => $datePeriod['started'],
-                    'ended_at' => $datePeriod['ended'],
-                    'title' => $datePeriod['title'],
+                    'started_at' => $this->datePeriod['started'],
+                    'ended_at' => $this->datePeriod['ended'],
+                    'title' => $this->datePeriod['title'],
                 ]);
-            } else {
-                // No Filters
-                $request->session()->flash('title', [
-                    'title' => $datePeriod['title'],
-                ]);
-            }
+            } 
 
             return view('report.index', ['data' => $this->Data()]);
         }
@@ -171,6 +129,50 @@ class ReportController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function Init(Request $request){
+        $this->datePeriod = Store::DatePeriod($request);
+
+        // orderSetting List
+        $this->orderSettingList = $this->datePeriod['orderSettingList'];
+
+        // Stock Each Receipt List
+        $this->orderListASC = $this->datePeriod['orderListASC'];
+
+        // clerk List
+        $this->clerkList = $this->datePeriod['clerkList'];
+
+        // attendance by trail
+        $this->attendanceModel = $this->datePeriod['attendanceModel'];
+
+        // Account Last Used
+        $this->accountModel = $this->datePeriod['accountModel'];
+
+        // Account Company
+        $this->accountCompanyModel = $this->datePeriod['accountCompanyModel'];
+
+        // clerk Payrate
+        $this->employmentList = $this->datePeriod['employmentList'];
+
+        // dropdown option
+        $this->clerkBreakdownOption = $this->datePeriod['clerkBreakdownOption'];
+
+        // title and table each report
+        $this->title = $this->datePeriod['title'];
+        $this->table = $this->datePeriod['table'];
+
+        // date period
+        $this->started = $this->datePeriod['started'];
+        $this->ended = $this->datePeriod['ended'];
+
+        // addresses
+        $this->addressCompany = $this->datePeriod['addressCompany'];
+        $this->addressPerson = $this->datePeriod['addressPerson'];
+
+        // dept average
+        $this->settingModel = $this->datePeriod['settingModel'];
+        $this->orderList = $this->datePeriod['orderList'];
     }
 
     private function Data()

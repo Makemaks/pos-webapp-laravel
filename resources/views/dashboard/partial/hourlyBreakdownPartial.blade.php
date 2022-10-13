@@ -74,7 +74,7 @@ if (count($orderList) > 0) {
     ];
 }
 @endphp
-<div>
+<div class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
     <h3 class="uk-card-title">HOURLY BREAKDOWN</h3>
 
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">

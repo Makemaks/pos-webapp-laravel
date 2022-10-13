@@ -235,6 +235,14 @@ class SettingFactory extends Factory
             ];
         }
 
+        $setting_building = [
+            'address_id' => $this->faker->numberBetween($min = 1, $max = 20),
+            'status' => $this->faker->numberBetween($min = 0, $max = 1),
+            'capacity' =>  $this->faker->numberBetween($min = 20, $max = 100),
+            'name' => $this->faker->word,
+            'description' => $this->faker->sentence,
+            'note'=> [$this->faker->sentence]
+        ];
 
         return [
             
@@ -260,9 +268,15 @@ class SettingFactory extends Factory
             'setting_key_type' => $setting_key_type,
             'setting_group' => $setting_group,
             'setting_customer' => $setting_customer,
+<<<<<<< HEAD
             'setting_stock_tag_group' => $setting_stock_tag_group,
             'setting_preset_message' => $setting_preset_message,
             'setting_price_level_scheduler' => $setting_price_level_scheduler,
+=======
+            'setting_building' => json_encode($setting_building)
+           
+            
+>>>>>>> shaiv
         ];
     }
 }

@@ -213,6 +213,14 @@ class MenuController extends Controller
 
                 break;
 
+
+            case 'floor-plan':
+                $request->session()->flash($request->view, 'view');
+                $this->settingModel = Setting::get();
+                return view('menu.setting.floor-plan', ['data' => $this->Data()]);
+
+                    break;
+
             case (in_array($request->view, Warehouse::WarehouseType())):
                 
                 $view = array_search( $request->view, Warehouse::WarehouseType());

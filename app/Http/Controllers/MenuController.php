@@ -203,7 +203,7 @@ class MenuController extends Controller
 
             case 'floor-plan':
                 $request->session()->flash($request->view, 'view');
-
+                $this->settingModel = Setting::get();
                 return view('menu.setting.floor-plan', ['data' => $this->Data()]);
 
                     break;

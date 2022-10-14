@@ -17,10 +17,10 @@ class SettingController extends Controller
 
     public function Index(Request $request)
     {       
-        //floor Plan code
-        if ($request->session()->has('view') && $request->session()->get('view') == 'floor-plan') {
-
-            dd('hello');
+        if($request->has('form_type') && $request->form_type == 'building_data') {
+            $settingData = Setting::paginate(10);
+            $settingId = $request->setting_id;
+            return view('menu.setting.floor-plan-room', compact('settingId','settingData'));
 
         }
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
@@ -49,7 +49,52 @@ class SettingController extends Controller
     }
 
     public function Store(Request $request)
-    {
+    {   
+        if($request->has('form_type') && $request->form_type == 'building_data') {
+            foreach($request->setting as $settingData) {
+                $setting_building = [
+                    'address_id' => $settingData['building_address_id'],
+                    'status' => $settingData['building_status'],
+                    'capacity' =>  $settingData['building_capacity'],
+                    'name' => $settingData['building_name'],
+                    'description' => $settingData['building_description'],
+                    'note'=> [$settingData['building_note']]
+                ];
+                Setting::where('setting_id',$settingData['setting_id'])->update(['setting_building'=>json_encode($setting_building)]);
+            }
+
+            return redirect()->back();
+        }
+
+        if($request->has('form_type') && $request->form_type == 'room_data') {
+            $settingData =  Setting::find($request['setting_id']);
+            $decodeBuilding = json_decode($settingData->setting_building);
+            $roomData = [
+                'status' => $request->room_status,
+                'capacity' => $request->room_capacity,
+                'name' => $request->room_name,
+                'description' => $request->room_description,
+                'size' => [
+                    'height' => $request->room_height,
+                    'width' => $request->room_width,
+                ],
+                'section' => [],
+                'note' => [],
+            ];
+            
+            $setting_building = [
+                'address_id' => $decodeBuilding->address_id,
+                'status' => $decodeBuilding->status,
+                'capacity' =>  $decodeBuilding->capacity,
+                'name' => $decodeBuilding->name,
+                'description' => $decodeBuilding->description,
+                'note'=> [$decodeBuilding->note[0]],
+                'room' => [],
+            ];
+            array_push($setting_building['room'],$roomData);
+            Setting::where('setting_id',$request['setting_id'])->update(['setting_building'=>json_encode($setting_building)]);
+            return redirect()->back();
+        }
         // Check condition from request to add new setting_stock_group
         if ($request->code) {
             $this->settingModel = Setting::find($request['setting_id']);
@@ -86,7 +131,7 @@ class SettingController extends Controller
     }
 
     public function Edit(Request $request, $setting)
-    {
+    {   
         $this->settingModel = Setting::find($setting);
 
         // Check condition from url to edit setting_stock_group

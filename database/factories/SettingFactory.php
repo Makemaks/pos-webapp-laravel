@@ -228,7 +228,8 @@ class SettingFactory extends Factory
             'capacity' =>  $this->faker->numberBetween($min = 20, $max = 100),
             'name' => $this->faker->word,
             'description' => $this->faker->sentence,
-            'note'=> [$this->faker->sentence]
+            'note'=> [$this->faker->sentence],
+            'room' => [],
         ];
 
         return [

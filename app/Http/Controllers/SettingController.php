@@ -16,12 +16,11 @@ class SettingController extends Controller
     private $settingList;
 
     public function Index(Request $request)
-    {       
-        if($request->has('form_type') && $request->form_type == 'building_data') {
-            $settingData = Setting::paginate(10);
+    {
+        if ($request->has('form_type') && $request->form_type == 'building_data') {
             $settingId = $request->setting_id;
-            return view('menu.setting.floor-plan-room', compact('settingId','settingData'));
-
+            $settingData = Setting::where('setting_id', $settingId)->first();
+            return view('menu.setting.floor-plan-room', compact('settingId', 'settingData'));
         }
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
@@ -50,25 +49,45 @@ class SettingController extends Controller
 
     public function Store(Request $request)
     {   
-        if($request->has('form_type') && $request->form_type == 'building_data') {
-            foreach($request->setting as $settingData) {
+        if(isset($request['setting_id'])) {
+            $settingData =  Setting::find($request['setting_id']);
+            $decodeBuilding = json_decode($settingData->setting_building);
+        }
+        
+        if ($request->has('form_type') && $request->form_type == 'multipe_room_data') {
+            $setting_building = [
+                'address_id' => $decodeBuilding->address_id,
+                'status' => $decodeBuilding->status,
+                'capacity' =>  $decodeBuilding->capacity,
+                'name' => $decodeBuilding->name,
+                'description' => $decodeBuilding->description,
+                'note' => [$decodeBuilding->note[0]],
+                'room' => [],
+            ];
+            foreach ($request->room as $singleRoomData) {
+                array_push($setting_building['room'], $singleRoomData);
+            }
+            Setting::where('setting_id', $request['setting_id'])->update(['setting_building' => json_encode($setting_building)]);
+            return redirect()->back();
+        }
+        if ($request->has('form_type') && $request->form_type == 'building_data') {
+            foreach ($request->setting as $settingData) {
                 $setting_building = [
                     'address_id' => $settingData['building_address_id'],
                     'status' => $settingData['building_status'],
                     'capacity' =>  $settingData['building_capacity'],
                     'name' => $settingData['building_name'],
                     'description' => $settingData['building_description'],
-                    'note'=> [$settingData['building_note']]
+                    'note' => [$settingData['building_note']]
                 ];
-                Setting::where('setting_id',$settingData['setting_id'])->update(['setting_building'=>json_encode($setting_building)]);
+                Setting::where('setting_id', $settingData['setting_id'])->update(['setting_building' => json_encode($setting_building)]);
             }
 
             return redirect()->back();
         }
 
-        if($request->has('form_type') && $request->form_type == 'room_data') {
-            $settingData =  Setting::find($request['setting_id']);
-            $decodeBuilding = json_decode($settingData->setting_building);
+        if ($request->has('form_type') && $request->form_type == 'room_data') {
+        
             $roomData = [
                 'status' => $request->room_status,
                 'capacity' => $request->room_capacity,
@@ -81,18 +100,23 @@ class SettingController extends Controller
                 'section' => [],
                 'note' => [],
             ];
-            
             $setting_building = [
                 'address_id' => $decodeBuilding->address_id,
                 'status' => $decodeBuilding->status,
                 'capacity' =>  $decodeBuilding->capacity,
                 'name' => $decodeBuilding->name,
                 'description' => $decodeBuilding->description,
-                'note'=> [$decodeBuilding->note[0]],
+                'note' => [$decodeBuilding->note[0]],
                 'room' => [],
             ];
-            array_push($setting_building['room'],$roomData);
-            Setting::where('setting_id',$request['setting_id'])->update(['setting_building'=>json_encode($setting_building)]);
+            if (count($decodeBuilding->room) > 0) {
+                foreach ($decodeBuilding->room as $singleRoomData) {
+                    array_push($setting_building['room'], $singleRoomData);
+                }
+            }
+            array_push($setting_building['room'], json_decode(json_encode($roomData)));
+
+            Setting::where('setting_id', $request['setting_id'])->update(['setting_building' => json_encode($setting_building)]);
             return redirect()->back();
         }
         // Check condition from request to add new setting_stock_group
@@ -100,7 +124,7 @@ class SettingController extends Controller
             $this->settingModel = Setting::find($request['setting_id']);
             $settingInput = $request->except('_token', '_method', 'setting_id', 'created_at', 'updated_at');
             $stock_group = $this->settingModel->setting_stock_group;
-            if(!empty($stock_group)){
+            if (!empty($stock_group)) {
                 $last_key = (int)collect($stock_group)->keys()->last();
                 $stock_group[$last_key + 1] = $settingInput;
             } else {
@@ -112,10 +136,10 @@ class SettingController extends Controller
         }
 
         if ($request->hasFile('setting_logo_url')) {
-            
+
             $upload = $request->setting_logo_url->store('/images/uploads');
         }
-        
+
         $settingInput = $request->except('_token', '_method');
         $settingInput['setting_logo_url'] = $upload;
 
@@ -131,13 +155,13 @@ class SettingController extends Controller
     }
 
     public function Edit(Request $request, $setting)
-    {   
+    {
         $this->settingModel = Setting::find($setting);
 
         // Check condition from url to edit setting_stock_group
-        if($request->has('index')) {
+        if ($request->has('index')) {
             $request->session()->reflash();
-           
+
             $this->settingModel['setting_stock_group'] = $this->settingModel['setting_stock_group'][$request->index];
             $this->settingModel['edit'] = true;
             return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
@@ -154,7 +178,7 @@ class SettingController extends Controller
         // Check condition from request to update particular index of setting_stock_group
         if ($request->setting_stock_group) {
             $this->settingModel->setting_stock_group = $settingInput['setting_stock_group'];
-        } else if($request->code) {
+        } else if ($request->code) {
             $setting_stock_group = $this->settingModel->setting_stock_group;
             $update_setting_stock_group_data = $setting_stock_group[$request->index];
             $update_setting_stock_group_data['code'] = $request->code;
@@ -169,20 +193,18 @@ class SettingController extends Controller
     public function Destroy(Request $request, $setting)
     {
         $currentRoute = explode('-', $setting);
-        if(is_array($currentRoute)) {
+        if (is_array($currentRoute)) {
             $this->settingModel = Setting::find($currentRoute[0]);
             $setting_stock_group = $this->settingModel->setting_stock_group;
             unset($setting_stock_group[$currentRoute[1]]);
             $this->settingModel->setting_stock_group = $setting_stock_group;
             $this->settingModel->update();
             $request->session()->reflash();
-         
+
             return view('menu.setting.settingStockGroup', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         } else {
             Setting::destroy($setting);
         }
-        
-       
     }
 
     private function Data()

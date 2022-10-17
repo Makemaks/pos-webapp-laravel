@@ -20,11 +20,28 @@ class Warehouse extends Model
         'warehouse_reason' => '{
             "type": "",
             "description": ""
-        }'
+        }',
+        'warehouse_stock_cost' => '{
+            "1" : {
+                "name": "",
+                "description": "",
+                "cost"
+                "schedule_datetime": "",
+                "setting_stock_cost_group_id" : ""
+            },
+        }',
+        'warehouse_stock_cost_quantity' => '{
+            "1": "{
+                "warehouse_stock_cost_id" = "",
+                "warehouse_stock_cost_quantity" = "",
+            }"
+        }',
     ];
 
     protected $casts = [
-        "warehouse_reason" => 'array'
+        "warehouse_reason" => 'array',
+        "warehouse_stock_cost" => 'array',
+        "warehouse_stock_cost_quantity" => 'array',
     ];
 
     public static function Store(){

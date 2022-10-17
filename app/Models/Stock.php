@@ -30,7 +30,11 @@ class Stock extends Model
         'stock_store_id' => 1,
         "stock_cost" => '{
             "1": {
-                "1": ""
+                "name": "",
+                "description": "",
+                "cost": "",
+                "schedule_datetime": "",
+                "setting_stock_cost_group_id" : ""
             }
         }',
 
@@ -112,7 +116,10 @@ class Stock extends Model
             "measurement": ""
         }',
         'stock_cost_quantity' => '{
-            "1": "1"
+            "1": "{
+                "stock_cost_id" = "",
+                "warehouse_stock_cost_quantity" = "",
+            }"
         }',
 
         'stock_manager_special' => '{

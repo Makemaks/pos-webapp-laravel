@@ -33,6 +33,8 @@ return new class extends Migration
             $table->json('setting_printer')->nullable();
             $table->json('setting_stock_tag_group')->nullable();
             $table->json('setting_stock_tag')->nullable();
+            $table->json('setting_stock_cost')->nullable();
+           
 
             $table->json('setting_message_notification_category')->nullable();
             $table->json('setting_message_group')->nullable();
@@ -62,7 +64,7 @@ return new class extends Migration
             $table->json('setting_customer')->nullable();
 
             $table->json('setting_preset_message')->nullable();
-            $table->json('setting_price_level_scheduler')->nullable();
+           
 
           
             $table->json('setting_building')->nullable()->comment('address_id::status::capacity::name::description::note[]::room[]');

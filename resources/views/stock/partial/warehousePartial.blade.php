@@ -4,13 +4,11 @@
     use App\Models\User;
     use App\Models\Warehouse;
     use Carbon\Carbon;
-   
-    $warehouseList = new Stock();
     
 @endphp
 
 
-<ul class="uk-subnav uk-subnav-pill" uk-switcher>
+<ul class="uk-subnav uk-subnav-pill" uk-switcher="{{$active}}">
     <li><a href="#" uk-icon="list"></a></li>
     <li><a href="#" uk-icon="plus"></a></li>
 </ul>
@@ -152,10 +150,6 @@
            
 
     <li>
-            <form action="">
-                @include('warehouse.partial.createPartial')
-                <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button>
-         
-            </form>
+        @include('warehouse.partial.createPartial')
     </li>
 </ul>

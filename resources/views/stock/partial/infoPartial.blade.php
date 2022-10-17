@@ -1,5 +1,7 @@
 @php
    use App\Models\Stock;
+   $route = Str::after(Request::route()->getName(), '.');
+   
 @endphp
 
 
@@ -134,7 +136,7 @@
    <div>
         <div class="uk-card uk-card-default uk-padding">
         
-            <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+            <ul class="uk-subnav uk-subnav-pill" uk-switcher="{{$active}}">
                 <li><a href="#" uk-icon="list"></a></li>
                 <li><a href="#" uk-icon="plus"></a></li>
             </ul>
@@ -216,7 +218,7 @@
                             </thead>
                             <tbody>
 
-                                @for ($i = 0; $i < 1; $i++)
+                                @for ($i = 0; $i < 5; $i++)
                                     <tr>
                                         <td>
                                             <button class="uk-button uk-button-default uk-border-rounded">

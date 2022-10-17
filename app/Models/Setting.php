@@ -319,8 +319,7 @@ class Setting extends Model
             "customer_print": {},
             "customer_marketing": {}
         }',
-       
-      
+
     ];
 
     protected $casts = [

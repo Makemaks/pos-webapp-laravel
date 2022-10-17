@@ -55,7 +55,7 @@
                 "preset-message",
                 "price-level-scheduler",
                 "nutrition",
-                "allergen"
+                "allergen",
                 "floor-plan",
             ],
             "sale" => [

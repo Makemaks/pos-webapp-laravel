@@ -23,6 +23,7 @@ class ReportController extends Controller
     {
 
         $this->Init($request);
+        $a = $request->all();
 
         // If its export PDF / CSV
         if ($request->fileName) {
@@ -60,6 +61,8 @@ class ReportController extends Controller
                     'title' => $this->datePeriod['title'],
                 ]);
             } 
+
+            $request->session()->flash('report', $request->report);
 
             return view('report.index', ['data' => $this->Data()]);
         }

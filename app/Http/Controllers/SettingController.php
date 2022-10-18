@@ -96,7 +96,6 @@ class SettingController extends Controller
         }
 
         if ($request->has('form_type') && $request->form_type == 'room_data') {
-
             $roomData = [
                 'status' => $request->room_status,
                 'capacity' => $request->room_capacity,

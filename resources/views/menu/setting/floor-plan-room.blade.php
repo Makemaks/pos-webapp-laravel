@@ -29,11 +29,16 @@
                     <th>Description</th>
                     <th>Size (Height)</th>
                     <th>Size (Width)</th>
+<<<<<<< HEAD
 
+=======
+                    
+>>>>>>> a845d1a09ddafa050b3a6b0ae37d670b611d21ab
                 </tr>
             </thead>
             <tbody>
                 @php
+<<<<<<< HEAD
                 $setting = json_decode($settingData->setting_building);
                 @endphp
                 
@@ -59,6 +64,32 @@
                     @endforeach
                     <button  name="form_type" class="uk-button uk-button-default uk-border-rounded uk-button-primary save-btn save-btn" style="display: none"
                         value="multipe_room_data">
+=======
+                 $setting = json_decode($settingData->setting_building);
+                @endphp
+                  <form action="{{route('setting.store')}}" method="post">
+                    @csrf
+                        @foreach($setting->room as $key => $roomData)
+                            <tr>
+                                <input type="hidden" type="text" name="setting[{{$key}}][setting_id]"
+                                    value="{{$key}}">
+                                <td><input class="uk-input" type="number" name="setting[{{$key}}][status]"
+                                    value="{{$roomData->status ?? ''}}"></td>
+                                <td><input class="uk-input" type="number" name="setting[{{$key}}][capacity]"
+                                    value="{{$roomData->capacity ?? ''}}"></td>
+                                <td><input class="uk-input" type="text" name="setting[{{$key}}][name]"
+                                    value="{{$roomData->name ?? ''}}"></td>
+                                <td><input class="uk-input" type="text" name="setting[{{$key}}][description]"
+                                    value="{{$roomData->description ?? ''}}"></td>
+                                <td><input class="uk-input" type="text" name="setting[{{$key}}][height]"
+                                    value="{{$roomData->size->height ?? ''}}"></td>
+                                <td><input class="uk-input" type="text" name="setting[{{$key}}][width]"
+                                    value="{{$roomData->size->width ?? ''}}"></td>
+                            </tr>
+                        @endforeach
+                        <button type="submit" name="form_type" class="save-btn" style="display: none" value="room_data">
+                  </form>
+>>>>>>> a845d1a09ddafa050b3a6b0ae37d670b611d21ab
             </tbody>
         </table>
     </form>

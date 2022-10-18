@@ -48,12 +48,12 @@ class SettingController extends Controller
     }
 
     public function Store(Request $request)
-    {   
-        if(isset($request['setting_id'])) {
+    {
+        if (isset($request['setting_id'])) {
             $settingData =  Setting::find($request['setting_id']);
             $decodeBuilding = json_decode($settingData->setting_building);
         }
-        
+
         if ($request->has('form_type') && $request->form_type == 'multipe_room_data') {
             $setting_building = [
                 'address_id' => $decodeBuilding->address_id,
@@ -64,6 +64,15 @@ class SettingController extends Controller
                 'note' => [$decodeBuilding->note[0]],
                 'room' => [],
             ];
+            if ($request->has('is_delete_request') && $request->is_delete_request == 'true') {
+                foreach ($request->room as $singleRoomData) {
+                    if (!isset($singleRoomData['checked_row'])) {
+                        array_push($setting_building['room'], $singleRoomData);
+                    }
+                }
+                Setting::where('setting_id', $request['setting_id'])->update(['setting_building' => json_encode($setting_building)]);
+                return redirect()->back();
+            }
             foreach ($request->room as $singleRoomData) {
                 array_push($setting_building['room'], $singleRoomData);
             }
@@ -87,7 +96,7 @@ class SettingController extends Controller
         }
 
         if ($request->has('form_type') && $request->form_type == 'room_data') {
-        
+
             $roomData = [
                 'status' => $request->room_status,
                 'capacity' => $request->room_capacity,

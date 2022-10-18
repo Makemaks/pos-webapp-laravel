@@ -15,6 +15,7 @@
             <th>Name</th>
             <th>Description</th>
             <th>Note</th>
+            <th>Room Count</th>
             <th>Room</th>
         </tr>
     </thead>
@@ -38,6 +39,7 @@
                         value="{{$decodeBuildingData->description}}"></td>
                 <td><input class="uk-input" type="text" name="setting[{{$key}}][building_note]" value="{{$decodeBuildingData->note[0]}}">
                 </td> 
+                <td>{{count($decodeBuildingData->room)}}</td>
                 <td><a class="uk-button uk-button-primary uk-border-rounded" href="{{route('setting.index', ['setting_id'=>$settingData['setting_id'], 'form_type'=>'building_data'])}}">Add</a></td>
             </tr>
         @endforeach

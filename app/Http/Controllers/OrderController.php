@@ -40,9 +40,11 @@ class OrderController extends Controller
     public function Index(Request $request)
     {
 
-        if ($request->session()->has('view') && $request->session()->get('view') == 'till') {
+        // if ($request->session()->has('view') && $request->session()->get('view') == 'till') {
             $this->init();
             $tillData = $this->settingModel->setting_pos;
+            $userOrder = Order::pluck('order_user_id')->toArray();
+            $clerks = User::whereIn('user_id',$userOrder)->get();
             $this->orderList = Receipt::Order('order_setting_pos_id',  1)
                 ->orderByDesc('order_id')
                 ->groupBy('order_id')
@@ -50,9 +52,16 @@ class OrderController extends Controller
                     if ($request->categories != 'all') {
                         $query->whereBetween('order.created_at', [$request->start_date, $request->end_date]);
                     }
-                })->paginate(10);
-            return view('order.tillIndex', ['data' => $this->Data(), 'tillData' => $tillData]);
-        }
+                })
+                ->when($request->has('clerk'), function ($query) use ($request) {
+                    if ($request->categories != 'all') {
+                        $query->where('order.order_user_id', $request->clerk);
+                    }
+                })
+                
+                ->paginate(10);
+            return view('order.tillIndex', ['data' => $this->Data(), 'tillData' => $tillData , 'clerks' => $clerks]);
+        // }
 
         if ($request->session()->has('view') && $request->session()->get('view') == 'bill') {
             $this->init();

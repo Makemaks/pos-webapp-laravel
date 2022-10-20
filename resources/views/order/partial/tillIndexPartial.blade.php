@@ -12,8 +12,8 @@ use App\Models\Person;
     <div uk-grid>
         <div>Start Date * <input type="date" required name="start_date" class="uk-input"></div>
         <div>End Date *<input type="date" required name="end_date" class="uk-input"></div>
-        <div>Start Time<input type="time" name="start_time" class="uk-input"></div>
-        <div>End Time<input type="time" name="end_time" class="uk-input"></div>
+        {{-- <div>Start Time<input type="time" name="start_time" class="uk-input"></div>
+        <div>End Time<input type="time" name="end_time" class="uk-input"></div> --}}
         <div>Check<input type="number" name="check" class="uk-input"></div>
         <div>Table<input type="number" name="table" class="uk-input"></div>
         <div>
@@ -33,8 +33,10 @@ use App\Models\Person;
         <div>
             Clerk 
             <select class="uk-select" name="clerk"  id="form-stacked-select">
-                <option>Option 01</option>
-                <option>Option 02</option>
+                <option>Choose One Clerk</option>
+                @foreach($clerks as $clerk)
+                <option value="{{$clerk->user_id}}">{{$clerk->UserPerson->person_name['person_firstname']}}</option>
+                @endforeach
             </select>
         </div>
         <div>
@@ -58,7 +60,8 @@ use App\Models\Person;
                 <option>Option 02</option>
             </select>
         </div>
-        <div><button class="uk-button uk-button-default uk-border-rounded uk-button-primary">Submit</button>
+        <div style="
+        margin-top: 62px;"><button class="uk-button uk-button-default uk-border-rounded uk-button-primary">Submit</button>
             <button type="reset" class="uk-button uk-button-default uk-border-rounded uk-button-primary">Reset</button>
         </div>
     </div>

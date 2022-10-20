@@ -23,7 +23,7 @@ return new class extends Migration
             $table->json('event_ticket')->nullable()->comment('name::type::quantity::cost::row');
             $table->json('event_file')->nullable()->comment('user_id::name::location::type');
             $table->json('event_floorplan')->nullable()->comment('setting_building_id::setting_room_id');
-
+            
             $table->timestamps();
         });
     }

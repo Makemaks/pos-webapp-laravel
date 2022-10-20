@@ -244,8 +244,7 @@ class Setting extends Model
                 "usage": {
                     "per_person": "",
                     "per_usage": ""
-                }
-
+                },
             }
         }',
 

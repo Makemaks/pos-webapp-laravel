@@ -67,6 +67,8 @@ return new class extends Migration
 
             $table->json('setting_building')->nullable()->comment('address_id::status::capacity::name::description::note[]');
             $table->json('setting_room')->nullable()->comment('setting_building_id::status::capacity::name::description::size[]::section[]::note[]');
+
+            //$table->json('setting_template')->nullable()->comment('template_id::templatetable_id::templatetable_type::name::company_name'); 
            
             $table->timestamps();
         });

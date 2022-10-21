@@ -49,6 +49,12 @@ class Warehouse extends Model
 
     public static function WarehouseStatus(){
         return [
+            
+        ];
+    }
+
+    public static function WarehouseCostType(){
+        return [
             'FIFO',
             'Average Cost Price',
         ];
@@ -59,7 +65,9 @@ class Warehouse extends Model
             'return',
             'delivery',
             'transfer',
-            'wastage'
+            'wastage',
+            'take',
+            'variance'
         ];
     }
 }

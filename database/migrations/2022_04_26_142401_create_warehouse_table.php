@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('warehouse', function (Blueprint $table) {
             $table->bigIncrements("warehouse_id");
             $table->string('warehouse_reference')->nullable();
-            $table->float('warehouse_price_override')->nullable();
+            $table->float('warehouse_cost_override')->nullable();
             $table->bigInteger('warehouse_quantity');
-            $table->smallInteger('warehouse_status');
-            $table->smallInteger('warehouse_type');
+            $table->tinyInteger('warehouse_cost_type')->nullable();
+            $table->tinyInteger('warehouse_status');
+            $table->tinyInteger('warehouse_type');
             $table->bigInteger('warehouse_store_id');
             $table->bigInteger('warehouse_company_id')->comment('supplier');
             $table->bigInteger('warehouse_address_id')->nullable();

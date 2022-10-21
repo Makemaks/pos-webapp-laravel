@@ -15,7 +15,7 @@
             <th>Out</th>
             <th>stock_id</th>
             <th>user_id</th>
-            <th>price_override</th>
+            <th>cost_override</th>
             <th>quantity</th>
             <th>status</th>
             <th>type</th>
@@ -43,9 +43,9 @@
                 </td>
                 <td><a href="{{route('stock.edit', $warehouse->warehouse_stock_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$warehouse->warehouse_stock_id}}</a></td>
                 <td><a href="{{route('stock.edit', $warehouse->warehouse_user_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$warehouse->warehouse_user_id}}</a></td>
-                <td>{{ $warehouse->warehouse_price_override }}</td>
+                <td>{{ $warehouse->warehouse_cost_override }}</td>
                 <td>{{ $warehouse->warehouse_quantity }}</td>
-                <td>{{Str::upper(Warehouse::WarehouseStatus()[$warehouse->warehouse_status])}}</td>
+                <td>{{Str::upper(Warehouse::WarehouseCostType()()[$warehouse->warehouse_status])}}</td>
                 <td>{{Str::upper(Warehouse::WarehouseType()[$warehouse->warehouse_type])}}</td>
              
             </tr>

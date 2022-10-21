@@ -34,7 +34,7 @@
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
                                 <input class="uk-input" type="text" name="form[warehouse][{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
                             </div>
-                        @elseif($keystock == 'warehouse_price' || $keystock == 'warehouse_price_override' || $keystock == 'warehouse_quantity')
+                        @elseif($keystock == 'warehouse_price' || $keystock == 'warehouse_cost_override' || $keystock == 'warehouse_quantity')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
                                 <input class="uk-input" type="number" name="form[warehouse][{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
@@ -59,7 +59,7 @@
                                 <select class="uk-select" id="form-stacked-select" name="form[warehouse][{{$keyStockTransfer}}][{{$keystock}}]" value="{{ old('') }}">
                                     <option value="" selected disabled>SELECT ...</option>
                                     
-                                        @foreach (Warehouse::WarehouseStatus() as $key => $status)
+                                        @foreach (Warehouse::WarehouseCostType()() as $key => $status)
                                             <option value="{{$status}}" class="uk-input" @if($key == $stock) selected @endif>
                                                 {{Str::upper($status)}}
                                             </option>

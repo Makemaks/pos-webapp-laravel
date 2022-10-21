@@ -64,7 +64,7 @@
                                                 <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
                                                     <option value="" selected disabled>SELECT ...</option>
                                                     
-                                                        @foreach (Warehouse::WarehouseStatus() as $store)
+                                                        @foreach (Warehouse::WarehouseCostType()() as $store)
                                                             <option value="{{$stock}}" class="uk-input">
                                                                 {{$store}}
                                                             </option>
@@ -96,7 +96,7 @@
                                                 <td>
                                                     <input class="uk-input" type="text" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
                                                 </td>
-                                            @elseif($keystock == 'warehouse_price' || $keystock == 'warehouse_price_override' || $keystock == 'warehouse_quantity')
+                                            @elseif($keystock == 'warehouse_price' || $keystock == 'warehouse_cost_override' || $keystock == 'warehouse_quantity')
                                                 <td>
                                                     <input class="uk-input uk-form-width-small" type="number" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
                                                 </td>
@@ -105,7 +105,7 @@
                                                     <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
                                                         <option value="" selected disabled>SELECT ...</option>
                                                         
-                                                            @foreach (Warehouse::WarehouseStatus() as $store)
+                                                            @foreach (Warehouse::WarehouseCostType()() as $store)
                                                                 <option value="{{$stock}}" class="uk-input">
                                                                     {{$store}}
                                                                 </option>

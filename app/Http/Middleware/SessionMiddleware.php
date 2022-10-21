@@ -25,6 +25,8 @@ class SessionMiddleware
 
         
        
+        if (Auth::check()) {
+            
             $queryValue  = $request->route()->parameters();
             $modelID = array_pop($queryValue);
       
@@ -66,6 +68,8 @@ class SessionMiddleware
                 
                 
             }
+
+        }
         
 
         return $next($request);

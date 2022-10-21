@@ -25,15 +25,15 @@ class Warehouse extends Model
             "1" : {
                 "name": "",
                 "description": "",
-                "cost"
+                "cost": "",
                 "schedule_datetime": "",
                 "setting_stock_cost_group_id" : ""
-            },
+            }
         }',
         'warehouse_stock_cost_quantity' => '{
             "1": "{
                 "warehouse_stock_cost_id" = "",
-                "warehouse_stock_cost_quantity" = "",
+                "warehouse_stock_cost_quantity" = ""
             }"
         }',
     ];

@@ -21,7 +21,32 @@ class WarehouseFactory extends Factory
                 "type" => $this->faker->numberBetween($min = 0, $max = 4), 	
                 "description" => $this->faker->sentence,
             ];
+
+            
+          
+            $warehouse_stock_cost_quantity[$i + 1] = [
+                "setting_stock_cost_group_id" => $this->faker->numberBetween($min = 1, $max = 5),
+                "warehouse_stock_cost_quantity" => $this->faker->numberBetween($min = 1, $max = 200),
+            ];
         }
+
+
+        $warehouse_stock_cost = [];
+        for ($j=0; $j < 5; $j++) { 
+            for ($i=0; $i < 10; $i++) { 
+                
+                $warehouse_stock_cost[$j + 1][$i + 1] = [
+                    'cost' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+                    "description" =>  $this->faker->sentence,
+                    "cost" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+                    "schedule_datetime" =>  "",
+                    "setting_stock_cost_group_id"  => $this->faker->numberBetween($min = 1, $max = 5)
+                ];
+            }
+        }
+
+
+       
 
         return [
 
@@ -36,6 +61,8 @@ class WarehouseFactory extends Factory
                 "warehouse_note" => $this->faker->randomElement($array = array (NULL,$this->faker->sentence)),
                 "warehouse_type" => $this->faker->numberBetween($min = 0, $max = 3),
                 "warehouse_company_id" => $this->faker->numberBetween($min = 1, $max = 10),
+                "warehouse_stock_cost" => $warehouse_stock_cost,
+                "warehouse_stock_cost_quantity" => $warehouse_stock_cost_quantity
         ];
     }
 }

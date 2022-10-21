@@ -114,17 +114,24 @@ class StockFactory extends Factory
         }
 
         $stock_cost = [];
-        for ($j=0; $j < 5; $j++) { 
-            for ($i=0; $i < 10; $i++) { 
+        for ($i=0; $i < 10; $i++) { 
                 
-                $stock_cost[$j + 1][$i + 1] = ['price' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20)];
-            }
+            $stock_cost[$i + 1] = [
+                "cost" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+                "schedule_datetime" =>  "",
+                "stock_cost_group_id"  => $this->faker->numberBetween($min = 1, $max = 5)
+            ];
+            
         }
-
+        
 
         for ($j=0; $j < 5; $j++) { 
                 
-            $stock_cost_quantity[$j + 1] = $this->faker->randomElement($array = array (1, 2, 5));
+            $stock_cost_quantity[$j + 1] = 
+            [
+                "stock_cost_quantity" => $this->faker->numberBetween($min = 1, $max = 200),
+                "stock_cost_group_id" => $this->faker->numberBetween($min = 1, $max = 5),
+            ];
            
         }
 

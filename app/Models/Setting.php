@@ -30,7 +30,7 @@ class Setting extends Model
         'setting_logo' => '{}',
 
 
-        'setting_stock_group' => '{
+        'setting_stock' => '{
             "1": {
                 "name": "",
                 "code": "",
@@ -96,12 +96,12 @@ class Setting extends Model
             }
         }',
 
-        'setting_price_level_scheduler' => '{
+        /* 'setting_price_level_scheduler' => '{
             "1": {
                 "time": "",
                 "price_level": 
             }
-        }',
+        }', */
 
 
         'setting_expense_budget' => '{}',
@@ -308,9 +308,11 @@ class Setting extends Model
         'setting_key_type' => '{}',
 
         'setting_group' => '{
-            "default_country": "",
+            "country": "",
+            "currency": {},
+            "logo": {},
             "stock_cost_group": "",
-            "special_stock_cost": ""
+            "special_stock_cost_group": ""
         }',
 
         'setting_customer' => '{
@@ -318,6 +320,12 @@ class Setting extends Model
             "customer_credit": "",
             "customer_print": {},
             "customer_marketing": {}
+        }',
+        'setting_stock_cost' => '{
+            "1": {
+                "name": "",
+                "description": "",
+            }
         }',
 
     ];
@@ -328,7 +336,7 @@ class Setting extends Model
 
         'setting_logo' => 'array',
 
-
+        'setting_stock_cost' => 'array',
         'setting_stock_group' => 'array',
 
         'setting_stock_label'  => 'array',
@@ -370,7 +378,7 @@ class Setting extends Model
         'setting_group' => 'array',
         'setting_customer' => 'array',
         'setting_preset_message' => 'array',
-        'setting_price_level_scheduler' => 'array'
+        /* 'setting_price_level_scheduler' => 'array' */
     ];
 
     public static function SettingTable(){

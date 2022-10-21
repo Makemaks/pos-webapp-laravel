@@ -19,11 +19,8 @@ return new class extends Migration
             $table->bigInteger('settingtable_id');
             $table->string('settingtable_type')->comment('company::person::organisation');
 
-            $table->json('setting_currency')->nullable();
-            $table->json('setting_logo')->nullable();
+            $table->json('setting_stock')->nullable()->comment('group::category::plu::brand');
 
-
-            $table->json('setting_stock_group')->nullable()->comment('group::category::plu::brand');
 
             $table->json('setting_stock_label')->nullable();
 

@@ -316,10 +316,17 @@ class Setting extends Model
         }',
 
         'setting_customer' => '{
-            "customer_stock_cost": "",
-            "customer_credit": "",
-            "customer_print": {},
-            "customer_marketing": {}
+            "1": {
+                "name": "",
+                "loyalty_type": "",
+                "customer_stock_cost": "",
+                "customer_credit": "",
+                "customer_print": {},
+                "customer_marketing": {},
+                "points":{
+                    
+                }
+            }
         }',
         'setting_stock_cost' => '{
             "1": {

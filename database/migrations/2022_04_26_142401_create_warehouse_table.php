@@ -29,6 +29,9 @@ return new class extends Migration
             $table->text('warehouse_note')->nullable();
             $table->json('warehouse_reason')->nullable();
            
+            $table->json('warehouse_stocktake')->nullable();
+
+
             $table->timestamps();
         });
     }

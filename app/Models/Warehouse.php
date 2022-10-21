@@ -20,11 +20,20 @@ class Warehouse extends Model
         'warehouse_reason' => '{
             "type": "",
             "description": ""
-        }'
+        }',
+        'warehouse_stocktake' => '{
+            "current_stock": "",
+            "frozen_stock": "",
+            "setting_stock_case_size_id": "",
+            "case_quantity": "",
+            "item_quantity": "",
+            "unit_size": "",
+        }',
     ];
 
     protected $casts = [
-        "warehouse_reason" => 'array'
+        "warehouse_reason" => 'array',
+        "warehouse_stocktake" => 'array',
     ];
 
     public static function Store(){
@@ -66,8 +75,7 @@ class Warehouse extends Model
             'delivery',
             'transfer',
             'wastage',
-            'take',
-            'variance'
+            
         ];
     }
 }

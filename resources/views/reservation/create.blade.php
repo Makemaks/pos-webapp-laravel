@@ -1,5 +1,4 @@
 @extends('layout.master')
-
 @php
   
 @endphp

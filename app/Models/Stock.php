@@ -30,7 +30,11 @@ class Stock extends Model
         'stock_store_id' => 1,
         "stock_cost" => '{
             "1": {
-                "1": ""
+                "name": "",
+                "description": "",
+                "cost": "",
+                "schedule_datetime": "",
+                "setting_stock_cost_group_id" : ""
             }
         }',
 
@@ -66,8 +70,9 @@ class Stock extends Model
             "unit_size": "",
             "recipe_link": "",
             "case_size": "",
-            "plu_id": "",
+            "plu_id": {},
             
+            "alternative_text": "",
             "current_stock": "",
             "days_to_order": "",
             "maximum_stock": "",
@@ -97,7 +102,7 @@ class Stock extends Model
 
         "stock_web" => '{
             "1": {
-                "plu": "",
+                "plu_id": {},
                 "min": "",
                 "max": "",
                 "price": ""
@@ -106,12 +111,15 @@ class Stock extends Model
 
         'stock_allergen' => '{}',
         'stock_nutrition' => '{
-            "ref": "",
+            "setting_stock_id": "",
             "value": "",
             "measurement": ""
         }',
         'stock_cost_quantity' => '{
-            "1": "1"
+            "1": "{
+                "stock_cost_id" = "",
+                "warehouse_stock_cost_quantity" = "",
+            }"
         }',
 
         'stock_manager_special' => '{
@@ -219,30 +227,38 @@ class Stock extends Model
     public static function ReceiptTotal($receiptList, $totalCostPrice)
     {
 
-        $price = $receiptList->receipt_stock_cost;
+        $price = 0;
+        $stock_cost = $receiptList->receipt_stock_cost;
 
         if ($receiptList->receipt_discount) {
 
-            foreach (json_decode($receiptList->receipt_discount) as $keyOverride => $valueDiscount) {
-
-
-                if (Receipt::ReceiptCostOverrideType()[$valueDiscount->type] == 'percentage') {
-                    //percentage at checkout
-                    $price = MathHelper::Discount($valueDiscount->value, $receiptList->receipt_stock_cost);
-                    
-                } 
-                elseif(Receipt::ReceiptCostOverrideType()[$valueDiscount->type] == 'amount') {
-                    //minus the amount at checkout
-                    $price = $price - $valueDiscount->value;
-                }
-            }
-            
+            $price = Stock::Discount($stock_cost, $receiptList->receipt_discount);
         }
        
         $price = $price * $receiptList->receipt_quantity;
         $totalCostPrice = $totalCostPrice + $price;
 
         return $totalCostPrice;
+    }
+
+    public static function Discount($stock_cost, $discount){
+
+        $price = 0;
+
+        foreach (json_decode($discount) as $keyOverride => $valueDiscount) {
+
+            if (Receipt::ReceiptCostOverrideType()[ $valueDiscount->type ] == 'percentage') {
+                //percentage at checkout
+                $price = $price + MathHelper::Discount($discount_value, $stock_cost);
+                
+            } 
+            elseif(Receipt::ReceiptCostOverrideType()[ $valueDiscount->type ] == 'amount') {
+                //minus the amount at checkout
+                $price = $price + $stock_cost - $discount_value;
+            }
+        }
+        
+        return $price;
     }
 
     public static function GrossProfitTotal($orderList){
@@ -300,12 +316,30 @@ class Stock extends Model
 
          //get customer id from session
         if (Session::has('user-session-'.Auth::user()->user_id.'.'.'customerCartList')) {
-            $person_id = Session::get('user-session-'.Auth::user()->user_id.'.'.'customerCartList')[0]['value'];
-            $pesonModel = Person::find($person_id);
+            $customer = Session::get('user-session-'.Auth::user()->user_id.'.'.'customerCartList')[0]['value'];
+        
 
-            if ($pesonModel->person_stock_cost) {
-                $price = $stock_cost[ $pesonModel->person_stock_cost[1]['column'] ][ $pesonModel->person_stock_cost[1]['row'] ]['price'];
-            }
+          
+                $personModel = Person::find($customer);
+                $companyModel = Company::find($personModel->persontable_id);
+
+                if ($companyModel) {
+                    $settingModel = Setting::SettingTable()
+                    ->where('setting.settingtable_id', $companyModel->person_id)
+                    ->first();
+                }
+                elseif ($personModel) {
+                    $settingModel = Setting::SettingTable()
+                    ->where('setting.settingtable_id', $personModel->person_id)
+                    ->first();
+                }
+                
+                
+
+                foreach ($settingModel->setting_customer['customer_stock_cost'] as $key => $value) {
+                    //column row
+                    $price = $stock_cost[ $key ][ $value ]['price'];
+                }
        } 
 
        //find discount-show on till button and checkout
@@ -332,6 +366,14 @@ class Stock extends Model
             "Discount % cheapest",
             "Discount amount last item",
             "Discount % last item"
+        ];
+    }
+
+    public static function OfferStatus()
+    {
+        return [
+            'Enabled',
+            'Disabled'
         ];
     }
 

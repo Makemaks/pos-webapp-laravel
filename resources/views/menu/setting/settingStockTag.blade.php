@@ -7,7 +7,8 @@ use App\Models\Project;
 @endphp
 
 @section('content')
-    @include('menu.partial.groupPartial')
+    @include('menu.partial.crudPartial')
+    @include('menu.partial.settingStockTagPartial')
 @endsection
 
 

@@ -266,7 +266,7 @@ class GatewayAPIController extends Controller
         if($request->session()->has('user-session-'.Auth::user()->user_id. '.cartList')){
 
             $sessionCartList = $request->session()->get('user-session-'.Auth::user()->user_id. '.cartList');
-            //$stockList = Receipt::SessionDisplay($sessionCartList);
+            //$stockList = Receipt::SessionCartInitialize($sessionCartList);
         }
 
         foreach ($sessionCartList as $key => $sessionCart) {

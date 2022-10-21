@@ -26,7 +26,6 @@
         'Price',
         'Qty',
     ];
-
     
 @endphp
 
@@ -48,11 +47,10 @@
                 <tr>
                     <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock->stock_id}}</a></td>
                     <td>{{$stock->stock_merchandise['stock_name']}}</td>
-
                     <td>
-                        @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_group) )
+                        {{-- @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_group) )
                             {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['plu_id']]['name']}}
-                        @endif
+                        @endi --}}
                     </td>
 
                     <td>{{$stock->stock_merchandise['random_code']}}</td>
@@ -103,7 +101,7 @@
 
     <div class="uk-overflow-auto uk-height-large" uk-height-viewport="offset-top: true; offset-bottom: 10">
 
-        <div class="uk-grid-match uk-child-width-1-4@s uk-grid-small" uk-grid>
+        <div class="uk-grid-match uk-child-width-1-4@s uk-grid-small uk-padding-small" uk-grid>
         
             @isset($data['stockList'])
                 @foreach ($data['stockList'] as $stock)
@@ -115,6 +113,7 @@
                         $stockOffer = [];
                         $stockCurrentOffer = [];
                         
+                      
 
                         $price = MathHelper::FloatRoundUp(Stock::StockCostCustomer($stock->stock_cost), 2);
                         //check if customer has price
@@ -137,14 +136,14 @@
     
                     <div>
 
-                        <div title="{{$stock->stock_id}}" class="uk-padding-small uk-background-muted uk-border-rounded" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
+                        <div class="uk-padding uk-box-shadow-small" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
                             <div class="">
                                 <div class="uk-grid-small uk-flex-middle" uk-grid>
-                                    <div class="uk-width-auto">
+                                    <div class="uk-width-auto" title="{{$stock->stock_id}}" >
                                         <img class="uk-border-circle" width="40" height="40" src="images/avatar.jpg">
                                        
                                     </div>
-                                    <div class="uk-width-auto">
+                                    <div class="uk-width-auto" title="Price" >
                                         @if (count($stockOffer) > 0)
                                             <h3 class="uk-margin-remove-bottom"> {{$currency}} {{ MathHelper::FloatRoundUp( $stockOfferMin['total']['price'], 2) }}</h3>
                                             
@@ -152,7 +151,7 @@
                                             <h3 class="uk-margin-remove-bottom">{{$currency}} {{$price}}</h3>
                                         @endif
                                     </div>
-                                    <div class="uk-width-expand">
+                                    <div class="uk-width-expand" title="VAT">
                                         <span class="uk-text-small uk-text-warning">
                                             @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
                                                 @foreach ($data['settingModel']->setting_vat as $item)
@@ -187,34 +186,33 @@
                                         @endif
                                    </div>
 
-                                    <div>
+                                    <div title="Offer">
                                         @if (count($stockOffer) > 0)
-
-                                        
                                            {{ MathHelper::FloatRoundUp( $stockOfferMin['decimal']['discount_value'], 2)}}
-                                            
-                                        
                                         @endif
                                     </div>
                                     
-                                    <div>
+                                    <div title="Qty">
                                         <div class="uk-align-right">
                                             @php
                                                 $color = '';
-                                                $warehouseStock = Warehouse::Available($stock->stock_id);
+                                                $warehouseStockList = Warehouse::Available($stock->stock_id, $storeID);
                                                 
-                                                if ($warehouseStock) {
-                                                    if (Warehouse::WarehouseType()[$warehouseStock->warehouse_type] == 'transfer') {
-                                                        $color = 'uk-text-warning';
-                                                    }
-                                                    else{
-                                                        $color = 'uk-text-danger';
-                                                    }
+
+                                                if($warehouseStockList->count() > 0) {
+                                                  
+                                                        if (Warehouse::WarehouseType()[$warehouseStockList->first()->warehouse_type] == 'transfer') {
+                                                            $color = 'uk-text-warning';
+                                                        }
+                                                        else{
+                                                            $color = 'uk-text-danger';
+                                                        }
+                                                   
                                                 }
                                         
                                             @endphp
-                                            @if ($warehouseStock)
-                                                <h3 {{$color}}">{{$warehouseStock->warehouse_quantity}}</h6>
+                                            @if ($warehouseStockList->count() > 0)
+                                                <h3 {{$color}}">{{$warehouseStockList->first()->warehouse_quantity}}</h6>
                                             @endif
                                         </div>
                                     </div>

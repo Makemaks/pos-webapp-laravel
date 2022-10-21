@@ -47,9 +47,16 @@ class StockController extends Controller
     public function Create()
     {
         $this->stockModel = new Stock();
-        $a = $this->stockModel->stock_merchandise;
-        
         $this->Init();
+
+        //setup
+        $stock_nutrition = $this->stockModel->stock_nutrition;
+        foreach ($this->settingModel->setting_stock_nutrition as $key => $value) {
+            $temp_stock_nutrition[$key] = $stock_nutrition;
+        }
+        
+        $this->stockModel->stock_nutrition = $temp_stock_nutrition;
+      
 
         return view('stock.create',  ['data' => $this->Data()]);
     }

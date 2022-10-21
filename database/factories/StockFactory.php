@@ -33,9 +33,12 @@ class StockFactory extends Factory
             ];
 
           
+            for ($i = 0; $i < $this->faker->numberBetween($min = 1, $max = 5); $i++) {
+                $setting_plu[$i + 1] = $this->faker->numberBetween($min = 1, $max = 5);
+            }
 
             $stock_web[$i + 1] = [
-                "plu" => $this->faker->numberBetween($min = 1, $max = 50),
+                "plu" => $setting_plu,
                 "min" => $this->faker->numberBetween($min = 1, $max = 50),
                 "max" => $this->faker->numberBetween($min = 1, $max = 50),
                 "price" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 500),
@@ -72,7 +75,7 @@ class StockFactory extends Factory
             "minimum_stock" => $this->faker->numberBetween($min = 1, $max = 50),
             "maximum_stock" => $this->faker->numberBetween($min = 50, $max = 100),
             "days_to_order" => $this->faker->numberBetween($min = 1, $max = 5),
-            "plu_id" => $this->faker->numberBetween($min = 1, $max = 20),
+            "plu_id" => $setting_plu,
             "qty_adjustment" => $this->faker->numberBetween($min = 100, $max = 800),
 
             "unit_size" => $this->faker->numberBetween($min = 1, $max = 20),
@@ -86,6 +89,8 @@ class StockFactory extends Factory
             "setting_offer_id" => $this->faker->randomElement($array = array(NULL, $setting_offer_id)),
             "stock_type"=> $this->faker->numberBetween($min = 0, $max = 1),
             "stock_maximum_cart_quantity" => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 2) )),
+            "alternative_text" => '',
+            "master_plu_id" =>  $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 20) )),
         ];
 
         for ($i = 0; $i < 15; $i++) {
@@ -98,7 +103,7 @@ class StockFactory extends Factory
 
         for ($i=0; $i < count(ConfigHelper::Nutrition()); $i++) { 
             $stock_nutrition[$i + 1] = [
-                'ref' => $i+1,
+                'setting_stock_id' => $i+1,
                 'value' => ConfigHelper::Nutrition()[$i]['value'],
                 'measurement' => ConfigHelper::Nutrition()[$i]['measurement'],
             ];
@@ -109,17 +114,24 @@ class StockFactory extends Factory
         }
 
         $stock_cost = [];
-        for ($j=0; $j < 5; $j++) { 
-            for ($i=0; $i < 10; $i++) { 
+        for ($i=0; $i < 10; $i++) { 
                 
-                $stock_cost[$j + 1][$i + 1] = ['price' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20)];
-            }
+            $stock_cost[$i + 1] = [
+                "cost" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+                "schedule_datetime" =>  "",
+                "setting_stock_cost_group_id"  => $this->faker->numberBetween($min = 1, $max = 5)
+            ];
+            
         }
-
+        
 
         for ($j=0; $j < 5; $j++) { 
                 
-            $stock_cost_quantity[$j + 1] = $this->faker->randomElement($array = array (1, 2, 5));
+            $stock_cost_quantity[$j + 1] = 
+            [
+                "stock_cost_quantity" => $this->faker->numberBetween($min = 1, $max = 200),
+                "setting_stock_cost_group_id" => $this->faker->numberBetween($min = 1, $max = 5),
+            ];
            
         }
 

@@ -1,6 +1,8 @@
 @php
    use App\Models\Stock;
    use App\Helpers\ConfigHelper;
+  
+
 @endphp
 
 
@@ -22,10 +24,9 @@
                                 <thead>
                                     <tr>
                                         <th>REF</th>
-                                        @foreach ($data['stockModel']->stock_web[1] as $key => $item)
-                                            <th>{{$key}}</th>
-                                        @endforeach
-                                        
+                                            @foreach (collect($data['stockModel']->stock_web)->first() as $key => $item)
+                                                <th>{{$key}}</th>
+                                            @endforeach
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -48,7 +49,7 @@
                                                             
                                                                 @foreach ($data['settingModel']->setting_stock_group as $keyPLU => $setting_stock_plu)
                                                                         @if ($setting_stock_plu['type'] == '2')
-                                                                            <option value="{{$stock}}" @if($stock == $keyPLU) selected @endif>{{$setting_stock_plu['description']}}</option>
+                                                                            <option value="{{$stock}}" @if($stock == $keyPLU) selected @endif>{{$setting_stock_plu['name']}}</option>
                                                                         @endif
                                                                         
                                                                 @endforeach
@@ -105,7 +106,7 @@
                                                    
                                                     @foreach ($data['settingModel']->setting_stock_group as $key => $setting_stock_plu)
                                                                         
-                                                            <option value="{{$key}}">{{$setting_stock_plu['description']}}</option>
+                                                            <option value="{{$key}}">{{$setting_stock_plu['name']}}</option>
                                                     @endforeach
                                                    
                                                 </select>

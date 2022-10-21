@@ -5,169 +5,368 @@
    use carbon\Carbon;
 
     $a = $data['settingModel'];
+    $delete_offer = [];    
 @endphp
 
+{{-- @if ($data['settingModel']->edit == false)
+    <button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="settingUpdate" value="settingUpdate">
+        Save
+    </button>
+@endif
 
+<button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="settingUpdate" value="settingDelete" name="settingDelete">
+    Delete
+</button>
+ --}}
 
 <div>
-    <h3>OFFERS</h3>
-    <div class="uk-child-width-1-2" uk-grid>
 
-         
-            @foreach ((array)$data['settingModel']->setting_offer  as $keyStockoffer => $itemStockoffer)
-                @foreach ($itemStockoffer as $key => $stock)
-                                        
-                    @if($key == 'integer' || $key == 'points' || $key == 'usage')
 
-                        @foreach ($stock as $stockkey => $stockitem)
-                            @if ($stockkey == 'set_menu')
-                                <div>
-                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                    <select class="uk-select" id="form-stacked-select" name="form[setting_offer][{{$key}}][{{$stockkey}}]">
-                                        <option value="" selected disabled>SELECT ...</option>
-                                        @if ($data['settingModel']->setting_stock_set_menu)
-                                            @foreach ($data['settingModel']->setting_stock_set_menu  as $key_setting_stock_set_menu  => $item_setting_stock_set_menu)
-                                                    
-                                                <option value="{{$key_setting_stock_set_menu}}" @if($key_setting_stock_set_menu == $stock) selected @endif>
-                                                    {{$item_setting_stock_set_menu['name']}}
-                                                </option>
-                                                    
+    <div>
+        <div class="uk-card uk-card-default uk-padding">
+       
+            <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+                <li><a href="#" uk-icon="list"></a></li>
+                <li><a href="#" uk-icon="plus"></a></li>
+            </ul>
+            
+            <ul class="uk-switcher uk-margin">
+                @if ($data['settingModel']->setting_offer && $data['settingModel']->edit == false)
+                    <li>
+                        <form id="settingUpdate" action="{{route('setting.update', $data['settingModel']->setting_id)}}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <h3>OFFERS</h3>
+                                
+                        
+                            
+                            <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+                                <thead>
+                                    <tr>
+                                                        
+                                        @php
+                                            $collection = collect(Arr::first($data['settingModel']->setting_offer));
+                                            $available_day = $collection['available_day'] ? true : false;
+                                            $collection = $collection->except('available_day')->collapse();
+                                        @endphp
+                                    
+                                        <th></th>
+                                        <th>REF</th>
+                                        @foreach ( $collection->except(['exception']) as $key => $item)
+                                                <th>{{$key}}</th>
+                                        @endforeach
+
+                                        @if($available_day)
+                                            @foreach (Carbon::getDays() as $key_days => $item_days)
+                                                <th>{{Str::upper( Str::limit($item_days, 3 , '') )}}</th>
                                             @endforeach
                                         @endif
-                                        
-                                    </select>
-                                </div>
-
-                            @elseif ($stockkey == 'discount_type')
-                                <div>
-                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                    <select class="uk-select" id="form-stacked-select" name="form[setting_offer][{{$key}}][{{$stockkey}}]">
-                                        <option value="" selected disabled>SELECT ...</option>
-                                        
-                                            @foreach (Setting::SettingOfferType()  as $key_setting_discount_type  => $item_setting_discount_type)
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                  
+                                        @foreach ($data['settingModel']->setting_offer as $keyStockoffer => $itemStockoffer)
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" name="setting_offer_delete[]" value="{{$keyStockoffer}}">
+                                                </td>    
+                                                <td>
+                                                    <button class="uk-button uk-button-default uk-border-rounded">{{$keyStockoffer}}</button>
+                                                </td>
+                                                @foreach ($itemStockoffer as $key => $stock)
+                                                
+                                                    @if($key == 'integer' || $key == 'decimal')
+                                                        @foreach ($stock as $stockkey => $stockitem)
+                                                            @if ($stockkey == 'set_menu')
+                                                                <td>
+                                                                    <select class="uk-select" id="form-stacked-select" name="setting_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
+                                                                        <option value="" selected disabled></option>
+                                                                        @if ($data['settingModel']->setting_stock_set_menu)
+                                                                            @foreach ($data['settingModel']->setting_stock_set_menu  as $key_setting_stock_set_menu  => $item_setting_stock_set_menu)
+                                                                                    
+                                                                                <option value="{{$key_setting_stock_set_menu}}" @if($key_setting_stock_set_menu == $stock) selected @endif>
+                                                                                    {{$item_setting_stock_set_menu['name']}}
+                                                                                </option>
+                                                                                    
+                                                                            @endforeach
+                                                                        @endif
+                                                                        
+                                                                    </select>
+                                                                </td>
                                                     
-                                                <option value="{{$key_setting_discount_type}}" @if($key_setting_discount_type == $stock) selected @endif>
-                                                    {{Str::upper($item_setting_discount_type)}}
-                                                </option>
+                                                            @else
+                                                                <td><input name="setting_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-input" type="number" value="{{$stockitem}}"></td>
+                                                            @endif 
+                                                        @endforeach
+                                                    @endif
+
+                                                    @if($key == 'default')
+                                                        @foreach ($stock as $stockkey => $stockitem)
+                                                                
+                                                            @if ($stockkey == 'is_default')
+                                                                <td><input class="uk-radio" type="radio" name="default[setting_offer][{{$key}}]" value="{{$keyStockoffer}}" @if($stock == 0) checked @endif></td>
+                                                            
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+
+                                                    @if($key == 'boolean')
+                                                        @foreach ($stock as $stockkey => $stockitem)
                                                     
-                                            @endforeach
-                                        
-                                    </select>
-                                </div>
-                    
-                            @else
-                                <div>
-                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                    <input name="form[setting_offer][{{$key}}][{{$stockkey}}]" class="uk-input" type="number" value="">
-                                </div>
-                            @endif 
-                        @endforeach
-                        
-                    @endif
+                                                            @if ($stockkey == 'status')
+                                                            
+                                                                <td>
+                                                                    <select class="uk-select" id="form-stacked-select" name="setting_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
+                                                                        <option value="" selected disabled>SELECT ...</option>
+                                                                        @foreach (Stock::OfferStatus()  as $key_stock_offer  => $item_stock_offer)
+                                                                                
+                                                                            <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
+                                                                                {{$item_stock_offer}}
+                                                                            </option>
+                                                                                
+                                                                        @endforeach
+                                                                    </select>    
+                                                                </td>
 
-                    @if($key == 'boolean')
-                        @foreach ($stock as $stockkey => $stockitem)
-                        
-                            @if ($stockkey == 'status')
-                                            
-                                <div>
-                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                    <select class="uk-select" id="form-stacked-select" name="form[setting_offer][{{$key}}][{{$stockkey}}]">
-                                        <option value="" selected disabled>SELECT ...</option>
-                                        @foreach (Setting::SettingOfferStatus()  as $key_stock_offer  => $item_stock_offer)
-                                                
-                                            <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
-                                                {{$item_stock_offer}}
-                                            </option>
-                                                
-                                        @endforeach
-                                    </select>    
-                                </div>
-                            @elseif ($stockkey == 'type')
-                                            
-                                <div>
-                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                    <select class="uk-select" id="form-stacked-select" name="form[setting_offer][{{$key}}][{{$stockkey}}]">
-                                        <option value="" selected disabled>SELECT ...</option>
-                                        @foreach (Setting::SettingOfferType()  as $key_stock_offer  => $item_stock_offer)
-                                                
-                                            <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
-                                                {{$item_stock_offer}}
-                                            </option>
-                                                
-                                        @endforeach
-                                    </select>    
-                                </div>
-                            @else
-                                <div>
-                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                    <input name="form[setting_offer][{{$key}}][{{$stockkey}}]" class="uk-input" type="number" value="">
-                                </div>
-                            @endif
-                        @endforeach
-                    @endif
+                                                            
+                                                            @else
+                                                                <td>
+                                                                    <select class="uk-select" id="form-stacked-select" name="setting_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
+                                                                        <option value="" selected disabled>SELECT ...</option>
+                                                                        @foreach (Setting::OfferType()  as $key_stock_offer  => $item_stock_offer)
+                                                                                
+                                                                            <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
+                                                                                {{ Str::upper($item_stock_offer)}}
+                                                                            </option>
+                                                                                
+                                                                        @endforeach
+                                                                    </select>    
+                                                                </td>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
 
-                    @if ($key == 'available_day')
-                       
+                                                    @if($key == 'usage')
+                                                        @foreach ($stock as $stockkey => $stockitem)
+                                                            <td><input name="setting_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-input" type="text" value="{{$stockitem}}"></td>
+                                                        @endforeach
+                                                    @endif
+
+                                                    @if($key == 'date')
+                                                        @foreach ($stock as $stockkey => $stockitem)
+                                                            <td><input name="setting_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-input" type="text" value="{{$stockitem}}"></td>
+                                                        @endforeach
+                                                    @endif
+
+                                                    @if($key == 'string')
+                                                        @foreach ($stock as $stockkey => $stockitem)
+                                                            <td><input name="setting_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]" class="uk-input" type="text" value="{{$stockitem}}"></td>
+                                                        @endforeach
+                                                    @endif
+
+                                                    @if($key == 'available_day')
+                                                        @foreach (Carbon::getDays() as $key_days => $item_days)
+                                                            <td>
+                                                                <input class="uk-checkbox" type="checkbox" name="setting_offer[{{$keyStockoffer}}][available_day][]" value="{{++$key_days}}" {{in_array($key_days,$stock) ? 'checked' : ''}}>
+                                                            </td>
+                                                        @endforeach
+                                                    @endif
+                                            
+                                                @endforeach    
+
+                                                @isset($data['stockModel'])
+                                                    <td>
+                                                        <input class="uk-radio" type="radio" name="stock_merchandise[stock_offer]" value="{{$keyStockoffer}}" @if(isset($data['stockModel']->stock_merchandise['stock_offer']) == $keyStockoffer) checked @endif>
+                                                    </td>
+                                                @endisset
+                                            </tr>
+                                        @endforeach
+                                    
+                                </tbody>
+                            </table>
+                        </form>
+                    </li>
+                @endif
+                <li>
+            
+                    <form action="{{route('setting.store')}}" method="POST">
+                        <div class="uk-child-width-1-2" uk-grid>
                 
-                        <div>
-                            <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                            <div uk-grid>
-                                @foreach (Carbon::getDays() as $key_days => $item_days)
-                                    @php
-                                        $checked = "";
-                                    /*  if (in_array($key, $data['stockModel']->stock_allergen) ) {
-                                            $checked = 'checked';
-                                        } */
-                                    
-                                    @endphp 
-                            
+                            @csrf
+                            @foreach ((array)$data['settingModel']->setting_offer  as $keyStockoffer => $itemStockoffer)
+                                {{-- {{dd($data['settingModel']->setting_offer)}} --}}
                                 
+                                @foreach ($itemStockoffer as $key => $stock)
                                     
+                                    @if($key == 'integer' || $key == 'points' || $key == 'usage' || $key == 'decimal')
+                
+                                        @foreach ($stock as $stockkey => $stockitem)
+                                            @if ($stockkey == 'set_menu')
+                                                <div>
+                                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                    <select class="uk-select" id="form-stacked-select" name="form[setting_offer][{{$key}}][{{$stockkey}}]">
+                                                        <option value="" selected disabled>SELECT ...</option>
+                                                        @if ($data['settingModel']->setting_stock_set_menu)
+                                                            @foreach ($data['settingModel']->setting_stock_set_menu  as $key_setting_stock_set_menu  => $item_setting_stock_set_menu)
+                                                                    
+                                                                <option value="{{$key_setting_stock_set_menu}}" @if($key_setting_stock_set_menu == $stock) selected @endif>
+                                                                    {{$item_setting_stock_set_menu['name']}}
+                                                                </option>
+                                                                    
+                                                            @endforeach
+                                                        @endif
+                                                        
+                                                    </select>
+                                                </div>
+                
+                                            @elseif ($stockkey == 'discount_type')
+                                                <div>
+                                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                    <select class="uk-select" id="form-stacked-select" name="form[setting_offer][{{$key}}][{{$stockkey}}]">
+                                                        <option value="" selected disabled>SELECT ...</option>
+                                                        
+                                                            @foreach (Setting::SettingOfferType()  as $key_setting_discount_type  => $item_setting_discount_type)
+                                                                    
+                                                                <option value="{{$key_setting_discount_type}}" @if($key_setting_discount_type == $stock) selected @endif>
+                                                                    {{Str::upper($item_setting_discount_type)}}
+                                                                </option>
+                                                                    
+                                                            @endforeach
+                                                        
+                                                    </select>
+                                                </div>
+                                    
+                                            @else
+                                                <div>
+                                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                    <input name="form[setting_offer][{{$key}}][{{$stockkey}}]" class="uk-input" type="number" value="">
+                                                </div>
+                                            @endif 
+                                        @endforeach
+                                        
+                                    @endif
+                
+                                    @if($key == 'boolean')
+                                        @foreach ($stock as $stockkey => $stockitem)
+                                        
+                                            @if ($stockkey == 'status')
+                                                            
+                                                <div>
+                                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                    <select class="uk-select" id="form-stacked-select" name="form[setting_offer][{{$key}}][{{$stockkey}}]">
+                                                        <option value="" selected disabled>SELECT ...</option>
+                                                        @foreach (Setting::SettingOfferStatus()  as $key_stock_offer  => $item_stock_offer)
+                                                                
+                                                            <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
+                                                                {{$item_stock_offer}}
+                                                            </option>
+                                                                
+                                                        @endforeach
+                                                    </select>    
+                                                </div>
+                                            @elseif ($stockkey == 'type')
+                                                            
+                                                <div>
+                                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                    <select class="uk-select" id="form-stacked-select" name="form[setting_offer][{{$key}}][{{$stockkey}}]">
+                                                        <option value="" selected disabled>SELECT ...</option>
+                                                        @foreach (Setting::SettingOfferType()  as $key_stock_offer  => $item_stock_offer)
+                                                                
+                                                            <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
+                                                                {{$item_stock_offer}}
+                                                            </option>
+                                                                
+                                                        @endforeach
+                                                    </select>    
+                                                </div>
+                                            @else
+                                                <div>
+                                                    <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                    <input name="form[setting_offer][{{$key}}][{{$stockkey}}]" class="uk-input" type="number" value="">
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                
+                                    @if ($key == 'available_day')
+                                       
+                                
                                         <div>
-                                            <label class="uk-form-label" for="form-stacked-text">{{Str::upper( Str::limit($item_days, 3 , '') )}}</label>
-                                            <div class="uk-form-controls">
-                                                <input class="uk-checkbox" type="checkbox" name="form[setting_offer][{{$key_days}}][{{$stockkey}}]" value="{{$key_days}}" {{$checked}}>
+                                            <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
+                                            <div uk-grid>
+                                                @foreach (Carbon::getDays() as $key_days => $item_days)
+                                                    @php
+                                                        $checked = "";
+                                                    /*  if (in_array($key, $data['stockModel']->stock_allergen) ) {
+                                                            $checked = 'checked';
+                                                        } */
+                                                    
+                                                    @endphp 
+                                            
+                                                
+                                                    
+                                                        <div>
+                                                            <label class="uk-form-label" for="form-stacked-text">{{Str::upper( Str::limit($item_days, 3 , '') )}}</label>
+                                                            <div class="uk-form-controls">
+                                                                <input class="uk-checkbox" type="checkbox" name="form[setting_offer][available_day][]" value="{{++$key_days}}" {{$checked}}>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                @endforeach
                                             </div>
                                         </div>
-                                    
-                                @endforeach
-                            </div>
+                                    @endif
+                
+                                    @if($key == 'date')
+                                        @foreach ($stock as $stockkey => $stockitem)
+                                            <div>
+                                                <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                <input name="form[setting_offer][{{$key}}][{{$stockkey}}]" class="uk-input" type="text" value="{{$stockitem}}" autocomplete="off">
+                                            </div>
+                                        @endforeach
+                                    @endif
+                
+                                    @if($key == 'string')
+                                        @foreach ($stock as $stockkey => $stockitem)
+                                            @if ($stockkey == "description")
+                                                    <div>
+                                                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                        <textarea name="form[setting_offer][{{$key}}][{{$stockkey}}]" class="uk-textarea">{{$stockitem}}</textarea>
+                                                    </div>
+                                            @else
+                                                    <div>
+                                                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
+                                                        <input name="form[setting_offer][{{$key}}][{{$stockkey}}]" class="uk-input" type="text" value="{{$stockitem}}">
+                                                    </div>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                
+                                @endforeach   
+                
+                                @break
+                
+                            @endforeach
+                            <input name="setting_id" class="uk-input" type="hidden" value="{{$data['settingModel']->setting_id}}">
                         </div>
-                    @endif
-
-                    @if($key == 'date')
-                        @foreach ($stock as $stockkey => $stockitem)
+                        <div class="uk-child-width-expand@m" uk-grid>
                             <div>
-                                <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                <input name="form[setting_offer][{{$key}}][{{$stockkey}}]" class="uk-input" type="text" value="{{$stockitem}}" autocomplete="off">
-                            </div>
-                        @endforeach
-                    @endif
+                                <button class="uk-button uk-button-default uk-border-rounded uk-width-1-1 uk-button-danger" type="submit">
+                                    SAVE
+                                </button>
+                            </div>     
+                        </div>
+                    </form>  
 
-                    @if($key == 'string')
-                        @foreach ($stock as $stockkey => $stockitem)
-                            @if ($stockkey == "description")
-                                    <div>
-                                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                        <textarea name="form[setting_offer][{{$key}}][{{$stockkey}}]" class="uk-textarea">{{$stockitem}}</textarea>
-                                    </div>
-                            @else
-                                    <div>
-                                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
-                                        <input name="form[setting_offer][{{$key}}][{{$stockkey}}]" class="uk-input" type="text" value="{{$stockitem}}">
-                                    </div>
-                            @endif
-                        @endforeach
-                    @endif
-
-                @endforeach   
-
-                @break
-
-            @endforeach
-    
-        
+                </li>
+            </ul>
+          
+           
+           
+        </div>
     </div>
+   
+    
+  
 </div>
 

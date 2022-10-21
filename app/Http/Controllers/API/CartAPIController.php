@@ -40,28 +40,9 @@ class CartAPIController extends Controller
         $this->request = $request;
         $request->session()->forget('type');
 
-        if($request->has('scheme_id')){
-            if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'cartList')){
-                //remove session
-              
-                $requestInput = $request->except('_token', '_method');
+       
 
-                //$schemeModel = Scheme::List('scheme_id', $request->scheme_id)->first();
-
-                //$request->session()->push('user-session-'.Auth::user()->user_id.'.'.'schemeList', $request->scheme_id);
-                $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'schemeList');
-
-                //$discount = Plan::CalculatePlanType($schemeModel);
-
-                return response()->json([
-                    'success'=>'Got Simple Ajax Request.', 
-                    'discount' => $this->discount
-                ]);
-
-            }
-        }
-
-        elseif($request->has('edit_cart')){
+        if($request->has('edit_cart')){
             if ($request['edit_cart'] == 'true') {
                 $request->session()->flash('edit_cart', $request['edit_cart']);
             } else {
@@ -72,12 +53,7 @@ class CartAPIController extends Controller
             return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
         }
 
-        elseif($request->has('setting_finalise_key')){
-            $request->session()->flash('setting_finalise_key', $request['setting_finalise_key']);
-            
-            $this->html = view('home.partial.settingFinaliseKeyPartial', ['data' => $this->Data()])->render();
-            return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
-        }
+       
         //voucher
         elseif ($request->has('searchInputID') && $request->session()->has('setting_finalise_key')) {
             $request->session()->reflash('setting_finalise_key');
@@ -212,6 +188,37 @@ class CartAPIController extends Controller
 
            //return response()->json(['view' => $this->view, 'success' => $request['type'].'Added.', 'html' => $this->html]);
 
+        }
+        elseif($request->has('action') && $request['action'] == 'useFinaliseKey'){
+          
+            $keyValueFound = false;
+            $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList'); 
+            $request->session()->reflash('setting_finalise_key');
+
+            foreach ($this->setupList['order_finalise_key'] as $key => $value) {
+                if ($value['key'] == $request['key'] && $value['type'] == $request['type']) {
+                  
+                    $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
+                    unset( $this->setupList['order_finalise_key'][$key] );
+                    $request->session()->put('user-session-'.Auth::user()->user_id.'.'.'setupList', $this->setupList);
+                    $keyValueFound = true;
+                    break;
+                }
+            }
+
+            //add key value
+            if ($keyValueFound == false) {
+            
+
+                $order_finalise_key = [
+                    'key' => $request['key'],
+                    'type' => $request['type']
+                ];
+                $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'setupList.order_finalise_key', $order_finalise_key);
+            }
+
+            $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList'); 
+            $this->html = view('home.partial.settingFinaliseKeyPartial', ['data' => $this->Data()])->render();
         }
         
       

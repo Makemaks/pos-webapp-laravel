@@ -13,14 +13,16 @@ if (count($stockList) > 0) {
 
                 $totalCostPrice = \App\Models\Stock::OrderTotal($receiptList);
                 $quantity_each_stock = $receiptList->count();
+
+                $arraystockSearch[] = [
+                    'Stock Name' => $stockName,
+                    'Sales' => $quantity_each_stock,
+                    'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2),
+                ];
             }
         }
 
-        $arraystockSearch[] = [
-            'Stock Name' => $stockName,
-            'Sales' => $quantity_each_stock,
-            'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2),
-        ];
+      
     }
 } else {
     $arraystockSearch[] = [

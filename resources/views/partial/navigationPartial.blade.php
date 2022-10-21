@@ -43,12 +43,26 @@ use App\Helpers\DateTimeHelper;
                 <div>
                     @isset($storeModel)
                         <h3 class="uk-margin-remove-bottom" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->company_name}}</h3>
-                        <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->store_name}}</p>
+                        <form action="{{route('home.index')}}">
+                            @csrf
+                            <select name="store-form" class="uk-select" onchange="this.form.submit()">
+                                <option selected disabled></option>
+                                
+                                @isset($storeList)
+                                    @foreach ($storeList as $store)
+                                        <option value="{{$store->store_id}}" @if($store->store_id == $storeModel->store_id) selected  @endif>{{$store->store_name}} - {{$store->store_id}} - {{$storeModel->store_id}}</option>
+                                    @endforeach
+                                @endisset
+                                
+                            </select>
+                        </form>
+                        
+                        {{-- <p class="uk-text-meta uk-margin-remove-top" title="S{{$storeModel->store_id}} : A{{$userModel->person_account_id}}">{{$storeModel->store_name}}</p> --}}
                     @endisset
                 </div>
             </div>
 
-            @auth
+            {{-- @auth
             
                 @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && User::UserType()[Auth::User()->user_type] == 'Admin' || $route != 'home')
                     
@@ -76,7 +90,7 @@ use App\Helpers\DateTimeHelper;
                     
                 @endif
 
-            @endauth
+            @endauth --}}
 
            {{-- <div class="uk-navbar-item">
                 <div class="uk-button-group">
@@ -103,8 +117,7 @@ use App\Helpers\DateTimeHelper;
             @if ($route == 'home')
                 <div class="uk-navbar-item">
                     <div class="uk-button-group">
-                        <input id="searchInputID" class="uk-input uk-form-width-large" type="text" autofocus onclick="showKeypad()" 
-                        onchange="searchInput(this)" autocomplete="off">
+                       
 
                         <div class="uk-button-group">
                         {{--  <button class="uk-button uk-button-default">Dropdown</button> --}}
@@ -169,6 +182,10 @@ use App\Helpers\DateTimeHelper;
                                             href="{{ route('user.show', $userModel->user_id) }}">Profile</a></li>
                                     <li><a class="uk-margin-small uk-button uk-button-default uk-border-rounded"
                                             href="{{ route('authentication.logout') }}">Logout</a></li>
+
+                                    <li class="uk-nav-header" uk-icon="icon: lock"></li>
+                                    <li class="uk-nav-divider"></li>
+                                    <li><button class="uk-margin-small uk-button uk-button-default uk-border-rounded" onclick="lockScreen()">Lock Screen</button></li>
 
                                     <li class="uk-nav-header" uk-icon="icon: clock"></li>
                                     <li class="uk-nav-divider"></li>

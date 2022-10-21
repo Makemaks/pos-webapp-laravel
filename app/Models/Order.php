@@ -14,6 +14,7 @@ use App\Models\Person;
 use App\Models\Receipt;
 use App\Models\Order;
 use App\Models\Warehouse;
+use App\Models\Store;
 
 use App\Helpers\MathHelper;
 use Carbon\Carbon;
@@ -25,21 +26,21 @@ class Order extends Model
     protected $table = 'order';
     protected $primaryKey = 'order_id';
     
-    public $timestamps = true;
-
-   
+    //public $timestamps = true;
 
     protected $attributes = [
 
         "order_setting_vat" => '{}',
-        "order_status" => 0,
-        "order_finalise_key" => '{}'
-
+        "order_status" => '{}',
+        "order_finalise_key" => '{}',
+        "order_group" => '{}',
     ];
 
     protected $casts = [
         "order_finalise_key" => 'array',
-        "order_setting_vat" => 'array'
+        "order_setting_vat" => 'array',
+        "order_group" => 'array',
+        "order_status" => 'array',
     ];
 
 
@@ -176,134 +177,168 @@ class Order extends Model
 
     // add to db
     public static function Process($request, $data){
-       
-        $receipt = [];
-        $receipt['priceVAT'] = 0;
-        $receipt['totalPrice'] = 0;
-        $receipt['discountTotal'] = 0;
-        $orderData = [];
-        $receiptData = [];
-      
+        
 
-        //get receipt stock
-        if($request->session()->has('user-session-'.Auth::user()->user_id. '.cartList')){
+        if ($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'setupList')) {
 
-            $sessionCartList = $request->session()->get('user-session-'.Auth::user()->user_id. '.cartList');
-            //$stockList = Receipt::SessionDisplay($sessionCartList);
-        }
-
-        if ( $request->session()->has('user-session-'.Auth::user()->user_id. '.customerCartList') ) {
-            $customerCartList = $request->session()->get('user-session-'.Auth::user()->user_id. '.customerCartList');
-
-            $personModel = Person::find($customerCartList[0]['value']);
-            $orderData += [
-                'ordertable_id' => $personModel->person_id,
-                'ordertable_type' => 'Person',
-            ];
-        }
-
-        $userModel = User::Person('user_person_id', Auth::user()->user_person_id)
+            $userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
+
+            $receipt = [];
+            $receipt['priceVAT'] = 0;
+            $receipt['totalPrice'] = 0;
+            $receipt['discountTotal'] = 0;
+            $receipt['subTotal'] = 0;
+            $orderData = [];
+            $receiptData = [];
+            $warehouse_id = NULL;
         
-        //order type
-        if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && User::UserType()[Auth::User()->user_type] == 'Admin') {
-
             $orderData += [
-                'order_store_id' => $userModel->user_store_id,
-                'order_type' => array_search('In-Store', Order::OrderType())
+                'order_user_id' => $userModel->user_id,
+                'order_status' => 0,
+                'order_setting_pos_id' => 1,
+                'created_at' => $request->get('created_at'),
+                'updated_at' => $request->get('updated_at')
             ];
-           
-        }else{
-            $orderData += [
-                'order_type' => array_search('Online', Order::OrderType())
-            ];
-        }
 
-        //customer details
-        if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && User::UserType()[Auth::User()->user_type] == 'Admin' && 
-        $request->session()->has('user-session-'.Auth::user()->user_id.'.'.'customerList')) {
+        
 
-            $orderData += [
-                'ordertable_id' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'customerList')[0],
-                'ordertable_type' => 'Person'
-            ];
-           
-        }else{
-            $orderData += [
-                'ordertable_id' => $userModel->person_id,
-                'ordertable_type' => 'Person'
-            ];
-        }
+            //get receipt stock
+            if($request->session()->has('user-session-'.Auth::user()->user_id. '.cartList')){
 
-     
-        //add finalise key
-        if ($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'finaliseKeyList')) {
-            if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'finaliseKeyList') ) > 0) {
+                $sessionCartListUser = $request->session()->get('user-session-'.Auth::user()->user_id. '.cartList');
+                $tempSessionCartList = Receipt::SessionCartInitialize($sessionCartListUser);
+                $sessionCartListUser = $tempSessionCartList;
+            }
+
+            if ( $request->session()->has('user-session-'.Auth::user()->user_id. '.customerCartList') ) {
+                $customerCartList = $request->session()->get('user-session-'.Auth::user()->user_id. '.customerCartList');
+
+                $userModel = User::find($customerCartList[0]['value']);
                 $orderData += [
-                    'order_finalise_key' => $request->session()->get('order_finalise_key')
+                    'ordertable_id' => $userModel->user_id,
+                    'ordertable_type' => 'User',
                 ];
             }
-        }
-        //add finalise key
-        if ($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'offerList')) {
-            if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'offerList') ) > 0) {
+
+            
+            $a = User::UserType()[Auth::User()->user_type];
+
+            //order type
+            if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin') {
+
                 $orderData += [
-                    'order_offer' => $request->session()->get('order_finalise_key')
+                    'order_store_id' => $userModel->store_id,
+                    'order_type' => array_search('In-Store', Order::OrderType())
                 ];
-            }
-        }
-        
-        //store order
-        $orderData = [
-
-            'order_user_id' => $userModel->user_id,
-            'order_status' => 0,
-            'order_setting_pos_id' => 1
-        ];
-
-        //$orderData = DatabaseHelper::MergeArray($orderData, DatabaseHelper::Timestamp());
-        $orderID = Order::insertGetId($orderData);
-        $loop = (object)['last' => false];
-        //store receipt
-        foreach ($sessionCartList as $key => $sessionCartList) {
-           
-           
-            if($key >= count($sessionCartList)){
-                $loop->last = true;
-            }
-
-           if (array_key_exists('receipt_discount', $sessionCartList)) {
-                $receiptData += $sessionCartList['receipt_discount'];
-           }
-           
-            $receipt = Receipt::Calculate($data, $sessionCartList, $loop, $receipt);
             
-            //decrement stock from table
-            $warehouseStock = Warehouse::Available( $sessionCartList['stock_id'] );
-            $warehouse_quantity = $warehouseStock->warehouse_quantity - $sessionCartList['stock_quantity'];
-            
-            Warehouse::where( 'warehouse_id', $warehouseStock->warehouse_id)
-            ->update(['warehouse_quantity' => $warehouse_quantity]);
-
-            $receiptData = [
-                    'receipttable_id' => $sessionCartList['stock_id'],
-                    'receipttable_type' => 'Stock',
-                    'receipt_warehouse_id' => 1,
-                    'receipt_order_id' =>  $orderID,
-                    'receipt_user_id' => $sessionCartList['user_id'],
-                    'receipt_stock_cost' => $receipt['price'],
-                    'receipt_setting_pos_id' => 1,
-                    'receipt_warehouse_id' => $warehouseStock->warehouse_id,
+            }else{
+                $orderData += [
                    
-            ];
-         
-            Receipt::insert($receiptData);
+                    'order_type' => array_search('Online', Order::OrderType())
+                ];
+            }
+
+
+            $a = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.customer');
+
+            //customer details
+            if (count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.customer') ) > 0) {
+
+                $orderData += [
+                    'ordertable_id' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.customer')['value'],
+                    'ordertable_type' => 'User'
+                ];
+            
+            }else{
+                $orderData += [
+                    'ordertable_id' => $userModel->person_id,
+                    'ordertable_type' => 'User'
+                ];
+            }
+
+
+          
+
+            //add finalise key
+            if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_finalise_key') ) > 0) {
+                $orderData += [
+                    'order_finalise_key' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_finalise_key')
+                ];
+            }
+
+            //add finalise key
+            if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_offer') ) > 0) {
+                $orderData += [
+                    'order_offer' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_offer')
+                ];
+            }
+            
+        
+            //"order_group" => '{}',
+
+            //$orderData = DatabaseHelper::MergeArray($orderData, DatabaseHelper::Timestamp());
+            $orderID = Order::insertGetId($orderData);
+            $loop = (object)['last' => false];
+            //store receipt
+        
+            foreach ($sessionCartListUser as $key => $sessionCartList) {
+            
+            
+                if($key >= count($sessionCartListUser)){
+                    $loop->last = true;
+                }
+
+                if (array_key_exists('receipt_discount', $sessionCartList)) {
+                        $receiptData += $sessionCartList['receipt_discount'];
+                }
+            
+            
+                $receipt = Receipt::Calculate($data, $sessionCartList, $loop, $receipt);
+                
+                //decrement stock from table
+                if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin') {
+                    $warehouseStock = Warehouse::Available( $sessionCartList['stock_id'],  $userModel->user_store_id)->first();
+                    $warehouse_quantity = $warehouseStock->warehouse_quantity - $sessionCartList['stock_quantity'];
+               
+                    
+                    Warehouse::where( 'warehouse_id', $warehouseStock->warehouse_id)
+                    ->update(['warehouse_quantity' => $warehouse_quantity]);
+
+                    $warehouse_id = $warehouseStock->warehouse_id;
+                }
+
+                    $receiptData = [
+                            'receipttable_id' => $sessionCartList['stock_id'],
+                            'receipttable_type' => 'Stock',
+                            'receipt_warehouse_id' => 1,
+                            'receipt_order_id' =>  $orderID,
+                            'receipt_user_id' => $sessionCartList['user_id'],
+                            'receipt_stock_cost' => $receipt['price'],
+                            'receipt_setting_pos_id' => 1,
+                            'receipt_warehouse_id' => $warehouse_id,
+                        
+                    ];
+               
+            
+                Receipt::insert($receiptData);
+            }
+
+        
+        
+            //empty sessions for this particular cart
+            Receipt::Empty($request);
         }
 
-      
-       
-        //empty sessions
-        Receipt::Empty($request);
+    }
+
+
+    /**
+     * Get the store associated with the order.
+     */
+    public function store()
+    {
+        return $this->hasOne(Store::class,'order_store_id','store_id');
     }
 
    

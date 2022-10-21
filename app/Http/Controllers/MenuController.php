@@ -13,6 +13,8 @@ use App\Models\Store;
 use App\Models\Setting;
 use App\Models\Account;
 use App\Models\Company;
+use Carbon\Carbon;
+use Illuminate\Support\Arr;
 
 class MenuController extends Controller
 {
@@ -92,88 +94,77 @@ class MenuController extends Controller
    public function setting(Request $request){
     $request->session()->flash('view', $request->view);
     $request->session()->flash('action', $request->route()->getActionMethod());
-     
-        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
-        ->first();
-    
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
-        
+        $this->Init();
+        // dd($this->userModel->store_id);
+        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
+            ->paginate(20);
+
+        // dd($request->view);
+        if ($this->settingModel == null) {
+            $this->settingModel = new Setting();
+        }
 
         switch ($request->view):
             case (in_array($request->view, Setting::SettingStockGroup())):
             
                 $type = array_search( $request->view, Setting::SettingStockGroup());
                 $request->session()->flash('type', $type);
-                
-               
-                return view('menu.setting.group', ['data' => $this->Data()]);
+                $request->session()->flash('view', $request->view);
+
+                return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
 
                 break;
           
            
             case 'mix-&-match':
-                
-                
                 return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
 
                 break;
             
-            case 'finalise-keys':
-
-                return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
+            case 'finalise-key':
+                $group = array_search( $request->view, Setting::SettingKeyGroup());
+                $request->session()->flash('group', $group);
+                return view('menu.setting.key', ['data' => $this->Data()]);
                 break;
 
-                    
+            case 'status-key':
+                $group = array_search( $request->view, Setting::SettingKeyGroup());
+                $request->session()->flash('group', $group);
+                return view('menu.setting.key', ['data' => $this->Data()]);
+                break;
+
+            case 'transaction-key':
+                $group = array_search( $request->view, Setting::SettingKeyGroup());
+                $request->session()->flash('group', $group);
+                return view('menu.setting.key', ['data' => $this->Data()]);
+                break;
+
             case 'receipt':
-                
 
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
-                
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
                 break;
 
-            case 'tags':
-                
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
-                
-                return view('menu.setting.receipt', ['data' => $this->Data()]);
+            case 'tag':
+
+                return view('menu.setting.settingStockTag', ['data' => $this->Data()]);
 
                 break;
             
 
-            case 'tag-groups':
-                
+            case 'tag-group':
 
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
-                
-                return view('menu.setting.receipt', ['data' => $this->Data()]);
+                return view('menu.setting.settingStockTagGroup', ['data' => $this->Data()]);
 
                 break;
 
-            case 'vouchers':
-                
-
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
+            case 'voucher':
                 
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
                 break;
 
             case 'reasons':
-                
-
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
                 
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
@@ -181,25 +172,54 @@ class MenuController extends Controller
 
             case 'tax':
                 
+                return view('menu.setting.settingVat', ['data' => $this->Data()]);
 
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
+                    break;
+
+            case 'set-menu':
+                
+                return view('menu.setting.settingStockSetMenu', ['data' => $this->Data()]);
+
+                    break;
+
+            case 'preset-message':
+
+                return view('menu.setting.settingPresetMessage', ['data' => $this->Data()]);
+
+                    break;
+
+            case 'price-level-scheduler':
+                
+                $stockCosts = $this->stockList->first()->stock_cost;
+
+                $stock_cost_count = 0;
+                $stock_cost_key = 0;
+                foreach($stockCosts as $key => $stockCost) {
+                    if($stock_cost_count < count($stockCost)) {
+                        $stock_cost_key = $key;
+                        $stock_cost_count = count($stockCost);
+                    }
                 }
                 
-                return view('menu.setting.receipt', ['data' => $this->Data()]);
+                $this->settingModel['stock_costs'] = collect($stockCosts[$stock_cost_key])->keys();
+
+                return view('menu.setting.settingPriceLevelScheduler', ['data' => $this->Data()]);
 
                     break;
 
             case 'reasons':
                 
-
-                if ($this->settingModel == null) {
-                    $this->settingModel = new Setting();
-                }
-                
                 return view('menu.setting.receipt', ['data' => $this->Data()]);
 
                 break;
+
+
+            case 'floor-plan':
+                $request->session()->flash($request->view, 'view');
+                $this->settingModel = Setting::get();
+                return view('menu.setting.floor-plan', ['data' => $this->Data()]);
+
+                    break;
 
             case (in_array($request->view, Warehouse::WarehouseType())):
                 
@@ -317,7 +337,7 @@ class MenuController extends Controller
             'fileModel' => $this->fileModel,
             'storeList' => $this->storeList,
             'companyList' => $this->companyList,
-            'warehouseList' => $this->warehouseList
+            'warehouseList' => $this->warehouseList,
         ];
    }
 

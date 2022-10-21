@@ -73,8 +73,8 @@ class EmploymentFactory extends Factory
             'employment_setup' => $array,
             'employment_user_pay' => [
                 'pay_rate' => $this->faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 20),
-                'from_date' => now()->subDays(30)->format('Y-m-d'),
-                'to_date' => now()->format('Y-m-d'),
+                'from_date' => $this->faker->dateTimeBetween($startDate = '-2 years', $endDate = '-1 years', $timezone = null),
+                'to_date' => $this->faker->dateTimeBetween($startDate = '-2 years', $endDate = '-1 years', $timezone = null),
                 'start_hour' => $this->faker->numberBetween($min = 0, $max = 24),
                 'end_hour' => $this->faker->numberBetween($min = 0, $max = 24),
             ],

@@ -1,5 +1,7 @@
 @php
    use App\Models\Stock;
+   $route = Str::after(Request::route()->getName(), '.');
+   
 @endphp
 
 
@@ -75,25 +77,7 @@
                     @endif
                 </select>
             </div>
-        
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">PLU</label>
-                <select class="uk-select" name="stock_merchandise[plu_id]">
-                    <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_group)
-                        @foreach ($data['settingModel']->setting_stock_group as $key => $plu)
-                            @if ($plu['type'] == 2)
-                                    @isset($data['stockModel']->stock_merchandise['plu_id'])
-                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]', $data['stockModel']->stock_merchandise['plu_id']) ) selected @endif>{{$plu['name']}}</option>
-                                    @else
-                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]') ) selected @endif>{{$plu['name']}}</option>
-                                    @endisset
-                            @endif
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-
+            
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">BRAND</label>
                 <select class="uk-select" name="stock_merchandise[brand_id]">
@@ -127,22 +111,32 @@
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">VAT</label>
                 
-                @isset($data['stockModel']->stock_merchandise['stock_vat_id'])
-                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_merchandise[stock_vat_id]', $data['stockModel']->stock_merchandise['stock_vat_id'])}}" name="stock_merchandise[stock_vat_id]">
-                    @else
-                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_merchandise[stock_vat_id]')}}" name="stock_merchandise[stock_vat_id]">
-                @endisset
-                
+                <select name="stock_merchandise[stock_vat_id]" class="uk-select">
+                    <option selected="selected" disabled>SELECT ...</option>
+                    @foreach ($data['settingModel']->setting_vat as $setting_vat)
+                        <option value="{{old( 'stock_merchandise[stock_vat_id]', isset($data['stockModel']->stock_merchandise['stock_vat_id']) )}}">
+                            {{$setting_vat['name']}}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-stacked-text">RANDOM CODE</label> 
+                <input class="uk-input" type="text" value="{{  old('stock_merchandise[random_code]',  isset($data['stockModel']->stock_merchandise['random_code']) )}}" name="stock_merchandise[random_code]">
             </div>
         
-            
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-stacked-text">TAG</label> 
+                <input class="uk-input" type="text" value="{{  old('stock_merchandise[stock_tag]',  isset($data['stockModel']->stock_merchandise['stock_tag']) )}}" name="stock_merchandise[stock_tag]">
+            </div>
         </div>
     </div>
     
    <div>
         <div class="uk-card uk-card-default uk-padding">
         
-            <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+            <ul class="uk-subnav uk-subnav-pill" uk-switcher="@isset($active) {{$active}} @endisset">
                 <li><a href="#" uk-icon="list"></a></li>
                 <li><a href="#" uk-icon="plus"></a></li>
             </ul>
@@ -156,7 +150,7 @@
                                 <tr>
                                     <th>REF</th>
                                    
-                                        @for ($i = 0; $i < $data['settingModel']->setting_group['group_stock_cost']; $i++)
+                                        @for ($i = 0; $i < $data['settingModel']->setting_group['stock_cost_group']; $i++)
                                             <th>{{$i + 1}}</th>
                                         @endfor
                                     
@@ -187,7 +181,7 @@
                                                 @endfor
                                                
                                               
-                                                @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['group_stock_cost']; $q++)
+                                                @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['stock_cost_group']; $q++)
                                               
                                                     <td>
                                                  
@@ -216,58 +210,48 @@
                             <thead>
                                 <tr>
                                     <th>REF</th>
-                                    @for ($i = 0; $i < $data['settingModel']->setting_group['group_stock_cost']; $i++)
-                                       
-                                            <th>{{$i + 1}}</th>
-                                      
+                                    @for ($i = 0; $i < $data['settingModel']->setting_group['stock_cost_group']; $i++)
+                                        <th>{{$i + 1}}</th>
                                     @endfor
-                                    
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                    
-                                   
 
-                                    @if ($data['stockModel']->stock_cost && $data['stockModel']->stock_id)
-                                        
-                                       @for ($i = count($data['stockModel']->stock_cost[1]); $i < count($data['stockModel']->stock_cost[1]) * 2; $i++)
-                                            <tr>
-                                                <td>
-                                                    <button class="uk-button uk-button-default uk-border-rounded">
-                                                        {{$i + 1}}
-                                                    </button>
-                                                </td>
-                                                @for ($j=0; $j < count($data['stockModel']->stock_cost); $j++)
-                                                    <td>
-                                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="form[stock_cost][{{$i + 1}}][{{$j + 1}}][price]">
-                                                        
-                                                    </td>
-                                                    
-                                                @endfor
-
-                                            
-                                                @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['group_stock_cost']; $q++)
-                                            
-                                                    <td>
-                                                    
-                                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="form[stock_cost][{{$i + 1}}][{{$q + 1}}][price]">
-                                                        
-                                                    </td>
-                                                    
-                                                @endfor                
+                                @for ($i = 0; $i < 5; $i++)
+                                    <tr>
+                                        <td>
+                                            <button class="uk-button uk-button-default uk-border-rounded">
+                                                {{$i + 1}}
+                                            </button>
+                                        </td>
+                                        @for ($j=0; $j < count($data['stockModel']->stock_cost); $j++)
+                                            <td>
+                                                <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="form[stock_cost][{{$i + 1}}][{{$j + 1}}][price]">
                                                 
-                                            </tr>
-                                       @endfor
+                                            </td>
+                                            
+                                        @endfor
+
+                                    
+                                        @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['stock_cost_group']; $q++)
+                                    
+                                            <td>
+                                            
+                                                <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="form[stock_cost][{{$i + 1}}][{{$q + 1}}][price]">
+                                                
+                                            </td>
+                                            
+                                        @endfor                
                                         
-                                       
-                                    @endif
-                                
+                                    </tr>
+                                @endfor
+                            
                             </tbody>
                         </table>
                                 
             
-                       <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button>
+                       {{-- <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button> --}}
                          
                     </div>
                 </li>
@@ -287,7 +271,7 @@
                     <thead>
                         <tr>
                             <th>REF</th>
-                            @for ($i = 0; $i < $data['settingModel']->setting_group['group_stock_cost']; $i++)
+                            @for ($i = 0; $i < $data['settingModel']->setting_group['stock_cost_group']; $i++)
                                
                                     <th>{{$i + 1}}</th>
                               
@@ -302,7 +286,7 @@
 
                             @endphp
 
-                            @if ($data['stockModel']->stock_cost && $data['stockModel']->stock_id)
+                            
                                 
                                @for ($i = 0; $i < 1; $i++)
                                     <tr>
@@ -322,7 +306,7 @@
 
                                     
                                     
-                                        @for ($q=count($data['stockModel']->stock_cost_quantity); $q < $data['settingModel']->setting_group['group_stock_cost']; $q++)
+                                        @for ($q=count($data['stockModel']->stock_cost_quantity); $q < $data['settingModel']->setting_group['stock_cost_group']; $q++)
                                    
                                             <td>
                                             
@@ -336,7 +320,7 @@
                                @endfor
                                 
                                
-                            @endif
+                            
                         
                     </tbody>
                 </table>

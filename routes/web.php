@@ -20,6 +20,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\InitController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\API\AppAPIController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StockController;
@@ -83,7 +84,7 @@ Route::resource('stock', StockController::class);
 // Route::resource('subscription', SubscriptionController::class);
 Route::resource('setting', SettingController::class);
 Route::resource('dashboard', DashboardController::class);
-// Route::resource('reservation', ReservationController::class);
+Route::resource('reservation', ReservationController::class);
 // Route::resource('scheme', SchemeController::class);
 // Route::resource('plan', PlanController::class);
 
@@ -92,6 +93,10 @@ Route::resource('report', ReportController::class);
 Route::resource('ticket', TicketController::class);
 Route::resource('warehouse', WarehouseController::class);
 Route::resource('receipt', ReceiptController::class);
+
+
+
+
 
 // Route::get('mail/', [MailController::class, 'Index'])->name('mail.index');
 // Route::post('mail/send', [MailController::class, 'Send'])->name('mail.send');
@@ -150,6 +155,7 @@ Route::apiResources([
     'cart-api' => CartAPIController::class,
     'scheme-api' => SchemeAPIController::class,
     'order-api' => OrderAPIController::class,
+    'app-api' =>AppAPIController::class,
 ]);
 
 /* Route::get('order-manager/checkout/', [OrderManagerController::class, 'Checkout'])->name('order-manager.checkout');

@@ -330,7 +330,126 @@ class ConfigHelper
     }
 
 
-   
+    public static function SettingReceipt(){
+        return [
+            '{
+                "default": 1,
+                "sig strip": {
+                    "",
+                    "",
+                    "Employee / Manager RRsignature",
+                    ".......................John"
+                },
+                "vat number": "VAT No: 787655678",
+                "bottom message": {
+                    "Thank You For Your Custom",
+                    "See You Soon",
+                    "MERRY CHRISTMAS",
+                    "www.theepsomclub.com"
+                },
+                "receipt header": {
+                    "The TESTING CLUB",
+                    "Tel: 061 319SS66  VAT: GB3158927S",
+                    "41-43 Chruch Street",
+                    "Epsom KT17 4QW"
+                },
+                "report message": {
+                    "",
+                    "",
+                    "",
+                    ""
+                },
+                "commercial message": {
+                    "The Club is Open 1000-2200 Daily",
+                    "",
+                    "",
+                    ""
+                }
+            }'
+       
+        ];
+    }
+
+    public static function SettingStockLabel(){
+        return [
+            
+            '{
+                "SHELF": {
+                    "CUSTOM TEMPLATES": [],
+                    "DEFAULT TEMPLATES": {
+                        "A4": "A4 (24 labels [3x8], 60x30mm) - 210mm x 297mm",
+                        "GK420t": "GK420t (Single label feed, 48.5 x 35mm) - 49mm x 35mm",
+                        "A4 SPAR": "A4 SPAR (24 labels [3x8], 67.5x34mm) - 210mm x 297mm",
+                        "DK-1201": "DK-1201 (Single label roll, 90 x 29mm) - 90mm x 29mm",
+                        "EU30016WX": "EU30016WX (24 labels [3x8], 63.5 x 33.9mm) - 210mm x 297mm",
+                        "SECC21LCE": "SECC21LCE (21 labels [3x7], 70 x 37.5mm) - 210mm x 297mm",
+                        "DA402 80x38": "DA402 80x38 (ZEBRA Single label roll, 80 x 38mm) - 80mm x 38mm",
+                        "A4 (Allergens)": "A4 (Allergens) (8 labels [1x8], 120x30mm) - 210mm x 297mm",
+                        "SRP-770II 38x25": "SRP-770II 38x25 (BIXILON Single label roll, 38 x 25mm) - 38mm x 25mm",
+                        "SRP-770II 45x35": "SRP-770II 45x35 (BIXILON Single label roll, 45 x 35mm) - 45mm x 35mm",
+                        "A4 (Alternative Text)": "A4 (Alternative Text) (24 labels [3x8], 60x30mm) - 210mm x 297mm"
+                    }
+                },
+                "STOCK": {
+                    "CUSTOM TEMPLATES": [],
+                    "DEFAULT TEMPLATES": {
+                        "DK-1201": "DK-1201 - 90mm x 29mm",
+                        "SLP-MRL": "SLP-MRL - 51mm x 28mm",
+                        "DK-11204": "DK-11204 - 54mm x 17mm",
+                        "DK-22210": "DK-22210 - 100mm x 29mm",
+                        "SRP-770II 38x25": "SRP-770II 38x25 - 38mm x 25mm",
+                        "SRP-770II 45x35": "SRP-770II 45x35 - 45mm x 35mm",
+                        "DK-1201 (Allergens)": "DK-1201 (Allergens) - 90mm x 29mm",
+                        "DK-1201 (Alternative Text)": "DK-1201 (Alternative Text) - 90mm x 29mm"
+                    }
+                }
+            }'
+       
+        ];
+    }
+
+    public static function SettingAllergen(){
+        return [
+            "Celery",
+            "Cereals Containing Gluten",
+            "Crustaceans",
+            "Eggs",
+            "Fish",
+            "Lupin",
+            "Milk",
+            "Molluscs",
+            "Mustard",
+            "Tree Nuts",
+            "Peanuts",
+            "Sesame Seeds",
+            "Soyabeans",
+            "Sulphur Dioxide and Sulphites",
+            "Allergen 15",
+            "Allergen 16" 
+                
+        ];
+    }
+
+    public static function SettingCustomerPrint(){
+        return [
+            'Print last transaction date on receipt',
+            'Print account number on receipt',  
+            'Print spend today on receipt',
+            'Print customer address on receipt',
+            'Print times used today on receipt',
+            'Print phone number on receipt',
+            'Print spend to date on receipt',
+            'Print customer name on KP',
+            'Print spend towards discount on receipt',
+            'Print customer address on KP',
+            'Print discount total on receipt',
+            'Print customer notes on KP',
+            'Shift to price level 2?',
+            'Print phone number on KP',
+            'Prompt with picture if present?',
+            'Also print customer details on KV?',
+        ];
+    }
     
   
 }

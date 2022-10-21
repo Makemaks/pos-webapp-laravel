@@ -17,22 +17,24 @@ use App\Models\Person;
         <div>Check<input type="number" name="check" class="uk-input"></div>
         <div>Table<input type="number" name="table" class="uk-input"></div>
         <div>
-            Department 
-            <select class="uk-select" name="department"  id="form-stacked-select">
+            Department
+            <select class="uk-select" name="department" id="form-stacked-select">
+                <option>Choose One Department</option>
+                @foreach($stocks as $stock)
+                    <option>{{$stock->stock_merchandise['category_id']}}</option>
+                @endforeach
+            </select>
+        </div>
+        <div>
+            Group
+            <select class="uk-select" name="group" id="form-stacked-select">
                 <option>Option 01</option>
                 <option>Option 02</option>
             </select>
         </div>
         <div>
-            Group 
-            <select class="uk-select" name="group"  id="form-stacked-select">
-                <option>Option 01</option>
-                <option>Option 02</option>
-            </select>
-        </div>
-        <div>
-            Clerk 
-            <select class="uk-select" name="clerk"  id="form-stacked-select">
+            Clerk
+            <select class="uk-select" name="clerk" id="form-stacked-select">
                 <option>Choose One Clerk</option>
                 @foreach($clerks as $clerk)
                 <option value="{{$clerk->user_id}}">{{$clerk->UserPerson->person_name['person_firstname']}}</option>
@@ -40,28 +42,29 @@ use App\Models\Person;
             </select>
         </div>
         <div>
-            Price Level 
-            <select class="uk-select" name="price_level"  id="form-stacked-select">
+            Price Level
+            <select class="uk-select" name="price_level" id="form-stacked-select">
                 <option>Option 01</option>
                 <option>Option 02</option>
             </select>
         </div>
         <div>
             Terminal
-            <select class="uk-select" name="terminal"  id="form-stacked-select">
+            <select class="uk-select" name="terminal" id="form-stacked-select">
                 <option>Option 01</option>
                 <option>Option 02</option>
             </select>
         </div>
         <div>
             Till Location
-            <select class="uk-select" name="till_location"  id="form-stacked-select">
+            <select class="uk-select" name="till_location" id="form-stacked-select">
                 <option>Option 01</option>
                 <option>Option 02</option>
             </select>
         </div>
         <div style="
-        margin-top: 62px;"><button class="uk-button uk-button-default uk-border-rounded uk-button-primary">Submit</button>
+        margin-top: 62px;"><button
+                class="uk-button uk-button-default uk-border-rounded uk-button-primary">Submit</button>
             <button type="reset" class="uk-button uk-button-default uk-border-rounded uk-button-primary">Reset</button>
         </div>
     </div>

@@ -40,11 +40,21 @@ class OrderController extends Controller
     public function Index(Request $request)
     {
 
-        // if ($request->session()->has('view') && $request->session()->get('view') == 'till') {
+        if ($request->session()->has('view') && $request->session()->get('view') == 'till') {
             $this->init();
             $tillData = $this->settingModel->setting_pos;
             $userOrder = Order::pluck('order_user_id')->toArray();
             $clerks = User::whereIn('user_id',$userOrder)->get();
+            $stocks = Stock::get();
+
+            if(isset($request->department)) {
+                foreach($stocks as $stock) {
+                    if($stock->stock_merchandise['category_id'] == $request->department) {
+                        $stockStoreId = $stock->stock_store_id;
+                        break;
+                    }
+                }
+            }
             $this->orderList = Receipt::Order('order_setting_pos_id',  1)
                 ->orderByDesc('order_id')
                 ->groupBy('order_id')
@@ -58,10 +68,14 @@ class OrderController extends Controller
                         $query->where('order.order_user_id', $request->clerk);
                     }
                 })
-                
+                ->when($request->has('department'), function ($query) use ($request) {
+                    if ($request->categories != 'all' && isset($stockStoreId)) {
+                        $query->where('order.order_store_id', $stockStoreId);
+                    }
+                })
                 ->paginate(10);
-            return view('order.tillIndex', ['data' => $this->Data(), 'tillData' => $tillData , 'clerks' => $clerks]);
-        // }
+            return view('order.tillIndex', ['data' => $this->Data(), 'tillData' => $tillData , 'clerks' => $clerks,'stocks'=> $stocks]);
+        }
 
         if ($request->session()->has('view') && $request->session()->get('view') == 'bill') {
             $this->init();

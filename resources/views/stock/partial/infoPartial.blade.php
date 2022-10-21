@@ -62,11 +62,11 @@
                             @if ($category['type'] == 0)
                                 @isset ($data['stockModel']->stock_merchandise['category_id'])
                                     <option value="{{$key}}" @if($key == old( 'stock_merchandise[category_id]', $data['stockModel']->stock_merchandise['category_id']) ) selected @endif>
-                                        {{$category['description']}}
+                                        {{$category['name']}}
                                     </option>
                                 @else
                                     <option value="{{$key}}" @if($key == old( 'stock_merchandise[category_id]') ) selected @endif>
-                                        {{$category['description']}}
+                                        {{$category['name']}}
                                     </option>
                                
                                 @endisset
@@ -84,9 +84,9 @@
                         @foreach ($data['settingModel']->setting_stock_group as $key => $plu)
                             @if ($plu['type'] == 2)
                                     @isset($data['stockModel']->stock_merchandise['plu_id'])
-                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]', $data['stockModel']->stock_merchandise['plu_id']) ) selected @endif>{{$plu['description']}}</option>
+                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]', $data['stockModel']->stock_merchandise['plu_id']) ) selected @endif>{{$plu['name']}}</option>
                                     @else
-                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]') ) selected @endif>{{$plu['description']}}</option>
+                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]') ) selected @endif>{{$plu['name']}}</option>
                                     @endisset
                             @endif
                         @endforeach
@@ -103,9 +103,9 @@
                             @if ($plu['type'] == 3)
                             
                                 @isset($data['stockModel']->stock_merchandise['brand_id'])
-                                    <option value="{{$key}}" @if($key == old('stock_merchandise[brand_id]', $data['stockModel']->stock_merchandise['brand_id'])) selected @endif>{{$plu['description']}}</option>
+                                    <option value="{{$key}}" @if($key == old('stock_merchandise[brand_id]', $data['stockModel']->stock_merchandise['brand_id'])) selected @endif>{{$plu['name']}}</option>
                                 @else
-                                    <option value="{{$key}}" @if($key == old('stock_merchandise[brand_id]')) selected @endif>{{$plu['description']}}</option>
+                                    <option value="{{$key}}" @if($key == old('stock_merchandise[brand_id]')) selected @endif>{{$plu['name']}}</option>
                                 @endisset
                             @endif
                         @endforeach

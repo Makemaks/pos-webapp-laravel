@@ -35,7 +35,7 @@ $route = Str::before(Request::route()->getName(), '.');
 
 <body>
 
-    <div class="uk-box-shadow-small">
+    <div class="">
         @include('partial.navigationPartial')
     </div>
     

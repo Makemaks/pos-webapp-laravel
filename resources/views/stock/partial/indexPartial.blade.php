@@ -33,8 +33,7 @@
 
 
 
-@if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && 
-User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
+@if ($route != 'home-api')
 
     <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
         <thead>
@@ -93,6 +92,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
            @endforeach
         </tbody>
     </table>
+
 @else
 
     <div>

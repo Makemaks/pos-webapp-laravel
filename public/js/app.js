@@ -66,7 +66,7 @@ $(document).ready(function() {
                 //lockScreen = 1;
               
             }
-    }, 10000); 
+    }, 1000000); 
 
 });
 

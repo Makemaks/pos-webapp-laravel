@@ -65,7 +65,7 @@
                 "company"
             ],
             "ticket" => [],
-            
+            "account" => [],
 
         ];
    } else {

@@ -30,6 +30,8 @@ class MenuController extends Controller
 
     $request->session()->flash('view', $request->view);
     $request->session()->flash('action', $request->route()->getActionMethod());
+    $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+    ->first();
 
      switch ($request->view):
          case 'stock-list':
@@ -74,14 +76,24 @@ class MenuController extends Controller
 
             break;
 
-        case 'stock-variance':
+        case 'variance':
 
+            
             $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
             
 
-            return redirect()->route('setting.index');
+            return redirect()->route('warehouse.index');
 
             break;
+
+        case 'inventory':
+           
+            $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+                
+    
+            return redirect()->route('warehouse.index');
+    
+        break;
        
          default:
              echo "i is not equal to 0, 1 or 2";

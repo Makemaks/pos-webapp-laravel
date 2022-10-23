@@ -19,7 +19,8 @@
             <th>quantity</th>
             <th>status</th>
             <th>type</th>
-            
+            <th>cost</th>
+            <th>created_at</th>
             <th></th>
             <th></th>
         </tr>
@@ -27,7 +28,7 @@
     
     <tbody>
 
-        @foreach ($data['warehouseList'] as $key => $warehouse)
+        @foreach ($data['warehouseList']->paginate(20) as $key => $warehouse)
         
             <tr>
                 
@@ -45,15 +46,22 @@
                 <td><a href="{{route('stock.edit', $warehouse->warehouse_user_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$warehouse->warehouse_user_id}}</a></td>
                 <td>{{ $warehouse->warehouse_cost_override }}</td>
                 <td>{{ $warehouse->warehouse_quantity }}</td>
-                <td>{{Str::upper(Warehouse::WarehouseCostType()()[$warehouse->warehouse_status])}}</td>
+                <td>{{Str::upper(Warehouse::WarehouseStatus()[$warehouse->warehouse_status])}}</td>
                 <td>{{Str::upper(Warehouse::WarehouseType()[$warehouse->warehouse_type])}}</td>
-             
+                <td>{{Str::upper(Warehouse::WarehouseCostType()[$warehouse->warehouse_cost_type])}}</td>
+                <td>{{$warehouse->created_at}}</td>
+                <td></td>
+                <td></td>
             </tr>
 
         @endforeach
       
     </tbody>
 </table>
+
+
+
+
 
 
 

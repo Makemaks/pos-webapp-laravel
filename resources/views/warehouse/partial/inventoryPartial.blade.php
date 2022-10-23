@@ -5,26 +5,74 @@
     $action =  Str::after(Request::route()->getName(), '.');
 @endphp
 
+<div class="uk-margin">
+    <label class="uk-form-label" for="form-stacked-select">{{Str::upper('stock')}}</label>
+    <select class="uk-select" id="form-stacked-select" name="form[warehouse][warehouse_stock_id]">
+        <option value="" selected disabled>SELECT ...</option>
 
+            @foreach ($data['stockList'] as $stock)
+                <option value="{{$stock->stock_id}}" class="uk-input">
+                    {{$stock->stock_merchandise['stock_name']}}
+                </option>
+            @endforeach
+                                    
+    </select>
+</div>
 
-<div class="">
-    <h3>TRANSFERS</h3>
+@isset($data['warehouseList'])
+        @foreach ($data['warehouseList']->get() as $keyStockTransfer => $warehouseList)
+                        
+            
+            @foreach ($warehouseList->warehouse_inventory as $keystock => $stock)
+
+           
+
+                    @if ($keystock == 'setting_stock_case_size_id')
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{Str::upper('setting_stock_case_size_id')}}</label>
+                            <select class="uk-select" id="form-stacked-select" name="form[warehouse][warehouse_stock_id]">
+                                <option value="" selected disabled>SELECT ...</option>
+
+                                    @foreach ($data['settingModel']->setting_stock_case_size as $key_setting_stock_case_size => $item_setting_stock_case_size)
+                                        <option value="{{$key_setting_stock_case_size}}" class="uk-input">
+                                            {{$item_setting_stock_case_size['description']}}
+                                        </option>
+                                    @endforeach
+                                    
+                            </select>
+                        </div>
+                    @else
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
+                            <input class="uk-input" type="number" name="form[warehouse][{{$keyStockTransfer}}][{{$keystock}}]" value="{{$stock}}">
+                        </div>
+                    @endif
+
+                        
+                        
+            @endforeach
+                    
+        @break
     
+        @endforeach
+   @endisset
 
+{{-- <div class="">
+    <h3>INVENTORY</h3>
         @php
            
             $storeModel = Store::Account('store_id',$data['userModel']->store_id)->first();
             $storeList = Store::List('root_store_id', $data['storeModel']->store_id)
             ->get();
-          
+           
         @endphp
     
         
         <input name="form[warehouse][warehouse_user_id]" value="{{$data['userModel']->user_id}}" hidden>
-        <input name="form[warehouse][warehouse_stock_id]" value="{{$data['stockModel']->stock_id}}" hidden>
+        <input name="form[warehouse][warehouse_stock_id]" value="@isset($data['stockModel']->stock_id) {{$data['stockModel']->stock_id}} @endisset" hidden>
         
        @isset($data['warehouseList'])
-            @foreach ($data['warehouseList']->toArray() as $keyStockTransfer => $warehouseList)
+            @foreach ($data['warehouseList']->get()->toArray() as $keyStockTransfer => $warehouseList)
                         
             
                 @foreach ($warehouseList as $keystock => $stock)
@@ -59,7 +107,7 @@
                                 <select class="uk-select" id="form-stacked-select" name="form[warehouse][{{$keyStockTransfer}}][{{$keystock}}]" value="{{ old('') }}">
                                     <option value="" selected disabled>SELECT ...</option>
                                     
-                                        @foreach (Warehouse::WarehouseCostType()() as $key => $status)
+                                        @foreach (Warehouse::WarehouseCostType() as $key => $status)
                                             <option value="{{$status}}" class="uk-input" @if($key == $stock) selected @endif>
                                                 {{Str::upper($status)}}
                                             </option>
@@ -103,8 +151,6 @@
     
             @endforeach
        @endisset
-
-   
     
-</div>
+</div> --}}
 

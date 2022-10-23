@@ -18,22 +18,22 @@ class Warehouse extends Model
 
     protected $attributes = [
         'warehouse_reason' => '{
-            "type": "",
+            "type": "", 
             "description": ""
         }',
-        'warehouse_stocktake' => '{
+        'warehouse_inventory' => '{
             "current_stock": "",
             "frozen_stock": "",
             "setting_stock_case_size_id": "",
             "case_quantity": "",
             "item_quantity": "",
-            "unit_size": "",
+            "unit_size": ""
         }',
     ];
 
     protected $casts = [
         "warehouse_reason" => 'array',
-        "warehouse_stocktake" => 'array',
+        "warehouse_inventory" => 'array',
     ];
 
     public static function Store(){
@@ -58,14 +58,15 @@ class Warehouse extends Model
 
     public static function WarehouseStatus(){
         return [
-            
+            'hold',
+            'processing'
         ];
     }
 
     public static function WarehouseCostType(){
         return [
             'FIFO',
-            'Average Cost Price',
+            'Avg Cost Price',
         ];
     }
 
@@ -75,7 +76,8 @@ class Warehouse extends Model
             'delivery',
             'transfer',
             'wastage',
-            
+            'variance',
+            'inventory'
         ];
     }
 }

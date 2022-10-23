@@ -64,7 +64,7 @@
                                                 <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
                                                     <option value="" selected disabled>SELECT ...</option>
                                                     
-                                                        @foreach (Warehouse::WarehouseCostType()() as $store)
+                                                        @foreach (Warehouse::WarehouseCostType() as $store)
                                                             <option value="{{$stock}}" class="uk-input">
                                                                 {{$store}}
                                                             </option>
@@ -105,7 +105,7 @@
                                                     <select class="uk-select" id="form-stacked-select" name="warehouse[{{$keyStockTransfer}}][{{$keystock}}]">
                                                         <option value="" selected disabled>SELECT ...</option>
                                                         
-                                                            @foreach (Warehouse::WarehouseCostType()() as $store)
+                                                            @foreach (Warehouse::WarehouseCostType() as $store)
                                                                 <option value="{{$stock}}" class="uk-input">
                                                                     {{$store}}
                                                                 </option>

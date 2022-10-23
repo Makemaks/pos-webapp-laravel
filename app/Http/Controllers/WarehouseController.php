@@ -35,11 +35,11 @@ class WarehouseController extends Controller
     public function Index(Request $request)
     {
 
-        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
-            ->first();
+        $this->Init();
 
 
         $request->session()->reflash('view');
+        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->get();
 
         if ($request->has('action')) {
             $warehouse = Warehouse::find($request->warehouse_id);
@@ -48,13 +48,16 @@ class WarehouseController extends Controller
             return redirect()->back();
         }
 
-        if ($request->session()->get('view') == 'Ins-&-Out') {
+        if ($request->session()->has('view') && $request->session()->get('view') == 'Ins-&-Out') {
             $this->warehouseList =  Warehouse::Store()
                 ->orwhere('warehouse_type', 'In')
                 ->orwhere('warehouse_type', 'Out')
                 ->paginate(20);
-        } elseif ($request->session()->get('view') != 'Ins-&-Out') {
-            $this->warehouseList =  Warehouse::where('warehouse_type', $request->session()->get('view'))->paginate(20);
+        } 
+        elseif ($request->session()->has('view') && $request->session()->get('view') != 'Ins-&-Out') {
+            
+            $warehouse_type = array_search($request->session()->get('view'), Warehouse::WarehouseType());
+            $this->warehouseList =  Warehouse::where('warehouse_type', $warehouse_type);
         } else {
 
             $accountList = User::Account('store_id',  $this->userModel->store_id)

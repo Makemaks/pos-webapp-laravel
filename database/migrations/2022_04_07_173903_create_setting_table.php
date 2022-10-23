@@ -23,7 +23,9 @@ return new class extends Migration
             $table->json('setting_logo')->nullable();
 
 
+            
             $table->json('setting_stock_group')->nullable()->comment('group::category::plu::brand');
+            $table->json('setting_stock_cost')->nullable();
 
             $table->json('setting_stock_label')->nullable();
 
@@ -60,6 +62,7 @@ return new class extends Migration
             
             $table->json('setting_group')->nullable();
             $table->json('setting_customer')->nullable();
+            $table->json('setting_preset_message')->nullable();
           
             $table->json('setting_building')->nullable()->comment('address_id::status::capacity::name::description::note[]::room[]');
             //status::capacity::name::description::size[]::section[]::note[]

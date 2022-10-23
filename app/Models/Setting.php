@@ -28,8 +28,8 @@ class Setting extends Model
     protected $attributes = [
 
         'setting_logo' => '{}',
-        
-       
+
+
         'setting_stock_group' => '{
             "1": {
                 "name": "",
@@ -39,7 +39,7 @@ class Setting extends Model
         }',
 
         'setting_stock_label' => '{
-           
+
             "SHELF": {
                 "CUSTOM TEMPLATES": [],
                 "DEFAULT TEMPLATES": {
@@ -69,12 +69,14 @@ class Setting extends Model
                     "DK-1201 (Alternative Text)": "DK-1201 (Alternative Text) - 90mm x 29mm"
                 }
             }
-       
+
         }',
 
 
         'setting_printer' => '{}',
         'setting_stock_tag_group' => '{}',
+
+        'setting_preset_message' => '{}',
 
         'setting_message_notification_category' => '{}',
 
@@ -93,6 +95,13 @@ class Setting extends Model
                 "default": ""
             }
         }',
+
+        /* 'setting_price_level_scheduler' => '{
+            "1": {
+                "time": "",
+                "price_level": 
+            }
+        }', */
 
 
         'setting_expense_budget' => '{}',
@@ -141,7 +150,7 @@ class Setting extends Model
 
 
         "setting_stock_nutrition" => '{
-           
+
             "1": {
                 "name": "Energy",
                 "value": "",
@@ -182,13 +191,13 @@ class Setting extends Model
                 "value": "",
                 "measurement": "g"
             }
-       
+
         }',
 
 
         "setting_stock_allergen" => '{
-            
-            
+
+
                 "1": "Celery",
                 "2": "Cereals Containing Gluten",
                 "3": "Crustaceans",
@@ -205,14 +214,14 @@ class Setting extends Model
                 "14": "Sulphur Dioxide and Sulphites",
                 "15": "Allergen 15",
                 "16": "Allergen 16"
-        
-            
+
+
         }',
 
         'setting_offer' => '{
             "1": {
-                
-                "points": {
+
+                "decimal": {
                     "gain": "",
                     "collect": "",
                     "discount_type": "",
@@ -246,7 +255,7 @@ class Setting extends Model
                     "per_person": "",
                     "per_usage": ""
                 }
-                
+
             }
         }',
 
@@ -272,7 +281,7 @@ class Setting extends Model
             "1": {
                 "tag": "",
                 "name": "",
-                "stock_tag_group_id": ""
+                "setting_stock_tag_group_id": ""
             }
         }',
 
@@ -287,9 +296,11 @@ class Setting extends Model
 
         'setting_key' => '{
             "1": {
+                "group": "",
                 "status": "",
                 "description": "",
                 "value": "",
+                "group": "",
                 "setting_key_type": ""
             }
         }',
@@ -297,29 +308,57 @@ class Setting extends Model
         'setting_key_type' => '{}',
 
         'setting_group' => '{
-            "default_country": "",
-            "stock_cost": "",
-            "special_stock_cost": ""
+            "country": "",
+            "currency": {},
+            "logo": {},
+            "stock_cost_group": "",
+            "special_stock_cost_group": ""
         }',
 
         'setting_customer' => '{
-            "customer_stock_cost": "",
-            "customer_credit": "",
-            "customer_print": {},
-            "customer_marketing": {}
+            "1": {
+                "name": "",
+                "loyalty_type": "",
+                "customer_stock_cost": "",
+                "customer_credit": "",
+                "customer_print": {},
+                "customer_marketing": {},
+                "points":{
+                    is_subtotal:"",
+                    is_whole:"",
+                    All products  
+	
+                    Selective Item 1  
+	
+                    Selective Item 2  
+	
+                    Selective Item 3  
+	
+                    Selective Item 4  
+	
+                    Award points on whole pounds only?
+
+                }
+            }
         }',
-       
-      
+        'setting_stock_cost' => '{
+            "1": {
+                "name": "",
+                "description": ""
+            }
+        }',
+
     ];
 
     protected $casts = [
 
-        
-        'setting_logo' => 'array',
        
 
+        'setting_logo' => 'array',
+
+        'setting_stock_cost' => 'array',
         'setting_stock_group' => 'array',
-        
+
         'setting_stock_label'  => 'array',
 
 
@@ -340,7 +379,7 @@ class Setting extends Model
         'setting_pos' => 'array',
 
         'setting_receipt' => 'array',
-      
+
 
         'setting_stock_allergen' => 'array',
         'setting_stock_nutrition' => 'array',
@@ -351,14 +390,15 @@ class Setting extends Model
         "setting_stock_case_size" => 'array',
 
         "setting_stock_tag" => 'array',
-       
+
         "setting_api" => 'array',
 
         'setting_key' => 'array',
         'setting_key_type' => 'array',
         'setting_group' => 'array',
-       'setting_customer' => 'array',
-
+        'setting_customer' => 'array',
+        'setting_preset_message' => 'array',
+        /* 'setting_price_level_scheduler' => 'array' */
     ];
 
     public static function SettingTable(){
@@ -409,12 +449,12 @@ class Setting extends Model
             "CASH",
             "CREDIT",
             "TERMINAL",
-            
+
             //"DISCOUNT",
             //"DELIVERY"
         ];
 
-      
+
     }
 
     public static function SettingOfferType()
@@ -466,10 +506,10 @@ class Setting extends Model
     }
 
     public static function SettingStockGroup(){
-       
+
         return [
-            "category", 
-            "group", 
+            "category",
+            "group",
             "brand",
             "plu"
         ];
@@ -488,7 +528,7 @@ class Setting extends Model
 
 
     public static function SettingKey($setting, $value){
-        
+
         $key = array_search($value, $setting->setting_key_type);
 
         return collect($setting->setting_key)->where('setting_key_type', $key)->first();
@@ -503,18 +543,24 @@ class Setting extends Model
         ];
     }
 
-   
+    public static function SettingKeyGroup(){
+        return [
+            'finalise', //coupons
+            'status', //one offs
+            'transaction'
+        ];
+    }
 
     //session and grand total
     public static function SettingFinaliseKey($data, $receipt = null){
 
         //$data['request'] = ['type' => null];
-/* 
+/*
         if ($data['request']->session()->has('setting_finalise_key')) {
             $data['request'] = $data['request']->session()->get('setting_finalise_key');
         } */
-        
-        
+
+
         $setupList = [];
         $setupList = $data['request']->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
 
@@ -526,7 +572,7 @@ class Setting extends Model
                 'type' => $data['request']->session()->get('type')
             ];
         }
-        
+
         //credit
         if ($data['request']->session()->get('type') == 'credit' && $data['request']['value']){
             $customer =  $setupList['customer'];
@@ -538,7 +584,7 @@ class Setting extends Model
             ];
 
         }
-        
+
           //delivery
         if ($data['request']->session()->get('type') == 'delivery' && $data['request']['value']){
 
@@ -551,44 +597,44 @@ class Setting extends Model
         //voucher
         if ($data['request']->session()->get('type') == 'voucher' && $data['request']['value']){
             foreach ($data['settingModel']->setting_offer as $key => $value) {
-                if ($value['string']['barcode'] === $data['request']->session()->get('searchInputID') && 
+                if ($value['string']['barcode'] === $data['request']->session()->get('searchInputID') &&
                 $value['date']['end_date'] > Carbon::now() &&
                 array_search( Carbon::now()->dayOfWeek, $value['available_day']) ) {
 
                     $data['settingModel']->setting_offer = [ $key => $value ];
-                    $setupList[$data['request']->session()->get('type')][] = [ 
+                    $setupList[$data['request']->session()->get('type')][] = [
                         'discount_type' => $value['decimal']['discount_type'],
-                        'discount_value' => $value['decimal']['discount_value'] 
+                        'discount_value' => $value['decimal']['discount_value']
                     ];
                     break;
-                  
+
                 }
             }
         }
-        
+
         //discount
         if ($data['request']->session()->get('type') == 'discount' && $data['request']['value']){
-        
+
             if ( Str::contains($data['request']['value'], '%') ) {
                 $discountValue = Str::remove('%', $data['request']['value']);
                 $discount_type = 0;
                 $setupList[$data['request']->session()->get('type')][] = ['discount_type' => $discount_type, 'discount_value' => $discountValue];
-            }  
+            }
             elseif($data['request']['value'] != null) {
                 $discountValue = $data['request']['value'];
                 $discount_type = 1;
                 $setupList[$data['request']->session()->get('type')][] = ['discount_type' => $discount_type, 'discount_value' => $discountValue];
             }
-            
+
         }
-         
-     
+
+
         $data['request']->session()->put('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
 
-       
+
 
         return Setting::ReCalculate($receipt, $setupList);
-        
+
     }
 
 
@@ -599,9 +645,9 @@ class Setting extends Model
 
             //discount
             if (count($setupList[ 'discount' ]) > 0) {
-                
+
                 foreach ( $setupList[ 'discount' ] as $key => $value) {
-                    
+
                     //check if value has percentage
                     if ($value['discount_type'] == array_search('percentage', Setting::SettingOfferType()) ) {
                         $receipt['totalPrice'] = MathHelper::Discount($value['discount_value'], $receipt['totalPrice']);
@@ -612,7 +658,7 @@ class Setting extends Model
                     }
                 }
 
-                
+
             }
 
 
@@ -623,8 +669,8 @@ class Setting extends Model
 
             if (count($setupList[ 'voucher' ]) > 0) {
                 foreach ($setupList[ 'voucher' ] as $key => $value) {
-                        
-    
+
+
                     //check if value has percentage
                     if ($value['discount_type'] == array_search('percentage', Setting::SettingOfferType()) ) {
                         $receipt['totalPrice'] = MathHelper::Discount($value['discount_value'], $receipt['totalPrice']);
@@ -634,12 +680,12 @@ class Setting extends Model
                         $receipt['voucherAmountTotal'] = $receipt['voucherAmountTotal'] + $value['discount_value'];
                     }
                 }
-               
+
             }
 
 
 
-            //customer 
+            //customer
             if ( count($setupList['customer']) > 0 ){
 
                 $customer = $setupList['customer'];
@@ -651,14 +697,14 @@ class Setting extends Model
                     ->where('setting.settingtable_id', $companyModel->company_id)
                     ->first();
                 }
-                
+
                 if ($companyModel) {
                     $settingModel = Setting::SettingTable()
                     ->where('setting.settingtable_id', $personModel->person_id)
                     ->first();
                 }
-                
-                
+
+
 
                 if ($settingModel) {
                     if ( $settingModel->setting_customer) {
@@ -708,9 +754,9 @@ class Setting extends Model
 
     //compare current
     public static function SettingCurrentOffer($stock, $offerType){
-        
+
         $stockOffer = [];
-        
+
 
         if ($stock->stock_merchandise['setting_offer_id']) {
 
@@ -721,10 +767,10 @@ class Setting extends Model
 
             $setting_offer = collect($settingModel->setting_offer)->only( $stock->stock_merchandise['setting_offer_id'] );
 
-            //filter offer by date 
+            //filter offer by date
             foreach ($setting_offer as $stock_offer_key => $stock_offer_value) {
                 if ( $stock_offer_value['date']['start_date'] >= Carbon::now() && $offerType == $stock_offer_value['boolean']['type']) {
-                    
+
                     //discount days
                     if (array_search( Carbon::now()->dayOfWeek, $stock_offer_value['available_day'] )) {
                         $stockOffer[$stock_offer_key] = $stock_offer_value;
@@ -742,19 +788,19 @@ class Setting extends Model
     public static function SettingCurrentOfferType($settingCurrentOffer, $price){
 
 
-        
+
         $settingCurrentOfferType = 0;
         $total = [];
 
         foreach ($settingCurrentOffer as $settingCurrentOfferKey => $settingCurrentOfferValue) {
-            
+
             if (Setting::SettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
 
                 $settingCurrentOfferType = ['price'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)];
-               
+
             } else {
                 $settingCurrentOfferType = ['price' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
-               
+
             }
 
 
@@ -764,13 +810,15 @@ class Setting extends Model
             }
 
         }
-      
+
         //collect($settingCurrentOfferType)->min('price')
-        
-        
+
+
 
         return $total;
     }
+
+    
 
 
 

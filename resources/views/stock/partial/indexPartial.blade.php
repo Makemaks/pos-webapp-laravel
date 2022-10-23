@@ -202,7 +202,8 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                                         <div class="uk-align-right">
                                             @php
                                                 $color = '';
-                                                $warehouseStock = Warehouse::Available($stock->stock_id);
+                                                $warehouseStock = Warehouse::Available($stock->stock_id)->first();
+        
                                                 
                                                 if ($warehouseStock) {
                                                     if (Warehouse::WarehouseType()[$warehouseStock->warehouse_type] == 'transfer') {

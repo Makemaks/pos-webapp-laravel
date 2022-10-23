@@ -25,8 +25,8 @@
                 "supplier",
                 "case-size",
                 "recipe",
-                "start-stocktake",
-                "stock-variance",
+                "inventory",
+                "variance",
 
             ],
             "clerk" => [],

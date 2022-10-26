@@ -36,7 +36,10 @@ class SettingFactory extends Factory
             $setting_pos[$i+1] = [
                 "name"=>$this->faker->word,
                 "cash"=>['quantity' => $this->faker->numberBetween($min=1, $max=100), 'amount' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 500)],
-                "credit"=>['quantity' => $this->faker->numberBetween($min=1, $max=100), 'amount' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 500)]
+                "credit"=>['quantity' => $this->faker->numberBetween($min=1, $max=100), 'amount' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 500)],
+                "number"=>$this->faker->numberBetween($min=1, $max=100),
+                "location"=>$this->faker->address,
+                "ip_address"=>$this->faker->macAddress
             ]; 
 
             $setting_printer[$i+1] = [

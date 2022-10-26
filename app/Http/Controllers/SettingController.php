@@ -74,6 +74,11 @@ class SettingController extends Controller
         } else if(isset($request->form['setting_price_level_scheduler'])) {
             $this->StoreSettingColumn($request['setting_id'],'setting_price_level_scheduler',$request->form['setting_price_level_scheduler']);
             return back()->with('success', 'Added Successfuly');
+        } else if(isset($request->form['setting_pos'])) {
+            $collection = collect($request->form['setting_pos']);
+            $collection['ip_address'] = getHostByName(getHostName());
+            $this->StoreSettingColumn($request['setting_id'],'setting_pos',$collection->toArray());
+            return back()->with('success', 'Added Successfuly');
         }
         if ($request->hasFile('setting_logo_url')) {
             
@@ -182,7 +187,13 @@ class SettingController extends Controller
                 
                 $view = 'menu.setting.settingPriceLevelScheduler';
                 return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
-            } 
+            } else if($request->setting_pos_delete) {
+                $setting_poss = $this->settingModel->setting_pos;
+
+                $setting_pos = $this->DeleteColumnIndex($request->setting_pos_delete, $setting_poss);
+                $this->settingModel->setting_pos = $setting_pos;
+                $view = 'menu.setting.settingPos';
+            }
             $this->settingModel->update();
             return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         }
@@ -233,6 +244,12 @@ class SettingController extends Controller
             $this->StockCost();
             
             return view('menu.setting.settingPriceLevelScheduler', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
+        } else if ($request->setting_pos) {
+            $filter = Arr::except($this->settingModel->setting_pos, array_keys($request->setting_pos));
+            $this->settingModel->setting_pos = collect($settingInput['setting_pos']+$filter)->sortKeys();
+            $this->settingModel->update();
+            
+            return view('menu.setting.settingPos', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
         }
         // else if($request->code) {
         //     $setting_stock_group = $this->settingModel->setting_stock_group;

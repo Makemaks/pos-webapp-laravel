@@ -54,6 +54,7 @@
                 "kp-category",
                 "preset-message",
                 "price-level-scheduler",
+                "pos",
             ],
             "sale" => [
                 "sale",

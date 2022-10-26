@@ -108,7 +108,7 @@ class Setting extends Model
         'setting_expense_type' => '{}',
 
 
-        'setting_pos' => '{"name":"","cash":"0","credit":"0"}',
+        'setting_pos' => '{"name":"","cash":"0","credit":"0","number":"","location":"","ip_address":""}',
 
 
         'setting_receipt' => '{

@@ -157,7 +157,7 @@ class SettingFactory extends Factory
         }
 
         for ($i=0; $i < 20; $i++) { 
-            $setting_stock[$i+1] = [
+            $setting_stock_group[$i+1] = [
                 "name"=> $this->faker->word,
                 "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
                 "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::brand::plu
@@ -207,17 +207,22 @@ class SettingFactory extends Factory
     
         $isoCount = count(CountryHelper::ISO());
         $setting_group = [
-            'country' => '',
-            'currency' => [],
-            'logo' => [],
+            'default_country' => $this->faker->numberBetween($min = 1, $max = 10),
+            'default_currency' => $this->faker->numberBetween($min = 1, $max = 10),
             'special_stock_cost_group' => 2,
             'setting_stock_cost_group' => 5 //column
         ];
 
-        $setting_stock_cost = [
-            'name' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
-            "description" =>  $this->faker->sentence,
-        ];
+        for ($i = 0; $i < 50; $i++) {
+            $setting_stock_cost[$i+1] = [
+                'name' => $this->faker->word,
+                "cost" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+                "setting_stock_cost_group_id" => $this->faker->numberBetween($min = 1, $max = 5)
+         
+            ];
+        }
+
+       
 
         for ($i = 0; $i < $this->faker->numberBetween($min = 1, $max = 10); $i++) {
             $customer_print[$i + 1] = $this->faker->numberBetween($min = 1, $max = 10);
@@ -260,10 +265,10 @@ class SettingFactory extends Factory
         return [
             
             'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 20),
-            'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company', 'Organisation')),
+            'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company')),
             'setting_api' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
-            'setting_stock'  => $setting_stock,
+            'setting_stock_group'  => $setting_stock_group,
            
            
             'setting_vat' => $setting_vat,
@@ -283,8 +288,8 @@ class SettingFactory extends Factory
             'setting_customer' => $setting_customer,
             'setting_stock_tag_group' => $setting_stock_tag_group,
             'setting_preset_message' => $setting_preset_message,
-            'setting_stock_cost' => $setting_stock_cost,
-            'setting_building' => json_encode($setting_building)
+            
+            'setting_building' => $setting_building
            
             
         ];

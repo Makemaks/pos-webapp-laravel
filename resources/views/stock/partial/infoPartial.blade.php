@@ -150,7 +150,7 @@
                                 <tr>
                                     <th>REF</th>
                                    
-                                        @for ($i = 0; $i < $data['settingModel']->setting_group['stock_cost_group']; $i++)
+                                        @for ($i = 0; $i < $data['settingModel']->setting_group['setting_stock_cost_group']; $i++)
                                             <th>{{$i + 1}}</th>
                                         @endfor
                                     
@@ -181,7 +181,7 @@
                                                 @endfor
                                                
                                               
-                                                @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['stock_cost_group']; $q++)
+                                                @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['setting_stock_cost_group']; $q++)
                                               
                                                     <td>
                                                  
@@ -210,7 +210,7 @@
                             <thead>
                                 <tr>
                                     <th>REF</th>
-                                    @for ($i = 0; $i < $data['settingModel']->setting_group['stock_cost_group']; $i++)
+                                    @for ($i = 0; $i < $data['settingModel']->setting_group['setting_stock_cost_group']; $i++)
                                         <th>{{$i + 1}}</th>
                                     @endfor
                                     <th></th>
@@ -234,7 +234,7 @@
                                         @endfor
 
                                     
-                                        @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['stock_cost_group']; $q++)
+                                        @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['setting_stock_cost_group']; $q++)
                                     
                                             <td>
                                             
@@ -271,7 +271,7 @@
                     <thead>
                         <tr>
                             <th>REF</th>
-                            @for ($i = 0; $i < $data['settingModel']->setting_group['stock_cost_group']; $i++)
+                            @for ($i = 0; $i < $data['settingModel']->setting_group['setting_stock_cost_group']; $i++)
                                
                                     <th>{{$i + 1}}</th>
                               
@@ -283,7 +283,7 @@
                     <tbody>
                             
                             @php
-
+                                
                             @endphp
 
                             
@@ -298,7 +298,7 @@
 
                                         @for ($j=0; $j < count($data['stockModel']->stock_cost_quantity); $j++)
                                             <td>
-                                                <input class="uk-input" id="form-stacked-text" type="number" value="{{$data['stockModel']->stock_cost_quantity[$j + 1]}}" name="stock_cost_quantity[{{$j + 1}}]">
+                                                <input class="uk-input" id="form-stacked-text" type="number" value="{{$data['stockModel']->stock_cost_quantity[$j + 1]['quantity']}}" name="stock_cost_quantity[{{$j + 1}}]">
                                                 
                                             </td>
                                             
@@ -306,7 +306,7 @@
 
                                     
                                     
-                                        @for ($q=count($data['stockModel']->stock_cost_quantity); $q < $data['settingModel']->setting_group['stock_cost_group']; $q++)
+                                        @for ($q=count($data['stockModel']->stock_cost_quantity); $q < $data['settingModel']->setting_group['setting_stock_cost_group']; $q++)
                                    
                                             <td>
                                             

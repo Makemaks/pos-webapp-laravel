@@ -31,7 +31,6 @@ class Stock extends Model
         "stock_cost" => '{
             "1": {
                 "name": "",
-                "description": "",
                 "cost": "",
                 "schedule_datetime": "",
                 "setting_stock_cost_group_id" : ""
@@ -116,10 +115,10 @@ class Stock extends Model
             "measurement": ""
         }',
         'stock_cost_quantity' => '{
-            "1": "{
-                "stock_cost_id" = "",
-                "warehouse_stock_cost_quantity" = "",
-            }"
+            "1": {
+                "quantity": "",
+                "setting_stock_cost_group_id": ""
+            }
         }',
 
         'stock_manager_special' => '{
@@ -301,7 +300,8 @@ class Stock extends Model
    
     public static function StockCostDefault($stock_cost){
     
-        $price = $stock_cost[1][1]['price'];
+        
+        $price = $stock_cost[1]['cost'];
 
        //find discount-show on till button and checkout
        //mix and match-check out only

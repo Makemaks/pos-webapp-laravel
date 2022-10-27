@@ -27,10 +27,10 @@ class Setting extends Model
 
     protected $attributes = [
 
-        'setting_logo' => '{}',
+        'setting_file' => '{}',
 
 
-        'setting_stock' => '{
+       'setting_stock_group' => '{
             "1": {
                 "name": "",
                 "code": "",
@@ -108,10 +108,14 @@ class Setting extends Model
         'setting_expense_type' => '{}',
 
 
-        'setting_pos' => '{"name":"","cash":"0","credit":"0"}',
+        'setting_pos' => '{
+            "name":"",
+            "cash":"0",
+            "credit":"0"
+        }',
 
 
-        'setting_receipt' => '{
+       'setting_receipt' => '{
             "1": {
                 "default": 1,
                 "sig strip": {
@@ -308,9 +312,8 @@ class Setting extends Model
         'setting_key_type' => '{}',
 
         'setting_group' => '{
-            "country": "",
-            "currency": {},
-            "logo": {},
+            "default_country": "",
+            "default_currency": {},
             "stock_cost_group": "",
             "special_stock_cost_group": ""
         }',
@@ -328,10 +331,15 @@ class Setting extends Model
                 }
             }
         }',
-        'setting_stock_cost' => '{
+       
+        'setting_building' => '{
             "1": {
+                "address_id": "",
+                "status": "",
+                "capacity": "",
                 "name": "",
                 "description": "",
+                "note": ""
             }
         }',
 
@@ -343,7 +351,7 @@ class Setting extends Model
 
         'setting_logo' => 'array',
 
-        'setting_stock_cost' => 'array',
+        
         'setting_stock_group' => 'array',
 
         'setting_stock_label'  => 'array',
@@ -386,6 +394,7 @@ class Setting extends Model
         'setting_customer' => 'array',
         'setting_preset_message' => 'array',
         /* 'setting_price_level_scheduler' => 'array' */
+        'setting_building' => 'array',
     ];
 
     public static function SettingTable(){

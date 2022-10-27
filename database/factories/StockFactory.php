@@ -114,14 +114,15 @@ class StockFactory extends Factory
         }
 
         $stock_cost = [];
-        for ($i=0; $i < 10; $i++) { 
+
+        for ($i=0; $i < 50; $i++) { 
                 
             $stock_cost[$i + 1] = [
+                "name" => $this->faker->word,
                 "cost" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
                 "schedule_datetime" =>  "",
                 "setting_stock_cost_group_id"  => $this->faker->numberBetween($min = 1, $max = 5)
             ];
-            
         }
         
 
@@ -129,7 +130,7 @@ class StockFactory extends Factory
                 
             $stock_cost_quantity[$j + 1] = 
             [
-                "stock_cost_quantity" => $this->faker->numberBetween($min = 1, $max = 200),
+                "quantity" => $this->faker->numberBetween($min = 1, $max = 200),
                 "setting_stock_cost_group_id" => $this->faker->numberBetween($min = 1, $max = 5),
             ];
            

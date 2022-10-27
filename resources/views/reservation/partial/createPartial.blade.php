@@ -3,7 +3,6 @@
     <button class="uk-button uk-button-default uk-border-rounded uk-button-primary">Submit</button>
     <div class="uk-container uk-container-xsmall">
         <fieldset class="uk-fieldset">
-    
             <legend class="uk-legend"></legend>
             <div class="uk-margin">
                 <label for="">Choose User</label>

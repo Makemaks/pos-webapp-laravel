@@ -11,7 +11,7 @@ class Warehouse extends Model
 
     protected $table = 'warehouse';
     protected $primaryKey = 'warehouse_id';
-
+    protected $guarded = [''];
     
 
     public $timestamps = true;

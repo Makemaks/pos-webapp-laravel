@@ -14,12 +14,13 @@
   
 
    <div>
-      <form action="{{route('stock.store')}}" enctype="multipart/form-data" method="POST" >
+      <form id="stock-store" action="{{route('stock.store')}}" enctype="multipart/form-data" method="POST" >
          @csrf
          @include('partial.uploadPartial')
+         @include('stock.partial.indexPartial')
       </form>
    </div>
 
    
-   @include('stock.partial.indexPartial')
+   
 @endsection

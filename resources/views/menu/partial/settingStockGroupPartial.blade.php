@@ -21,9 +21,7 @@
 <ul class="uk-switcher uk-margin">
     <li>
         
-        <form id="settingUpdate" action="{{route('setting.update', $data['settingModel']->setting_id)}}" method="POST">
-            @csrf
-            @method('PATCH')
+        
             <div>                 
           
                 @if ($data['settingModel']->setting_stock_group && $data['settingModel']->edit == false)
@@ -31,7 +29,7 @@
                 @endif
                 
             </div>
-        </form>
+        
     </li>
     
        

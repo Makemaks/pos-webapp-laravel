@@ -8,7 +8,12 @@ use App\Models\Project;
 
 @section('content')
    @include('menu.partial.crudPartial')
-    @include('menu.partial.settingStockGroupPartial')
+   <form id="settingUpdate" action="{{route('setting.update', $data['settingModel']->setting_id)}}" method="POST">
+        @csrf
+        @method('PATCH')
+        
+        @include('menu.partial.settingStockGroupPartial')
+   </form>
 @endsection
 
 

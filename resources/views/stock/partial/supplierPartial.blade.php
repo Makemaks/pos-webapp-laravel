@@ -13,7 +13,7 @@
 <h3>SUPPLIERS</h3>
                   
 
-<ul class="uk-subnav uk-subnav-pill" uk-switcher="@isset($active) {{$active}} @endisset">
+<ul class="uk-subnav uk-subnav-pill" uk-switcher="{{$active}}">
     <li><a href="#" uk-icon="list"></a></li>
     <li><a href="#" uk-icon="plus"></a></li>
 </ul>
@@ -29,7 +29,7 @@
                         <th>{{$key}}</th>
                     @endforeach
                     
-                    <th></th>
+                    {{-- <th></th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -57,7 +57,7 @@
                                         </select>
                                             
                                     @elseif($key == 'default')
-                                            <input name="default[stock_supplier][{{$key}}]" value="{{$keyStockSupplier}}" class="uk-radio" type="radio" @if($stock == 0) checked @endif>
+                                            <input name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]" value="{{$keyStockSupplier}}" class="uk-radio" type="radio" @if($stock == 0) checked @endif>
                                     @else
                                         @if ($key != 'supplier_id')
                                             <input  name="stock_supplier[{{$keyStockSupplier}}][{{$key}}]" class="uk-input" type="number" value="{{$stock}}">
@@ -66,10 +66,10 @@
                                 </td>
                                 
                             @endforeach
-
+                            {{-- 
                             <td>
                                 <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockSupplier({{$stock}})"></button>
-                            </td>
+                            </td> --}}
                         </tr>
                     @endforeach
                 @endif
@@ -89,7 +89,7 @@
                         <th>{{$key}}</th>
                     @endforeach
                     
-                    <th></th>
+                   {{--  <th></th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -100,13 +100,13 @@
                             <button class="uk-button uk-button-default uk-border-rounded">{{$keyStockSupplier}}</button>
                         </td>
                         <td>
-                            <input name="default[stock_supplier][{{$key}}]" value="{{$keyStockSupplier}}" class="uk-radio" type="radio"{{--  @if($stock == 0) checked @endif --}}>
+                            <input name="form[stock_supplier][{{$key}}][]" value="{{$keyStockSupplier}}" class="uk-radio" type="radio"{{--  @if($stock == 0) checked @endif --}}>
                         </td>
                         
                             @foreach ($data['stockModel']->stock_supplier[1] as $key =>$item)
                                 @if($key == 'supplier_id')
                                     <td>
-                                        <select class="uk-select" id="form-stacked-select" name="form[stock_supplier][{{$key}}]">
+                                        <select class="uk-select" id="form-stacked-select" name="form[stock_supplier][{{$key}}][]">
                                             <option value="" selected disabled>SELECT ...</option>
                                             @foreach ($data['companyList']->where('comapny_type', 0)  as $supplier )
                                                     
@@ -118,14 +118,14 @@
                                         </select>
                                     </td>
                                 @elseif($key != 'default')
-                                    <td><input class="uk-input" type="number" name="form[stock_supplier][{{$key}}]"></td>
+                                    <td><input class="uk-input" type="number" name="form[stock_supplier][{{$key}}][]"></td>
                                 @endif
                             @endforeach
                         
                      
-                        <td>
-                            <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" {{-- onclick="deleteStockSupplier({{$stock}})" --}}></button>
-                        </td>
+                       {{--  <td>
+                            <button class="uk-button uk-button-default uk-border-rounded" uk-icon="trash" onclick="deleteStockSupplier({{$stock}})"></button>
+                        </td> --}}
                     </tr>
                 @endfor
                 

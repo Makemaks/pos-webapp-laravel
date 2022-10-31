@@ -1,16 +1,16 @@
 @extends('layout.master')
 
 @php
-    $route = Str::after(Request::route()->getName(), '.');
+    $action = Str::after(Request::route()->getName(), '.');
     $active = '';
 
-    if ($route == 'create') {
+    if ($action == 'create') {
         $active = "active: 1";
     }
 @endphp
 
 @section('content')    
-   <form id="stock-store" action="{{route('stock.store')}}" method="POST">
+   <form id="stock-store" action="{{route('stock.store')}}" enctype="multipart/form-data" method="POST">
        @csrf
         @include('stock.partial.createPartial')
     </form>

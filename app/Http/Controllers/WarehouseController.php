@@ -112,6 +112,22 @@ class WarehouseController extends Controller
             }
             return redirect()->back();
         }
+
+        if ($request->has('store_from_index')) { 
+            foreach($request->warehouse as $warehouseData) {
+                $update = [
+                    'warehouse_note' => $warehouseData['warehouse_note'],
+                    'warehouse_reference' => $warehouseData['warehouse_reference'],
+                    'warehouse_cost_override' => $warehouseData['warehouse_cost_override'],
+                    'warehouse_quantity' => $warehouseData['warehouse_quantity'],
+                    'warehouse_status' => $warehouseData['warehouse_status'],
+                    'warehouse_type' => $warehouseData['warehouse_type'],
+                    'warehouse_cost_type' => $warehouseData['warehouse_cost_type'],
+                ];
+                Warehouse::where('warehouse_id', $warehouseData['warehouse_id'])->update($update);
+            }
+            return redirect()->back();
+        }
         
         if ($request->has('warehouse_form')) {
             $warehouse = Warehouse::where('warehouse_stock_id', $request->warehouse_stock_id)->first();
@@ -126,7 +142,8 @@ class WarehouseController extends Controller
                 'warehouse_store_id' => $this->userModel->store_id,
                 'warehouse_stock_id' => $request->warehouse_stock_id,
                 'warehouse_user_id' => $this->userModel->user_id,
-                'warehouse_inventory' => $request->form['warehouse']
+                'warehouse_inventory' => $request->form['warehouse'],
+                'warehouse_cost_type' => 0
             ];
             Warehouse::create($warehouseStore);
             return redirect()->back();

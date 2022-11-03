@@ -179,8 +179,20 @@ class MenuController extends Controller
 
                 break;
 
-            case 'reasons':
-                
+            case 'voucher-template':
+
+                return view('setting.template.offer.index');
+
+                break;
+
+            case 'ticket-template':
+
+                return view('setting.template.event.index');
+
+                break;
+
+            case 'reason':
+
 
                 if ($this->settingModel == null) {
                     $this->settingModel = new Setting();

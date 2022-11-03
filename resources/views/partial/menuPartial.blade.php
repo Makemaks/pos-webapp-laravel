@@ -55,6 +55,8 @@
                 "kp-categorie",
                 "preset-message",
                 "price-level-scheduler",
+                "voucher-template",
+                "ticket-template"
             ],
             "sale" => [
                 "sale",

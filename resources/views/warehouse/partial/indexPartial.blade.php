@@ -80,7 +80,6 @@
 <script>
     $(document).on('click', '.delete-btn', function () {
         $('#appendDelete').append("<input type='text' name='is_delete_request' value='true'>");
-        // alert('sdfs');
         $('.save-btn').click();
     });
     $(document).on('click', '.reserve-checkbox', function () {

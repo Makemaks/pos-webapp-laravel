@@ -210,20 +210,4 @@ class SettingController extends Controller
             'settingList' => $this->settingList,
         ];
     }
-
-    /**
-     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
-     */
-    public function voucherTemplate()
-    {
-        return view('setting.template.offer.index');
-    }
-
-    /**
-     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
-     */
-    public function ticketTemplate()
-    {
-        return view('setting.template.event.index');
-    }
 }

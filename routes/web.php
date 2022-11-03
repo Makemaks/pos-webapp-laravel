@@ -82,8 +82,6 @@ Route::resource('stock', StockController::class);
 // Route::resource('activity', ActivityController::class);
 // Route::resource('subscription', SubscriptionController::class);
 Route::resource('setting', SettingController::class);
-Route::get('/setting/vouchers/template', [SettingController::class, 'voucherTemplate']);
-Route::get('/setting/tickets/template', [SettingController::class, 'ticketTemplate']);
 Route::resource('dashboard', DashboardController::class);
 // Route::resource('reservation', ReservationController::class);
 // Route::resource('scheme', SchemeController::class);

@@ -15,7 +15,7 @@ $action = Str::after(Request::route()->getName(), '.');
     <select class="uk-select" id="form-stacked-select" name="warehouse_stock_id">
         <option value="" selected disabled>SELECT ...</option>
         @foreach ($data['stockList'] as $stock)
-        <option value="{{$stock->stock_id}}" @if($warehouseData->warehouse_inventory['warehouse_stock_id'] == $stock->stock_id) selected  @endif class="uk-input">
+        <option value="{{$stock->stock_id}}"  @if(isset($warehouseData->warehouse_inventory['warehouse_stock_id']) && $warehouseData->warehouse_inventory['warehouse_stock_id'] == $stock->stock_id) selected  @endif class="uk-input">
             {{$stock->stock_merchandise['stock_name']}}
         </option>
         @endforeach
@@ -31,7 +31,7 @@ $action = Str::after(Request::route()->getName(), '.');
                         <option value="" selected disabled>SELECT ...</option>
                         @foreach ($data['settingModel']->setting_stock_case_size as $key_setting_stock_case_size =>
                         $item_setting_stock_case_size)
-                        <option value="{{$key_setting_stock_case_size}}" class="uk-input" @if($warehouseData->warehouse_inventory['warehouse_stock_id'] == $key_setting_stock_case_size) selected  @endif>
+                        <option value="{{$key_setting_stock_case_size}}" class="uk-input" @if(isset($warehouseData->warehouse_inventory['warehouse_stock_id']) && $warehouseData->warehouse_inventory['warehouse_stock_id'] == $key_setting_stock_case_size) selected  @endif>
                             {{$item_setting_stock_case_size['description']}}
                         </option>
                         @endforeach

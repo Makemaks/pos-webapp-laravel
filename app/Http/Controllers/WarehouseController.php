@@ -101,13 +101,37 @@ class WarehouseController extends Controller
     }
 
     public function Store(Request $request)
-    {
+    {   
         $this->Init();
+        if ($request->has('is_update_request')) { 
+            Warehouse::where('warehouse_id',$request->warehouse_id)->update(['warehouse_inventory'=>$request->form['warehouse']]);
+            return redirect()->back();
+        }
         if ($request->has('is_delete_request')) { 
             foreach($request->warehouse as $warehouseData) {
                 if(isset($warehouseData['checked_row'])) {
                     Warehouse::where('warehouse_id', $warehouseData['warehouse_id'])->delete();
                 }
+            }
+            return redirect()->back();
+        }
+
+        if($request->has('is_update_request')) {
+
+        }
+
+        if ($request->has('store_from_index')) { 
+            foreach($request->warehouse as $warehouseData) {
+                $update = [
+                    'warehouse_note' => $warehouseData['warehouse_note'],
+                    'warehouse_reference' => $warehouseData['warehouse_reference'],
+                    'warehouse_cost_override' => $warehouseData['warehouse_cost_override'],
+                    'warehouse_quantity' => $warehouseData['warehouse_quantity'],
+                    'warehouse_status' => $warehouseData['warehouse_status'],
+                    'warehouse_type' => $warehouseData['warehouse_type'],
+                    'warehouse_cost_type' => $warehouseData['warehouse_cost_type'],
+                ];
+                Warehouse::where('warehouse_id', $warehouseData['warehouse_id'])->update($update);
             }
             return redirect()->back();
         }
@@ -125,7 +149,8 @@ class WarehouseController extends Controller
                 'warehouse_store_id' => $this->userModel->store_id,
                 'warehouse_stock_id' => $request->warehouse_stock_id,
                 'warehouse_user_id' => $this->userModel->user_id,
-                'warehouse_inventory' => $request->form['warehouse']
+                'warehouse_inventory' => $request->form['warehouse'],
+                'warehouse_cost_type' => 0
             ];
             Warehouse::create($warehouseStore);
             return redirect()->back();
@@ -149,13 +174,15 @@ class WarehouseController extends Controller
     }
 
     public function Edit($warehouse)
-    {
+    {   
+        $this->Init();
+        $warehouseData = Warehouse::where('warehouse_id',$warehouse)->first();
         $this->warehouseList = Warehouse::where('warehouse_id', $warehouse)->get();
         $this->stockModel = Stock::find($this->warehouseList->first()->warehouse_stock_id);
+        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->get();
+        $this->warehouseModel = new Warehouse();
 
-        $this->Init();
-
-        return view('warehouse.edit', ['data' => $this->Data()]);
+        return view('warehouse.edit', ['data' => $this->Data(),'warehouseData'=>$warehouseData]);
     }
 
     public function Update(Request $request, $warehouse)

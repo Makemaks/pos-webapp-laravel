@@ -78,11 +78,10 @@ class MenuController extends Controller
 
         case 'variance':
 
-            
             $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
             
 
-            return redirect()->route('warehouse.index');
+            return redirect()->route('warehouse.variance.index');
 
             break;
 

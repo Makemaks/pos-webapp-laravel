@@ -22,12 +22,16 @@ class Warehouse extends Model
             "description": ""
         }',
         'warehouse_inventory' => '{
-            "current_stock": "",
+            "delivery_stock": "",
+            "transfer_stock": "",
             "frozen_stock": "",
+            "return_stock": "",
+            "wastage_stock": "",
+            "damaged_stock": "",
             "setting_stock_case_size_id": "",
             "case_quantity": "",
-            "item_quantity": "",
-            "unit_size": ""
+            "unit_size": "",
+            "status": ""
         }',
     ];
 
@@ -78,6 +82,14 @@ class Warehouse extends Model
             'wastage',
             'variance',
             'inventory'
+        ];
+    }
+
+    public static function WarehouseInventoryStatus()
+    {
+        return [
+            'full',
+            'partial',
         ];
     }
 }

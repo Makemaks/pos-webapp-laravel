@@ -37,6 +37,18 @@ $action = Str::after(Request::route()->getName(), '.');
                         @endforeach
                     </select>
                 </div>
+            @elseif($keyStock == 'status')
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-stacked-select">{{Str::upper($keyStock)}}</label>
+                    <select class="uk-select" id="form-stacked-select" name="form[warehouse][{{$keyStock}}]">
+                        <option value="" selected disabled>SELECT ...</option>
+                        @foreach (Warehouse::WarehouseInventoryStatus() as $statusKey => $status)
+                        <option value="{{$statusKey}}" @if(isset($warehouseData->warehouse_inventory[$keyStock]) && $warehouseData->warehouse_inventory[$keyStock] == $statusKey) selected @endif class="uk-input">
+                            {{$status}}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
             @else
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper($keyStock) }}</label>

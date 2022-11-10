@@ -69,8 +69,12 @@ class WarehouseController extends Controller
 
             $this->Init();
         }
-
-        return view('warehouse.index', ['data' => $this->Data()]);
+        if ($request->session()->has('view') && $request->session()->get('view') == 'variance') {
+            return view('warehouse.variance.index', ['data' => $this->Data()]);
+        } else {
+            return view('warehouse.index', ['data' => $this->Data()]);
+        }
+        
     }
 
     /**
@@ -117,10 +121,6 @@ class WarehouseController extends Controller
             return redirect()->back();
         }
 
-        if($request->has('is_update_request')) {
-
-        }
-
         if ($request->has('store_from_index')) { 
             foreach($request->warehouse as $warehouseData) {
                 $update = [
@@ -138,13 +138,16 @@ class WarehouseController extends Controller
         }
         
         if ($request->has('warehouse_form')) {
-            $warehouse = Warehouse::where('warehouse_stock_id', $request->warehouse_stock_id)->first();
-            $wareHouseQuantity = 0;
-            if ($warehouse->warehouse_type == 1 || $warehouse->warehouse_type == 2) {
-                $wareHouseQuantity = $warehouse->warehouse_quantity;
-            }
+
+            $warehouseList = Warehouse::where('warehouse_stock_id', $request->warehouse_stock_id)
+            ->where('warehouse_type',1)
+            ->where('warehouse_store_id',$this->userModel->store_id)
+            ->orwhere('warehouse_type',2)
+            ->where('warehouse_quantity','>',0)
+            ->get();
+
             $warehouseStore = [
-                'warehouse_quantity' => $wareHouseQuantity,
+                'warehouse_quantity' => $warehouseList->sum('warehouse_quantity'),
                 'warehouse_status' => 0,
                 'warehouse_type' => 5,
                 'warehouse_store_id' => $this->userModel->store_id,

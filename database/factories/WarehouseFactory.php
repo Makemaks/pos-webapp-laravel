@@ -23,8 +23,7 @@ class WarehouseFactory extends Factory
             ];
         }
 
-        $table->bigInteger('warehousetable_id')->nullable();
-            $table->string('warehousetable_type')->nullable();
+       
 
         return [
 

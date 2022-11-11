@@ -16,7 +16,7 @@
             </a>
     
         </li>
-        <li><a href="#" uk-icon="plus"></a></li>
+        {{-- <li><a href="#" uk-icon="plus"></a></li> --}}
     </ul>
 
     <ul class="uk-switcher uk-margin">

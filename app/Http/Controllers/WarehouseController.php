@@ -177,7 +177,7 @@ class WarehouseController extends Controller
         return view('warehouse.index', ['data' => $this->Data()]);
     }
 
-    public function Edit($warehouse)
+    public function Edit(Request $request,$warehouse)
     {   
         $this->Init();
         $warehouseData = Warehouse::where('warehouse_id',$warehouse)->first();
@@ -186,7 +186,26 @@ class WarehouseController extends Controller
         $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->get();
         $this->warehouseModel = new Warehouse();
 
-        return view('warehouse.edit', ['data' => $this->Data(),'warehouseData'=>$warehouseData]);
+        if ($request->session()->has('view') && $request->session()->get('view') == 'variance') {
+            $warehouseInventoryData = $warehouseData->warehouse_inventory;
+            if(isset($warehouseInventoryData['delivery_stock'])) {
+                $enteredStock = $warehouseInventoryData['delivery_stock'] + $warehouseInventoryData['transfer_stock'] +$warehouseInventoryData['frozen_stock'] + $warehouseInventoryData['return_stock'] +$warehouseInventoryData['wastage_stock'] +$warehouseInventoryData['damaged_stock'];
+            } else {
+                $enteredStock = 0; 
+            }
+            
+            $varianceData = [
+                'frozen_stock' => $warehouseInventoryData['frozen_stock'] ?? 0,
+                'entered_stock' => $enteredStock,
+                'variance_stock' => $warehouseData->warehouse_quantity - $enteredStock,
+                'variance_value' => $this->stockModel->stock_cost['1']['1']['price'] * $warehouseData->warehouse_quantity,
+                'entered_stock_value' => $this->stockModel->stock_cost['1']['1']['price'] * $enteredStock,
+            ];
+            return view('warehouse.variance.edit', ['data' => $this->Data(),'warehouseData'=>$warehouseData,'varianceData'=>$varianceData]);
+        } else {
+
+            return view('warehouse.edit', ['data' => $this->Data(),'warehouseData'=>$warehouseData]);
+        }
     }
 
     public function Update(Request $request, $warehouse)

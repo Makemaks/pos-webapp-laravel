@@ -2,15 +2,14 @@
     use App\Models\Warehouse;
     use App\Models\Store;
 @endphp
-<button class="uk-button uk-button-default uk-border-rounded uk-button-primary top-save-btn">Save</button>
-<a class="uk-button uk-button-danger uk-border-rounded delete-btn">Delete</a>
+{{-- <button class="uk-button uk-button-default uk-border-rounded uk-button-primary top-save-btn">Save</button> --}}
+{{-- <a class="uk-button uk-button-danger uk-border-rounded delete-btn">Delete</a> --}}
 <form action="{{route('warehouse.store')}}" method="post">
     @csrf
 <table class="uk-table uk-table-small uk-table-divider">
-  
     <thead>
         <tr>
-            <th><input class="uk-checkbox reserve-checkbox" type="checkbox"></th>
+            {{-- <th><input class="uk-checkbox reserve-checkbox" type="checkbox"></th> --}}
             <th>StockTake ID</th>
             <th>StockeTake Sheet ID</th>
             <th>Reference</th>
@@ -22,14 +21,23 @@
     <tbody>
         @foreach ($data['warehouseList']->latest()->paginate(20) as $key => $warehouse)
         <tr>
-            <td><input class="uk-checkbox" type="checkbox" name="warehouse[{{$key}}][checked_row]"></td>
+            {{-- <td><input class="uk-checkbox" type="checkbox" name="warehouse[{{$key}}][checked_row]"></td> --}}
                 <input class="uk-checkbox" type="hidden" name="warehouse[{{$key}}][warehouse_id]" value="{{$warehouse->warehouse_id}}">
             <td><a href="{{route('warehouse.edit', $warehouse->warehouse_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$warehouse->warehouse_id}}</a></td>
             <td>{{$key}}</td>
             <td>oct</td>
             <td>{{$warehouse->created_at}}</td>
-            <td></td>
-            <td></td>
+            <td>{{$warehouse->warehouse_note}}</td>
+            @if(isset($warehouse->warehouse_inventory['status']))
+                @if($warehouse->warehouse_inventory['status'] == '1')
+                    <td>Partial</td>
+                @else
+                    <td>Full</td>
+                @endif
+            @else
+                <td></td>
+            @endif
+            
         </tr>
         @endforeach
     </tbody>

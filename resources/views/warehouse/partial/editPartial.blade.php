@@ -52,7 +52,7 @@ $action = Str::after(Request::route()->getName(), '.');
             @else
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper($keyStock) }}</label>
-                <input class="uk-input" type="number" name="form[warehouse][{{$keyStock}}]" value="{{$warehouseData->warehouse_inventory[$keyStock]}}">
+                <input class="uk-input" type="number" name="form[warehouse][{{$keyStock}}]" value="{{$warehouseData->warehouse_inventory[$keyStock] ?? ''}}">
             </div>
         @endif
     @endforeach

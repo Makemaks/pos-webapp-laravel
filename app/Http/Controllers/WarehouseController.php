@@ -188,6 +188,13 @@ class WarehouseController extends Controller
 
         if ($request->session()->has('view') && $request->session()->get('view') == 'variance') {
             $warehouseInventoryData = $warehouseData->warehouse_inventory;
+
+            foreach($warehouseInventoryData as $warehouseKey =>  $warehouseInventoryDataValue) {
+                if(!isset($warehouseInventoryData[$warehouseKey])) {
+                    $warehouseInventoryData[$warehouseKey] = 0;
+                }
+            }
+
             if(isset($warehouseInventoryData['delivery_stock'])) {
                 $enteredStock = $warehouseInventoryData['delivery_stock'] + $warehouseInventoryData['transfer_stock'] +$warehouseInventoryData['frozen_stock'] + $warehouseInventoryData['return_stock'] +$warehouseInventoryData['wastage_stock'] +$warehouseInventoryData['damaged_stock'];
             } else {

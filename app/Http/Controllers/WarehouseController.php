@@ -71,7 +71,11 @@ class WarehouseController extends Controller
         }
         if ($request->session()->has('view') && $request->session()->get('view') == 'variance') {
             return view('warehouse.variance.index', ['data' => $this->Data()]);
-        } else {
+        } else  if ($request->session()->has('view') && $request->session()->get('view') == 'delivery') {
+            $this->warehouseList =  Warehouse::where('warehouse_type', '1');
+            return view('warehouse.delivery.index', ['data' => $this->Data()]);
+        }
+        else{ 
             return view('warehouse.index', ['data' => $this->Data()]);
         }
         

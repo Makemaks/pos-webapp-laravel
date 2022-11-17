@@ -27,6 +27,7 @@
                 "recipe",
                 "inventory",
                 "variance",
+                "delivery",
 
             ],
             "clerk" => [],

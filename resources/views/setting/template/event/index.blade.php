@@ -7,6 +7,9 @@
                 <ul class="uk-tab-left" uk-tab="connect: #component-tab-left; animation: uk-animation-fade">
                     <li><a href="#">First</a></li>
                     <li><a href="#">Second</a></li>
+                    <li><a href="#">Third</a></li>
+                    <li><a href="#">Fourth</a></li>
+                    <li><a href="#">Fifth</a></li>
                 </ul>
             </div>
             <div class="uk-width-expand@m">
@@ -40,6 +43,15 @@
                                 <li>@include('setting.template.event.templates.second_primary')</li>
                             </ul>
                         </div>
+                    </li>
+                    <li>
+                        @include('setting.template.event.templates.third')
+                    </li>
+                    <li>
+                        @include('setting.template.event.templates.fourth')
+                    </li>
+                    <li>
+                        @include('setting.template.event.templates.fifth')
                     </li>
                 </ul>
             </div>

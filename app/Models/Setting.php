@@ -27,10 +27,9 @@ class Setting extends Model
 
     protected $attributes = [
 
-        'setting_logo' => '{}',
+      
 
-
-        'setting_stock' => '{
+        'setting_stock_set' => '{
             "1": {
                 "name": "",
                 "code": "",
@@ -41,7 +40,7 @@ class Setting extends Model
         'setting_stock_label' => '{
 
             "SHELF": {
-                "CUSTOM TEMPLATES": [],
+                "CUSTOM TEMPLATES": {},
                 "DEFAULT TEMPLATES": {
                     "A4": "A4 (24 labels [3x8], 60x30mm) - 210mm x 297mm",
                     "GK420t": "GK420t (Single label feed, 48.5 x 35mm) - 49mm x 35mm",
@@ -57,7 +56,7 @@ class Setting extends Model
                 }
             },
             "STOCK": {
-                "CUSTOM TEMPLATES": [],
+                "CUSTOM TEMPLATES": {},
                 "DEFAULT TEMPLATES": {
                     "DK-1201": "DK-1201 - 90mm x 29mm",
                     "SLP-MRL": "SLP-MRL - 51mm x 28mm",
@@ -115,35 +114,35 @@ class Setting extends Model
             "1": {
                 "default": 1,
                 "sig strip": {
-                    "",
-                    "",
-                    "Employee / Manager RRsignature",
-                    ".......................John"
+                    "1":"",
+                    "2":"",
+                    "3":"Employee / Manager RRsignature",
+                    "4":".......................John"
                 },
                 "vat number": "VAT No: 787655678",
                 "bottom message": {
-                    "Thank You For Your Custom",
-                    "See You Soon",
-                    "MERRY CHRISTMAS",
-                    "www.theepsomclub.com"
+                    "1":"Thank You For Your Custom",
+                    "2":"See You Soon",
+                    "3":"MERRY CHRISTMAS",
+                    "4":"www.theepsomclub.com"
                 },
                 "receipt header": {
-                    "The TESTING CLUB",
-                    "Tel: 061 319SS66  VAT: GB3158927S",
-                    "41-43 Chruch Street",
-                    "Epsom KT17 4QW"
+                    "1":"The TESTING CLUB",
+                    "2":"Tel: 061 319SS66  VAT: GB3158927S",
+                    "3":"41-43 Chruch Street",
+                    "4":"Epsom KT17 4QW"
                 },
                 "report message": {
-                    "",
-                    "",
-                    "",
-                    ""
+                    "1":"",
+                    "2":"",
+                    "3":"",
+                    "4":""
                 },
                 "commercial message": {
-                    "The Club is Open 1000-2200 Daily",
-                    "",
-                    "",
-                    ""
+                    "1":"The Club is Open 1000-2200 Daily",
+                    "2":"",
+                    "3":"",
+                    "4":""
                 }
             }
         }',
@@ -321,21 +320,20 @@ class Setting extends Model
             "customer_print": {},
             "customer_marketing": {}
         }',
+        
         'setting_stock_cost' => '{
             "1": {
                 "name": "",
-                "description": "",
+                "description": ""
             }
         }',
 
+        'setting_building' => '{}'
     ];
 
     protected $casts = [
 
-       
-
-        'setting_logo' => 'array',
-
+        'setting_stock_set' => 'array',
         'setting_stock_cost' => 'array',
         'setting_stock_group' => 'array',
 
@@ -378,6 +376,7 @@ class Setting extends Model
         'setting_group' => 'array',
         'setting_customer' => 'array',
         'setting_preset_message' => 'array',
+        'setting_building' => 'array'
         /* 'setting_price_level_scheduler' => 'array' */
     ];
 

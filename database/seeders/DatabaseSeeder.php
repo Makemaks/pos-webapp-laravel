@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             AccountSeeder::class,
             CompanySeeder::class,
             PersonSeeder::class,
-            StoreSeeder::class,
+            StoreSeeder::class, 
 
         ]);
     }

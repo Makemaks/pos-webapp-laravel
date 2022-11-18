@@ -332,14 +332,5 @@ class Order extends Model
 
     }
 
-
-    /**
-     * Get the store associated with the order.
-     */
-    public function store()
-    {
-        return $this->hasOne(Store::class,'order_store_id','store_id');
-    }
-
    
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('settingtable_id');
             $table->string('settingtable_type')->comment('company::person::organisation');
 
-            $table->json('setting_stock')->nullable()->comment('group::category::plu::brand');
+            $table->json('setting_stock_set')->nullable()->comment('group::category::plu::brand');
 
 
             $table->json('setting_stock_label')->nullable();

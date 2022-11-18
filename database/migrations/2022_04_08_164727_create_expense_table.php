@@ -16,9 +16,12 @@ return new class extends Migration
         Schema::create('expense', function (Blueprint $table) {
             $table->bigIncrements('expense_id');
             $table->bigInteger('expense_user_id');
+            $table->bigInteger('expensetable_id')->nullable();
+            $table->string('expensetable_type')->nullable();
             $table->bigInteger('expense_store_id')->comment('added_by'); 
             $table->text('expense_description');
             $table->float('expense_amount');
+            $table->float('expense_vat');
             $table->tinyInteger('expense_frequency')->nullable();
             $table->tinyInteger('expense_frequency_period_id')->nullable()->comment('Day::Week,Month::Year');
             $table->tinyInteger('expense_setting_expense_type')->nullable();

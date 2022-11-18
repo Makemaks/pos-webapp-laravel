@@ -157,19 +157,12 @@ class SettingFactory extends Factory
         }
 
         for ($i=0; $i < 20; $i++) { 
-            $setting_stock[$i+1] = [
+            $setting_stock_set[$i+1] = [
                 "name"=> $this->faker->word,
                 "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
                 "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::brand::plu
             ];
 
-
-            $a = $this->faker->numberBetween($min = 1, $max = 7);
-            if ($a == 1) {
-                $value =  $this->faker->randomElement($array = array('5', '10', '20', '100'));
-            } else {
-                $value = null;
-            }
 
             $setting_key[$i + 1] = [
                 "status" => $this->faker->numberBetween($min = 0, $max = 1),
@@ -223,10 +216,7 @@ class SettingFactory extends Factory
             $customer_print[$i + 1] = $this->faker->numberBetween($min = 1, $max = 10);
         }
        
-        for ($i = 0; $i < $this->faker->numberBetween($min = 1, $max = 10); $i++) {
-            $customer_print[$i + 1] = $this->faker->numberBetween($min = 1, $max = 10);
-        }
-
+      
         $customer_stock_cost[$this->faker->numberBetween($min = 1, $max = 5)] = [$this->faker->numberBetween($min = 1, $max = 10)];
         $setting_customer = [
             "customer_stock_cost" => $customer_stock_cost,
@@ -246,16 +236,18 @@ class SettingFactory extends Factory
             ];
 
             'setting_price_level_scheduler' => $setting_price_level_scheduler, */
+
+            $setting_building[$i+1] = [
+                'address_id' => $this->faker->numberBetween($min = 1, $max = 20),
+                'status' => $this->faker->numberBetween($min = 0, $max = 1),
+                'capacity' =>  $this->faker->numberBetween($min = 20, $max = 100),
+                'name' => $this->faker->word,
+                'description' => $this->faker->sentence,
+                'note'=> [$this->faker->sentence]
+            ];
         }
 
-        $setting_building = [
-            'address_id' => $this->faker->numberBetween($min = 1, $max = 20),
-            'status' => $this->faker->numberBetween($min = 0, $max = 1),
-            'capacity' =>  $this->faker->numberBetween($min = 20, $max = 100),
-            'name' => $this->faker->word,
-            'description' => $this->faker->sentence,
-            'note'=> [$this->faker->sentence]
-        ];
+      
 
         return [
             
@@ -263,7 +255,7 @@ class SettingFactory extends Factory
             'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company', 'Organisation')),
             'setting_api' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
-            'setting_stock'  => $setting_stock,
+            'setting_stock_set'  => $setting_stock_set,
            
            
             'setting_vat' => $setting_vat,
@@ -284,7 +276,7 @@ class SettingFactory extends Factory
             'setting_stock_tag_group' => $setting_stock_tag_group,
             'setting_preset_message' => $setting_preset_message,
             'setting_stock_cost' => $setting_stock_cost,
-            'setting_building' => json_encode($setting_building)
+            'setting_building' => $setting_building
            
             
         ];

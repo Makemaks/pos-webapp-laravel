@@ -38,7 +38,7 @@
                                 $orderList = Order::Receipt('order_id', $order->order_id)->get();
                                 $orderTotal = Stock::OrderTotal($orderList);
                                 $userPerson = User::Person('user_id', $order->receipt_user_id)->first();
-                                dd(collect($order->order_status)->sortBy('updated_at')->first());
+                               
                             @endphp
                         <tr>
                             <td><a href="{{route('order.edit', $order->order_id)}}"
@@ -50,8 +50,7 @@
                             <td>
                                 <select class="uk-select">
                                     @foreach (Order::OrderStatus() as $status)
-                                        <option  value="{{$loop->iteration}}" @if(collect($order->order_status)->sortBy('updated_at')->first()->status == $loop->iteration)
-                                            selected = 'selected' @endif>{{$status}}</option>
+                                        <option  value="{{$loop->iteration}}" @if($order->order_status == $loop->iteration) selected @endif>{{$status}}</option>
                                     @endforeach
                                 </select>
                                 <input type="text" value="{{$order->order_id}}" name="order[{{$orderKey}}][order_id]" hidden>

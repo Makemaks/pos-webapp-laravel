@@ -36,7 +36,7 @@
 
     @include('partial.notificationPartial')
     
-    <div class="uk-box-shadow-small">
+    <div>
         @include('partial.navigationPartial')
     </div>
     

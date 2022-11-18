@@ -33,7 +33,7 @@ use App\Helpers\DateTimeHelper;
 
 
 <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; bottom: #transparent-sticky-navbar">
-    <nav class="uk-background-default" uk-navbar style="position: relative; z-index: 980;">
+    <nav class="uk-background-default uk-box-shadow-small" uk-navbar style="position: relative; z-index: 980;">
 
         <div class="uk-navbar-left">
 

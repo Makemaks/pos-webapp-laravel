@@ -5,20 +5,20 @@
                 <div uk-grid>
                     <div class="uk-width-expand">
                         <div class="uk-padding-small uk-padding-remove-horizontal uk-padding-remove-top">
-                            <h3 class="uk-margin-remove uk-text-secondary">Contrary to popular belief</h3>
+                            <h2 class="uk-margin-remove uk-text-secondary">Contrary to popular belief</h2>
                             <span class="uk-text-muted">Event</span>
                         </div>
                         <div class="uk-padding-small uk-padding-remove-horizontal uk-padding-remove-top">
-                            <h3 class="uk-margin-remove uk-text-secondary">Tom Cruise</h3>
+                            <h2 class="uk-margin-remove uk-text-secondary">Tom Cruise</h2>
                             <span class="uk-text-muted">Name</span>
                         </div>
                         <div uk-grid class="uk-padding-small uk-padding-remove-horizontal uk-padding-remove-top">
                             <div class="uk-width-auto">
-                                <h3 class="uk-margin-remove uk-text-secondary">150</h3>
+                                <h2 class="uk-margin-remove uk-text-secondary">150</h2>
                                 <span class="uk-text-muted">Seat</span>
                             </div>
                             <div class="uk-width-auto">
-                                <h3 class="uk-margin-remove uk-text-secondary">12:00</h3>
+                                <h2 class="uk-margin-remove uk-text-secondary">12:00</h2>
                                 <span class="uk-text-muted">Time</span>
                             </div>
                         </div>

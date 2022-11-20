@@ -5,10 +5,10 @@
                 <div class="uk-width-expand uk-flex-first uk-padding-remove">
                     <div class="uk-padding uk-padding-remove-vertical uk-width-1-1">
                         <div class="uk-padding-small uk-padding-remove uk-text-center">
-                            <h2 class="uk-text-uppercase uk-text-bold uk-text-secondary">Gift<br>voucher</h2>
+                            <h1 class="uk-text-uppercase uk-text-bold uk-text-secondary">Gift<br>voucher</h1>
                         </div>
                         <div class="uk-padding-small uk-padding-remove uk-text-center">
-                            <h1 class="uk-heading-large uk-text-uppercase uk-text-bold uk-text-secondary">£10</h1>
+                            <h1 class="uk-text-uppercase uk-text-bold uk-text-secondary">£10</h1>
                         </div>
                     </div>
                 </div>

@@ -5,7 +5,7 @@
                 <div uk-grid class="uk-margin-remove uk-height-1-1">
                     <div class="uk-width-1-1 uk-padding-remove uk-margin-remove">
                         <div class="uk-text-center uk-padding-small">
-                            <h2 class="uk-margin-remove uk-text-secondary uk-text-bold">Contrary to popular belief</h2>
+                            <h1 class="uk-margin-remove uk-text-secondary uk-text-bold">Contrary to popular belief</h1>
                             <span class="uk-text-muted">Event</span>
                         </div>
                     </div>

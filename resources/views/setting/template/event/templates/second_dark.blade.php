@@ -38,10 +38,10 @@
             <div class="uk-width-auto uk-flex-last uk-padding-small uk-background-primary uk-border-rounded">
                 <div class="uk-width-medium uk-padding-small uk-background-secondary uk-border-rounded">
                     <div class="uk-padding-remove uk-width-1-1">
-                        <h2 class="uk-heading-medium uk-text-uppercase uk-text-bold uk-text-center uk-margin-remove uk-text-primary">150</h2>
+                        <h1 class="uk-heading-medium uk-text-uppercase uk-text-bold uk-text-center uk-margin-remove uk-text-primary">150</h1>
                     </div>
                     <div class="uk-padding-remove uk-width-1-1">
-                        <h3 class="uk-text-uppercase uk-text-bold uk-text-center uk-text-primary">Seat</h3>
+                        <h2 class="uk-text-uppercase uk-text-bold uk-text-center uk-text-primary">Seat</h2>
                     </div>
                     <div class="uk-padding-remove uk-width-1-1 uk-text-center">
                         <img src="{{ asset('images/qr_code_muted.png') }}" width="100" height="100" class="">

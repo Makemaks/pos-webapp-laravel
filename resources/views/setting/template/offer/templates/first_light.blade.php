@@ -4,10 +4,10 @@
             <div class="uk-width-auto uk-flex-first uk-padding-remove">
                 <div class="uk-width-medium uk-padding uk-padding-remove-vertical">
                     <div class="uk-padding-small uk-padding-remove">
-                        <h2 class="uk-text-uppercase uk-text-bold uk-text-secondary">Gift<br>voucher</h2>
+                        <h1 class="uk-text-uppercase uk-text-bold uk-text-secondary">Gift<br>voucher</h1>
                     </div>
                     <div class="uk-padding-small uk-padding-remove">
-                        <h1 class="uk-heading-large uk-text-uppercase uk-text-bold uk-text-secondary">£10</h1>
+                        <h1 class="uk-text-uppercase uk-text-bold uk-text-secondary">£10</h1>
                     </div>
                 </div>
             </div>

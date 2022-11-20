@@ -8,12 +8,10 @@
     use App\Models\Stock;
     use App\Models\Setting;
 
-    $currency = "";
+  
     $route = Str::before(Request::route()->getName(), '.');  
 
-    $default_currency = $data['settingModel']->setting_group['default_country'];
-    $currency = CountryHelper::ISO()[$default_currency]['currencies'][0];
-    $currency = '';
+    $currencySymbol = Setting::SettingCurrency($data);
 
     $tableHeader = [
         'ID',
@@ -48,21 +46,21 @@
                     <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock->stock_id}}</a></td>
                     <td>{{$stock->stock_merchandise['stock_name']}}</td>
                     <td>
-                        {{-- @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_group) )
-                            {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['plu_id']]['name']}}
+                        {{-- @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['plu_id']]['name']}}
                         @endi --}}
                     </td>
 
                     <td>{{$stock->stock_merchandise['random_code']}}</td>
                     <td>
-                        @if ( array_key_exists($stock->stock_merchandise['group_id'], $data['settingModel']->setting_stock_group) )
-                            {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['group_id']]['name']}}
+                        @if ( array_key_exists($stock->stock_merchandise['group_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['group_id']]['name']}}
                         @endif
                     </td>
                     <td>
                         {{-- dept --}}
-                        @if ( array_key_exists($stock->stock_merchandise['category_id'], $data['settingModel']->setting_stock_group) )
-                            {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['category_id']]['name']}}
+                        @if ( array_key_exists($stock->stock_merchandise['category_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['category_id']]['name']}}
                         @endif
                     </td>
                     <td>
@@ -135,47 +133,74 @@
     
                     <div>
 
-                        <div class="uk-padding uk-box-shadow-small" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
+                        <div class="uk-padding-small uk-box-shadow-small" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
+                            
                             <div class="">
-                                <div class="uk-grid-small uk-flex-middle" uk-grid>
-                                    <div class="uk-width-auto" title="{{$stock->stock_id}}" >
-                                        <img class="uk-border-circle" width="40" height="40" src="images/avatar.jpg">
-                                       
-                                    </div>
-                                    <div class="uk-width-auto" title="Price" >
-                                        @if (count($stockOffer) > 0)
-                                            <h3 class="uk-margin-remove-bottom"> {{$currency}} {{ MathHelper::FloatRoundUp( $stockOfferMin['total']['price'], 2) }}</h3>
+                                <b>{{Str::ucfirst($stock->stock_merchandise['stock_name'])}}</b>
+                            </div>
+
+                            <div title="Price">
+                                @if (count($stockOffer) > 0)
+                                    <p class="uk-text-small uk-margin-remove-bottom"> {{$currencySymbol}} {{ MathHelper::FloatRoundUp( $stockOfferMin['total']['price'], 2) }}</h3>
+                                    
+                                @else
+                                    <p class="uk-text-small uk-margin-remove-bottom">{{$currencySymbol}} {{$price}}</h3>
+                                @endif
+                            </div>
+                            
+                            <div class="uk-grid-small" uk-grid>
+                                {{-- <div class="uk-width-auto" title="{{$stock->stock_id}}" >
+                                    <img class="uk-border-circle" width="40" height="40" src="images/avatar.jpg">
+                                   
+                                </div> --}}
+
+                                <div title="Qty">
+                                    @php
+                                        $color = '';
+                                        $warehouseStockList = Warehouse::Available($stock->stock_id, $storeID);
+                                        $count = 0;
+
+                                        if($warehouseStockList->count() > 0) {
                                             
-                                        @else
-                                            <h3 class="uk-margin-remove-bottom">{{$currency}} {{$price}}</h3>
-                                        @endif
-                                    </div>
-                                    <div class="uk-width-expand" title="VAT">
-                                        <span class="uk-text-small uk-text-warning">
-                                            @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
-                                                @foreach ($data['settingModel']->setting_vat as $item)
-                                                    @if ($item['default'] == 0)
-                                                        {{ MathHelper::FloatRoundUp($item['rate'], 2) }}
-                                                    @endif
-                                                @endforeach
-                                            @else
-                                                @if (array_key_exists( $stock->stock_merchandise['stock_vat_id'], $data['settingModel']->setting_vat) )
-                                                        {{ MathHelper::FloatRoundUp($data['settingModel']->setting_vat[ $stock->stock_merchandise['stock_vat_id'] ]['rate'], 2) }}
+                                            if (Warehouse::WarehouseType()[$warehouseStockList->first()->warehouse_type] == 'transfer') {
+                                                $color = 'uk-text-warning';
+                                            }
+                                            else{
+                                                $color = 'uk-text-danger';
+                                            }
+                                            
+                                            $count = $warehouseStockList->first()->warehouse_quantity;
+                                        }
+                                
+                                    @endphp
+                                   
+                                   <h3 {{$color}}">{{$count}}</h6>
+                                </div>
+                                
+                                <div title="VAT">
+                                    <span class="uk-text-small uk-text-warning">
+                                        @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
+                                            @foreach ($data['settingModel']->setting_vat as $item)
+                                                @if ($item['default'] == 0)
+                                                    {{$currencySymbol}} {{ MathHelper::FloatRoundUp($item['rate'], 2) }}
                                                 @endif
-                                            @endif    
-                                        </span>
-                                    </div>
-                                    <div>
-                                        @if (count($stockOffer) > 0)
-                                            <s class="uk-text-meta uk-margin-remove-top uk-text-danger">{{$currency}} {{$price}}</s>
-                                        @endif
-                                    </div>
+                                            @endforeach
+                                        @else
+                                            @if (array_key_exists( $stock->stock_merchandise['stock_vat_id'], $data['settingModel']->setting_vat) )
+                                                {{$currencySymbol}}    {{ MathHelper::FloatRoundUp($data['settingModel']->setting_vat[ $stock->stock_merchandise['stock_vat_id'] ]['rate'], 2) }}
+                                            @endif
+                                        @endif    
+                                    </span>
+                                </div>
+
+                                <div title="Offer">
+                                    @if (count($stockOffer) > 0)
+                                        <s class="uk-text-meta uk-margin-remove-top uk-text-danger">{{$currency}} {{$price}}</s>
+                                    @endif
                                 </div>
                             </div>
 
-                            <div class="">
-                                {{Str::ucfirst($stock->stock_merchandise['stock_name'])}}
-                            </div>
+                           
 
                             <div>
                                 <div class="uk-child-width-1-3" uk-grid>
@@ -191,30 +216,7 @@
                                         @endif
                                     </div>
                                     
-                                    <div title="Qty">
-                                        <div class="uk-align-right">
-                                            @php
-                                                $color = '';
-                                                $warehouseStockList = Warehouse::Available($stock->stock_id, $storeID);
-                                                
-
-                                                if($warehouseStockList->count() > 0) {
-                                                  
-                                                        if (Warehouse::WarehouseType()[$warehouseStockList->first()->warehouse_type] == 'transfer') {
-                                                            $color = 'uk-text-warning';
-                                                        }
-                                                        else{
-                                                            $color = 'uk-text-danger';
-                                                        }
-                                                   
-                                                }
-                                        
-                                            @endphp
-                                            @if ($warehouseStockList->count() > 0)
-                                                <h3 {{$color}}">{{$warehouseStockList->first()->warehouse_quantity}}</h6>
-                                            @endif
-                                        </div>
-                                    </div>
+                                    
                                     
                                 </div>
                             </div>

@@ -56,7 +56,6 @@
 
         
             <div class="uk-width-expand@m uk-padding-small">
-                
                 <div class="">
                     @yield('content')
                 </div>

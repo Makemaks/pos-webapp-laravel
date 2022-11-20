@@ -200,8 +200,8 @@ class SettingFactory extends Factory
     
         $isoCount = count(CountryHelper::ISO());
         $setting_group = [
-            'country' => '',
-            'currency' => [],
+            'default_country' => '',
+            'default_currency' => [],
             'logo' => [],
             'special_stock_cost_group' => 2,
             'stock_cost_group' => 5 //column

@@ -2,7 +2,7 @@
 $title = $data['title'];
 $table = $data['table'];
 $settingModel = $data['settingModel'];
-$settingModel = $settingModel->setting_stock_group_category_plu;
+$settingModel = $settingModel->setting_stock_set_category_plu;
 $quantity = 0;
 $totalCostPrice = 0;
 $array = [];

@@ -13,6 +13,7 @@ use App\Models\Setting;
 use App\Models\User;
 
 use App\Helpers\MathHelper;
+use App\Helpers\CurrencyHelper;
 use Carbon\Carbon;
 
 class Setting extends Model
@@ -83,7 +84,7 @@ class Setting extends Model
         'setting_reason' => '{
             "1": {
                 "name": "",
-                "setting_stock_group": ""
+                "setting_stock_set": ""
             }
         }',
 
@@ -307,8 +308,8 @@ class Setting extends Model
         'setting_key_type' => '{}',
 
         'setting_group' => '{
-            "country": "",
-            "currency": {},
+            "default_country": "",
+            "default_currency": {},
             "logo": {},
             "stock_cost_group": "",
             "special_stock_cost_group": ""
@@ -335,7 +336,7 @@ class Setting extends Model
 
         'setting_stock_set' => 'array',
         'setting_stock_cost' => 'array',
-        'setting_stock_group' => 'array',
+        'setting_stock_set' => 'array',
 
         'setting_stock_label'  => 'array',
 
@@ -798,7 +799,20 @@ class Setting extends Model
     }
 
     
+    public static function SettingCurrency($data){
+        $currencySymbol = '$';
 
+        $setting_default_currency =  collect($data['settingModel']->setting_group['default_currency'])
+        ->where('default', 0)
+        ->first();
+
+        if ($setting_default_currency) {
+            $currency = CountryHelper::ISO()[$setting_default_currency->currency_id]['currencies'][0];
+            $currencySymbol = CountryHelper::CurrencySymbol()[$currency];
+        }
+    
+        return $currencySymbol;
+    }
 
 
 }

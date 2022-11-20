@@ -42,8 +42,10 @@ class OrderController extends Controller
     public function Index(Request $request)
     {
 
+
+        $this->init();
         if ($request->session()->has('view') && $request->session()->get('view') == 'till') {
-            $this->init();
+            
             $tillData = $this->settingModel->setting_pos;
             $this->orderList = Receipt::Order('order_setting_pos_id',  1)
                 ->orderByDesc('order_id')
@@ -57,7 +59,7 @@ class OrderController extends Controller
         }
 
         if ($request->session()->has('view') && $request->session()->get('view') == 'bill') {
-            $this->init();
+            
             $tillData = $this->settingModel->setting_pos;
             $this->orderList = Receipt::Order('order_setting_pos_id',  1)
                 ->orderByDesc('order_id')
@@ -76,15 +78,15 @@ class OrderController extends Controller
         }
 
         if ($request->has('view')) {
-            $this->init();
+            
             $this->orderList = Order::Receipt('receipt_order_id', $request->order_id)
                 ->get();
             return view('order.availability', ['data' => $this->Data()]);
         }
-        $this->init();
+        
         $todayDate = Carbon::now()->toDateTimeString();
 
-        $this->orderList = Receipt::Order('stock_store_id',  1)
+        $this->orderList = Receipt::Order('order_store_id',  $this->userModel->store_id)
             ->orderByDesc('order_id')
             ->groupBy('order_id')
             ->paginate(10);
@@ -118,7 +120,8 @@ class OrderController extends Controller
         $this->init();
         Order::Process($request, $this->Data());
 
-        return view('home.index', ['data' => $this->Data()]);
+        return redirect()->route('home.index')->with('success', 'Order Completed');
+       // return view('home.index', ['data' => $this->Data()]);
     }
 
     public function Delete($order)
@@ -137,17 +140,6 @@ class OrderController extends Controller
             ->first();
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
     }
-
-    private function ProcessOrder()
-    {
-
-
-        foreach ($this->sessionCartList as $cart) {
-        }
-    }
-
-
-
 
     private function Data()
     {

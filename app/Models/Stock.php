@@ -168,7 +168,7 @@ class Stock extends Model
         $price = 0;
         $departmentTotal = [];
 
-         foreach ($data['settingModel']->setting_stock_group as $key => $value) {
+         foreach ($data['settingModel']->setting_stock_set as $key => $value) {
 
          
 
@@ -301,7 +301,7 @@ class Stock extends Model
    
     public static function StockCostDefault($stock_cost){
     
-        $price = $stock_cost[1][1]['price'];
+        $price = $stock_cost[1]['cost'];
 
        //find discount-show on till button and checkout
        //mix and match-check out only

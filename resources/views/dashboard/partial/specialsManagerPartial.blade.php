@@ -54,7 +54,7 @@
                                 @endfor
 
                                 <td>
-                                    {{$data['settingModel']->setting_stock_group[$stockModel->stock_merchandise['category_id']]['name']}}
+                                    {{$data['settingModel']->setting_stock_set[$stockModel->stock_merchandise['category_id']]['name']}}
                                 </td>
                             
                             </tr>

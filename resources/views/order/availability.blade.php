@@ -9,9 +9,9 @@
     <table class="uk-table uk-table-small uk-table-divider">
         <thead>
             <tr>
-                <th>Stock Name</th>
-                <th>Order Quantity</th>
-                <th>WareHouse Details</th>
+                <th>Stock</th>
+                <th>Quantity</th>
+                <th>Store</th>
             </tr>
         </thead>
         <tbody>
@@ -34,12 +34,16 @@
                                 $warehouseList = Warehouse::Available($orderList->stock_id)
                             @endphp
                             @foreach($warehouseList as $key => $warehouse)
-                            <tr>
-                                <td>{{$warehouse->warehouse_id}}</td>
-                                <td>{{$warehouse->warehouse_quantity}}</td>
-                                <td><input type="number" class="uk-input"  max="{{$orderList->warehouse_quantity}}"  min="0" name="receipt_quantity[]" value="{{$orderList->receipt_quantity}}"><input type="text" name="warehouse_id[]" hidden value="{{$warehouse->warehouse_id}}"></td>
-                                <td> <a  class="uk-button uk-button-primary uk-border-rounded" href="{{route('warehouse.index',['warehouse_id'=>$warehouse->warehouse_id,'action'=>'use','receipt_quantity'=>$orderList->receipt_quantity])}}">Use</a></td>
-                            </tr>
+                                <tr>
+                                    <td>{{$warehouse->warehouse_id}}</td>
+                                    <td>{{$warehouse->warehouse_quantity}}</td>
+                                    <td><input type="number" class="uk-input"  max="{{$orderList->warehouse_quantity}}"  min="0" name="receipt_quantity[]" value="{{$orderList->receipt_quantity}}"><input type="text" name="warehouse_id[]" hidden value="{{$warehouse->warehouse_id}}"></td>
+                                    <td> 
+                                        <input name="receipt_use[]" class="uk-checkbox" value="{{$warehouse->warehouse_id}}" type="checkbox" @if($warehouse->warehouse_store_id == $data['userModel']->store_id) checked @endif>
+                                       
+                                        {{-- <a  class="uk-button uk-button-primary uk-border-rounded" href="{{route('warehouse.index',['warehouse_id'=>$warehouse->warehouse_id,'action'=>'use','receipt_quantity'=>$orderList->receipt_quantity])}}">Use</a> --}}
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>

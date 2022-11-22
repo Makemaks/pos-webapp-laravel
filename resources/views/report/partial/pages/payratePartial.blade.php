@@ -15,6 +15,7 @@ $grandTotal = 0;
 $title = $data['title'];
 $table = $data['table'];
 $dataModel = $data['employmentList']->groupBy('user_id');
+dd($dataModel);
 
 if ($data['started'] !== '0000-00-00 00:00:00') {
     $started = Carbon\Carbon::parse($data['started']);
@@ -59,7 +60,9 @@ foreach ($dataModel as $user_id => $value) {
 <div class="uk-margin-top">
     <h1 style="text-transform:capitalize; font-size:22px;">{{ $title }}</h1>
 </div>
-@include('document.button')
+@if(!$data['is_pdf_csv'])
+    @include('document.button')
+@endif
 <div class="uk-margin-top">
     <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
         <thead>

@@ -25,7 +25,7 @@ $route = Str::before(Request::route()->getName(), '.');
     </div>
 
    <div>
-        <form id="{{ $table }}-csv" action="{{ route('dashboard.index') }}" method="GET">
+        <form id="{{ $table }}-csv" action="{{ route($route . '.index') }}" method="GET">
             @csrf
             <input type="hidden" name="fileName" value="{{ $table }}">
             <input type="hidden" name="format" value="csv">

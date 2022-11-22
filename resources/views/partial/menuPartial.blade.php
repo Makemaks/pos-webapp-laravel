@@ -55,6 +55,7 @@
                 "preset-message",
                 "price-level-scheduler",
                 "pos",
+                "api"
             ],
             "sale" => [
                 "sale",

@@ -225,6 +225,12 @@ class MenuController extends Controller
                 return view('menu.setting.settingPos', ['data' => $this->Data()]);
 
                 break;
+            
+            case 'api':
+            
+                return view('menu.setting.settingApi', ['data' => $this->Data()]);
+
+                break;
 
             default:
                 echo "i is not equal to 0, 1 or 2";

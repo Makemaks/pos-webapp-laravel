@@ -9,6 +9,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class ReportController extends Controller
 {
     /**
@@ -18,7 +21,6 @@ class ReportController extends Controller
      */
     public function index(Request $request)
     {
-
         $datePeriod = Store::DatePeriod($request);
 
         // orderSetting List
@@ -61,17 +63,90 @@ class ReportController extends Controller
         $this->settingModel = $datePeriod['settingModel'];
         $this->orderList = $datePeriod['orderList'];
 
+        $this->is_pdf_csv = 0;
+
         // If its export PDF / CSV
         if ($request->fileName) {
             // If PDF
             $this->title = $request->session()->get('title')['title'];
+            $this->is_pdf_csv = 1;
             if ($request->format === 'pdf') {
+                // dd($this->Data());
                 $this->pdfView = view('report.partial.pages.' . $request->fileName, ['data' => $this->Data()])->render();
+                // dd($this->pdfView);
                 $render = \view('report.create', ['data' => $this->Data()])->render();
                 $pdf = App::make('dompdf.wrapper');
                 $pdf->loadHTML($render)->setPaper('a4', 'portrait')->setWarnings(false)->save('myfile.pdf');
                 return $pdf->stream();
-            } else {
+            } else if ($request->format === 'csv') {
+                // dd($request->fileName);
+                $arrayList = [];
+                switch ($request->fileName) {
+                    case 'payratePartial':
+                        $datas = $this->employmentList->groupBy('user_id');
+                        // dd($datas[0]);
+                        foreach($datas as $index => $data) {
+                            $timeIn = $data->created_at;
+                            $rate = (int) json_decode($data->employment_user_pay)->pay_rate;
+                            $userId = $data->user_id;
+                            $name = json_decode($data->person_name)->person_firstname;
+                            $timeOut = $data->created_at;
+
+                            $totalHours = $timeOut->diff($timeIn);
+                            $minutes = $totalHours->h * 60;
+                            $total = ($rate / 60) * $minutes;
+                            if($data->attendace_status == 0) {
+                                $arrayList[$index] = [
+                                    'Name' => json_decode($data->person_name)->person_firstname,
+                                    'Clocked In' => $data->created_at,
+                                    'Clocked Out' => $data->created_at,
+                                    'Total Hours' => $data->created_at->diff($data->created_at),
+                                    'Rate' => (int) json_decode($data->employment_user_pay)->pay_rate,
+                                    'Total Wage' => \App\Helpers\MathHelper::FloatRoundUp($total, 2),
+                                ];
+                            }
+                            dd($arrayList);
+                        }
+                        break;
+                    
+                    case 'attendanceTrail':
+                        # code...
+                        break;
+                    
+                    case 'attendancePartial':
+                        # code...
+                        break;
+                    
+                    case 'attendanceHoursWorked':
+
+                        break;
+
+                    default:
+                        # code...
+                        break;
+                }
+                // --------------------------
+
+
+                dd($this->Data());
+                dd($request->fileName);
+                dd($this->Data()['attendanceTrail']);
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+                $sheet->getCell('A1')->setValue('John');
+                $sheet->getCell('A2')->setValue('Smith');
+                $sheet->getCell('B1')->setValue('Test');
+
+                $writer = new Xlsx($spreadsheet);
+                // dd($sheet);
+                $writer->save('hell_world.xlsx');
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="myfile.xls"');
+                header('Cache-Control: max-age=0');
+
+                $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
+                $writer->save('php://output');
+
             }
         } else {
 
@@ -79,10 +154,12 @@ class ReportController extends Controller
             $request->session()->forget('date');
             $request->session()->forget('user');
 
+            // dd($this->data());
+
             // New Session, If user Filter 
             if ($datePeriod['user_id']) {
 
-                $request->session()->flash('user', [
+                $request->session()->put('user', [
                     'started_at' => $datePeriod['started'],
                     'ended_at' => $datePeriod['ended'],
                     'user_id' => $datePeriod['user_id'],
@@ -91,18 +168,18 @@ class ReportController extends Controller
             } elseif ($request->started_at && $request->ended_at) {
 
                 // if period/date range only
-                $request->session()->flash('date', [
+                $request->session()->put('date', [
                     'started_at' => $datePeriod['started'],
                     'ended_at' => $datePeriod['ended'],
                     'title' => $datePeriod['title'],
                 ]);
             } else {
                 // No Filters
-                $request->session()->flash('title', [
+                $request->session()->put('title', [
                     'title' => $datePeriod['title'],
                 ]);
             }
-
+            // dd($this->Data());
             return view('report.index', ['data' => $this->Data()]);
         }
     }
@@ -202,6 +279,7 @@ class ReportController extends Controller
             'accountCompanyModel' => $this->accountCompanyModel ?? null,
             'settingModel' => $this->settingModel ?? null,
             'clerkList' => $this->clerkList ?? null,
+            'is_pdf_csv' => $this->is_pdf_csv ? 1 : 0
         ];
     }
 }

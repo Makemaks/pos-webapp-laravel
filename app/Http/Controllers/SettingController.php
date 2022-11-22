@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class SettingController extends Controller
 {
@@ -78,6 +79,13 @@ class SettingController extends Controller
             $collection = collect($request->form['setting_pos']);
             $collection['ip_address'] = getHostByName(getHostName());
             $this->StoreSettingColumn($request['setting_id'],'setting_pos',$collection->toArray());
+            return back()->with('success', 'Added Successfuly');
+        } else if(isset($request->form['setting_api'])) {
+            $api = $request->form['setting_api'];
+            $api['key'] = (string) Str::uuid();
+            $api['secret'] = bcrypt($api['secret']);
+            // dd($api);
+            $this->StoreSettingColumn($request['setting_id'],'setting_api',$api);
             return back()->with('success', 'Added Successfuly');
         }
         if ($request->hasFile('setting_logo_url')) {
@@ -193,6 +201,12 @@ class SettingController extends Controller
                 $setting_pos = $this->DeleteColumnIndex($request->setting_pos_delete, $setting_poss);
                 $this->settingModel->setting_pos = $setting_pos;
                 $view = 'menu.setting.settingPos';
+            } else if($request->setting_api_delete) {
+                $setting_apis = $this->settingModel->setting_api;
+
+                $setting_api = $this->DeleteColumnIndex($request->setting_api_delete, $setting_apis);
+                $this->settingModel->setting_api = $setting_api;
+                $view = 'menu.setting.settingApi';
             }
             $this->settingModel->update();
             return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
@@ -250,6 +264,12 @@ class SettingController extends Controller
             $this->settingModel->update();
             
             return view('menu.setting.settingPos', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
+        } else if ($request->setting_api) {
+            $filter = Arr::except($this->settingModel->setting_api, array_keys($request->setting_api));
+            $this->settingModel->setting_api = collect($settingInput['setting_api']+$filter)->sortKeys();
+            $this->settingModel->update();
+            
+            return view('menu.setting.settingApi', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
         }
         // else if($request->code) {
         //     $setting_stock_group = $this->settingModel->setting_stock_group;

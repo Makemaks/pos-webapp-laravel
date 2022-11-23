@@ -20,9 +20,8 @@ class CreateStoreTable extends Migration
             $table->bigInteger('root_store_id')->nullable();
             $table->bigInteger('store_account_id');
             $table->bigInteger('store_company_id');
-            $table->json('store_business_hours')->nullable();
-            $table->string('store_image')->nullable();
-            
+            $table->json('store_datetime')->nullable();
+            $table->text('store_image')->nullable();
             $table->timestamps();
         });
     }

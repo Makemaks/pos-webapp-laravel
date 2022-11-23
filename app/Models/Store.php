@@ -18,7 +18,12 @@ class Store extends Model
     protected $table = 'store';
     protected $primaryKey = 'store_id';
 
-
+    protected $attributes = [
+        'store_datetime' => '{
+            "started_at": "",
+            "ended_at": ""
+        }'
+    ];
 
     public static function List($column,  $filter)
     {

@@ -29,6 +29,7 @@
                 "stock-variance",
 
             ],
+            "store" => [],
             "clerk" => [],
             "programming" => [
                 "category",

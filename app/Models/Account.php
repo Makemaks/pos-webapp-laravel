@@ -23,8 +23,8 @@ class Account extends Model
                     "reason": "",
                     "start_time": "",
                     "end_time": "",
-                    "user_id": {},
-                    "blocked_access": {} 
+                    "user_id": "",
+                    "blocked_access": ""
                 }
 
             }'

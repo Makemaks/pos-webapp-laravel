@@ -8,10 +8,14 @@
     use App\Helpers\CurrencyHelper;
     use App\Helpers\MathHelper;
   
+    use App\Models\Setting;
     use App\Models\Person;
     use App\Models\Stock;
     use App\Models\User;
     use App\Models\Receipt;
+
+    $route = Str::before(Request::route()->getName(), '.'); 
+    $currencySymbol = Setting::SettingCurrency($data);
 
     $currency = "";
     $receipt['deliveryTotal']=0;
@@ -53,7 +57,7 @@
                     @if (Session::has('edit_cart')==false)
                         <th>VAT</th>
                         <th>Discount</th>
-                        <th></th>
+                        <th>{{$currencySymbol}}</th>
                     @else
                         <th class="uk-width-expand"></th>
                     @endif

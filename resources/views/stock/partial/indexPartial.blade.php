@@ -8,11 +8,8 @@
     use App\Models\Stock;
     use App\Models\Setting;
 
-  
-    $route = Str::before(Request::route()->getName(), '.');  
-
-    $currencySymbol = Setting::SettingCurrency($data);
-
+    $route = Str::before(Request::route()->getName(), '.');
+    
     $tableHeader = [
         'ID',
         'Product',
@@ -141,10 +138,10 @@
 
                             <div title="Price">
                                 @if (count($stockOffer) > 0)
-                                    <p class="uk-text-small uk-margin-remove-bottom"> {{$currencySymbol}} {{ MathHelper::FloatRoundUp( $stockOfferMin['total']['price'], 2) }}</h3>
+                                    <p class="uk-text-small uk-margin-remove-bottom">{{ MathHelper::FloatRoundUp( $stockOfferMin['total']['price'], 2) }}</h3>
                                     
                                 @else
-                                    <p class="uk-text-small uk-margin-remove-bottom">{{$currencySymbol}} {{$price}}</h3>
+                                    <p class="uk-text-small uk-margin-remove-bottom">{{$price}}</h3>
                                 @endif
                             </div>
                             
@@ -182,12 +179,12 @@
                                         @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
                                             @foreach ($data['settingModel']->setting_vat as $item)
                                                 @if ($item['default'] == 0)
-                                                    {{$currencySymbol}} {{ MathHelper::FloatRoundUp($item['rate'], 2) }}
+                                                    {{ MathHelper::FloatRoundUp($item['rate'], 2) }}
                                                 @endif
                                             @endforeach
                                         @else
                                             @if (array_key_exists( $stock->stock_merchandise['stock_vat_id'], $data['settingModel']->setting_vat) )
-                                                {{$currencySymbol}}    {{ MathHelper::FloatRoundUp($data['settingModel']->setting_vat[ $stock->stock_merchandise['stock_vat_id'] ]['rate'], 2) }}
+                                                   {{ MathHelper::FloatRoundUp($data['settingModel']->setting_vat[ $stock->stock_merchandise['stock_vat_id'] ]['rate'], 2) }}
                                             @endif
                                         @endif    
                                     </span>
@@ -195,7 +192,7 @@
 
                                 <div title="Offer">
                                     @if (count($stockOffer) > 0)
-                                        <s class="uk-text-meta uk-margin-remove-top uk-text-danger">{{$currency}} {{$price}}</s>
+                                        <s class="uk-text-meta uk-margin-remove-top uk-text-danger">{{$price}}</s>
                                     @endif
                                 </div>
                             </div>
@@ -215,8 +212,6 @@
                                            {{ MathHelper::FloatRoundUp( $stockOfferMin['decimal']['discount_value'], 2)}}
                                         @endif
                                     </div>
-                                    
-                                    
                                     
                                 </div>
                             </div>

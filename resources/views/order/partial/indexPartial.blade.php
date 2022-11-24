@@ -62,7 +62,7 @@
                             <td>{{$order->created_at}}</td>
                             <td>
                                 <a href="{{route('order.index', ['order_id'=>$order->order_id, 'view' =>'availaibility'])}}"
-                                    class="uk-button uk-button-default uk-border-rounded">Check Availaibility</a>
+                                    class="uk-button uk-button-default uk-border-rounded">Availaibility</a>
                             </td>
                         </tr>
                         @endforeach

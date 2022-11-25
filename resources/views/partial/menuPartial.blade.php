@@ -30,6 +30,7 @@
 
             ],
             "store" => [],
+            "account" => [],
             "clerk" => [],
             "programming" => [
                 "category",

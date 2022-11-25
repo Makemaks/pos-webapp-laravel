@@ -87,7 +87,7 @@ Route::resource('dashboard', DashboardController::class);
 // Route::resource('scheme', SchemeController::class);
 // Route::resource('plan', PlanController::class);
 
-// Route::resource('account', AccountController::class);
+Route::resource('account', AccountController::class);
 Route::resource('report', ReportController::class);
 Route::resource('ticket', TicketController::class);
 Route::resource('warehouse', WarehouseController::class);

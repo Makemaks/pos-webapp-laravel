@@ -1,10 +1,9 @@
 @extends('layout.master')
 
-@inject ('personModel', 'App\Models\Person')
-@inject('dateTimeHelper', 'App\Helpers\DateTimeHelper')
-
 @section('content')
-    <div class="">
+    <form id="store-update" action="{{route('company.update', ['company' => $data['companyModel']['company_id']])}}" method="POST">
+        @csrf
+        @method('PUT')
         @include('company.partial.createPartial')
-    </div>
+    </form>
 @endsection

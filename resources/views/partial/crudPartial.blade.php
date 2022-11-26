@@ -26,11 +26,11 @@ $routeList = ['authentication', 'home', 'dashboard', 'receipt', 'order'];
             </div>
         @elseif($action == 'store')
             <div class="uk-navbar-item">
-                <button type="submit" form="{{$route}}-store" class="uk-border-rounded uk-button uk-button-default uk-text-danger" uk-icon="upload"></button>
+                <button type="submit" form="store-update" class="uk-border-rounded uk-button uk-button-default uk-text-danger" uk-icon="upload"></button>
             </div>
         @elseif($action == 'update')
             <div class="uk-navbar-item">
-                <button type="submit" form="{{$route}}-update" class="uk-border-rounded uk-button uk-button-default uk-text-danger" uk-icon="push"></button>
+                <button type="submit" form="store-update" class="uk-border-rounded uk-button uk-button-default uk-text-danger" uk-icon="push"></button>
             </div>
             <div class="uk-navbar-item">
                 <button uk-toggle="target: #modal-{{Request::route($route)}}" class="uk-border-rounded uk-button uk-button-default uk-text-danger" uk-icon="trash"></button>

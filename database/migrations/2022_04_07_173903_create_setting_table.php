@@ -42,7 +42,7 @@ return new class extends Migration
             
             $table->json('setting_vat')->nullable();
 
-            $table->json('setting_expense_budget')->nullable();
+            
             $table->json('setting_expense_type')->nullable();
 
             $table->json('setting_pos')->nullable()->comment('Tills');

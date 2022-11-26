@@ -24,10 +24,10 @@ class Account extends Model
                     "start_time": "",
                     "end_time": "",
                     "user_id": "",
-                    "blocked_access": ""
+                    "blocked_access": {}
                 }
 
-            }'
+        }'
     ];
 
 

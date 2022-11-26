@@ -104,8 +104,13 @@ class Setting extends Model
         }', */
 
 
-        'setting_expense_budget' => '{}',
-        'setting_expense_type' => '{}',
+       
+        'setting_expense_type' => '{
+            1": {
+                "budget": "",
+                "type": ""
+            }
+        }',
 
 
         'setting_pos' => '{"name":"","cash":"0","credit":"0"}',
@@ -373,7 +378,7 @@ class Setting extends Model
         'setting_vat' => 'array',
 
 
-        'setting_expense_budget' => 'array',
+       
         'setting_expense_type' => 'array',
 
         'setting_pos' => 'array',

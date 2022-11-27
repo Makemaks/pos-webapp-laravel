@@ -33,15 +33,16 @@ class AccountFactory extends Factory
         } else {
             $account_type = 0;
         }
-
-        $account_blacklist = [
-            "type" => $this->faker->numberBetween($min = 0, $max = 1),
-            "description" => $this->faker->word,
-            "start_time" => "",
-            "end_time" => "",
-            "user_id" => [],
-            "blocked_access" => []
-        ];
+        for ($i=0; $i < 2; $i++) { 
+            $account_blacklist[$i+1] = [
+                "type" => $this->faker->numberBetween($min = 0, $max = 1),
+                "description" => $this->faker->word,
+                "start_time" => "",
+                "end_time" => "",
+                "user_id" => "",
+                "blocked_access" => []
+            ];
+        }
 
 
         return [

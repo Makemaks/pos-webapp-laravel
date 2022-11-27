@@ -16,17 +16,15 @@ class Account extends Model
 
     protected $attributes = [
         'account_blacklist' => '{
-
-                "1": {
-                    "type": "",
-                    "description": "",
-                    "reason": "",
-                    "start_time": "",
-                    "end_time": "",
-                    "user_id": "",
-                    "blocked_access": {}
-                }
-
+            "1": {
+                "type": "",
+                "description": "",
+                "reason": "",
+                "start_time": "",
+                "end_time": "",
+                "user_id": "",
+                "blocked_access": {} 
+            }
         }'
     ];
 
@@ -76,6 +74,14 @@ class Account extends Model
             'SAAS',
             'B2B',
             'B2C'
+        ];
+    }
+
+    public static function AccountableType()
+    {
+        return [
+            'Company',
+            'Person'
         ];
     }
 }

@@ -138,6 +138,18 @@ class User extends Authenticatable
             ->where($column, $filter);
     }
 
+    public static function Init(){
+
+        return [
+
+            'userModel' => User::Account('account_id', Auth::user()->user_account_id)->first(),
+            'companyList'  => Company::Store('company_store_id', $this->userModel->store_id)->get(),
+            'settingModel' => Setting::where('settingtable_id', $this->userModel->store_id)->first()
+
+        ];
+
+    }
+
     public static function UserType()
     {
         return [
@@ -149,8 +161,4 @@ class User extends Authenticatable
         ];
     }
 
-    public function UserPerson()
-    {
-        return $this->hasOne(Person::class,'person_id','user_person_id');
-    }
 }

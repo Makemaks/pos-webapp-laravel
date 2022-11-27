@@ -1,12 +1,12 @@
 @php
-
+use App\Models\Stock;
 $table = 'fixedTotalPartial';
 $totalPrice = 0;
 $price = 0;
 $totalCash = 0;
 $totalCredit = 0;
 
-$totalPrice = App\Models\Stock::OrderTotal($data['orderList']);
+$totalPrice = Stock::OrderTotal($data['orderList']);
 
 $expenseTotal = $totalPrice - $data['expenseList']->sum('expense_amount');
 
@@ -45,13 +45,15 @@ $totaliser = [
             </tr>
         </thead>
         <tbody>
-            @foreach ($totaliser as $key => $item)
-                <tr>
-                    <td>{{ $key }}</td>
-                    <td>{{ $item['Quantity'] }}</td>
-                    <td>{{ $item['Total'] }}</td>
-                </tr>
-            @endforeach
+            @if ($data['settingModel']->setting_pos)
+                @foreach ($totaliser as $key => $item)
+                    <tr>
+                        <td>{{ $key }}</td>
+                        <td>{{ $item['Quantity'] }}</td>
+                        <td>{{ $item['Total'] }}</td>
+                    </tr>
+                @endforeach
+            @endif
         </tbody>
     </table>
 

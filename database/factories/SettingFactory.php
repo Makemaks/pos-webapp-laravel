@@ -251,7 +251,7 @@ class SettingFactory extends Factory
 
         return [
             
-            'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 20),
+            'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company')),
             'setting_api' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,

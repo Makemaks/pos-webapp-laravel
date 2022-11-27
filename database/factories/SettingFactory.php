@@ -115,7 +115,7 @@ class SettingFactory extends Factory
                 "integer" => [
                     "set_menu" => $this->faker->numberBetween($min = 1, $max = 5),
                     "quantity" => $this->faker->numberBetween($min = 1, $max = 200),
-                    "stock_cost" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
+                    "stock_price" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
                 ],
 
                 "boolean" => [
@@ -203,11 +203,11 @@ class SettingFactory extends Factory
             'default_country' => '',
             'default_currency' => [],
             'logo' => [],
-            'special_stock_cost_group' => 2,
-            'stock_cost_group' => 5 //column
+            'special_stock_price_group' => 2,
+            'stock_price_group' => 5 //column
         ];
 
-        $setting_stock_cost = [
+        $setting_stock_price = [
             'name' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
             "description" =>  $this->faker->sentence,
         ];
@@ -217,9 +217,9 @@ class SettingFactory extends Factory
         }
        
       
-        $customer_stock_cost[$this->faker->numberBetween($min = 1, $max = 5)] = [$this->faker->numberBetween($min = 1, $max = 10)];
+        $customer_stock_price[$this->faker->numberBetween($min = 1, $max = 5)] = [$this->faker->numberBetween($min = 1, $max = 10)];
         $setting_customer = [
-            "customer_stock_cost" => $customer_stock_cost,
+            "customer_stock_price" => $customer_stock_price,
             "customer_credit" =>  $this->faker->numberBetween($min = 0, $max = 200),
             "customer_print" => $customer_print, //ConfigHelper::SettingCustomerPrint(),
             "customer_marketing" => $this->faker->numberBetween($min = 0, $max = 1),
@@ -275,7 +275,7 @@ class SettingFactory extends Factory
             'setting_customer' => $setting_customer,
             'setting_stock_tag_group' => $setting_stock_tag_group,
             'setting_preset_message' => $setting_preset_message,
-            'setting_stock_cost' => $setting_stock_cost,
+            'setting_stock_price' => $setting_stock_price,
             'setting_building' => $setting_building
            
             

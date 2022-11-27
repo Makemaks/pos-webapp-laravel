@@ -18,7 +18,7 @@ foreach ($data['settingModel']->setting_stock_set_category_plu as $key => $value
                         'Name' => $stock_merchandise['stock_name'],
                         'Department' => $valueDepartment['description'],
                         'Quantity' => $arrays[$stock_merchandise['plu_id']]['Quantity'] + 1,
-                        'Total' => App\Helpers\MathHelper::FloatRoundUp($arrays[$stock_merchandise['plu_id']]['Total'] + json_decode($values->stock_cost, true)[$stock_merchandise['plu_id']]['price'], 2),
+                        'Total' => App\Helpers\MathHelper::FloatRoundUp($arrays[$stock_merchandise['plu_id']]['Total'] + json_decode($values->stock_price, true)[$stock_merchandise['plu_id']]['price'], 2),
                     ];
                 } else {
                     $arrays[$stock_merchandise['plu_id']] = [
@@ -26,7 +26,7 @@ foreach ($data['settingModel']->setting_stock_set_category_plu as $key => $value
                         'Name' => $stock_merchandise['stock_name'],
                         'Department' => $valueDepartment['name'],
                         'Quantity' => 1,
-                        'Total' => json_decode($values->stock_cost, true)[$stock_merchandise['plu_id']]['price'],
+                        'Total' => json_decode($values->stock_price, true)[$stock_merchandise['plu_id']]['price'],
                     ];
                 }
             }

@@ -77,15 +77,15 @@
                             @endif
                         </td>
                         <td>
-                            @if ($person->person_stock_cost)
-                                <div>Group {{$person->person_stock_cost[1]['column']}}</div>
-                                <p class="uk-margin-remove-top">Price {{$person->person_stock_cost[1]['row']}}</p>
+                            @if ($person->person_stock_price)
+                                <div>Group {{$person->person_stock_price[1]['column']}}</div>
+                                <p class="uk-margin-remove-top">Price {{$person->person_stock_price[1]['row']}}</p>
                             @endif
                         </td>
                         <td>
                             @if ($person->person_discount)
                                
-                                <p class="uk-margin-remove-top">{{Receipt::ReceiptCostOverrideType()[$person->person_discount[1]['type']]}}{{$person->person_discount[1]['value']}}</p>
+                                <p class="uk-margin-remove-top">{{Receipt::ReceiptPriceOverrideType()[$person->person_discount[1]['type']]}}{{$person->person_discount[1]['value']}}</p>
                               
                             @endif
                         </td>

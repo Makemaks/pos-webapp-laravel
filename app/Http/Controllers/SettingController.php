@@ -187,7 +187,7 @@ class SettingController extends Controller
                 $this->settingModel->update();
                 
                 // To show stock in index
-                $this->StockCost();
+                $this->StockPrice();
                 
                 $view = 'menu.setting.settingPriceLevelScheduler';
                 return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
@@ -239,7 +239,7 @@ class SettingController extends Controller
             $this->settingModel->update();
 
             // To show stock in index
-            $this->StockCost();
+            $this->StockPrice();
             
             return view('menu.setting.settingPriceLevelScheduler', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
         }
@@ -315,30 +315,26 @@ class SettingController extends Controller
         return $setting_column;
     }
 
-<<<<<<< HEAD
-    
-=======
-    private function StockCost()
+    private function StockPrice()
     {
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
 
         $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->paginate(20);
 
-        $stockCosts = $this->stockList->first()->stock_cost;
+        $stockPrices = $this->stockList->first()->stock_price;
 
-        $stock_cost_count = 0;
-        $stock_cost_key = 0;
-        foreach($stockCosts as $key => $stockCost) {
-            if($stock_cost_count < count($stockCost)) {
-                $stock_cost_key = $key;
-                $stock_cost_count = count($stockCost);
+        $stock_price_count = 0;
+        $stock_price_key = 0;
+        foreach($stockPrices as $key => $stockPrice) {
+            if($stock_price_count < count($stockPrice)) {
+                $stock_price_key = $key;
+                $stock_price_count = count($stockPrice);
             }
         }
         
-        $this->settingModel['stock_costs'] = collect($stockCosts[$stock_cost_key])->keys();
+        $this->settingModel['stock_prices'] = collect($stockPrices[$stock_price_key])->keys();
         return true;
     }
->>>>>>> santosh
 
     private function Data()
     {

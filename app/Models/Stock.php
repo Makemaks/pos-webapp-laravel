@@ -28,13 +28,13 @@ class Stock extends Model
        
 
         'stock_store_id' => 1,
-        "stock_cost" => '{
+        "stock_price" => '{
             "1": {
                 "name": "",
                 "description": "",
-                "cost": "",
+                "price": "",
                 "schedule_datetime": "",
-                "setting_stock_cost_group_id" : ""
+                "setting_stock_price_group_id" : ""
             }
         }',
 
@@ -115,10 +115,10 @@ class Stock extends Model
             "value": "",
             "measurement": ""
         }',
-        'stock_cost_quantity' => '{
+        'stock_price_quantity' => '{
             "1": "{
-                "stock_cost_id" = "",
-                "warehouse_stock_cost_quantity" = "",
+                "stock_price_id" = "",
+                "warehouse_stock_price_quantity" = "",
             }"
         }',
 
@@ -133,7 +133,7 @@ class Stock extends Model
 
 
     protected $casts = [
-        'stock_cost' => 'array',
+        'stock_price' => 'array',
         'stock_supplier' => 'array',
         'stock_gross_profit' => 'array',
         "stock_merchandise" => 'array',
@@ -141,7 +141,7 @@ class Stock extends Model
         "stock_web" => 'array',
         "stock_nutrition" => 'array',
         "stock_allergen" => 'array',
-        "stock_cost_quantity" => 'array',
+        "stock_price_quantity" => 'array',
         "stock_manager_special" => 'array'
     ];
 
@@ -164,7 +164,7 @@ class Stock extends Model
     public static function GroupCategoryBrandPlu($data, $type, $stock_merchandise_key)
     {
 
-        $totalCostPrice = 0;
+        $totalPrice = 0;
         $price = 0;
         $departmentTotal = [];
 
@@ -185,9 +185,9 @@ class Stock extends Model
 
                         if ($stock_merchandise[$stock_merchandise_key] == $key) {
 
-                            $price = $orderList->receipt_stock_cost;
+                            $price = $orderList->receipt_stock_price;
 
-                            $totalCostPrice = $totalCostPrice + $price * $orderList->receipt_quantity;
+                            $totalPrice = $totalPrice + $price * $orderList->receipt_quantity;
 
                             $quantity = $quantity + $orderList->receipt_quantity;
                             
@@ -202,7 +202,7 @@ class Stock extends Model
                 $departmentTotal[] = [
                     'name' => $value['name'],
                     'Quantity' => $quantity,
-                    'Total' => MathHelper::FloatRoundUp($totalCostPrice, 2),
+                    'Total' => MathHelper::FloatRoundUp($totalPrice, 2),
                 ];
             }
         }
@@ -214,47 +214,47 @@ class Stock extends Model
     {
 
         $price = 0;
-        $totalCostPrice = 0;
+        $totalPrice = 0;
         
         foreach ($orderList as $receiptList) {
-            $totalCostPrice = Stock::ReceiptTotal($receiptList, $totalCostPrice);
+            $totalPrice = Stock::ReceiptTotal($receiptList, $totalPrice);
         }
 
-        return $totalCostPrice;
+        return $totalPrice;
     }
 
 
-    public static function ReceiptTotal($receiptList, $totalCostPrice)
+    public static function ReceiptTotal($receiptList, $totalPrice)
     {
 
         $price = 0;
-        $stock_cost = $receiptList->receipt_stock_cost;
+        $stock_price = $receiptList->receipt_stock_price;
 
         if ($receiptList->receipt_discount) {
 
-            $price = Stock::Discount($stock_cost, $receiptList->receipt_discount);
+            $price = Stock::Discount($stock_price, $receiptList->receipt_discount);
         }
        
         $price = $price * $receiptList->receipt_quantity;
-        $totalCostPrice = $totalCostPrice + $price;
+        $totalPrice = $totalPrice + $price;
 
-        return $totalCostPrice;
+        return $totalPrice;
     }
 
-    public static function Discount($stock_cost, $discount){
+    public static function Discount($stock_price, $discount){
 
         $price = 0;
 
         foreach (json_decode($discount) as $keyOverride => $valueDiscount) {
 
-            if (Receipt::ReceiptCostOverrideType()[ $valueDiscount->type ] == 'percentage') {
+            if (Receipt::ReceiptPriceOverrideType()[ $valueDiscount->type ] == 'percentage') {
                 //percentage at checkout
-                $price = $price + MathHelper::Discount($discount_value, $stock_cost);
+                $price = $price + MathHelper::Discount($discount_value, $stock_price);
                 
             } 
-            elseif(Receipt::ReceiptCostOverrideType()[ $valueDiscount->type ] == 'amount') {
+            elseif(Receipt::ReceiptPriceOverrideType()[ $valueDiscount->type ] == 'amount') {
                 //minus the amount at checkout
-                $price = $price + $stock_cost - $discount_value;
+                $price = $price + $stock_price - $discount_value;
             }
         }
         
@@ -277,7 +277,7 @@ class Stock extends Model
             $stockModel->stock_description = $receiptList->stock_description;
         }
 
-        return $totalCostPrice;
+        return $totalPrice;
 
     }
 
@@ -299,9 +299,9 @@ class Stock extends Model
     }
 
    
-    public static function StockCostDefault($stock_cost){
+    public static function StockPriceDefault($stock_price){
     
-        $price = $stock_cost[1]['cost'];
+        $price = $stock_price[1]['cost'];
 
        //find discount-show on till button and checkout
        //mix and match-check out only
@@ -310,7 +310,7 @@ class Stock extends Model
        
     }
 
-    public static function StockCostCustomer($stock_cost){
+    public static function StockPriceCustomer($stock_price){
     
         $price = 0;
 
@@ -336,9 +336,9 @@ class Stock extends Model
                 
                 
 
-                foreach ($settingModel->setting_customer['customer_stock_cost'] as $key => $value) {
+                foreach ($settingModel->setting_customer['customer_stock_price'] as $key => $value) {
                     //column row
-                    $price = $stock_cost[ $key ][ $value ]['price'];
+                    $price = $stock_price[ $key ][ $value ]['price'];
                 }
        } 
 
@@ -350,10 +350,12 @@ class Stock extends Model
     }
     
 
-    
+    public static function StockPriceQuantity($stock_price, $stock_quantity){
+        return $stock_price * intval($stock_quantity);
+    }
 
     //find the minum offer price
-    public static function StockCostMin($settingCurrentOfferType){
+    public static function StockPriceMin($settingCurrentOfferType){
         $min = collect( $settingCurrentOfferType )->pluck('total')->min('price');
         return collect( $settingCurrentOfferType )->where('total.price',  $min)->first();
     }

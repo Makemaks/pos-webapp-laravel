@@ -102,7 +102,7 @@ function Delete(row_id){
 
 
 //add a stock_id to cart
-function Add(stock_id, stock_name, stock_cost){
+function Add(stock_id, stock_name, stock_price){
  
      //update basket count
      var cartCountID = document.getElementById('cartCountID'); 
@@ -118,7 +118,7 @@ function Add(stock_id, stock_name, stock_cost){
          data: {
             stock_id: stock_id, 
             stock_name:stock_name, 
-            stock_cost: stock_cost, 
+            stock_price: stock_price, 
             stock_quantity:stock_quantity, 
            },      
          success:function(data){

@@ -75,7 +75,7 @@
                     <td>
                         @php
                             $price = 0;
-                            $price = MathHelper::FloatRoundUp(Stock::StockCostDefault($stock->stock_cost), 2);
+                            $price = MathHelper::FloatRoundUp(Stock::StockPriceDefault($stock->stock_price), 2);
                            
                         @endphp
                        {{$price}}
@@ -109,11 +109,11 @@
                         
                       
 
-                        $price = MathHelper::FloatRoundUp(Stock::StockCostCustomer($stock->stock_cost), 2);
+                        $price = MathHelper::FloatRoundUp(Stock::StockPriceCustomer($stock->stock_price), 2);
                         //check if customer has price
                         if ($price == 0) {
                            //get original price
-                            $price = MathHelper::FloatRoundUp(Stock::StockCostDefault($stock->stock_cost), 2);
+                            $price = MathHelper::FloatRoundUp(Stock::StockPriceDefault($stock->stock_price), 2);
                         }
 
                         //find discount
@@ -123,7 +123,7 @@
                         }
 
                         if($stockOffer){
-                            $stockOfferMin =  Stock::StockCostMin($stockOffer);
+                            $stockOfferMin =  Stock::StockPriceMin($stockOffer);
                         }
 
                     @endphp

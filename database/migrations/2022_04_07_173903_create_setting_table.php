@@ -30,7 +30,7 @@ return new class extends Migration
             $table->json('setting_printer')->nullable();
             $table->json('setting_stock_tag_group')->nullable();
             $table->json('setting_stock_tag')->nullable();
-            $table->json('setting_stock_cost')->nullable();
+            $table->json('setting_stock_price')->nullable();
            
 
             $table->json('setting_message_notification_category')->nullable();

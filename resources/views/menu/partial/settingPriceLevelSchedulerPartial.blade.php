@@ -61,8 +61,8 @@
                                                                     @if($key == 'price_level')
                                                                         <select name="setting_price_level_scheduler[{{$keysetting_price_level_scheduler}}][{{$key}}]" class="uk-select">
                                                                             <option value="" selected disabled>SELECT...</option>
-                                                                            @foreach($data['settingModel']['stock_costs'] as $keyStockCost => $stock_cost)
-                                                                                <option value="{{$stock_cost}}" {{$value == $stock_cost ? 'selected' : ''}}>{{$stock_cost}}</option>
+                                                                            @foreach($data['settingModel']['stock_prices'] as $keyStockPrice => $stock_price)
+                                                                                <option value="{{$stock_price}}" {{$value == $stock_price ? 'selected' : ''}}>{{$stock_price}}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     @else  
@@ -101,8 +101,8 @@
                     <label class="uk-form-label" for="form-stacked-text">Price Level</label>
                     <select class="uk-select" id="form-stacked-select" name="form[setting_price_level_scheduler][price_level]">
                         <option value="" selected disabled>SELECT ...</option>
-                        @foreach($data['settingModel']['stock_costs'] as $keyStockCost => $stock_cost)
-                            <option value="{{$stock_cost}}">{{$stock_cost}}</option>
+                        @foreach($data['settingModel']['stock_prices'] as $keyStockPrice => $stock_price)
+                            <option value="{{$stock_price}}">{{$stock_price}}</option>
                         @endforeach
                     </select>
                     <input name="setting_id" class="uk-input" type="hidden" value="{{$data['settingModel']->setting_id}}">

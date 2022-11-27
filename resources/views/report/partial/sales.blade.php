@@ -33,7 +33,7 @@ foreach ($settingModel as $key => $value) {
         for ($i = 0; $i < 24; $i++) {
             // Variable reset for each period
             $price = 0;
-            $totalCostPrice = 0;
+            $totalPrice = 0;
             $monday = 0;
             $tuesday = 0;
             $wednesday = 0;
@@ -53,7 +53,7 @@ foreach ($settingModel as $key => $value) {
 
                     // get price
                     if ($orderList->receipt_id) {
-                        $price = json_decode($orderList->stock_cost, true)[$orderList->receipt_stock_cost]['price'];
+                        $price = json_decode($orderList->stock_price, true)[$orderList->receipt_stock_price]['price'];
 
                         // creating variable for array
                         if ($currentDay === 'Monday') {

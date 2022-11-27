@@ -150,7 +150,7 @@
                                 <tr>
                                     <th>REF</th>
                                    
-                                        @for ($i = 0; $i < $data['settingModel']->setting_group['stock_cost_group']; $i++)
+                                        @for ($i = 0; $i < $data['settingModel']->setting_group['stock_price_group']; $i++)
                                             <th>{{$i + 1}}</th>
                                         @endfor
                                     
@@ -160,32 +160,32 @@
                             <tbody>
                                     
                                     
-                                    @if ($data['stockModel']->stock_cost && $data['stockModel']->stock_id)
+                                    @if ($data['stockModel']->stock_price && $data['stockModel']->stock_id)
                                         
-                                       @for ($i = 0; $i < count($data['stockModel']->stock_cost[1]); $i++)
+                                       @for ($i = 0; $i < count($data['stockModel']->stock_price[1]); $i++)
                                             <tr>
                                                 <td>
                                                     <button class="uk-button uk-button-default uk-border-rounded">
                                                         {{$i + 1}}
                                                     </button>
                                                 </td>
-                                                @for ($j=0; $j < count($data['stockModel']->stock_cost); $j++)
+                                                @for ($j=0; $j < count($data['stockModel']->stock_price); $j++)
                                                     <td>
                                                         @php
-                                                           $price = $data['stockModel']->stock_cost[$j + 1][$i + 1]['price'];
+                                                           $price = $data['stockModel']->stock_price[$j + 1][$i + 1]['price'];
                                                         @endphp
-                                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="{{$price}}" name="stock_cost[{{$j + 1}}][{{$i + 1}}][price]">
+                                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="{{$price}}" name="stock_price[{{$j + 1}}][{{$i + 1}}][price]">
                                                         
                                                     </td>
                                                     
                                                 @endfor
                                                
                                               
-                                                @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['stock_cost_group']; $q++)
+                                                @for ($q=count($data['stockModel']->stock_price); $q < $data['settingModel']->setting_group['stock_price_group']; $q++)
                                               
                                                     <td>
                                                  
-                                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="stock_cost[{{$q + 1}}][{{$i + 1}}][price]">
+                                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="stock_price[{{$q + 1}}][{{$i + 1}}][price]">
                                                         
                                                     </td>
                                                     
@@ -210,7 +210,7 @@
                             <thead>
                                 <tr>
                                     <th>REF</th>
-                                    @for ($i = 0; $i < $data['settingModel']->setting_group['stock_cost_group']; $i++)
+                                    @for ($i = 0; $i < $data['settingModel']->setting_group['stock_price_group']; $i++)
                                         <th>{{$i + 1}}</th>
                                     @endfor
                                     <th></th>
@@ -225,20 +225,20 @@
                                                 {{$i + 1}}
                                             </button>
                                         </td>
-                                        @for ($j=0; $j < count($data['stockModel']->stock_cost); $j++)
+                                        @for ($j=0; $j < count($data['stockModel']->stock_price); $j++)
                                             <td>
-                                                <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="form[stock_cost][{{$i + 1}}][{{$j + 1}}][price]">
+                                                <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="form[stock_price][{{$i + 1}}][{{$j + 1}}][price]">
                                                 
                                             </td>
                                             
                                         @endfor
 
                                     
-                                        @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['stock_cost_group']; $q++)
+                                        @for ($q=count($data['stockModel']->stock_price); $q < $data['settingModel']->setting_group['stock_price_group']; $q++)
                                     
                                             <td>
                                             
-                                                <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="form[stock_cost][{{$i + 1}}][{{$q + 1}}][price]">
+                                                <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="form[stock_price][{{$i + 1}}][{{$q + 1}}][price]">
                                                 
                                             </td>
                                             
@@ -271,7 +271,7 @@
                     <thead>
                         <tr>
                             <th>REF</th>
-                            @for ($i = 0; $i < $data['settingModel']->setting_group['stock_cost_group']; $i++)
+                            @for ($i = 0; $i < $data['settingModel']->setting_group['stock_price_group']; $i++)
                                
                                     <th>{{$i + 1}}</th>
                               
@@ -296,9 +296,9 @@
                                             </button>
                                         </td>
 
-                                        @for ($j=0; $j < count($data['stockModel']->stock_cost_quantity); $j++)
+                                        @for ($j=0; $j < count($data['stockModel']->stock_price_quantity); $j++)
                                             <td>
-                                                <input class="uk-input" id="form-stacked-text" type="number" value="{{$data['stockModel']->stock_cost_quantity[$j + 1]}}" name="stock_cost_quantity[{{$j + 1}}]">
+                                                <input class="uk-input" id="form-stacked-text" type="number" value="{{$data['stockModel']->stock_price_quantity[$j + 1]}}" name="stock_price_quantity[{{$j + 1}}]">
                                                 
                                             </td>
                                             
@@ -306,11 +306,11 @@
 
                                     
                                     
-                                        @for ($q=count($data['stockModel']->stock_cost_quantity); $q < $data['settingModel']->setting_group['stock_cost_group']; $q++)
+                                        @for ($q=count($data['stockModel']->stock_price_quantity); $q < $data['settingModel']->setting_group['stock_price_group']; $q++)
                                    
                                             <td>
                                             
-                                                <input class="uk-input" id="form-stacked-text" type="number" value="" name="stock_cost_quantity[{{$q + 1}}]">
+                                                <input class="uk-input" id="form-stacked-text" type="number" value="" name="stock_price_quantity[{{$q + 1}}]">
                                                 
                                             </td>
                                             

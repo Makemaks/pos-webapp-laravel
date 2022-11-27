@@ -1,14 +1,14 @@
 @php
 
 $table = 'fixedTotalPartial';
-$totalCostPrice = 0;
+$totalPrice = 0;
 $price = 0;
 $totalCash = 0;
 $totalCredit = 0;
 
-$totalCostPrice = App\Models\Stock::OrderTotal($data['orderList']);
+$totalPrice = App\Models\Stock::OrderTotal($data['orderList']);
 
-$expenseTotal = $totalCostPrice - $data['expenseList']->sum('expense_amount');
+$expenseTotal = $totalPrice - $data['expenseList']->sum('expense_amount');
 
 for ($i = 1; $i < count($data['settingModel']->setting_pos); $i++) {
     $totalCashQuantity = $totalCash + $data['settingModel']->setting_pos[$i]['cash']['quantity'];
@@ -19,7 +19,7 @@ for ($i = 1; $i < count($data['settingModel']->setting_pos); $i++) {
 }
 
 $totaliser = [
-    'NET sales' => ['Quantity' => $data['orderList']->count(), 'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2)],
+    'NET sales' => ['Quantity' => $data['orderList']->count(), 'Total' => App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2)],
     'GROSS Sales' => ['Quantity' => $data['expenseList']->count(), 'Total' => App\Helpers\MathHelper::FloatRoundUp($expenseTotal, 2)],
     'CASH in Drawer' => ['Quantity' => $totalCashQuantity, 'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCashAmount, 2)],
     'CREDIT in Drawer' => ['Quantity' => $totalCreditQuantity, 'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCreditAmount, 2)],

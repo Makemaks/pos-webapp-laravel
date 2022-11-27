@@ -47,6 +47,7 @@ class HomeController extends Controller
        
 
          //setup new
+       
         $this->request = Receipt::SessionInitialize($request);
         
         $this->user = 0;
@@ -66,7 +67,6 @@ class HomeController extends Controller
       /*   $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
         ->paginate(12); */
        
-        $a = $this->Data();
        
       
         return view('home.index', ['data' => $this->Data()]);

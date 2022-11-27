@@ -58,6 +58,7 @@ class Order extends Model
     public static function Receipt($column,  $filter)
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
+            ->leftJoin('store', 'store.store_id', '=', 'order.order_store_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
             ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id')
@@ -89,29 +90,29 @@ class Order extends Model
   
 
    
-    public static function AverageSale($service_cost_sum, $service_cost_count)
+    public static function AverageSale($service_price_sum, $service_price_count)
     {
 
-        $increase =  $service_cost_sum * $service_cost_count;
+        $increase =  $service_price_sum * $service_price_count;
         $averageSale = $increase / 100;
 
         return MathHelper::FloatRoundUp($averageSale, 2);
     }
 
-    public static function Commission($service_cost_sum, $service_commission_percentage_sum)
+    public static function Commission($service_price_sum, $service_commission_percentage_sum)
     {
 
-        $increase = $service_cost_sum * $service_commission_percentage_sum;
+        $increase = $service_price_sum * $service_commission_percentage_sum;
         $commission = $increase / 100;
 
         return MathHelper::FloatRoundUp($commission, 2);
     }
 
 
-    public static function AnnualIncome($service_cost_sum, $service_commission_percentage_sum)
+    public static function AnnualIncome($service_price_sum, $service_commission_percentage_sum)
     {
 
-        $annualIncome = $service_cost_sum + $service_commission_percentage_sum;
+        $annualIncome = $service_price_sum + $service_commission_percentage_sum;
         return MathHelper::FloatRoundUp($annualIncome, 2);
     }
 
@@ -240,8 +241,6 @@ class Order extends Model
             }
 
 
-            $a = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.customer');
-
             //customer details
             if (count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.customer') ) > 0) {
 
@@ -274,10 +273,7 @@ class Order extends Model
                 ];
             }
             
-        
-            //"order_group" => '{}',
-
-            //$orderData = DatabaseHelper::MergeArray($orderData, DatabaseHelper::Timestamp());
+          
             $orderID = Order::insertGetId($orderData);
             $loop = (object)['last' => false];
             //store receipt
@@ -294,7 +290,8 @@ class Order extends Model
                 }
             
             
-                $receipt = Receipt::Calculate($data, $sessionCartList, $loop, $receipt);
+                $setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList');
+                $setupList = Receipt::Calculate($data, $sessionCartList, $loop, $setupList);
                 
                 //decrement stock from table
                 if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin') {
@@ -308,13 +305,15 @@ class Order extends Model
                     $warehouse_id = $warehouseStock->warehouse_id;
                 }
 
+                
+
                     $receiptData = [
                             'receipttable_id' => $sessionCartList['stock_id'],
                             'receipttable_type' => 'Stock',
                             'receipt_warehouse_id' => 1,
                             'receipt_order_id' =>  $orderID,
                             'receipt_user_id' => $sessionCartList['user_id'],
-                            'receipt_stock_cost' => $receipt['price'],
+                            'receipt_stock_price' => $sessionCartList['stock_price'],
                             'receipt_setting_pos_id' => 1,
                             'receipt_warehouse_id' => $warehouse_id,
                         

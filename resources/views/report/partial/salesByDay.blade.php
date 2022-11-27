@@ -4,7 +4,7 @@ $table = $data['table'];
 $settingModel = $data['settingModel'];
 $settingModel = $settingModel->setting_stock_set_category_plu;
 $quantity = 0;
-$totalCostPrice = 0;
+$totalPrice = 0;
 $array = [];
 foreach ($settingModel as $key => $value) {
     if ($value['type'] == 1) {
@@ -14,8 +14,8 @@ foreach ($settingModel as $key => $value) {
             if ($stock_merchandise) {
                 if ($orderList->receipt_id) {
                     $day = Carbon\Carbon::parse($orderList->order_created_at)->format('l');
-                    $price = json_decode($orderList->stock_cost, true)[$orderList->receipt_stock_cost]['price'];
-                    $totalCostPrice += $price;
+                    $price = json_decode($orderList->stock_price, true)[$orderList->receipt_stock_price]['price'];
+                    $totalPrice += $price;
                     $quantity++;
 
                     if (array_key_exists($day, $array)) {
@@ -70,10 +70,10 @@ foreach ($settingModel as $key => $value) {
                         <tr>
                             <td></td>
                             <td>{{ $quantity }}</td>
-                            <td>{{ App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2) }}</td>
-                            <td>{{ App\Helpers\MathHelper::FloatRoundUp($totalCostPrice / $quantity, 2) }}</td>
+                            <td>{{ App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2) }}</td>
+                            <td>{{ App\Helpers\MathHelper::FloatRoundUp($totalPrice / $quantity, 2) }}</td>
                             <td>{{ $quantity }}</td>
-                            <td>{{ App\Helpers\MathHelper::FloatRoundUp($totalCostPrice / $quantity, 2) }}</td>
+                            <td>{{ App\Helpers\MathHelper::FloatRoundUp($totalPrice / $quantity, 2) }}</td>
                         </tr>
                     @endif
                 @endforeach

@@ -113,13 +113,13 @@ class StockFactory extends Factory
             $stock_allergen[$i + 1] = $i + 1;
         }
 
-        $stock_cost = [];
+        $stock_price = [];
         for ($i=0; $i < 10; $i++) { 
                 
-            $stock_cost[$i + 1] = [
-                "cost" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+            $stock_price[$i + 1] = [
+                "price" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
                 "schedule_datetime" =>  "",
-                "stock_cost_group_id"  => $this->faker->numberBetween($min = 1, $max = 5)
+                "stock_price_group_id"  => $this->faker->numberBetween($min = 1, $max = 5)
             ];
             
         }
@@ -127,10 +127,10 @@ class StockFactory extends Factory
 
         for ($j=0; $j < 5; $j++) { 
                 
-            $stock_cost_quantity[$j + 1] = 
+            $stock_price_quantity[$j + 1] = 
             [
-                "stock_cost_quantity" => $this->faker->numberBetween($min = 1, $max = 200),
-                "stock_cost_group_id" => $this->faker->numberBetween($min = 1, $max = 5),
+                "stock_price_quantity" => $this->faker->numberBetween($min = 1, $max = 200),
+                "stock_price_group_id" => $this->faker->numberBetween($min = 1, $max = 5),
             ];
            
         }
@@ -150,7 +150,7 @@ class StockFactory extends Factory
         return [
 
 
-            'stock_cost' => $stock_cost,
+            'stock_price' => $stock_price,
             'stock_supplier' => $stock_supplier,
             'stock_store_id' => $this->faker->numberBetween($min = 1, $max = 10),
 
@@ -164,7 +164,7 @@ class StockFactory extends Factory
             'stock_web' => $stock_web,
             'stock_nutrition' => $stock_nutrition,
             'stock_allergen' => $stock_allergen,
-            'stock_cost_quantity' => $stock_cost_quantity,
+            'stock_price_quantity' => $stock_price_quantity,
             'stock_manager_special' => $stock_manager_special,
 
 

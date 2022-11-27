@@ -190,18 +190,18 @@ class MenuController extends Controller
 
             case 'price-level-scheduler':
                 
-                $stockCosts = $this->stockList->first()->stock_cost;
+                $StockPrices = $this->stockList->first()->stock_price;
 
-                $stock_cost_count = 0;
-                $stock_cost_key = 0;
-                foreach($stockCosts as $key => $stockCost) {
-                    if($stock_cost_count < count($stockCost)) {
-                        $stock_cost_key = $key;
-                        $stock_cost_count = count($stockCost);
+                $stock_price_count = 0;
+                $stock_price_key = 0;
+                foreach($StockPrices as $key => $StockPrice) {
+                    if($stock_price_count < count($StockPrice)) {
+                        $stock_price_key = $key;
+                        $stock_price_count = count($StockPrice);
                     }
                 }
                 
-                $this->settingModel['stock_costs'] = collect($stockCosts[$stock_cost_key])->keys();
+                $this->settingModel['stock_prices'] = collect($StockPrices[$stock_price_key])->keys();
 
                 return view('menu.setting.settingPriceLevelScheduler', ['data' => $this->Data()]);
 

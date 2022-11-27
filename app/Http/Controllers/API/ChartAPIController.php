@@ -27,15 +27,15 @@ class ChartAPIController extends Controller
       
         if ($chartID ==  'currentWeekSalePercentage') {
             $currentWeekSale =  Order::Receipt()
-            ->select('order.*', 'product_cost')
+            ->select('order.*', 'product_price')
             ->whereBetween( 'order.created_at', [$startOfCurrentWeek, $endOfCurrentWeek] )
-                        ->pluck('product_cost')
+                        ->pluck('product_price')
                         ->sum();
 
             $lastWeekSale = Order::Receipt()
-            ->select('order.*', 'product_cost')
+            ->select('order.*', 'product_price')
             ->whereBetween( 'order.created_at', [$startOfLastWeek,  $startOfCurrentWeek] )
-                        ->pluck('product_cost')
+                        ->pluck('product_price')
                         ->sum();
 
             if ( $lastWeekSale != 0) {
@@ -49,7 +49,7 @@ class ChartAPIController extends Controller
             select(
                 Order::Receipt()->raw('YEAR(order.created_at) as year'),
                 Order::Receipt()->raw('MONTH(order.created_at) as month'),
-                Order::Receipt()->raw('SUM(product_cost) as sum')
+                Order::Receipt()->raw('SUM(product_price) as sum')
             )
             ->whereYear('order.created_at', '=', Carbon::now()->year)
             ->orWhereYear('order.created_at', '=', Carbon::now()->subYear()->year)

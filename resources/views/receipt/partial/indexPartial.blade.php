@@ -18,18 +18,10 @@
     $currencySymbol = Setting::SettingCurrency($data);
 
     $currency = "";
-    $receipt['deliveryTotal']=0;
-    $receipt['voucherAmountTotal']=0;
-    $receipt['voucherPercentageTotal']=0;
-    $receipt['discountAmountTotal']=0;
-    $receipt['discountPercentageTotal']=0;
-    $receipt['creditTotal'] = 0;
-    $receipt['cashTotal'] = 0;
-    $receipt['totalPriceVAT'] = 0;
-    $receipt['totalPrice'] = 0;
-    $receipt['subTotal'] = 0;
-    $receipt['totalPriceFinal'] = 0;
-    
+  
+    if ( Session::has('user-session-'.Auth::user()->user_id.'.'.'setupList')) {
+        $setupList = Session::get('user-session-'.Auth::user()->user_id. '.setupList');
+    }
 
    
     $data['userModel'] = User::Account('user_account_id', Auth::user()->user_account_id)
@@ -68,8 +60,10 @@
                
                     @foreach ($stockList as $stockKey => $stockItem)
                         @php
-                            $receipt = Receipt::Calculate( $data, $stockItem, $loop, $receipt );
-                           
+                            $setupList = Receipt::Calculate( $data, $stockItem, $loop, $setupList );
+                            Session::pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
+                            Session::put('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
+                            $stockPriceQuantity = Stock::StockPriceQuantity($stockItem);
                         @endphp
                         
                             <tr id="cartItemID-{{$loop->index}}">
@@ -83,19 +77,19 @@
     
                                 @if (Session::has('edit_cart')==false)
                                     <td>
-                                        @if ($receipt['stock_vat_rate'])
-                                            {{ MathHelper::FloatRoundUp($receipt['stock_vat_rate'], 2)}}
+                                        @if ($setupList['receipt']['stock_vat_rate'])
+                                            {{ MathHelper::FloatRoundUp($setupList['receipt']['stock_vat_rate'], 2)}}
                                         @endif
                                     </td>
         
                                     <td>
                                        @if ($stockItem['stock_discount'])
-                                            {{ Stock::Discount($receipt['price'], $stock_discount['type'], $stock_discount['value']) }}
+                                            {{ Stock::Discount($stockPriceQuantity, $stock_discount['type'], $stock_discount['value']) }}
                                        @endif
                                     </td>
         
                                     <td>
-                                        {{ MathHelper::FloatRoundUp( $receipt['price'], 2) }}
+                                        {{ MathHelper::FloatRoundUp( $stockPriceQuantity, 2) }}
                                     </td>
                                 @else
                                     <td>
@@ -119,82 +113,82 @@
     
     <div class="uk-margin-large uk-child-width-1-2@m" uk-grid>
 
-        @if ($receipt['cashTotal'] > 0)
+        @if ($setupList['receipt']['cashTotal'] > 0)
             
             <div class="uk-margin-remove-top">Cash {{$currency}}
                 <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('cash')"></span>
             </div>
-            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['cashTotal'])}}</div>
+            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($setupList['receipt']['cashTotal'])}}</div>
            
         @endif
 
-        @if ($receipt['creditTotal'] > 0)
+        @if ($setupList['receipt']['creditTotal'] > 0)
             
             <div class="uk-margin-remove-top">Credit {{$currency}}
                 <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('credit')"></span>
             </div>
-            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['discountTotal'])}}</div>
+            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($setupList['receipt']['discountTotal'])}}</div>
            
         @endif
 
-        @if ($receipt['voucherAmountTotal'] > 0)
+        @if ($setupList['receipt']['voucherAmountTotal'] > 0)
             
             <div class="uk-margin-remove-top">Voucher {{$currency}}
                 <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('voucher')"></span>
             </div>
-            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['voucherAmountTotal'])}}</div>
+            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($setupList['receipt']['voucherAmountTotal'])}}</div>
            
         @endif
 
-        @if ($receipt['voucherPercentageTotal'] > 0)
+        @if ($setupList['receipt']['voucherPercentageTotal'] > 0)
             
             <div class="uk-margin-remove-top">Voucher %{{$currency}}
                 <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('voucher')"></span>
             </div>
-            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['voucherPercentageTotal'])}}</div>
+            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($setupList['receipt']['voucherPercentageTotal'])}}</div>
            
         @endif
             
-        @if ($receipt['discountAmountTotal'] > 0)
+        @if ($setupList['receipt']['discountAmountTotal'] > 0)
             
             <div class="uk-margin-remove-top">Discount{{$currency}}
                 <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('discount')"></span>
             </div>
-            <div class="uk-text-right uk-margin-remove-top"> - {{CurrencyHelper::Format($receipt['discountAmountTotal'])}}</div>
+            <div class="uk-text-right uk-margin-remove-top"> - {{CurrencyHelper::Format($setupList['receipt']['discountAmountTotal'])}}</div>
            
         @endif
 
-        @if ($receipt['discountPercentageTotal'] > 0)
+        @if ($setupList['receipt']['discountPercentageTotal'] > 0)
             
             <div class="uk-margin-remove-top">Discount %{{$currency}}
                 <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('discount')"></span>
             </div>
-            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['discountPercentageTotal'])}}</div>
+            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($setupList['receipt']['discountPercentageTotal'])}}</div>
         
         @endif
 
-        @if ($receipt['deliveryTotal'] > 0)
+        @if ($setupList['receipt']['deliveryTotal'] > 0)
           
             <div class="uk-margin-remove-top">Delivery {{$currency}}
                 <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('delivery')"></span>
             </div>
-            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['deliveryTotal'])}}</div>
+            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($setupList['receipt']['deliveryTotal'])}}</div>
          
         @endif
 
-        @isset ($receipt['totalSettingVAT'])
+        @isset ($setupList['receipt']['totalSettingVAT'])
           
-            <div class="uk-margin-remove-top">VAT % {{MathHelper::FloatRoundUp($receipt['totalSettingVAT'], 2)}}</div>
-            <div class="uk-text-right uk-margin-remove-top">{{MathHelper::FloatRoundUp($receipt['totalPriceVAT'] - $receipt['subTotal'], 2)}}</div>
+            <div class="uk-margin-remove-top">VAT % {{MathHelper::FloatRoundUp($setupList['receipt']['totalSettingVAT'], 2)}}</div>
+            <div class="uk-text-right uk-margin-remove-top">{{MathHelper::FloatRoundUp($setupList['receipt']['totalPriceVAT'] - $setupList['receipt']['subTotal'], 2)}}</div>
            
         @endisset
 
        
         <div class="uk-margin-remove-top">Sub Total {{$currency}}</div>
-        <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($receipt['subTotal'])}}</div>
+        <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($setupList['receipt']['subTotal'])}}</div>
     
         <div class="uk-margin-remove-top uk-text-bold">Total {{$currency}}</div>
-        <div class="uk-text-right uk-margin-remove-top uk-text-bold">{{CurrencyHelper::Format($receipt['totalPriceFinal'])}}</div>
+        <div class="uk-text-right uk-margin-remove-top uk-text-bold">{{CurrencyHelper::Format($setupList['receipt']['totalPriceFinal'])}}</div>
         
     </div>
     

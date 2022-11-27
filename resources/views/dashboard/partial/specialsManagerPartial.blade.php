@@ -48,7 +48,7 @@
                                         @php
                                             $price = $stockModel->stock_manager_special[$j + 1][1]['price'];
                                         @endphp
-                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="{{$price}}" name="stock_cost[{{$j + 1}}][{{$i + 1}}][price]">
+                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="{{$price}}" name="stock_price[{{$j + 1}}][{{$i + 1}}][price]">
                                         
                                     </td>           
                                 @endfor

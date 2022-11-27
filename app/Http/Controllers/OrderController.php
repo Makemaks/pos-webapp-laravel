@@ -86,9 +86,10 @@ class OrderController extends Controller
         
         $todayDate = Carbon::now()->toDateTimeString();
 
-        $this->orderList = Receipt::Order('order_store_id',  $this->userModel->store_id)
+        $this->orderList = Order::Receipt('order_store_id',  $this->userModel->store_id)
             ->orderByDesc('order_id')
             ->groupBy('order_id')
+            ->select('order.*', 'receipt_user_id', 'store_name')
             ->paginate(10);
 
         return view('order.index', ['data' => $this->Data()]);

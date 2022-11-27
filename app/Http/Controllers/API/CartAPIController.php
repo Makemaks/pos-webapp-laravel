@@ -126,7 +126,7 @@ class CartAPIController extends Controller
                 $requestInput['stock_id'] = $this->stockModel->stock_id;
                 $requestInput['user_id'] = $this->stockModel->user_id;
                 $requestInput['stock_name'] = $this->stockModel->stock_merchandise['stock_name'];
-                $requestInput['stock_cost'] = $this->stockModel->stock_cost[1][1]['price'];
+                $requestInput['stock_price'] = $this->stockModel->stock_price[1][1]['price'];
                 $requestInput['stock_quantity'] = 1;
                 $requestInput['stock_discount'] = 0;
                

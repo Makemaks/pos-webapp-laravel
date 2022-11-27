@@ -235,7 +235,7 @@ class Setting extends Model
                 "integer": {
                     "set_menu":"",
                     "quantity":"",
-                    "stock_cost":""
+                    "stock_price":""
                 },
 
                 "boolean": {
@@ -311,18 +311,18 @@ class Setting extends Model
             "default_country": "",
             "default_currency": {},
             "logo": {},
-            "stock_cost_group": "",
-            "special_stock_cost_group": ""
+            "stock_price_group": "",
+            "special_stock_price_group": ""
         }',
 
         'setting_customer' => '{
-            "customer_stock_cost": "",
+            "customer_stock_price": "",
             "customer_credit": "",
             "customer_print": {},
             "customer_marketing": {}
         }',
         
-        'setting_stock_cost' => '{
+        'setting_stock_price' => '{
             "1": {
                 "name": "",
                 "description": ""
@@ -335,7 +335,7 @@ class Setting extends Model
     protected $casts = [
 
         'setting_stock_set' => 'array',
-        'setting_stock_cost' => 'array',
+        'setting_stock_price' => 'array',
         'setting_stock_set' => 'array',
 
         'setting_stock_label'  => 'array',
@@ -689,7 +689,7 @@ class Setting extends Model
                 if ($settingModel) {
                     if ( $settingModel->setting_customer) {
 
-                        if ($settingModel->setting_customer['customer_stock_cost']) {
+                        if ($settingModel->setting_customer['customer_stock_price']) {
                             # code...
                         }
 

@@ -113,14 +113,14 @@ class StockController extends Controller
              }
         }
  
-        foreach ((array)$request['stock_cost'] as $keystock_cost  => $stock_cost) {
-             foreach ($stock_cost as $key => $value) {
-                 $stockModel['stock_cost'][$keystock_cost][$key]  = $value;
+        foreach ((array)$request['stock_price'] as $keystock_price  => $stock_price) {
+             foreach ($stock_price as $key => $value) {
+                 $stockModel['stock_price'][$keystock_price][$key]  = $value;
              }
          }
 
-         foreach ((array)$request['stock_cost_quantity'] as $keystock_cost_quantity  => $stock_cost_quantity) {
-            $stockModel['stock_cost_quantity'][$keystock_cost_quantity] =  $stock_cost_quantity;
+         foreach ((array)$request['stock_price_quantity'] as $keystock_price_quantity  => $stock_price_quantity) {
+            $stockModel['stock_price_quantity'][$keystock_price_quantity] =  $stock_price_quantity;
         }
  
         foreach ((array)$request['stock_merchandise'] as $keystock_merchandise  => $stock_merchandise) {

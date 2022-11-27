@@ -21,7 +21,6 @@
             <table class="uk-table uk-table-small uk-table-divider">
                 <thead>
                     <tr>
-<<<<<<< HEAD
                         <th>Ref</th>
                         <th>Type</th>
                         <th>Status</th>
@@ -31,33 +30,6 @@
                         <th>User</th>
                         <th>Date</th>
                         <th></th>
-=======
-                        <td><a href="{{route('order.edit', $order->order_id)}}"
-                                class="uk-button uk-button-default uk-border-rounded">{{$order->order_id}}</a></td>
-                        <td>{{Order::OrderType()[$order->order_type]}}</td>
-                        @if ($order->payment_type)
-                        <td>{{$order->payment_type}}</td>
-                        @endif
-                        <td>
-                            <select class="uk-select" id="select-{{$order->order_id}}"
-                                onchange="OrderStatus(this, {{$order->order_id}})" name="order[{{$orderKey}}][order_status]">
-                                @foreach (Order::OrderStatus() as $status)
-                                <option  value="{{$loop->iteration}}" @if($order->order_status == $loop->iteration)
-                                    selected = 'selected' @endif>{{$status}}</option>
-                                @endforeach
-                            </select>
-                            <input type="text" value="{{$order->order_id}}" name="order[{{$orderKey}}][order_id]" hidden>
-                        </td>
-                        <td>{{ MathHelper::FloatRoundUp($orderTotal, 2) }}</td>
-                        <td>{{$order->store_name}}</td>
-                        <td>{{$data['settingModel']->setting_pos[1]['name'] ?? ''}}</td>
-                        <td>{{ json_decode($userPerson->person_name, true)['person_firstname'] }}</td>
-                        <td>{{$order->created_at}}</td>
-                        <td>
-                            <a href="{{route('order.index', ['order_id'=>$order->order_id, 'view' =>'availaibility'])}}"
-                                class="uk-button uk-button-default uk-border-rounded">Check Availaibility</a>
-                        </td>
->>>>>>> shaiv
                     </tr>
                 </thead>
                 <tbody>
@@ -66,7 +38,7 @@
                                 $orderList = Order::Receipt('order_id', $order->order_id)->get();
                                 $orderTotal = Stock::OrderTotal($orderList);
                                 $userPerson = User::Person('user_id', $order->receipt_user_id)->first();
-                                dd(collect($order->order_status)->sortBy('updated_at')->first());
+                               
                             @endphp
                         <tr>
                             <td><a href="{{route('order.edit', $order->order_id)}}"
@@ -78,8 +50,7 @@
                             <td>
                                 <select class="uk-select">
                                     @foreach (Order::OrderStatus() as $status)
-                                        <option  value="{{$loop->iteration}}" @if(collect($order->order_status)->sortBy('updated_at')->first()->status == $loop->iteration)
-                                            selected = 'selected' @endif>{{$status}}</option>
+                                        <option  value="{{$loop->iteration}}" @if($order->order_status == $loop->iteration) selected @endif>{{$status}}</option>
                                     @endforeach
                                 </select>
                                 <input type="text" value="{{$order->order_id}}" name="order[{{$orderKey}}][order_id]" hidden>
@@ -91,7 +62,7 @@
                             <td>{{$order->created_at}}</td>
                             <td>
                                 <a href="{{route('order.index', ['order_id'=>$order->order_id, 'view' =>'availaibility'])}}"
-                                    class="uk-button uk-button-default uk-border-rounded">Check Availaibility</a>
+                                    class="uk-button uk-button-default uk-border-rounded">Availaibility</a>
                             </td>
                         </tr>
                         @endforeach

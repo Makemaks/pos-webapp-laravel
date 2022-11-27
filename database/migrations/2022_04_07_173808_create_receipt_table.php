@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->json('receipt_setting_vat')->nullable(); 
            
-            $table->float('receipt_stock_cost');
+            $table->float('receipt_stock_price');
             $table->json('receipt_discount')->nullable();
 
             $table->smallInteger('receipt_quantity')->default(1); 

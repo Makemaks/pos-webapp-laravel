@@ -9,10 +9,10 @@ use Session;
 use Illuminate\Support\Str;
 
 use App\Models\Expertise;
-use App\Models\Setting;
 use App\Models\User;
 
 use App\Helpers\MathHelper;
+use App\Helpers\CurrencyHelper;
 use Carbon\Carbon;
 
 class Setting extends Model
@@ -27,10 +27,9 @@ class Setting extends Model
 
     protected $attributes = [
 
-        'setting_file' => '{}',
+      
 
-
-       'setting_stock_group' => '{
+        'setting_stock_set' => '{
             "1": {
                 "name": "",
                 "code": "",
@@ -41,7 +40,7 @@ class Setting extends Model
         'setting_stock_label' => '{
 
             "SHELF": {
-                "CUSTOM TEMPLATES": [],
+                "CUSTOM TEMPLATES": {},
                 "DEFAULT TEMPLATES": {
                     "A4": "A4 (24 labels [3x8], 60x30mm) - 210mm x 297mm",
                     "GK420t": "GK420t (Single label feed, 48.5 x 35mm) - 49mm x 35mm",
@@ -57,7 +56,7 @@ class Setting extends Model
                 }
             },
             "STOCK": {
-                "CUSTOM TEMPLATES": [],
+                "CUSTOM TEMPLATES": {},
                 "DEFAULT TEMPLATES": {
                     "DK-1201": "DK-1201 - 90mm x 29mm",
                     "SLP-MRL": "SLP-MRL - 51mm x 28mm",
@@ -84,7 +83,7 @@ class Setting extends Model
         'setting_reason' => '{
             "1": {
                 "name": "",
-                "setting_stock_group": ""
+                "setting_stock_set": ""
             }
         }',
 
@@ -119,35 +118,35 @@ class Setting extends Model
             "1": {
                 "default": 1,
                 "sig strip": {
-                    "",
-                    "",
-                    "Employee / Manager RRsignature",
-                    ".......................John"
+                    "1":"",
+                    "2":"",
+                    "3":"Employee / Manager RRsignature",
+                    "4":".......................John"
                 },
                 "vat number": "VAT No: 787655678",
                 "bottom message": {
-                    "Thank You For Your Custom",
-                    "See You Soon",
-                    "MERRY CHRISTMAS",
-                    "www.theepsomclub.com"
+                    "1":"Thank You For Your Custom",
+                    "2":"See You Soon",
+                    "3":"MERRY CHRISTMAS",
+                    "4":"www.theepsomclub.com"
                 },
                 "receipt header": {
-                    "The TESTING CLUB",
-                    "Tel: 061 319SS66  VAT: GB3158927S",
-                    "41-43 Chruch Street",
-                    "Epsom KT17 4QW"
+                    "1":"The TESTING CLUB",
+                    "2":"Tel: 061 319SS66  VAT: GB3158927S",
+                    "3":"41-43 Chruch Street",
+                    "4":"Epsom KT17 4QW"
                 },
                 "report message": {
-                    "",
-                    "",
-                    "",
-                    ""
+                    "1":"",
+                    "2":"",
+                    "3":"",
+                    "4":""
                 },
                 "commercial message": {
-                    "The Club is Open 1000-2200 Daily",
-                    "",
-                    "",
-                    ""
+                    "1":"The Club is Open 1000-2200 Daily",
+                    "2":"",
+                    "3":"",
+                    "4":""
                 }
             }
         }',
@@ -239,7 +238,7 @@ class Setting extends Model
                 "integer": {
                     "set_menu":"",
                     "quantity":"",
-                    "stock_cost":""
+                    "stock_price":""
                 },
 
                 "boolean": {
@@ -314,45 +313,33 @@ class Setting extends Model
         'setting_group' => '{
             "default_country": "",
             "default_currency": {},
-            "stock_cost_group": "",
-            "special_stock_cost_group": ""
+            "logo": {},
+            "stock_price_group": "",
+            "special_stock_price_group": ""
         }',
 
         'setting_customer' => '{
-            "1": {
-                "name": "",
-                "loyalty_type": "",
-                "customer_stock_cost": "",
-                "customer_credit": "",
-                "customer_print": {},
-                "customer_marketing": {},
-                "points":{
-                    
-                }
-            }
+            "customer_stock_price": "",
+            "customer_credit": "",
+            "customer_print": {},
+            "customer_marketing": {}
         }',
-       
-        'setting_building' => '{
+        
+        'setting_stock_price' => '{
             "1": {
-                "address_id": "",
-                "status": "",
-                "capacity": "",
                 "name": "",
-                "description": "",
-                "note": ""
+                "description": ""
             }
         }',
 
+        'setting_building' => '{}'
     ];
 
     protected $casts = [
 
-       
-
-        'setting_logo' => 'array',
-
-        
-        'setting_stock_group' => 'array',
+        'setting_stock_set' => 'array',
+        'setting_stock_price' => 'array',
+        'setting_stock_set' => 'array',
 
         'setting_stock_label'  => 'array',
 
@@ -393,6 +380,7 @@ class Setting extends Model
         'setting_group' => 'array',
         'setting_customer' => 'array',
         'setting_preset_message' => 'array',
+        'setting_building' => 'array',
         /* 'setting_price_level_scheduler' => 'array' */
         'setting_building' => 'array',
     ];
@@ -705,7 +693,7 @@ class Setting extends Model
                 if ($settingModel) {
                     if ( $settingModel->setting_customer) {
 
-                        if ($settingModel->setting_customer['customer_stock_cost']) {
+                        if ($settingModel->setting_customer['customer_stock_price']) {
                             # code...
                         }
 
@@ -815,7 +803,20 @@ class Setting extends Model
     }
 
     
+    public static function SettingCurrency($data){
+        $currencySymbol = '$';
 
+        $setting_default_currency =  collect($data['settingModel']->setting_group['default_currency'])
+        ->where('default', 0)
+        ->first();
+
+        if ($setting_default_currency) {
+            $currency = CountryHelper::ISO()[$setting_default_currency->currency_id]['currencies'][0];
+            $currencySymbol = CountryHelper::CurrencySymbol()[$currency];
+        }
+    
+        return $currencySymbol;
+    }
 
 
 }

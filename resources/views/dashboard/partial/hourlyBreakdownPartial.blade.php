@@ -1,7 +1,7 @@
 @php
 
 $table = 'hourlyBreakdownPartial';
-$totalCostPrice = 0;
+$totalPrice = 0;
 $orderList = $data['orderHourly'];
 $orderList = $orderList->groupBy('order_id');
 
@@ -19,7 +19,7 @@ if (count($orderList) > 0) {
     for ($i = 0; $i < 96; $i++) {
         $count++;
 
-        $totalCostPrice = 0;
+        $totalPrice = 0;
         $averageSales = 0;
         $totalQuantity = 0;
         if ($i == 0) {
@@ -40,18 +40,18 @@ if (count($orderList) > 0) {
                     $price_each_order = App\Models\Stock::OrderTotal($receiptList);
                     $quantity_each_order = $receiptList->count();
                     $totalQuantity = $totalQuantity + $quantity_each_order;
-                    $totalCostPrice = $totalCostPrice + $price_each_order;
+                    $totalPrice = $totalPrice + $price_each_order;
                 } else {
                     $price_each_order = 0;
                     $quantity_each_order = 0;
                     $averageSales = 0;
 
                     $totalQuantity = $totalQuantity + $quantity_each_order;
-                    $totalCostPrice = $totalCostPrice + $price_each_order;
+                    $totalPrice = $totalPrice + $price_each_order;
                 }
 
                 if ($totalQuantity != 0) {
-                    $averageSales = $totalCostPrice / $totalQuantity;
+                    $averageSales = $totalPrice / $totalQuantity;
                 } else {
                     $averageSales = 0;
                 }
@@ -60,7 +60,7 @@ if (count($orderList) > 0) {
 
         $orderArrayTable[$i] = [
             'Hour' => $current_minute->format('H:i'),
-            'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2),
+            'Total' => App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2),
             'Sales' => $totalQuantity,
             'Average Sales' => App\Helpers\MathHelper::FloatRoundUp($averageSales, 2),
         ];

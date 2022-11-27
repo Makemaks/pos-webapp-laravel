@@ -3,7 +3,7 @@ $title = $data['title'];
 $table = $data['table'];
 
 $dataModel = $data['orderListASC']->groupBy('order_id');
-$totalCostPrice = 0;
+$totalPrice = 0;
 $totalSales = 0;
 $totalAvgSaleValue = 0;
 $totalAvgItemsPerSale = 0;
@@ -16,8 +16,8 @@ foreach ($dataModel as $user_id => $value) {
         if ($orderList->receipt_id) {
             $date = Carbon\Carbon::parse($orderList->order_created_at);
             $datePeriod_round_down = date('H', strtotime($date));
-            $price = json_decode($orderList->stock_cost, true)[$orderList->receipt_stock_cost]['price'];
-            $totalCostPrice = $totalCostPrice + $price;
+            $price = json_decode($orderList->stock_price, true)[$orderList->receipt_stock_price]['price'];
+            $totalPrice = $totalPrice + $price;
 
             if (array_key_exists($datePeriod_round_down, $array)) {
                 $array[$datePeriod_round_down] = [
@@ -46,7 +46,7 @@ foreach ($dataModel as $user_id => $value) {
 
 foreach ($array as $key => $value) {
     $array[$key]['Avg Items Per Sale'] = App\Helpers\MathHelper::FloatRoundUp($value['Items'] / $value['Sales'], 0);
-    $array[$key]['(%) Total'] = App\Helpers\MathHelper::FloatRoundUp(($value['($) Total'] / $totalCostPrice) * 100, 2);
+    $array[$key]['(%) Total'] = App\Helpers\MathHelper::FloatRoundUp(($value['($) Total'] / $totalPrice) * 100, 2);
     $totalSales = $totalSales + $value['Sales'];
 }
 
@@ -60,7 +60,7 @@ $avgSaleValue = App\Helpers\MathHelper::FloatRoundUp($totalAvgSaleValue / count(
 $avgItemsPerSale = App\Helpers\MathHelper::FloatRoundUp($totalAvgItemsPerSale / count($array), 0);
 $arrayTotal = [
     'Period' => 'Total',
-    '($) Total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2),
+    '($) Total' => App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2),
     'Sales' => App\Helpers\MathHelper::FloatRoundUp($totalSales, 0),
     'Items' => App\Helpers\MathHelper::FloatRoundUp($totalItems, 0),
     'Avg Sale Value' => App\Helpers\MathHelper::FloatRoundUp($avgSaleValue, 2),

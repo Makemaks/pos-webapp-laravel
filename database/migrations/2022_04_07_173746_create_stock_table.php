@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('stock', function (Blueprint $table) {
             $table->bigIncrements('stock_id');
-            $table->json('stock_cost')->nullable(); // as array
-            $table->json('stock_cost_quantity')->nullable(); // as array
+            $table->json('stock_price')->nullable(); // as array
+            $table->json('stock_price_quantity')->nullable(); // as array
             $table->json('stock_supplier')->nullable(); // as array
             $table->json('stock_merchandise')->nullable();
             $table->bigInteger('stock_store_id')->comment('added_by'); 

@@ -15,6 +15,6 @@ class ReceiptSeeder extends Seeder
      */
     public function run()
     {
-        Receipt::factory(500)->create();
+        Receipt::factory(100)->create();
     }
 }

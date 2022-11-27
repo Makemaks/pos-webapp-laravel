@@ -29,8 +29,8 @@ class SettingController extends Controller
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
 
-        //$setting_stock_group = ["category", "group", "plu"];
-        //$setting_stock_group_key = array_search( $request->session()->get('view'), $setting_stock_group);
+        //$setting_stock_set = ["category", "group", "plu"];
+        //$setting_stock_set_key = array_search( $request->session()->get('view'), $setting_stock_set);
 
 
         if ($request->session()->has('view')) {
@@ -53,9 +53,9 @@ class SettingController extends Controller
 
     public function Store(Request $request)
     {
-        // Check condition from request to add new setting_stock_group
-        if (isset($request->form['setting_stock_group'])) {
-            $this->StoreSettingColumn($request['setting_id'],'setting_stock_group',$request->form['setting_stock_group']);
+        // Check condition from request to add new setting_stock_set
+        if (isset($request->form['setting_stock_set'])) {
+            $this->StoreSettingColumn($request['setting_id'],'setting_stock_set',$request->form['setting_stock_set']);
             return back()->with('success', 'Added Successfuly');
         } else if(isset($request->form['setting_offer'])) {
             $this->StoreSettingColumn($request['setting_id'],'setting_offer',$request->form['setting_offer']);
@@ -107,10 +107,10 @@ class SettingController extends Controller
     {
         $this->settingModel = Setting::find($setting);
         
-        // Check condition from url to edit setting_stock_group
+        // Check condition from url to edit setting_stock_set
         if($request->has('index')) {
             $request->session()->reflash();
-            $this->settingModel['setting_stock_group'] = $this->settingModel['setting_stock_group'][$request->index];
+            $this->settingModel['setting_stock_set'] = $this->settingModel['setting_stock_set'][$request->index];
             $this->settingModel['edit'] = true;
             return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
         } else if($request->stock_offer['index']) {
@@ -136,11 +136,11 @@ class SettingController extends Controller
                 $setting_offer = $this->DeleteColumnIndex($request->setting_offer_delete, $setting_offers);
                 $this->settingModel->setting_offer = $setting_offer;
                 $view = 'menu.setting.mix-&-match';
-            } else if ($request->setting_stock_group_delete) {
-                $setting_stock_groups = $this->settingModel->setting_stock_group;
+            } else if ($request->setting_stock_set_delete) {
+                $setting_stock_sets = $this->settingModel->setting_stock_set;
 
-                $setting_stock_group = $this->DeleteColumnIndex($request->setting_stock_group_delete, $setting_stock_groups);
-                $this->settingModel->setting_stock_group = $setting_stock_group;
+                $setting_stock_set = $this->DeleteColumnIndex($request->setting_stock_set_delete, $setting_stock_sets);
+                $this->settingModel->setting_stock_set = $setting_stock_set;
                 $view = 'menu.setting.settingStockGroup';
             } else if($request->setting_key_delete) {
                 $setting_keys = $this->settingModel->setting_key;
@@ -187,7 +187,7 @@ class SettingController extends Controller
                 $this->settingModel->update();
                 
                 // To show stock in index
-                $this->StockCost();
+                $this->StockPrice();
                 
                 $view = 'menu.setting.settingPriceLevelScheduler';
                 return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
@@ -195,9 +195,9 @@ class SettingController extends Controller
             $this->settingModel->update();
             return view($view, ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         }
-        else if ($request->setting_stock_group) { //update
-            $filter = Arr::except($this->settingModel->setting_stock_group, array_keys($request->setting_stock_group));
-            $this->settingModel->setting_stock_group = collect($settingInput['setting_stock_group']+$filter)->sortKeys();
+        else if ($request->setting_stock_set) { //update
+            $filter = Arr::except($this->settingModel->setting_stock_set, array_keys($request->setting_stock_set));
+            $this->settingModel->setting_stock_set = collect($settingInput['setting_stock_set']+$filter)->sortKeys();
         } else if ($request->setting_offer) {
             $filter = Arr::except($this->settingModel->setting_offer, array_keys($request->setting_offer));
             $this->settingModel->setting_offer = collect($settingInput['setting_offer']+$filter)->sortKeys();
@@ -239,17 +239,17 @@ class SettingController extends Controller
             $this->settingModel->update();
 
             // To show stock in index
-            $this->StockCost();
+            $this->StockPrice();
             
             return view('menu.setting.settingPriceLevelScheduler', ['data' => $this->Data()])->with('success', 'Setting Updated Successfuly');
         }
         // else if($request->code) {
-        //     $setting_stock_group = $this->settingModel->setting_stock_group;
-        //     $update_setting_stock_group_data = $setting_stock_group[$request->index];
-        //     $update_setting_stock_group_data['code'] = $request->code;
-        //     $update_setting_stock_group_data['name'] = $request->name;
-        //     $setting_stock_group[$request->index] = $update_setting_stock_group_data;
-        //     $this->settingModel->setting_stock_group = $setting_stock_group;
+        //     $setting_stock_set = $this->settingModel->setting_stock_set;
+        //     $update_setting_stock_set_data = $setting_stock_set[$request->index];
+        //     $update_setting_stock_set_data['code'] = $request->code;
+        //     $update_setting_stock_set_data['name'] = $request->name;
+        //     $setting_stock_set[$request->index] = $update_setting_stock_set_data;
+        //     $this->settingModel->setting_stock_set = $setting_stock_set;
         // } 
         
         $this->settingModel->update();
@@ -266,9 +266,9 @@ class SettingController extends Controller
         }
         else if(is_array($currentRoute)) {
             $this->settingModel = Setting::find($currentRoute[0]);
-            $setting_stock_group = $this->settingModel->setting_stock_group;
-            unset($setting_stock_group[$currentRoute[1]]);
-            $this->settingModel->setting_stock_group = $setting_stock_group;
+            $setting_stock_set = $this->settingModel->setting_stock_set;
+            unset($setting_stock_set[$currentRoute[1]]);
+            $this->settingModel->setting_stock_set = $setting_stock_set;
             $this->settingModel->update();
             $request->session()->reflash();
          
@@ -315,30 +315,26 @@ class SettingController extends Controller
         return $setting_column;
     }
 
-<<<<<<< HEAD
-    
-=======
-    private function StockCost()
+    private function StockPrice()
     {
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
 
         $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->paginate(20);
 
-        $stockCosts = $this->stockList->first()->stock_cost;
+        $stockPrices = $this->stockList->first()->stock_price;
 
-        $stock_cost_count = 0;
-        $stock_cost_key = 0;
-        foreach($stockCosts as $key => $stockCost) {
-            if($stock_cost_count < count($stockCost)) {
-                $stock_cost_key = $key;
-                $stock_cost_count = count($stockCost);
+        $stock_price_count = 0;
+        $stock_price_key = 0;
+        foreach($stockPrices as $key => $stockPrice) {
+            if($stock_price_count < count($stockPrice)) {
+                $stock_price_key = $key;
+                $stock_price_count = count($stockPrice);
             }
         }
         
-        $this->settingModel['stock_costs'] = collect($stockCosts[$stock_cost_key])->keys();
+        $this->settingModel['stock_prices'] = collect($stockPrices[$stock_price_key])->keys();
         return true;
     }
->>>>>>> santosh
 
     private function Data()
     {

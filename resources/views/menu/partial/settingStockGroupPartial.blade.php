@@ -24,7 +24,7 @@
         
             <div>                 
           
-                @if ($data['settingModel']->setting_stock_group && $data['settingModel']->edit == false)
+                @if ($data['settingModel']->setting_stock_set && $data['settingModel']->edit == false)
                    
                 @endif
                 
@@ -43,19 +43,19 @@
                     <div uk-grid>
                         <div>
                             <label class="uk-form-label" for="form-stacked-text">Code</label>
-                            <input name="form[setting_stock_group][code]" class="uk-input" type="number" placeholder="Code" value="{{$data['settingModel']['edit'] ? $data['settingModel']['setting_stock_group']['code'] : ''}}">
+                            <input name="form[setting_stock_set][code]" class="uk-input" type="number" placeholder="Code" value="{{$data['settingModel']['edit'] ? $data['settingModel']['setting_stock_set']['code'] : ''}}">
                         </div>
                     
                         <div>
                             <label class="uk-form-label" for="form-stacked-text">Name</label>
-                            <input name="form[setting_stock_group][name]" class="uk-input" type="text" placeholder="Name" value="{{$data['settingModel']['edit'] ? $data['settingModel']['setting_stock_group']['name'] : ''}}">
+                            <input name="form[setting_stock_set][name]" class="uk-input" type="text" placeholder="Name" value="{{$data['settingModel']['edit'] ? $data['settingModel']['setting_stock_set']['name'] : ''}}">
                         </div>
                         
                         <div>
                             @if($data['settingModel']['edit'])
                                 <input name="index" class="uk-input" type="hidden" value="{{ request("index") }}">
                             @else 
-                                <input name="form[setting_stock_group][type]" class="uk-input" type="hidden" value="{{Session::get('type')}}">
+                                <input name="form[setting_stock_set][type]" class="uk-input" type="hidden" value="{{Session::get('type')}}">
                                 <input name="setting_id" class="uk-input" type="hidden" value="{{$data['settingModel']->setting_id}}">
                             @endif
                         </div>

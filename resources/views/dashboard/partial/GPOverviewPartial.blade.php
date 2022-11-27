@@ -1,7 +1,7 @@
 {{-- @php
 
 use App\Models\Stock;
-$totalCostPrice = 0;
+$totalPrice = 0;
 $price = 0;
 $orderList = $data['orderList']->groupBy('stock_id');
 
@@ -10,12 +10,12 @@ if (count($orderList) > 0) {
     foreach ($orderList as $receiptList) {
     
 
-        $totalCostPrice = Stock::OrderTotal($receiptList);
+        $totalPrice = Stock::OrderTotal($receiptList);
 
         $quantity = $receiptList->count();
-        $rrpTotalCostPrice = $quantity * json_decode($receiptList->first()->stock_gross_profit)->rrp;
+        $rrptotalPrice = $quantity * json_decode($receiptList->first()->stock_gross_profit)->rrp;
 
-        $totalGP = $rrpTotalCostPrice - $totalCostPrice;
+        $totalGP = $rrptotalPrice - $totalPrice;
 
         $GPpercentage = ($totalGP / $quantity) * 100;
 

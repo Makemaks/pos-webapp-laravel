@@ -76,10 +76,10 @@
                                                             </option>
                                                         @endforeach
 
-                                                        {{-- @foreach ($data['settingModel']->setting_stock_group  as $key_setting_stock_group  => $item_setting_stock_group)
+                                                        {{-- @foreach ($data['settingModel']->setting_stock_set  as $key_setting_stock_set  => $item_setting_stock_set)
                                                             @foreach (Setting::SettingStockGroup() as $key => $setting_group)
-                                                                @if($key == $item_setting_stock_group['type'])                             
-                                                                    <option {{$key_setting_stock_group == $setting_stock_tag['setting_stock_tag_group_id'] ? 'selected' : ''}} value="{{$key_setting_stock_group}}">
+                                                                @if($key == $item_setting_stock_set['type'])                             
+                                                                    <option {{$key_setting_stock_set == $setting_stock_tag['setting_stock_tag_group_id'] ? 'selected' : ''}} value="{{$key_setting_stock_set}}">
                                                                         {{Str::upper($setting_group)}}
                                                                     </option>
                                                                     @break
@@ -137,10 +137,10 @@
                                 {{$item_setting_stock_tag_group['name']}}
                             </option>
                         @endforeach
-                        {{-- @foreach ($data['settingModel']->setting_stock_group  as $key_setting_stock_group  => $item_setting_stock_group)
+                        {{-- @foreach ($data['settingModel']->setting_stock_set  as $key_setting_stock_set  => $item_setting_stock_set)
                             @foreach (Setting::SettingStockGroup() as $key => $setting_group)
-                                @if($key == $item_setting_stock_group['type'])                             
-                                    <option selected value="{{$key_setting_stock_group}}">
+                                @if($key == $item_setting_stock_set['type'])                             
+                                    <option selected value="{{$key_setting_stock_set}}">
                                         {{Str::upper($setting_group)}}
                                     </option>
                                     @break

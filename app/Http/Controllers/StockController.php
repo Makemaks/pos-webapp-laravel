@@ -119,9 +119,22 @@ class StockController extends Controller
         $this->stockModel = Stock::find($stock)->toArray();
  
        
-        $this->Operation($input);
+ 
+        foreach ((array)$request['stock_supplier'] as $keystock_supplier => $stock_supplier) {
+             foreach ($stock_supplier as $key => $value) {
+                 $stockModel['stock_supplier'][$keystock_supplier][$key]  = $value;
+             }
+        }
+ 
+        foreach ((array)$request['stock_price'] as $keystock_price  => $stock_price) {
+             foreach ($stock_price as $key => $value) {
+                 $stockModel['stock_price'][$keystock_price][$key]  = $value;
+             }
+         }
 
-        $this->stockModel = collect($this->stockModel);
+         foreach ((array)$request['stock_price_quantity'] as $keystock_price_quantity  => $stock_price_quantity) {
+            $stockModel['stock_price_quantity'][$keystock_price_quantity] =  $stock_price_quantity;
+        }
  
         $this->stockModel = $this->stockModel->except(['created_at']);
         Stock::where('stock_id', $stock)->update($this->stockModel->toArray());

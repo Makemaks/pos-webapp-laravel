@@ -24,23 +24,23 @@ class WarehouseFactory extends Factory
 
             
           
-            $warehouse_stock_cost_quantity[$i + 1] = [
-                "setting_stock_cost_group_id" => $this->faker->numberBetween($min = 1, $max = 5),
-                "warehouse_stock_cost_quantity" => $this->faker->numberBetween($min = 1, $max = 200),
+            $warehouse_stock_price_quantity[$i + 1] = [
+                "setting_stock_price_group_id" => $this->faker->numberBetween($min = 1, $max = 5),
+                "warehouse_stock_price_quantity" => $this->faker->numberBetween($min = 1, $max = 200),
             ];
         }
 
 
-        $warehouse_stock_cost = [];
+        $warehouse_stock_price = [];
         for ($j=0; $j < 5; $j++) { 
             for ($i=0; $i < 10; $i++) { 
                 
-                $warehouse_stock_cost[$j + 1][$i + 1] = [
-                    'cost' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+                $warehouse_stock_price[$j + 1][$i + 1] = [
+                    'name' => $this->faker->word,
                     "description" =>  $this->faker->sentence,
-                    "cost" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+                    "price" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
                     "schedule_datetime" =>  "",
-                    "setting_stock_cost_group_id"  => $this->faker->numberBetween($min = 1, $max = 5)
+                    "setting_stock_price_group_id"  => $this->faker->numberBetween($min = 1, $max = 5)
                 ];
             }
         }
@@ -61,8 +61,8 @@ class WarehouseFactory extends Factory
                 "warehouse_note" => $this->faker->randomElement($array = array (NULL,$this->faker->sentence)),
                 "warehouse_type" => $this->faker->numberBetween($min = 0, $max = 3),
                 "warehouse_company_id" => $this->faker->numberBetween($min = 1, $max = 10),
-                "warehouse_stock_cost" => $warehouse_stock_cost,
-                "warehouse_stock_cost_quantity" => $warehouse_stock_cost_quantity
+                "warehouse_stock_price" => $warehouse_stock_price,
+                "warehouse_stock_price_quantity" => $warehouse_stock_price_quantity
         ];
     }
 }

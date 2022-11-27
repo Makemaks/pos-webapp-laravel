@@ -36,7 +36,7 @@
 
     @include('partial.notificationPartial')
     
-    <div class="uk-box-shadow-small">
+    <div>
         @include('partial.navigationPartial')
     </div>
     
@@ -56,7 +56,6 @@
 
         
             <div class="uk-width-expand@m uk-padding-small">
-                
                 <div class="">
                     @yield('content')
                 </div>

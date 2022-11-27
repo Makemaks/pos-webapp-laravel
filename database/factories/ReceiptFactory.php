@@ -39,7 +39,7 @@ class ReceiptFactory extends Factory
             'receipt_user_id' => $this->faker->numberBetween($min = 1, $max = 2),
             
             'receipt_order_id' => $this->faker->numberBetween($min = 1, $max = 10),
-            'receipt_stock_cost' =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 10, $max = 20),
+            'receipt_stock_price' =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 10, $max = 20),
             'receipt_discount' => $receipt_discount,
             'receipt_setting_pos_id' => $this->faker->numberBetween($min = 1, $max = 5)
         ];

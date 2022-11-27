@@ -47,7 +47,7 @@
                                                             <select class="uk-select" name="stock_web[{{$keyStockweb}}][{{$key}}]">
                                                                 <option selected disabled>SELECT ...</option>
                                                             
-                                                                @foreach ($data['settingModel']->setting_stock_group as $keyPLU => $setting_stock_plu)
+                                                                @foreach ($data['settingModel']->setting_stock_set as $keyPLU => $setting_stock_plu)
                                                                         @if ($setting_stock_plu['type'] == '2')
                                                                             <option value="{{$stock}}" @if($stock == $keyPLU) selected @endif>{{$setting_stock_plu['name']}}</option>
                                                                         @endif
@@ -104,7 +104,7 @@
                                                 <select class="uk-select" name="form[stock_web][{{$key}}]">
                                                     <option selected="selected" disabled>SELECT ...</option>
                                                    
-                                                    @foreach ($data['settingModel']->setting_stock_group as $key => $setting_stock_plu)
+                                                    @foreach ($data['settingModel']->setting_stock_set as $key => $setting_stock_plu)
                                                                         
                                                             <option value="{{$key}}">{{$setting_stock_plu['name']}}</option>
                                                     @endforeach

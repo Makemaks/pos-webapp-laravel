@@ -1,6 +1,6 @@
 
 @php
-    $data['settingModel']->setting_stock_group = collect($data['settingModel']->setting_stock_group)->where('type', '3');
+    $data['settingModel']->setting_stock_set = collect($data['settingModel']->setting_stock_set)->where('type', '3');
     $data['settingModel']->edit = false;
     Session::flash('type', '3');
     Session::flash('view', 'plu');

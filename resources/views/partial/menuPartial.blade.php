@@ -67,6 +67,7 @@
             ],
             "ticket" => [],
             "reservation" => [],
+            "expense" => [],	
             
 
         ];

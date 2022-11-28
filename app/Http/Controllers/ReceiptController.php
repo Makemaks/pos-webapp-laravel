@@ -213,18 +213,6 @@ class ReceiptController extends Controller
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
 
 
-       /* if ($this->userModel->person_stripe_customer_id == NULL) {
-            $stripe_customer = $this->stripe->customers->create([
-              'email' => Auth::user()->email
-            ]);
-
-            Person::where('person_id', $this->userModel->person_id)->update(['stripe_customer_id' => $stripe_customer->id]);
-            $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)
-            ->first();
-
-        } */
-
-
     }
 
     private function ClearSession(){

@@ -63,7 +63,7 @@
                             $setupList = Receipt::Calculate( $data, $stockItem, $loop, $setupList );
                             Session::pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
                             Session::put('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
-                            $stockPriceQuantity = Stock::StockPriceQuantity($stockItem);
+                               $setupList['receipt']['stock_price_quantity'] = Stock::StockPriceQuantity($stockItem['stock_price'], $stockItem['stock_quantity']);
                         @endphp
                         
                             <tr id="cartItemID-{{$loop->index}}">
@@ -84,12 +84,13 @@
         
                                     <td>
                                        @if ($stockItem['stock_discount'])
-                                            {{ Stock::Discount($stockPriceQuantity, $stock_discount['type'], $stock_discount['value']) }}
+                                            {{-- price override --}}
+                                            {{ Stock::Discount($setupList['receipt']['stock_price_quantity'], $stock_discount['type'], $stock_discount['value']) }}
                                        @endif
                                     </td>
         
                                     <td>
-                                        {{ MathHelper::FloatRoundUp( $stockPriceQuantity, 2) }}
+                                        {{ MathHelper::FloatRoundUp($setupList['receipt']['stock_price_quantity'], 2) }}
                                     </td>
                                 @else
                                     <td>

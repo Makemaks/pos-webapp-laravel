@@ -99,7 +99,7 @@ class Receipt extends Model
                 "order_finalise_key" => [],
                 "order_offer" => [],
                 "receipt" => [
-                    "price" => 0,
+                    "stock_price_quantity" => 0,
                     "stock_vat_rate" => 0,
                     "deliveryTotal" => 0,
                     "voucherAmountTotal" => 0,
@@ -197,28 +197,27 @@ class Receipt extends Model
             
             //if there is an offer on stock
             if ($settingCurrentOffer) {
-                $setupList['receipt']['settingCurrentOfferType'] = Setting::SettingCurrentOfferType( $settingCurrentOffer, $stockPriceQuantity);
+                $setupList['receipt']['settingCurrentOfferType'] = Setting::SettingCurrentOfferType( $settingCurrentOffer, $setupList['receipt']['stock_price_quantity']);
                 $stockPriceOffer = Stock::StockPriceMin( $setupList['receipt']['settingCurrentOfferType'] );
                 
                 $stockPrice = $stockPriceOffer['total']['price'];
-                
             }
             
         }
 
-        $stockPriceQuantity = Stock::StockPriceQuantity($stockPrice, $stockItem['stock_quantity']);
+        $setupList['receipt']['stock_price_quantity'] = Stock::StockPriceQuantity($stockPrice, $stockItem['stock_quantity']);
       
         
 
         //stock vat
         if ($stockItem['stock_vat_id']) {
             $setupList['receipt']['stock_vat_rate'] = $data['settingModel']->setting_vat[$stockItem['stock_vat_id']]['rate'];
-            $stockPriceQuantity = MathHelper::VAT($setupList['receipt']['stock_vat_rate'], $stockPriceQuantity);
+            $setupList['receipt']['stock_price_quantity'] = MathHelper::VAT($setupList['receipt']['stock_vat_rate'], $setupList['receipt']['stock_price_quantity']);
             
         }
 
         //add price to subtotal
-        $setupList['receipt']['subTotal'] = $setupList['receipt']['subTotal'] + $stockPriceQuantity;
+        $setupList['receipt']['subTotal'] = $setupList['receipt']['subTotal'] + $setupList['receipt']['stock_price_quantity'];
 
 
         if ($loop->last) {

@@ -21,6 +21,11 @@
                 <button class="uk-button uk-button-default uk-border-rounded" type="submit" form="stockUpdate" name="deleteButton" value="deleteButton">DELETE</button>
             </div>
         </li>
+        <li>
+            <div>
+                <a class="uk-button uk-button-default uk-border-rounded" href={{ route('address.index') }}>Add Address</a>
+            </div>
+        </li>
     </ul>
     <ul class="uk-subnav uk-subnav-pill" uk-switcher>
         <li><a href="#" uk-icon="list"></a></li>

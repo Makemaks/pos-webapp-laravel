@@ -1,11 +1,8 @@
 @extends('layout.master')
 
-@php
-  
-@endphp
-@section('content')    
-   <div>@include('init.partial.menuPartial')</div>
-   <div class="uk-grid-small uk-child-width-1-2" uk-grid>
-       
-   </div>
+@inject ('personModel', 'App\Models\Person')
+@inject('dateTimeHelper', 'App\Helpers\DateTimeHelper')
+
+@section('content')
+   <div> @include('stock.partial.addressPartial')</div>
 @endsection

@@ -1,156 +1,108 @@
 @php
-    use App\Models\Address;
-    $data['addressModel'] = new Address();
+use App\Models\Address;
+use App\Models\User;
+use App\Models\Store;
+$action =  Str::after(Request::route()->getName(), '.');
 @endphp
 
-<div class="uk-container uk-container-xsmall">
-    <input type="hidden" name="addresstable_id" value="{{old('addresstable_id' , $data['addressModel']->addresstable_id)}}">
-    <input type="hidden" name="addresstable_type" value="{{old('addresstable_type' , $data['addressModel']->addresstable_type)}}">
+<div class="">
+<h3>ADDRESS</h3>
 
+    @php
+        $storeModel = Store::Account('store_id',$data['userModel']->store_id)->first();
+        $storeList = Store::List('store_id', $data['storeModel']->store_id)
+        ->get();
+      
+    @endphp
 
-   
-    <div class="w3-section">
-        <ons-row>
-            <ons-col width="150px">
-                <label for="line-1">Address<label class="w3-text-theme">*</label></label>
-            </ons-col>
-            
-            <ons-col>
-                <ons-input type="text" name="address_line" id="address_line" value="{{ old('address_line' , $data['userModel']->address_line) }}"></ons-input>
-                @error('address_line')
-                    <div class="w3-text-theme">{{ $message }}</div>
-                @enderror
-           </ons-col>
-          
-            <div class="w3-border-bottom w3-width-100"></div>
-           
-        </ons-row>
-    </div>
+    @isset($data['addressList'])
+        <input type="hidden" name="address_default" value="0"/>
+        @foreach ($data['addressList']->toArray() as $keyStockTransfer => $addressList)
+            @foreach ($addressList as $keystock => $stock)
+                    @if ($keystock == 'address_line')
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper($keystock, '_' ) }}<label class="red">*</label></label>
+                            <input class="uk-input" type="text" name="{{$keystock}}[1]" value="{{$stock['1']}}">
+                        </div>
+                    @elseif ($keystock == 'address_town' || $keystock == 'address_county' || $keystock == 'address_country')
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}<label class="red">*</label></label>
+                            <input class="uk-input" type="text" name="{{$keystock}}" value="{{$stock}}">
+                        </div>
+                    @elseif($keystock == 'address_postcode')
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}<label class="red">*</label></label>
+                            <input class="uk-input" type="number" name="{{$keystock}}" value="{{$stock}}">
+                        </div>
+                    @elseif($keystock == 'address_geolocation')
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}_LATITUDE</label>
+                            <input type="number" step="any" name="{{$keystock}}[latitude]" class="uk-input" placeholder="Latitude" value="{{ $stock['latitude'] }}">
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}_LONGITUDE</label>
+                            <input type="number" step="any" name="{{$keystock}}[longitude]" class="uk-input" placeholder="Longitude" value="{{ $stock['longitude'] }}" >
+                        </div>
+                    @elseif($keystock == 'addresstable_id')
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper($keystock, '_') }}<label class="red">*</label></label>
+                            <select class="uk-select" id="form-stacked-select" name="{{$keystock}}">
+                                <option value="" selected disabled>SELECT ...</option>
+                                
+                                    @foreach ($storeList as $store)
+                                        <option value="{{$store->store_id}}" class="uk-input" @if($store->store_id == $stock) selected @endif>
+                                            {{$store->store_name}}
+                                        </option>
+                                    @endforeach
+                                
+                            </select>
+                        </div>
+                    @elseif($keystock == 'address_delivery_type')
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}<label class="red">*</label></label>
+                            <select class="uk-select" id="form-stacked-select" name="{{$keystock}}">
+                                <option value="" selected disabled>SELECT ...</option>
+                                @foreach (Address::AddressType() as $key => $type)
+                                    <option value="{{$key}}" class="uk-input" @if($key == $stock) selected @endif>
+                                        {{Str::upper($type)}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @elseif($keystock == 'addresstable_type')
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper($keystock, '_') }}<label class="red">*</label></label>
+                            <select class="uk-select" id="form-stacked-select" name="{{$keystock}}">
+                                <option value="" selected disabled>SELECT ...</option>
+                                
+                                @foreach ($storeList as $store)
+                                    <option value="{{$store->store_name}}" class="uk-input" @if($store->store_name == $stock) selected @endif>
+                                        {{$store->store_name}}
+                                    </option>
+                                @endforeach
+                                
+                            </select>
+                        </div>
+                    @elseif ($keystock == 'address_phone')
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper($keystock, '_' ) }}</label>
+                            <input class="uk-input" type="text" name="{{$keystock}}[1]" value="{{$stock['1']}}">
+                        </div>
+                    @elseif ($keystock == 'address_email')
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper($keystock, '_' ) }}</label>
+                            <input class="uk-input" type="text" name="{{$keystock}}[1]" value="{{$stock['1']}}">
+                        </div>
+                    @elseif ($keystock == 'address_website')
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-select">{{ Str::upper($keystock, '_' ) }}</label>
+                            <input class="uk-input" type="text" name="{{$keystock}}[1]" value="{{$stock['1']}}">
+                        </div>
+                    @endif
+            @endforeach
+                
+        @break
 
-    <div class="w3-section">
-        <ons-row>
-            <ons-col width="150px">
-                <label for="town">Town / City <label class="w3-text-theme">*</label></label>
-            </ons-col>
-            
-            <ons-col>
-                <ons-input type="text" name="address_town" id="address_town" value="{{ old('address_town' , $data['userModel']->address_town) }}"></ons-input>
-                @error('address_town')
-                    <div class="w3-text-theme">{{ $message }}</div>
-                @enderror
-           </ons-col>
-          
-            <div class="w3-border-bottom w3-width-100"></div>
-           
-        </ons-row>
-    </div>
-
-    <div class="w3-section">
-        <ons-row>
-            <ons-col width="150px">
-                <label for="county">County</label>
-            </ons-col>
-            
-            <ons-col>
-                <ons-input type="text" name="address_county" id="address_county" value="{{ old('address_county' , $data['userModel']->address_county) }}"></ons-input>
-                @error('address_county')
-                    <div class="w3-text-theme">{{ $message }}</div>
-                @enderror
-           </ons-col>
-          
-            <div class="w3-border-bottom w3-width-100"></div>
-           
-        </ons-row>
-    </div>
-
-    <div class="w3-section">
-        <ons-row>
-            <ons-col width="150px">
-                <label for="postcode">Postcode<label class="w3-text-theme">*</label></label>
-            </ons-col>
-            
-            <ons-col>
-                <ons-input type="text" name="address_postcode" id="postcode" value="{{ old('address_postcode' , $data['userModel']->address_postcode) }}" placeholder="NZ1 5PJ"></ons-input>
-                @error('address_postcode')
-                    <div class="w3-text-theme">{{ $message }}</div>
-                @enderror
-           </ons-col>
-          
-            <div class="w3-border-bottom w3-width-100"></div>
-           
-        </ons-row>
-    </div>
-
-    <div class="w3-section">
-        <ons-row>
-            <ons-col width="150px">
-                <label for="country">Country<label class="w3-text-theme">*</label></label>
-            </ons-col>
-            
-            <ons-col>
-                <ons-input type="text" name="address_country" id="country" value="{{ old('address_country' , $data['userModel']->address_country) }}"></ons-input>
-                @error('address_country')
-                    <div class="w3-text-theme">{{ $message }}</div>
-                @enderror 
-           </ons-col>
-          
-            <div class="w3-border-bottom w3-width-100"></div>
-           
-        </ons-row>
-    </div>
-    
-    <div class="w3-section">
-        <ons-row>
-            <ons-col width="150px">
-                <label for="phone">Telephone Number</label>
-            </ons-col>
-            
-            <ons-col>
-                <ons-input type="text" name="address_phone" id="address_phone" value="{{ old('address_phone' , $data['userModel']->address_phone) }}"></ons-input>
-                @error('address_phone')
-                    <div class="w3-text-theme">{{ $message }}</div>
-                @enderror
-           </ons-col>
-          
-            <div class="w3-border-bottom w3-width-100"></div>
-           
-        </ons-row>
-    </div>
-   
-    {{-- <div class="w3-section">
-        <ons-row>
-            <ons-col width="150px">
-                <label for="email">Email Address</label>
-            </ons-col>
-           
-            <ons-col>
-                <ons-input type="text" name="address_email" id="address_email" value="{{ old('address_email' , $data['userModel']->address_email) }}"></ons-input>
-                @error('address_email')
-                    <div class="w3-text-theme">{{ $message }}</div>
-                @enderror
-           </ons-col>
-          
-            <div class="w3-border-bottom w3-width-100"></div>
-           
-        </ons-row>
-    </div>
-
-    <div class="w3-section">
-        <ons-row>
-            <ons-col width="150px">
-                <label for="phone">Website</label>
-            </ons-col>
-
-            <ons-col>
-                <ons-input type="text" name="address_website" id="address_website" value="{{ old('address_website' , $data['userModel']->address_website) }}"></ons-input>
-                @error('address_website')
-                    <div class="w3-text-theme">{{ $message }}</div>
-                @enderror
-           </ons-col>
-          
-            <div class="w3-border-bottom w3-width-100"></div>
-           
-        </ons-row>
-    </div>
- --}}
+        @endforeach
+   @endisset    
 </div>

@@ -289,7 +289,7 @@ class Store extends Model
             $ended_at = $request->ended_at;
         }
 
-        $userModel = User::Account('account_id', $userModel->user_account_id)->first();
+        $userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
 
         $orderList =  Store::Order('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])
         ->limit(10)

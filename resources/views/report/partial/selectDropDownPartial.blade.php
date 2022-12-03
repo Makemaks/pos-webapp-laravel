@@ -184,16 +184,25 @@
 
 @endphp    
 
-
+    <input type="hidden" name="format" value="pdf">  
     <label class="uk-form-label" for="form-stacked-text">REPORT </label> <br>
-    <select class="uk-select uk-width-expand" name="title">
+    <select class="uk-select uk-width-expand" name="fileName">
         <option selected disabled>Please Select Report</option>
         @foreach ($reportList as $reportListKey => $reportListItem)
             <optgroup label="{{ Str::upper( Str::of($reportListKey)->replace('_', ' ') ) }}">
                 @foreach ($reportListItem as $report)
-                    <option value="report[{{$reportListKey}}][{{$report}}][]" data-select2-id="16">
-                        {{ Str::ucfirst( Str::of($report)->replace('_', ' ') ) }}    
-                    </option>
+                    @if($reportListKey == 'plu')
+                        @php 
+                        $fileName = str_replace("_","-",$report)
+                        @endphp
+                        <option value="{{$fileName}}" data-select2-id="16">
+                            {{ Str::ucfirst( Str::of($report)->replace('_', ' ') ) }}    
+                        </option>
+                    @else
+                        <option value="report[{{$reportListKey}}][{{$report}}][]" data-select2-id="16">
+                            {{ Str::ucfirst( Str::of($report)->replace('_', ' ') ) }}    
+                        </option>  
+                    @endif
                 @endforeach
             </optgroup>
         @endforeach

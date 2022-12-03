@@ -1,6 +1,6 @@
 @php
 $table = 'pluSalesPartial';
-$pluData = App\Models\Stock::GroupCategoryBrandPlu($data, 2, 'plu_id');
+$pluData = App\Models\Stock::GroupCategoryBrandPlu($data, 3, 'plu_id');
 @endphp
 <div>
     <h3 class="uk-card-title">PLU SALES TOTAL</h3>

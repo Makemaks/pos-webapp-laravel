@@ -5,7 +5,9 @@
 
 @php
     $route = Str::before(Request::route()->getName(), '.');
+   
 @endphp
+
 
 @section('content')
     <div class="">

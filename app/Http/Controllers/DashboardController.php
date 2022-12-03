@@ -81,6 +81,8 @@ class DashboardController extends Controller
 
         $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->get();
 
+        
+
         // If its export PDF / CSV
         if ($request->fileName) {
 

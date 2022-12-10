@@ -67,6 +67,8 @@
             ],
             "ticket" => [],
             "reservation" => [],
+            "expense" => [],
+            "plu-report" => [],
             
 
         ];

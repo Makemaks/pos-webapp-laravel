@@ -101,7 +101,6 @@ class ReservationController extends Controller
      */
     public function destroy(Request $request,$id)
     {   
-    dd($request->all());
        Reservation::destroy($id);
        return redirect()->route('reservation.index');
     }

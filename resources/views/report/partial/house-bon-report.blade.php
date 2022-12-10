@@ -1,5 +1,4 @@
 @php
-$table = 'pluSalesPartial';
 $pluData = App\Models\Stock::GroupCategoryBrandPlu($data, 3, 'plu_id');
 @endphp
 <div>
@@ -8,7 +7,7 @@ $pluData = App\Models\Stock::GroupCategoryBrandPlu($data, 3, 'plu_id');
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
             <thead>
                 <tr>
-                    <th>Department</th>
+                    <th>PLU</th>
                     <th>Quantity</th>
                     <th>Total</th>
                 </tr>

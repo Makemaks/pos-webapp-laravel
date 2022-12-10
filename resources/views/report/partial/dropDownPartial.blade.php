@@ -30,7 +30,7 @@
 
    
     
-    <form action="{{ route($route . '.index') }}" method="GET">
-        @csrf
+    {{-- <form action="{{ route($route . '.index') }}" method="GET"> --}}
+        {{-- @csrf --}}
         @include('report.partial.selectDropDownPartial')
-    </form>
+    {{-- </form> --}}

@@ -11,7 +11,8 @@ class Expense extends Model
 
     protected $table = 'expense';
     protected $primaryKey = 'expense_id';
-
+    protected $guarded = [ ];
+    
     public static function List($column,  $filter){
         return Expense::
         leftJoin('user', 'user.user_id', '=', 'expense.expense_user_id')

@@ -106,7 +106,7 @@ class Setting extends Model
 
        
         'setting_expense_type' => '{
-            1": {
+            "1": {
                 "budget": "",
                 "type": ""
             }

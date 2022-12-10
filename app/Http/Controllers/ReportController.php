@@ -23,12 +23,13 @@ class ReportController extends Controller
     {
 
         $this->Init($request);
-
+        // dd($request->all());
         // If its export PDF / CSV
+        
         if ($request->fileName) {
             // If PDF
-            $this->title = $request->session()->get('title')['title'];
-            if ($request->format === 'pdf') {
+            $this->title = $request->fileName;
+            if ($request->format == 'pdf') {
                 $this->pdfView = view('report.partial.' . $request->fileName, ['data' => $this->Data()])->render();
                 $render = \view('report.create', ['data' => $this->Data()])->render();
                 $pdf = App::make('dompdf.wrapper');
@@ -204,6 +205,10 @@ class ReportController extends Controller
             'accountCompanyModel' => $this->accountCompanyModel ?? null,
             'settingModel' => $this->settingModel ?? null,
             'clerkList' => $this->clerkList ?? null,
+
+            'eat_in_eat_out' => $this->eat_in_eat_out ?? null,
+            'accountList' => $this->accountList ?? null,
+            'stockList' => $this->stockList ?? null
         ];
     }
 }

@@ -50,6 +50,8 @@ use App\Http\Controllers\API\CartAPIController;
 use App\Http\Controllers\API\SchemeAPIController;
 use App\Http\Controllers\API\OrderAPIController;
 
+Use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\PluController;
 
 Route::middleware(['datetimeMiddleware'])->group(function () {
   
@@ -92,6 +94,10 @@ Route::resource('report', ReportController::class);
 Route::resource('ticket', TicketController::class);
 Route::resource('warehouse', WarehouseController::class);
 Route::resource('receipt', ReceiptController::class);
+
+Route::resource('expense', ExpenseController::class);
+
+Route::resource('plu-report', PluController::class);
 
 
 

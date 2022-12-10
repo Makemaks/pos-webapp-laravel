@@ -64,8 +64,7 @@ class WarehouseController extends Controller
                 ->get();
 
             $this->warehouseList = Warehouse::Store()
-                ->whereIn('warehouse_user_id', $accountList->pluck('user_id'))
-                ->paginate(20);
+                ->whereIn('warehouse_user_id', $accountList->pluck('user_id'));
 
             $this->Init();
         }

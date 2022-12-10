@@ -42,7 +42,7 @@ class DashboardController extends Controller
     public function Index(Request $request)
     {
 
-        if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && User::UserType()[Auth::User()->user_type] == 'Admin') {
+        if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin') {
             $this->Admin($request);
             return view('dashboard.admin.index', ['data' => $this->Data()]);
         } else {

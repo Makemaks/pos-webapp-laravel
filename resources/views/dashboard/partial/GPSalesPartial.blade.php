@@ -1,7 +1,7 @@
 @php
 
 use App\Models\Stock;
-$totalCostPrice = 0;
+$totalPrice = 0;
 $price = 0;
 $orderList = $data['orderList']->groupBy('stock_id');
 
@@ -10,21 +10,25 @@ if (count($orderList) > 0) {
     foreach ($orderList as $receiptList) {
     
 
-        $totalCostPrice = Stock::OrderTotal($receiptList);
+        $totalPrice = Stock::OrderTotal($receiptList);
 
         $quantity = $receiptList->count();
-        $rrpTotalCostPrice = $quantity * json_decode($receiptList->first()->stock_gross_profit)->rrp;
 
-        $totalGP = $rrpTotalCostPrice - $totalCostPrice;
+        if (json_decode($receiptList->first()->stock_gross_profit)) {
+            $rrptotalPrice = $quantity * json_decode($receiptList->first()->stock_gross_profit)->rrp;
 
-        $GPpercentage = ($totalGP / $quantity) * 100;
+            $totalGP = $rrptotalPrice - $totalPrice;
 
-        $arrayGPList[] = [
-            'Number' => $receiptList->first()->stock_id,
-            'Descriptor' => json_decode($receiptList->first()->stock_merchandise)->stock_name,
-            'Profit' => App\Helpers\MathHelper::FloatRoundUp($totalGP, 2),
-            'GP' => App\Helpers\MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
-        ];
+            $GPpercentage = ($totalGP / $quantity) * 100;
+
+            $arrayGPList[] = [
+                'Number' => $receiptList->first()->stock_id,
+                'Descriptor' => json_decode($receiptList->first()->stock_merchandise)->stock_name,
+                'Profit' => App\Helpers\MathHelper::FloatRoundUp($totalGP, 2),
+                'GP' => App\Helpers\MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
+            ];
+        }
+       
     }
 
     $sortarraytopGPList = collect($arrayGPList)

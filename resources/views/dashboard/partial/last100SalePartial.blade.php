@@ -6,16 +6,16 @@ $orderList = $orderList->groupBy('order_id');
 
 if (count($orderList) > 0) {
     foreach ($orderList as $receiptList) {
-        $totalCostPrice = 0;
+        $totalPrice = 0;
         $price = 0;
         $current_created_at = App\Models\Order::find($receiptList->first()->order_id)->created_at;
 
-        $totalCostPrice = Stock::OrderTotal($receiptList);
+        $totalPrice = Stock::OrderTotal($receiptList);
 
         $array100Sale[] = [
             'time' => $current_created_at,
             'order_id' => $receiptList->first()->order_id,
-            'total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2),
+            'total' => App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2),
         ];
     }
 } else {

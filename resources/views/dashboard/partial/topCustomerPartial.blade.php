@@ -1,7 +1,7 @@
 @php
 use App\Models\Stock;
 $table = 'topCustomerPartial';
-$totalCostPrice = 0;
+$totalPrice = 0;
 $price = 0;
 
 $customerTop = $data['customerTop'];
@@ -13,12 +13,12 @@ if (count($customerTop) > 0) {
         $personName = json_decode($person);
 
 
-        $totalCostPrice = Stock::OrderTotal($receiptList);
+        $totalPrice = Stock::OrderTotal($receiptList);
 
         $arraycustomerTop[] = [
             'Account Num' => $receiptList->first()->company_store_id,
             'Name' => $receiptList->first()->company_name,
-            'total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2),
+            'total' => App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2),
         ];
     }
 } else {

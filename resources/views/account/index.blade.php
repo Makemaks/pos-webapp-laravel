@@ -6,8 +6,7 @@
 @section('content')  
 
     <div>
-        {{-- @include('warehouse.partial.indexPartial') --}}
-        @include('stock.partial.transferPartial')
+        @include('stock.partial.accountPartial')
     </div>
 
     {{-- @include('partial.paginationPartial', ['paginator' => $data['warehouseList']]) --}}

@@ -4,5 +4,5 @@
 @inject('dateTimeHelper', 'App\Helpers\DateTimeHelper')
 
 @section('content')
-   <div> @include('stock.partial.supplierPartial')</div>
+   <div> @include('stock.partial.addressPartial')</div>
 @endsection

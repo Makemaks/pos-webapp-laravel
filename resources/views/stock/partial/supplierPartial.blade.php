@@ -1,5 +1,6 @@
 @php
     use App\Models\Company;
+<<<<<<< HEAD
 
     $iconArray = [
         "reply",
@@ -8,8 +9,34 @@
 
 
   
+=======
+    use App\Models\Stock;
+    use Carbon\Carbon;
+   
+    $companyList = new Stock();
+ 
+>>>>>>> 9b8207d1b5c7eed09b9c567e53f1cb1960b27d4b
 @endphp
+@if (count($data['companyList']) )
+    <ul class="uk-subnav">
+        <li>
+            <template></template>
+            <button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="stockTransaferUpdate" value="stockTransaferUpdate">
+            Save
+            </button>
+        </li>
+        <li>
+            <div>
+                <button class="uk-button uk-button-default uk-border-rounded" type="submit" form="stockTransaferUpdate" name="deleteButton" value="deleteButton">DELETE</button>
+            </div>
+        </li>
+    </ul>
+    <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+        <li><a href="#" uk-icon="list"></a></li>
+        <li><a href="#" uk-icon="plus"></a></li>
+    </ul>
 
+<<<<<<< HEAD
 <h3>SUPPLIERS</h3>
                   
 
@@ -77,9 +104,35 @@
             </tbody>
         </table>
     </li>
+=======
+    <ul class="uk-switcher uk-margin">
+        <li>
+            <form id="stockTransaferUpdate" action="{{route('company.update', $data['companyList']->toarray()[0]['company_id'])}}" method="POST">
+                @csrf
+                @method('PATCH')
+                <div>
+                <h3>TRANSFERS</h3>
+                   @include('company.partial.indexPartial')
+                </div>
+            </form>
+        </li>
+>>>>>>> 9b8207d1b5c7eed09b9c567e53f1cb1960b27d4b
 
-    <li>
+        <li>
+            <form action="{{ route('company.store') }}" method="POST">
+                @csrf
+                @method('POST')
+                @include('company.partial.createPartial')
+                <div class="uk-child-width-expand@m" uk-grid>
+                    <div>
+                        <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push" type="submit"></button>
+                    </div>     
+                </div>
+            </form>
+        </li>
+    </ul>
 
+<<<<<<< HEAD
         <table class="uk-table uk-table-responsive uk-table-divider">
             <thead>
                 <tr>
@@ -174,3 +227,6 @@
         </form> --}}
     </li>
 </ul>
+=======
+@endif
+>>>>>>> 9b8207d1b5c7eed09b9c567e53f1cb1960b27d4b

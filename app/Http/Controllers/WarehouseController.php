@@ -62,10 +62,10 @@ class WarehouseController extends Controller
                 ->get();
 
             $this->warehouseList = Warehouse::Store()
-                ->whereIn('warehouse_user_id', $accountList->pluck('user_id'))
-                ->paginate(20);
+            ->whereIn('warehouse_user_id', $accountList->pluck('user_id'))
+            ->get();
 
-            $this->Init();
+            
         }
 
         return view('warehouse.index', ['data' => $this->Data()]);
@@ -114,14 +114,14 @@ class WarehouseController extends Controller
             return redirect()->back();
         }
         Warehouse::insert($request->except('_token', '_method'));
-        return view('warehouse.index', ['data' => $this->Data()]);
+        return redirect()->back()->with('success', 'Transfer added Successfuly');
     }
 
     public function Edit($warehouse)
     {
         $this->warehouseList = Warehouse::where('warehouse_id', $warehouse)->get();
         $this->stockModel = Stock::find($this->warehouseList->first()->warehouse_stock_id);
-
+        $this->stockModel['edit'] = true;
         $this->Init();
 
         return view('warehouse.edit', ['data' => $this->Data()]);

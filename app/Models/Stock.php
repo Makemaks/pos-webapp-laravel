@@ -301,7 +301,7 @@ class Stock extends Model
    
     public static function StockPriceDefault($stock_price){
     
-        $price = $stock_price[1]['cost'];
+        $price = $stock_price[1]['price'];
 
        //find discount-show on till button and checkout
        //mix and match-check out only

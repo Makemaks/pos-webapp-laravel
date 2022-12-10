@@ -4,6 +4,25 @@ $.ajaxSetup({
     }
 });
 
+function stockTranferList() {
+    var getStockId = [];
+    $.each($("input:checkbox[name='stock_transfer_chk']:checked"), function () {
+        getStockId.push($(this).val());
+    });
+    var finalList = getStockId.join(',');
+    $.ajax({        
+        url:"warehouse/delete",
+        method: 'DELETE',
+        data: {
+            id: finalList
+        },      
+        success:function(data){
+          if(data.success){
+            window.location.reload()
+          }
+        }
+    });
+}
 //quantity plus and minus
 function Quantity(buttonType, cartValue){
     var quantityID = document.getElementById('quantityID-'+cartValue);

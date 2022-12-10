@@ -81,6 +81,32 @@ class SettingController extends Controller
         } else if(isset($request->form['setting_price_level_scheduler'])) {
             $this->StoreSettingColumn($request['setting_id'],'setting_price_level_scheduler',$request->form['setting_price_level_scheduler']);
             return back()->with('success', 'Added Successfuly');
+        }elseif($request->session()->get('view') == 'case-size'){
+            $this->settingModel = Setting::find($request['setting_id']);
+            $settingInput = $request->except('_token', '_method', 'setting_id', 'created_at', 'updated_at');
+            $case_size = $this->settingModel->setting_stock_case_size;
+            if(!empty($case_size)){
+                $last_key = (int)collect($case_size)->keys()->last();
+                $case_size[$last_key + 1] = $settingInput;
+            } else {
+                $case_size[1] = $settingInput;
+            }
+            $this->settingModel->setting_stock_case_size = $case_size;
+            $this->settingModel->save();
+            return back()->with('success', 'Added Successfuly');
+        }elseif($request->session()->get('view') == 'recipe'){
+            $this->settingModel = Setting::find($request['setting_id']);
+            $settingInput = $request->except('_token', '_method', 'setting_id', 'created_at', 'updated_at');
+            $case_size = $this->settingModel->setting_stock_recipe;
+            if(!empty($case_size)){
+                $last_key = (int)collect($case_size)->keys()->last();
+                $case_size[$last_key + 1] = $settingInput;
+            } else {
+                $case_size[1] = $settingInput;
+            }
+            $this->settingModel->setting_stock_recipe = $case_size;
+            $this->settingModel->save();
+            return back()->with('success', 'Added Successfuly');
         }
         if ($request->hasFile('setting_logo_url')) {
             

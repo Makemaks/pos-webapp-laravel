@@ -115,7 +115,7 @@ class Address extends Model
         ];
     }
 
-     public function AddressType(){
+    public static function AddressType(){
          return [
             "Home",
             "Work"

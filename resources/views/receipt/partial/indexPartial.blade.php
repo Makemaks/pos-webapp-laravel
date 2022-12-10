@@ -63,7 +63,7 @@
                             $setupList = Receipt::Calculate( $data, $stockItem, $loop, $setupList );
                             Session::pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
                             Session::put('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
-                            $stockPriceQuantity = Stock::StockPriceQuantity($stockItem);
+                            $stockPriceQuantity = Stock::StockPriceQuantity($stockItem['stock_price'], $stockItem['stock_quantity']);
                         @endphp
                         
                             <tr id="cartItemID-{{$loop->index}}">

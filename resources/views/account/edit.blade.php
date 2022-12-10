@@ -7,6 +7,6 @@
    <form action="store.store" method="POST" enctype="multipart/form-data">
        @csrf
        @method('PATCH')
-        @include('store.partial.createPartial')
+        @include('account.partial.createPartial')
    </form>
 @endsection

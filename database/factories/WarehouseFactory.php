@@ -30,6 +30,7 @@ class WarehouseFactory extends Factory
             ];
         }
 
+<<<<<<< HEAD
 
         $warehouse_stock_price = [];
         for ($j=0; $j < 5; $j++) { 
@@ -46,11 +47,14 @@ class WarehouseFactory extends Factory
         }
 
 
+=======
+>>>>>>> 9b8207d1b5c7eed09b9c567e53f1cb1960b27d4b
        
 
         return [
 
-
+                "warehousetable_id" => $this->faker->numberBetween($min = 1, $max = 10),
+                "warehousetable_type" =>  $this->faker->randomElement($array = array ('Store')),
                 "warehouse_reason" => $stock_reason,
                 "warehouse_store_id" => $this->faker->numberBetween($min = 1, $max = 10),
                 "warehouse_stock_id"=> $this->faker->numberBetween($min = 1, $max = 100),
@@ -61,8 +65,13 @@ class WarehouseFactory extends Factory
                 "warehouse_note" => $this->faker->randomElement($array = array (NULL,$this->faker->sentence)),
                 "warehouse_type" => $this->faker->numberBetween($min = 0, $max = 3),
                 "warehouse_company_id" => $this->faker->numberBetween($min = 1, $max = 10),
+<<<<<<< HEAD
                 "warehouse_stock_price" => $warehouse_stock_price,
                 "warehouse_stock_price_quantity" => $warehouse_stock_price_quantity
+=======
+
+            
+>>>>>>> 9b8207d1b5c7eed09b9c567e53f1cb1960b27d4b
         ];
     }
 }

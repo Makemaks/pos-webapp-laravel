@@ -14,19 +14,20 @@ use App\Models\Account;
 use App\Models\Company;
 use Illuminate\Support\Arr; 
 
-class StoreController extends Controller
+class AccountController extends Controller
 {
 
     private $userModel;
     private $stockList;
-    private $storeList;
     private $stockModel;
+    private $storeList;
+    private $storeModel;
     private $categoryList;
     private $settingModel;
     private $fileModel;
     private $companyList;
     private $accountList;
-    private $storeModel;
+    private $accountModel;
 
     public function Index(Request $request){
 
@@ -37,73 +38,63 @@ class StoreController extends Controller
        
         $request->session()->reflash();
 
-        $this->storeList = Store::get();
-       return view('store.index', ['data' => $this->Data()]); 
+        $this->accountList = Account::get();
+       return view('account.index', ['data' => $this->Data()]); 
     }
 
     public function Create(){
        
-        $this->storeModel = New Store();
-        return view('store.create', ['data' => $this->Data()]);  
+        $this->accountModel = New Account();
+        return view('account.create', ['data' => $this->Data()]);  
     }
 
     public function Store(Request $request){
         $request->session()->reflash();
-        $imageName = '';
-        if($request->hasFile('store_img')){
-            $imageName = time().'.'.$request->store_img->getClientOriginalName();
-            $request->store_img->move(public_path('images/uploads/store_images'), $imageName);
-        }
-        $request['store_image'] = $imageName;
-        $request['store_datetime'] = json_encode($request['store_datetime']);
-        Store::insert($request->except('_token', '_method','store_img'));
-        return redirect()->back()->with('success', 'Store added Successfuly');
+        $request['account_blacklist'] = json_encode($request['account_blacklist']);
+        Account::insert($request->except('_token', '_method'));
+        return redirect()->back()->with('success', 'Account added Successfuly');
     }
 
-    public function Edit($store){
-        $this->storeList = Store::where('store_id', $store)->get();
-        $this->stockModel = Stock::find($this->storeList->first()->store_stock_id);
+    public function Edit($account){
+        $this->accountList = Account::where('account_id', $account)->get();
+        $this->stockModel = Stock::find($this->accountList->first()->store_stock_id);
         $this->stockModel['edit'] = true;
         $this->Init();
 
-        return view('store.edit', ['data' => $this->Data()]);  
+        return view('account.edit', ['data' => $this->Data()]);  
     }
 
-    public function Update(Request $request, $store){
+    public function Update(Request $request, $account){
       
         $request->session()->reflash();
         //used to remember the route
 
         if ($request->has('deleteButton')) {
-            $this->Destroy($request, $store);
+            $this->Destroy($request, $account);
         } else {
-            foreach ($request->store as $key => $value) {
-                $value['store_datetime'] = [
-                    'started_at' => $value['started_at'],
-                    'ended_at' => $value['ended_at']
-                ];
-                $value['store_datetime'] = json_encode($value['store_datetime']);
-                $input = Arr::except($value,['started_at','ended_at']);
-                
-                Store::where('store_id', $value['store_id'])->update($input);
+            foreach ($request->account as $key => $value) {
+                Account::where('account_id', $value['account_id'])->update($value);
             }
         }
         
     
-       return redirect()->back()->with('success', 'Store Updated Successfuly');
+       return redirect()->back()->with('success', 'Account Updated Successfuly');
     }
 
-    public function Destroy(Request $request,$store){
+    public function Destroy(Request $request,$account){
         $request->session()->reflash();
         if($request->has('deleteButton')){
-            foreach ($request->get('store_checkbox') as $key => $value) {
-                Store::destroy($value);
+            if($request->get('account_checkbox'))
+            {
+                foreach ($request->get('account_checkbox') as $key => $value) {
+                    Account::destroy($value);
+                }
             }
         }else{
-            Store::destroy($store);
+            Account::destroy($account);
         }
 
-        return redirect()->back()->with('success', 'Store Deleted Successfuly');
+        return redirect()->back()->with('success', 'Account Deleted Successfuly');
     }
 
     private function Init(){
@@ -112,6 +103,7 @@ class StoreController extends Controller
         $this->accountList = User::Account('store_id',  $this->userModel->store_id)
         ->where('person_type', 0)
         ->get();
+        $this->accountModel = Account::List('account_id', $this->userModel->store_id)->first();
         $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
         
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
@@ -124,7 +116,6 @@ class StoreController extends Controller
         
         $this->storeModel = Store::Account('store_id', $this->userModel->store_id)
         ->first();
-
         //$this->storeList->prepend($storeModel);
     }
   
@@ -143,6 +134,7 @@ class StoreController extends Controller
             'storeModel' => $this->storeModel,
             'companyList' => $this->companyList,
             'accountList' => $this->accountList,
+            'accountModel' => $this->accountModel,
         ];
        
     }

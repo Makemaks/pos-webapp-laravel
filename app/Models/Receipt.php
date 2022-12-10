@@ -321,6 +321,14 @@ class Receipt extends Model
     
     }
 
-
+    public static function ReceiptStatus(){
+        return [
+            'processed',
+            'cancelled',
+            'refunded'
+        ];
+           
+      
+    }
    
 }

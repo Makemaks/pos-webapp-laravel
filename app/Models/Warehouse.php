@@ -60,11 +60,13 @@ class Warehouse extends Model
        
         if ($store_id) {
             $stockList = Warehouse::where('warehouse_stock_id', $id )
+            ->leftJoin('store', 'store.store_id', '=', 'warehouse.warehouse_store_id')
             ->where('warehouse_quantity','>', 0)
             ->where('warehouse_store_id', $store_id)
             ->get();
         } else {
             $stockList = Warehouse::where('warehouse_stock_id', $id )
+            ->leftJoin('store', 'store.store_id', '=', 'warehouse.warehouse_store_id')
             ->where('warehouse_quantity','>', 0)
             ->get();
            

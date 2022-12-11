@@ -44,14 +44,15 @@ class OrderController extends Controller
             $request->session()->reflash('order_finalise_key');
             $this->store($request);
         }
-
         $this->init();
         $todayDate = Carbon::now()->toDateTimeString();
        
-        $this->orderList = Receipt::Order('stock_store_id',  $this->userModel->store_id)
+        $this->orderList = Receipt::Order('stock_store_id',  Auth::user()->store_id)
         ->orderByDesc('order_id')
         ->groupBy('order_id')
         ->paginate(10);
+
+        dd($this->orderList);
 
         return view('order.index', ['data' => $this->Data()]);   
       
@@ -94,7 +95,7 @@ class OrderController extends Controller
     private function init(){
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
     }
 
     private function ProcessOrder(){

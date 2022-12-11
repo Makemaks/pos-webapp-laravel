@@ -80,18 +80,21 @@ class AuthenticationController extends Controller
             User::where('user_id', Auth::user()->user_id)->update(['user_last_login_at' => now()]);
 
             // clocked in only or log in?
-            $attendance = Attendance::where('attendance_user_id', Auth::user()->user_id)->orderBy('created_at', 'desc')->first();
-
-            if ($attendance->created_at->isToday() == false) {
-                $attendance_clocked_in = new Attendance();
-                $attendance_clocked_in->attendance_user_id = Auth::user()->user_id;
-                $attendance_clocked_in->attendance_status = 0; //clocked in
-                $attendance_clocked_in->save();
-
-                $attendance_log_in = new Attendance();
-                $attendance_log_in->attendance_user_id = Auth::user()->user_id;
-                $attendance_log_in->attendance_status = 2; //login
-                $attendance_log_in->save();
+            $attendance = Attendance::where('attendance_user_id', Auth::user()->user_id)
+            ->orderBy('created_at', 'desc')->first();
+            
+            if($attendance) {
+                if ($attendance->created_at->isToday() == false) {
+                    $attendance_clocked_in = new Attendance();
+                    $attendance_clocked_in->attendance_user_id = Auth::user()->user_id;
+                    $attendance_clocked_in->attendance_status = 0; //clocked in
+                    $attendance_clocked_in->save();
+    
+                    $attendance_log_in = new Attendance();
+                    $attendance_log_in->attendance_user_id = Auth::user()->user_id;
+                    $attendance_log_in->attendance_status = 2; //login
+                    $attendance_log_in->save();
+                } 
             } else {
 
                 $attendance_log_in = new Attendance();

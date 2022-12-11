@@ -28,7 +28,7 @@ class SettingController extends Controller
 
 
         if ($request->session()->has('view')) {
-            $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)
+            $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)
                 ->first();
             $request->session()->keep('view');
 
@@ -339,7 +339,7 @@ class SettingController extends Controller
     {
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
 
-        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->paginate(20);
+        $this->stockList = Stock::List('stock_store_id', Auth::user()->store_id)->paginate(20);
 
         $stockCosts = $this->stockList->first()->stock_cost;
 

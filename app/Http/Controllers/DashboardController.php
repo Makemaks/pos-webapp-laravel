@@ -60,14 +60,14 @@ class DashboardController extends Controller
 
         $this->eat_in_eat_out = $datePeriod['eat_in_eat_out'];
 
-        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)
+        $this->customerTop = Store::Company('store_id',  Auth::user()->store_id)
         ->whereBetween('order.created_at', [$datePeriod['started'], $datePeriod['ended']])
         ->limit(10)
         ->get();
-
+        
         $this->storeList = Store::get();
 
-        $this->accountList = User::Account('store_id',  $this->userModel->store_id)
+        $this->accountList = User::Account('store_id',  Auth::user()->store_id)
             ->where('person_type', 0)
             ->get();
 
@@ -77,9 +77,9 @@ class DashboardController extends Controller
             ->whereIn('expense_user_id', $accountList->pluck('user_id'))
             ->get();
 
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
 
-        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->get();
+        $this->stockList = Stock::List('stock_store_id', Auth::user()->store_id)->get();
 
         // If its export PDF / CSV
         if ($request->fileName) {

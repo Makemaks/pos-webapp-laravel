@@ -49,7 +49,7 @@ class GatewayAPIController extends Controller
         $this->userModel = User::Person('user_person_id', Auth::user()->user_person_id)->first();
         $error = "";
 
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
 
  
        if ($request['action'] == 'payment') {

@@ -2,19 +2,20 @@
 $title = $data['title'];
 $table = $data['table'];
 $settingModel = $data['settingModel'];
-$settingModel = $settingModel->setting_stock_group_category_plu;
+$settingModel = $settingModel->setting_stock_group;
 $quantity = 0;
 $totalCostPrice = 0;
+// dd($data['settingModel']);
 $array = [];
 foreach ($settingModel as $key => $value) {
     if ($value['type'] == 1) {
         foreach ($data['orderList']->sortBy('order_created_at') as $orderList) {
             $stock_merchandise = json_decode($orderList->stock_merchandise, true);
-
             if ($stock_merchandise) {
                 if ($stock_merchandise['category_id'] == $key) {
                     $day = Carbon\Carbon::parse($orderList->order_created_at)->format('l');
-                    $price = json_decode($orderList->stock_cost, true)[$stock_merchandise['category_id']]['price'];
+                    $price = json_decode($orderList->stock_cost, true)[$stock_merchandise['category_id']][1]['price'];
+                    // dd($price);
                     $totalCostPrice += $price;
                     $quantity++;
 

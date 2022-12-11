@@ -12,10 +12,9 @@ use App\Helpers\DateTimeHelper;
    if (Auth::check()) {
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-
         $storeModel = Store::Account('store_id', $userModel->store_id)->first();
-        $storeList = Store::List('root_store_id', $storeModel->store_id)
-            ->orWhere('store_id', $storeModel->store_id)
+        $storeList = Store::List('store_company_id', $storeModel->company_id)
+            // ->orWhere('store_id', $storeModel->store_id)
             ->get();
     }
 
@@ -55,8 +54,8 @@ use App\Helpers\DateTimeHelper;
                    
                     <div class="uk-navbar-item uk-visible@s">
                         <div>
-                        
-                            <form action="{{route('home.index')}}">
+                            {{Auth::user()->store_id}}
+                            <form action="{{route('dashboard.index')}}">
                                 @csrf
                                 <select name="store-form" class="uk-select" onchange="this.form.submit()">
                                     <option selected disabled></option>

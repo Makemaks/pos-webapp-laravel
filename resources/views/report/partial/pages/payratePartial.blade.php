@@ -15,7 +15,7 @@ $grandTotal = 0;
 $title = $data['title'];
 $table = $data['table'];
 $dataModel = $data['employmentList']->groupBy('user_id');
-dd($dataModel);
+// dd($dataModel);
 
 if ($data['started'] !== '0000-00-00 00:00:00') {
     $started = Carbon\Carbon::parse($data['started']);
@@ -50,6 +50,7 @@ foreach ($dataModel as $user_id => $value) {
                 'Total Hours' => $timeOut->diff($timeIn),
                 'Rate' => $rate,
                 'Total Wage' => \App\Helpers\MathHelper::FloatRoundUp($total, 2),
+                'User ID' => $userId
             ];
 
             $i++; // as key

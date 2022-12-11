@@ -47,6 +47,8 @@ class HomeController extends Controller
         $this->init();
         $this->request = $request;
 
+        
+
          //setup new
          if ( $request->session()->has('user-session-'.Auth::user()->user_id.'.'.'setupList') == false) {
             $setupList = [
@@ -78,7 +80,7 @@ class HomeController extends Controller
 
         $this->settingModel->setting_stock_group = collect($this->settingModel->setting_stock_group)->where('type', 0);
 
-      /*   $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
+      /*   $this->stockList = Stock::List('stock_store_id', Auth::user()->store_id)
         ->paginate(12); */
        
         $a = $this->Data();
@@ -98,7 +100,7 @@ class HomeController extends Controller
     private function init(){
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
 
        
     }

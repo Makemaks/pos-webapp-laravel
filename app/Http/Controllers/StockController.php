@@ -35,7 +35,7 @@ class StockController extends Controller
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
 
-        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
+        $this->stockList = Stock::List('stock_store_id', Auth::user()->store_id)
             ->paginate(20);
 
         $this->Init();
@@ -177,17 +177,17 @@ class StockController extends Controller
             ->first();
 
 
-        $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
+        $this->companyList  = Company::Store('company_store_id', Auth::user()->store_id)->get();
         
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
         $this->settingModel = Setting::find($this->settingModel->setting_id);
 
         $this->categoryList = $this->settingModel->setting_stock_category;
 
 
-        $this->storeList = Store::List('root_store_id', $this->userModel->store_id);
+        $this->storeList = Store::List('root_store_id', Auth::user()->store_id);
         
-        $this->storeModel = Store::Account('store_id', $this->userModel->store_id)
+        $this->storeModel = Store::Account('store_id', Auth::user()->store_id)
         ->first();
 
         //$this->storeList->prepend($storeModel);

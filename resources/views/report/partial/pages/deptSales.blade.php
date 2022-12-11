@@ -2,7 +2,7 @@
 $title = $data['title'];
 $table = $data['table'];
 $settingModel = $data['settingModel'];
-$settingModel = $settingModel->setting_stock_group_category_plu;
+$settingModel = $settingModel->setting_stock_group;
 $currentDay = '';
 
 // array for avg total per day TOTAL
@@ -53,7 +53,7 @@ foreach ($settingModel as $key => $value) {
 
                     // get price
                     if ($stock_merchandise['category_id'] == $key) {
-                        $price = json_decode($orderList->stock_cost, true)[$stock_merchandise['category_id']]['price'];
+                        $price = $orderList->receipt_stock_cost;
 
                         // creating variable for array
                         if ($currentDay === 'Monday') {

@@ -34,7 +34,7 @@ class SearchAPIController extends Controller
                 $this->html = view('receipt.partial.receiptPartial', $this->Data())->render();
             } 
             elseif ($request['search_element_type'] == 'product') {
-                $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
+                $this->stockList = Stock::List('stock_store_id', Auth::user()->store_id)
                             ->where('stock_merchandise->stock_name', 'like', '%'.$request['search_element'].'%')
                             
                             ->get();

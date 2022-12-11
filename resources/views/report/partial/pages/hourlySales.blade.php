@@ -16,7 +16,7 @@ foreach ($dataModel as $user_id => $value) {
         if ($orderList->receipt_id) {
             $date = Carbon\Carbon::parse($orderList->order_created_at);
             $datePeriod_round_down = date('H', strtotime($date));
-            $price = json_decode($orderList->stock_cost, true)[$orderList->receipt_stock_cost]['price'];
+            $price = $orderList->receipt_stock_cost;
             $totalCostPrice = $totalCostPrice + $price;
 
             if (array_key_exists($datePeriod_round_down, $array)) {

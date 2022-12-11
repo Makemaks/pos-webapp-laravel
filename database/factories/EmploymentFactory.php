@@ -53,7 +53,7 @@ class EmploymentFactory extends Factory
         $array = array_merge($employment_function, $employment_mode, $employment_job, $employment_user_control);
 
         return [
-            'employment_user_id' => $this->faker->numberBetween($min = 1, $max = 2),
+            'employment_user_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'employment_general' => [
                 'ibutton' => $this->faker->numerify('##########'),
                 'secret_number' => $this->faker->numberBetween($min = 1, $max = 100),

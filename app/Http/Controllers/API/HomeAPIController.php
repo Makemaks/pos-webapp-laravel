@@ -90,7 +90,7 @@ class HomeAPIController extends Controller
             
             $where = 'stock_merchandise->'.$request->session()->get('type').'_id';
             
-            $this->stockList = Stock::Warehouse($where, $this->userModel->store_id)
+            $this->stockList = Stock::Warehouse($where, Auth::user()->store_id)
             ->groupBy('stock_id')
             ->where('warehouse_quantity', '>', 0)
             ->where($where, $request->session()->get('id'))
@@ -158,7 +158,7 @@ class HomeAPIController extends Controller
 
         elseif ($request->has('action') && $request['action'] == 'showStock' || $request['view'] == "0") {
             
-            $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
+            $this->stockList = Stock::Warehouse('stock_store_id', Auth::user()->store_id)
             ->groupBy('stock_id')
             ->where('warehouse_quantity', '>', 0);
 
@@ -173,7 +173,7 @@ class HomeAPIController extends Controller
 
         elseif ($request->has('action') && $request['action'] == 'showOrder' || $request['view'] == "0") {
             
-            $this->orderList = Receipt::Order('stock_store_id',  $this->userModel->store_id)
+            $this->orderList = Receipt::Order('stock_store_id',  Auth::user()->store_id)
             ->orderByDesc('order_id')
             ->groupBy('order_id')
             ->paginate(20);
@@ -265,7 +265,7 @@ class HomeAPIController extends Controller
     private function init(){
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
 
        
     }

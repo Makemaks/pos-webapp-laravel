@@ -209,8 +209,8 @@ class ReceiptController extends Controller
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
 
-        $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->companyList  = Company::Store('company_store_id', Auth::user()->store_id)->get();
+        $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
 
 
        /* if ($this->userModel->person_stripe_customer_id == NULL) {

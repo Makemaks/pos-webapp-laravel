@@ -341,7 +341,11 @@ class Store extends Model
         // clerk list with employment identity
         $clerkList = User::Employment('store_id',  $userModel->store_id)
             ->where('person_type', 0)
+            ->groupBy('user_id')
+            ->orderBy('user_id')
+            ->whereNotNull('employment_id')
             ->get();
+
 
         $employmentList = User::Employment('store_id',  $userModel->store_id)
         ->where('attendance_status', '<', 2)

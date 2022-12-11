@@ -2,7 +2,7 @@
 $title = $data['title'];
 $table = $data['table'];
 $settingModel = $data['settingModel'];
-$settingModel = $settingModel->setting_stock_group_category_plu;
+$settingModel = $settingModel->setting_stock_group;
 $quantity = 0;
 $totalCostPrice = 0;
 $array = [];
@@ -14,7 +14,7 @@ foreach ($settingModel as $key => $value) {
             if ($stock_merchandise) {
                 if ($orderList->receipt_id) {
                     $day = Carbon\Carbon::parse($orderList->order_created_at)->format('l');
-                    $price = json_decode($orderList->stock_cost, true)[$orderList->receipt_stock_cost]['price'];
+                    $price = $orderList->receipt_stock_cost;
                     $totalCostPrice += $price;
                     $quantity++;
 

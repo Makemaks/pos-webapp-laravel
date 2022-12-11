@@ -63,8 +63,9 @@ class ReportController extends Controller
         $this->settingModel = $datePeriod['settingModel'];
         $this->orderList = $datePeriod['orderList'];
 
-        $this->is_pdf_csv = 0;
+        // dd($this->settingModel);
 
+        $this->is_pdf_csv = 0;
         // If its export PDF / CSV
         if ($request->fileName) {
             // If PDF
@@ -80,6 +81,7 @@ class ReportController extends Controller
                 return $pdf->stream();
             } else if ($request->format === 'csv') {
                 // dd($request->fileName);
+                dd('csv');
                 $arrayList = [];
                 switch ($request->fileName) {
                     case 'payratePartial':
@@ -105,7 +107,7 @@ class ReportController extends Controller
                                     'Total Wage' => \App\Helpers\MathHelper::FloatRoundUp($total, 2),
                                 ];
                             }
-                            dd($arrayList);
+                            // dd($arrayList);
                         }
                         break;
                     
@@ -149,16 +151,14 @@ class ReportController extends Controller
 
             }
         } else {
-
             // flushing sessions
             $request->session()->forget('date');
             $request->session()->forget('user');
 
-            // dd($this->data());
-
+            
             // New Session, If user Filter 
             if ($datePeriod['user_id']) {
-
+                // dd($this->data()['employmentList']->first());
                 $request->session()->put('user', [
                     'started_at' => $datePeriod['started'],
                     'ended_at' => $datePeriod['ended'],
@@ -166,7 +166,7 @@ class ReportController extends Controller
                     'title' => $datePeriod['title'],
                 ]);
             } elseif ($request->started_at && $request->ended_at) {
-
+                // dd($this->data()['employmentList']->first());
                 // if period/date range only
                 $request->session()->put('date', [
                     'started_at' => $datePeriod['started'],
@@ -174,11 +174,13 @@ class ReportController extends Controller
                     'title' => $datePeriod['title'],
                 ]);
             } else {
+                // dd($this->data()['employmentList']->first());
                 // No Filters
                 $request->session()->put('title', [
                     'title' => $datePeriod['title'],
                 ]);
             }
+            
             // dd($this->Data());
             return view('report.index', ['data' => $this->Data()]);
         }

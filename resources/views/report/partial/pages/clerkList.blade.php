@@ -1,18 +1,19 @@
 @php
-$dataModel = $data['clerkList']->sortBy('user_id')->groupBy('user_id');
+$dataModel = $data['clerkList']->sortBy('user_id')->whereNotNull('employment_id');
 
 $title = $data['title'];
 $table = $data['table'];
-
 foreach ($dataModel as $key => $value) {
     $array[] = [
-        'Number' => $value[0]->user_id,
-        'First Name' => json_decode($value[0]->person_name)->person_firstname,
-        'Last Name' => json_decode($value[0]->person_name)->person_lastname,
-        'iButton' => json_decode($value[0]->employment_general)->ibutton,
-        'Secret Number' => json_decode($value[0]->employment_general)->secret_number,
+        'Number' => $value->user_id,
+        'First Name' => json_decode($value->person_name)->person_firstname,
+        'Last Name' => json_decode($value->person_name)->person_lastname,
+        'iButton' => json_decode($value->employment_general)->ibutton,
+        'Secret Number' => json_decode($value->employment_general)->secret_number,
     ];
 }
+
+// dd($dataModel);
 
 @endphp
 

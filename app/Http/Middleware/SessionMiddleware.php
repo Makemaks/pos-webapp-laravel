@@ -26,13 +26,21 @@ class SessionMiddleware
         
        
         if (Auth::check()) {
-            
+
+            $userModel = User::Account('account_id', Auth::user()->user_account_id)
+            ->first();
+
+            if($request->has('store-form') || Auth::user()->store_id == null) {
+                // $request->session()->put('user-session-'.Auth::user()->user_id.'.'.'storeForm', $request['store-form']);
+                Auth::user()->store_id = $request['store-form'];
+            } else {
+                    Auth::user()->store_id = $userModel->store_id;
+            };
+
             $queryValue  = $request->route()->parameters();
             $modelID = array_pop($queryValue);
       
-            $userModel = User::Account('account_id', Auth::user()->user_account_id)
-            ->first();
-            $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
+            $settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
 
             if( $request->session()->has('user-session-'.Auth::user()->user_id.'.'.'lock_screen_enabled') ) {
                 return redirect()->route('authentication.logout');

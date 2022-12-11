@@ -1,39 +1,29 @@
 @php
-$dataModel = $data['orderList']->sortBy('user_id')->groupBy('user_id');
+$dataModel = $data['orderList'];
 
 $title = $data['title'];
 $table = $data['table'];
 
 $arrays = [];
 
-foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $valueDepartment) {
-    if ($valueDepartment['type'] == 2) {
-        foreach ($dataModel as $user_id => $value) {
-            foreach ($value as $key => $values) {
-                $stock_merchandise = json_decode($values->stock_merchandise, true);
-
-                if (array_key_exists($stock_merchandise['plu_id'], $arrays)) {
-                    $arrays[$stock_merchandise['plu_id']] = [
-                        'PLU' => $stock_merchandise['plu_id'],
-                        'Name' => $stock_merchandise['stock_name'],
-                        'Department' => $valueDepartment['description'],
-                        'Quantity' => $arrays[$stock_merchandise['plu_id']]['Quantity'] + 1,
-                        'Total' => App\Helpers\MathHelper::FloatRoundUp($arrays[$stock_merchandise['plu_id']]['Total'] + json_decode($values->stock_cost, true)[$stock_merchandise['plu_id']]['price'], 2),
-                    ];
-                } else {
-                    $arrays[$stock_merchandise['plu_id']] = [
-                        'PLU' => $stock_merchandise['plu_id'],
-                        'Name' => $stock_merchandise['stock_name'],
-                        'Department' => $valueDepartment['name'],
-                        'Quantity' => 1,
-                        'Total' => json_decode($values->stock_cost, true)[$stock_merchandise['plu_id']]['price'],
-                    ];
-                }
+foreach ($data['settingModel']->setting_stock_group as $key => $setting_stock_group) {
+    if ($setting_stock_group['type'] == 2) {
+        foreach ($dataModel as $user => $userList) {
+            foreach ($userList as $userListKey => $userListItem) {
+                $stock_merchandise = json_decode($userList->stock_merchandise, true);
+                $arrays[$stock_merchandise['plu_id']] = ['Quantity' => 0, 'Total' => 0];
+                $arrays[$stock_merchandise['plu_id']] = [
+                    'REF' => $stock_merchandise['plu_id'],
+                    'Name' => $stock_merchandise['stock_name'],
+                    'Group' => $setting_stock_group['name'],
+                    'Quantity' => $arrays[$stock_merchandise['plu_id']]['Quantity'] + 1,
+                    'Total' => App\Helpers\MathHelper::FloatRoundUp($arrays[$stock_merchandise['plu_id']]['Total'] + $userList->receipt_stock_cost , 2),
+                ];
             }
 
             ksort($arrays);
-            $array[$user_id] = [
-                'Clerk' => json_decode($values->person_name)->person_firstname,
+            $array[$user] = [
+                'Clerk' => json_decode($userList->person_name)->person_firstname,
                 'Data' => $arrays,
             ];
         }

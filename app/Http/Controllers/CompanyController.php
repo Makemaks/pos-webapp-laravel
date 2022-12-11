@@ -27,12 +27,12 @@ class CompanyController extends Controller
 
     //   if ($request->session()->get('view') == 'supplier') {
     //         $this->companyList = Company::List()
-    //         ->where('store_id',  $this->userModel->store_id)
+    //         ->where('store_id',  Auth::user()->store_id)
     //         ->where('company_type', 0)
     //         ->paginate(20);
     //   } else {
     //         $this->companyList = Company::Address()
-    //         ->where('store_id',  $this->userModel->store_id)
+    //         ->where('store_id',  Auth::user()->store_id)
     //         ->where('address_type', 0)
     //         ->paginate(20);
     //   }
@@ -90,17 +90,17 @@ class CompanyController extends Controller
         // $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         // ->first();
   
-        // $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
+        // $this->companyList  = Company::Store('company_store_id', Auth::user()->store_id)->get();
   
-        // $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        // $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
         // $this->settingModel = Setting::find($this->settingModel->setting_id);
   
         // $this->categoryList = $this->settingModel->setting_stock_category;
   
   
-        // $this->storeList = Store::List('root_store_id', $this->userModel->store_id);
+        // $this->storeList = Store::List('root_store_id', Auth::user()->store_id);
         
-        // $storeModel = Store::Account('store_id', $this->userModel->store_id)
+        // $storeModel = Store::Account('store_id', Auth::user()->store_id)
         // ->first();
   
         //$this->storeList->prepend($storeModel);

@@ -31,7 +31,7 @@
                     {{$order->person_firstname}} {{$order->person_lastname}}
                     </td>
                     <td>{{$order->company_name}}</td>
-                    <td>{{$order->service_cost_total}}</td>
+                    <td>{{$order->service_price_total}}</td>
                     <td></td>
                     <td></td>
                 </tr>

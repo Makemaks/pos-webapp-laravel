@@ -1,6 +1,6 @@
 @php
 $table = 'eatInEatOutPartial';
-$totalCostPrice = 0;
+$totalPrice = 0;
 $price = 0;
 
 $orderList = $data['eat_in_eat_out']->groupBy(function ($item) {

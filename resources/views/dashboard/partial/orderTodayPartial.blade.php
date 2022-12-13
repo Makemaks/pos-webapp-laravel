@@ -28,7 +28,7 @@
                         {{$order->person_firstname}} {{$order->person_lastname}}
                     </td>
                     <td>{{DateTimeHelper::DateTime($order->created_at)['time']}}</td>
-                    <td>{{$order->order_total_cost}}</td>
+                    <td>{{$order->order_total_price}}</td>
                 </tr>
             @endforeach
         </tbody>

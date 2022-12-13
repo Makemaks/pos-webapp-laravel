@@ -1,7 +1,7 @@
 @php
 use App\Models\Stock;
 
-$totalCostPrice = 0;
+$totalPrice = 0;
 $price = 0;
 
 $orderList = $data['orderList'];
@@ -10,13 +10,13 @@ $orderList = $orderList->groupBy('store_id');
 if (count($orderList) > 0) {
     foreach ($orderList as $receiptList) {
        
-        $totalCostPrice = Stock::OrderTotal($receiptList);
+        $totalPrice = Stock::OrderTotal($receiptList);
 
         $arraySiteBreakdown[] = [
             'Number' => $receiptList->first()->store_id,
             'Site' => $receiptList->first()->store_name,
             'Sales' => $receiptList->first()->count(),
-            'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2),
+            'Total' => App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2),
         ];
     }
 } else {

@@ -15,8 +15,9 @@
     <form action="{{ route($route . '.index') }}" method="GET">
 
         @include('report.partial.dropDownPartial')
+        
         @include('partial.reportPartial' . $table)
-       
+        
         @if ($table !== '')
            
             <div class="uk-alert-danger uk-border-rounded" uk-alert>

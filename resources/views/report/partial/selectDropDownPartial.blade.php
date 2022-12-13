@@ -186,7 +186,7 @@
 
     <input type="hidden" name="format" value="pdf">  
     <label class="uk-form-label" for="form-stacked-text">REPORT </label> <br>
-    <select class="uk-select uk-width-expand" name="fileName">
+    <select class="uk-select uk-width-expand" name="fileName" id="aioConceptName">
         <option selected disabled>Please Select Report</option>
         @foreach ($reportList as $reportListKey => $reportListItem)
             <optgroup label="{{ Str::upper( Str::of($reportListKey)->replace('_', ' ') ) }}">
@@ -195,7 +195,7 @@
                         @php 
                         $fileName = str_replace("_","-",$report)
                         @endphp
-                        <option value="{{$fileName}}" data-select2-id="16">
+                        <option value="{{$fileName}}" data-select2-id="16" onclick="showPluReport()">
                             {{ Str::ucfirst( Str::of($report)->replace('_', ' ') ) }}    
                         </option>
                     @else
@@ -207,3 +207,4 @@
             </optgroup>
         @endforeach
     </select>
+   

@@ -10,10 +10,16 @@
 
     $default_currency = $data['settingModel']->setting_group['default_country'];
    
-    $currency = CountryHelper::ISO()[$default_currency]['currencies'][0];
-    $orderTotal = 0;
+    if ($default_currency == null) {
+        $default_currency = CountryHelper::ISO()[50]['currencies'][0];
+    }else{
+        $currency = CountryHelper::ISO()[$default_currency]['currencies'][0];
+    }
 
- 
+   
+
+    
+    $orderTotal = 0;
     $stockList = Receipt::ReceiptDisplay( $data['orderList'] );
 @endphp
 

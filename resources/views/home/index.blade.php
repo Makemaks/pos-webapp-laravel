@@ -19,9 +19,33 @@
 
 <div>
     
-    <div id="contentID">
-        @include('home.partial.indexPartial')
-    </div>
+    <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+        <li><a href="#" uk-icon="home" class="uk-border-rounded"></a></li>
+        <li><a href="#" uk-icon="database" class="uk-border-rounded"></a></li>
+        <li><a href="#" uk-icon="user" class="uk-border-rounded"></a></li>
+        <li><a href="#" uk-icon="list" class="uk-border-rounded"></a></li>
+        <li><a href="#" uk-icon="cog" class="uk-border-rounded"></a></li>
+    </ul>
+    
+    <ul class="uk-switcher uk-margin">
+        <li>
+            @include('stock.partial.indexPartial')
+        </li>
+        <li>
+            <div id="contentID">
+                
+            </div>
+        </li>
+        <li>
+            @include('person.partial.indexPartial')
+        </li>
+        <li></li>
+        <li>
+            @include('home.partial.settingPartial')
+        </li>
+    </ul>
+
+   
 
 </div>
 

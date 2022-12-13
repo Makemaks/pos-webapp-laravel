@@ -1,4 +1,4 @@
-@php
+{{-- @php
     use App\Models\Person;
     $openControlID = '';
     $closeControlID = 'hidden';
@@ -70,3 +70,4 @@
 
 
 
+ --}}

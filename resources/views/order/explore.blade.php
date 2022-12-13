@@ -4,12 +4,14 @@
     use App\Models\Receipt;
 @endphp
 @section('content')
-<form action="{{route('warehouse.store')}}" method="post">
+<form action="{{route('order.update', $data['orderList']->first()->order_id)}}" method="post">
+    @method('PATCH')
     @csrf
     <button type="submit" class="uk-button uk-button-default uk-border-rounded uk-button-primary">Save</button>
     <table class="uk-table uk-table-small uk-table-divider">
         <thead>
             <tr>
+                <th>REF</th>
                 <th>Stock</th>
                 <th>Quantity</th>
                 <th>Status</th>
@@ -18,11 +20,18 @@
         </thead>
         <tbody>
             @foreach($data['orderList'] as $orderList)
-            <tr>
+                <td> 
+                    <button class="uk-button uk-button-default uk-border-rounded">
+                        {{$orderList->receipt_id}}
+                    </button>
+                    <input type="text" name="receipt_id[]" value="{{$orderList->receipt_id}}" hidden>
+                </td>
                 <td>{{json_decode($orderList->stock_merchandise)->stock_name}}</td>
                 <td>{{$orderList->receipt_quantity}}</td>
                 <td>
-                    {{Receipt::ReceiptStatus()[$orderList->receipt_status]}}
+                    @if ($orderList->receipt_status)
+                        {{Receipt::ReceiptStatus()[$orderList->receipt_status]}}
+                    @endif
                 </td>
                 <td>
                     <table class="uk-table uk-table-small uk-table-divider">
@@ -42,13 +51,20 @@
                             @endphp
                             @foreach($warehouseList as $key => $warehouse)
                                 <tr>
-                                    <td>{{$warehouse->warehouse_id}}</td>
+                                   
+                                    <td>
+                                        <button class="uk-button uk-button-default uk-border-rounded">
+                                            {{$warehouse->warehouse_id}}
+                                        </button>
+                                    </td>
                                     <td>{{$warehouse->store_name}}</td>
                                     <td>{{$warehouse->warehouse_quantity}}</td>
                                     <td>{{Warehouse::WarehouseType()[$warehouse->warehouse_type]}}</td>
-                                    <td><input type="number" class="uk-input"  max="{{$orderList->warehouse_quantity}}"  min="0" name="receipt_quantity[]" value="{{$orderList->receipt_quantity}}"><input type="text" name="warehouse_id[]" hidden value="{{$warehouse->warehouse_id}}"></td>
+                                    <td>
+                                        <input type="number" class="uk-input"  max="{{$orderList->warehouse_quantity}}"  min="0" name="receipt_quantity[]" value="{{$orderList->receipt_quantity}}">
+                                    </td>
                                     <td> 
-                                        <input name="receipt_available[]" class="uk-checkbox" value="{{$warehouse->warehouse_id}}" type="checkbox" @if($warehouse->warehouse_store_id == $data['userModel']->store_id) checked @endif>
+                                        <input name="warehouse_id[]" class="uk-checkbox" value="{{$warehouse->warehouse_id}}" type="checkbox" @if($warehouse->warehouse_store_id == $data['userModel']->store_id) checked @endif>
                                     </td>
                                 </tr>
                             @endforeach

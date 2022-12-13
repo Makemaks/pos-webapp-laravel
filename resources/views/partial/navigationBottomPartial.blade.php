@@ -24,6 +24,7 @@ use App\Helpers\StringHelper;
     $cartList = null;
     $awaitingCartList = [];
 
+
     if (Auth::check()) {
         if (Session::has('user-session-' . Auth::user()->user_id . '.cartList')) {
             $cartList = Session::get('user-session-' . Auth::user()->user_id . '.cartList');
@@ -38,7 +39,10 @@ use App\Helpers\StringHelper;
 
         <div class="uk-navbar-left">
 
-           
+            <div class="uk-navbar-item" id="useCustomerID">
+                @include('person.partial.personPartial', ['data' => $data, 'view' => 'receipt'])
+            </div>
+    
 
            <div class="uk-navbar-item">
                 <div class="uk-button-group">

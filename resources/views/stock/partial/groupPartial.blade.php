@@ -4,7 +4,7 @@
     use App\Models\Stock;
 @endphp
 
-<div>
+{{-- <div>
             
     <div class="uk-grid-small uk-child-width-1-4@s uk-button" uk-grid>
 
@@ -14,18 +14,10 @@
             
                     <div class="uk-light uk-border-rounded" style="background-color: #{{StringHelper::getColor()}}">
                         
-                        <div>
-
-                            <div uk-grid>
-                                <div class="uk-width-expand">
-                                    <span class="">{{Str::ucfirst($item)}}</span>
-                                </div>
+                        <div uk-grid>
+                            <div class="uk-width-expand">
+                                <span class="">{{Str::ucfirst($item)}}</span>
                             </div>
-                        
-                            <div class="uk-margin">
-                                
-                            </div>
-                        
                         </div>
                     
                     </div>
@@ -36,7 +28,7 @@
     
     </div>
 </div>
-
+ --}}
 <div class="uk-height-large uk-overflow-auto uk-padding" id="stockGroupID" hidden> 
     @if ($data['settingModel']->setting_stock_set)
    

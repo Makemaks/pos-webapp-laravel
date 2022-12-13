@@ -81,7 +81,7 @@ class OrderController extends Controller
             
             $this->orderList = Order::Receipt('receipt_order_id', $request->order_id)
                 ->get();
-            return view('order.availability', ['data' => $this->Data()]);
+            return view('order.explore', ['data' => $this->Data()]);
         }
         
         $todayDate = Carbon::now()->toDateTimeString();
@@ -168,6 +168,23 @@ class OrderController extends Controller
             foreach ($request->order as $orderData) {
                 Order::where('order_id', $orderData['order_id'])->update(['order_status' => $orderData['order_status']]);
             }
+            return redirect()->back();
+        }
+
+        $a = $request->all();
+        //update order - process
+        if ($order && $request->has('warehouse_id')) {
+            foreach ($request->warehouse_id as $wareHouseKey => $warehouseId) {
+                $warehouse = Warehouse::find($request->receipt_quantity[$wareHouseKey]);
+                $warehouse_quantity = $warehouse->warehouse_quantity - $request->receipt_quantity[$wareHouseKey];
+                Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_quantity' => $warehouse_quantity]);
+                Receipt::where('receipt_id', $request->receipt_id[$wareHouseKey])->update(['receipt_status' => 0]);
+            }
+
+            if( count($request->receipt_id) == count($request->warehouse_id)){
+                Order::where('order_id', $order)->update(['order_status' => 1]);
+            }
+
             return redirect()->back();
         }
     }

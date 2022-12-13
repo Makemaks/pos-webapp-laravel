@@ -64,10 +64,15 @@ class HomeController extends Controller
 
         $this->settingModel->setting_stock_set = collect($this->settingModel->setting_stock_set)->where('type', 0);
 
-      /*   $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
-        ->paginate(12); */
+        $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
+        ->groupBy('stock_id')
+        ->where('warehouse_quantity', '>', 0)
+        ->paginate(20);
        
-       
+        $userList = User::Store('user_account_id', $this->userModel->account_id)->pluck('user_id');
+
+        $this->personList = Person::Address('person_organisation_id', $this->userModel->organisation_id)
+        ->paginate(20);
       
         return view('home.index', ['data' => $this->Data()]);
     }

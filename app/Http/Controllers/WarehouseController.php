@@ -101,19 +101,10 @@ class WarehouseController extends Controller
 
     public function Store(Request $request)
     {
-        if ($request->has('receipt_quantity')) {
-            foreach ($request->warehouse_id as $wareHouseKey => $warehouseId) {
-                foreach ($request->receipt_quantity as $receiptQuantityKey => $receiptQuantity) {
-                    if ($wareHouseKey == $receiptQuantityKey) {
-                        $warehouse = Warehouse::find($warehouseId);
-                        $warehouse_quantity = $warehouse->warehouse_quantity - $receiptQuantity;
-                        Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_quantity' => $warehouse_quantity]);
-                    }
-                }
-            }
-            return redirect()->back();
-        }
+       
         Warehouse::insert($request->except('_token', '_method'));
+       
+        
         return redirect()->back()->with('success', 'Transfer added Successfuly');
     }
 

@@ -241,8 +241,9 @@ class Stock extends Model
         return $totalPrice;
     }
 
-    public static function Discount($stock_price, $discount){
 
+    public static function Discount($stock_price, $discount){
+        //enter discount manually
         $price = 0;
 
         foreach (json_decode($discount) as $keyOverride => $valueDiscount) {
@@ -283,9 +284,11 @@ class Stock extends Model
 
     
 
-
-    public static function StockVAT($stock){
     
+    public static function StockVAT($stock){
+    //get vat 
+
+        $stock_vat = [];
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 
@@ -293,9 +296,9 @@ class Stock extends Model
         
         if ($stock->stock_merchandise['stock_vat_id']) {
             $stock_vat = $settingModel->setting_vat[$stock->stock_merchandise['stock_vat_id']];
-            return  $stock_vat['rate'];
         }
 
+        return $stock_vat;
     }
 
    
@@ -358,6 +361,35 @@ class Stock extends Model
     public static function StockPriceMin($settingCurrentOfferType){
         $min = collect( $settingCurrentOfferType )->pluck('total')->min('price');
         return collect( $settingCurrentOfferType )->where('total.price',  $min)->first();
+    }
+
+
+    public static function StockPriceProcessed($stock){
+        $stockOffer = [];
+        $stockCurrentOffer = [];
+        $stock_offer_processed = [
+            'stock_offer_processed' => ['stock_price' => 0, 'stock_price_processed' => 0]
+        ];
+
+        $stock_offer_processed['stock_offer_processed']['stock_price'] = MathHelper::FloatRoundUp(Stock::StockPriceCustomer($stock->stock_price), 2);
+        //check if customer has price
+        if ($stock_offer_processed['stock_offer_processed']['stock_price'] == 0) {
+            //get original price
+            $stock_offer_processed['stock_offer_processed']['stock_price'] = MathHelper::FloatRoundUp(Stock::StockPriceDefault($stock->stock_price), 2);
+        }
+
+        //find discount
+        if ($stock->stock_merchandise['setting_offer_id']) {
+            $stockCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::OfferType()));
+            $stockOffer = Setting::SettingCurrentOfferType( $stockCurrentOffer, $stock_offer_processed['stock_offer_processed']['stock_price'] );
+        }
+
+        if($stockOffer){
+            $stock_offer_processed['stock_offer_processed']['stock_price_processed'] = Stock::StockPriceMin($stockOffer);
+        }
+
+  
+        return $stock_offer_processed;
     }
 
     public static function Offer(){

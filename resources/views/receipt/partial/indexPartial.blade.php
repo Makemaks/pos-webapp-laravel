@@ -3,11 +3,11 @@
 @endpush
 
 @php
+
     use App\Helpers\NumpadHelper;
     use App\Helpers\StringHelper;
     use App\Helpers\CurrencyHelper;
     use App\Helpers\MathHelper;
-  
     use App\Models\Setting;
     use App\Models\Person;
     use App\Models\Stock;
@@ -16,13 +16,13 @@
 
     $route = Str::before(Request::route()->getName(), '.'); 
     $currencySymbol = Setting::SettingCurrency($data);
-
+    $openControlID = '';
+    $closeControlID = 'hidden';
     $currency = "";
   
     if ( Session::has('user-session-'.Auth::user()->user_id.'.'.'setupList')) {
         $setupList = Session::get('user-session-'.Auth::user()->user_id. '.setupList');
     }
-
    
     $data['userModel'] = User::Account('user_account_id', Auth::user()->user_account_id)
     ->first();
@@ -34,7 +34,6 @@
         
         $stockList = Receipt::SessionCartInitialize($data['sessionCartList']);
     }
-
   
 @endphp
 
@@ -53,6 +52,10 @@
                     @else
                         <th class="uk-width-expand"></th>
                     @endif
+                    <th>
+                        <button type="button" class="uk-button uk-button-default uk-border-rounded uk-button-small" onclick="control(0)" uk-icon="pencil" {{$openControlID}}></button>
+                        <button type="button" class="uk-button uk-button-default uk-border-rounded uk-button-small" onclick="control(1)" uk-icon="close" id="controlHideID" {{$closeControlID}}></button>
+                    </th>
                 </tr>
             </thead>
             <tbody id="cartListID" class="uk-overflow-auto">
@@ -63,7 +66,7 @@
                             $setupList = Receipt::Calculate( $data, $stockItem, $loop, $setupList );
                             Session::pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
                             Session::put('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
-                            $stockPriceQuantity = Stock::StockPriceQuantity($stockItem['stock_price'], $stockItem['stock_quantity']);
+                           
                         @endphp
                         
                             <tr id="cartItemID-{{$loop->index}}">
@@ -84,21 +87,33 @@
         
                                     <td>
                                        @if ($stockItem['stock_discount'])
-                                            {{ Stock::Discount($stockPriceQuantity, $stock_discount['type'], $stock_discount['value']) }}
+                                            {{-- {{ Stock::Discount($stockPriceQuantity, $stock_discount['type'], $stock_discount['value']) }} --}}
                                        @endif
                                     </td>
         
                                     <td>
-                                        {{ MathHelper::FloatRoundUp( $stockPriceQuantity, 2) }}
+                                        <div class="uk-inline">
+                                            <button uk-icon="icon: triangle-down" type="button">
+                                                @if ($setupList['receipt']['stock_offer_processed']['stock_price_processed'])
+                                                    {{ MathHelper::FloatRoundUp( $setupList['receipt']['stock_offer_processed']['stock_price_processed'], 2) }}    
+                                                @else
+                                                    {{ MathHelper::FloatRoundUp( $setupList['receipt']['stock_offer_processed']['stock_price'], 2) }}    
+                                                @endif
+                                            </button>
+                                            <div uk-dropdown="mode: click">
+                                                
+                                            </div>
+                                        </div>
                                     </td>
                                 @else
                                     <td>
 
-                                        @include('partial.controlPartial',
+                                        @include('receipt.partial.controlPartial',
                                         [
                                             'cartValue' => $loop->index,
                                             'quantity' => $stockItem['stock_quantity']
                                         ])
+
                                     </td>
                                 @endif
 
@@ -179,7 +194,7 @@
         @isset ($setupList['receipt']['totalSettingVAT'])
           
             <div class="uk-margin-remove-top">VAT % {{MathHelper::FloatRoundUp($setupList['receipt']['totalSettingVAT'], 2)}}</div>
-            <div class="uk-text-right uk-margin-remove-top">{{MathHelper::FloatRoundUp($setupList['receipt']['totalPriceVAT'] - $setupList['receipt']['subTotal'], 2)}}</div>
+            <div class="uk-text-right uk-margin-remove-top">{{MathHelper::FloatRoundUp($setupList['receipt']['priceVATTotal'] - $setupList['receipt']['subTotal'], 2)}}</div>
            
         @endisset
 
@@ -188,7 +203,7 @@
         <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($setupList['receipt']['subTotal'])}}</div>
     
         <div class="uk-margin-remove-top uk-text-bold">Total {{$currency}}</div>
-        <div class="uk-text-right uk-margin-remove-top uk-text-bold">{{CurrencyHelper::Format($setupList['receipt']['totalPriceFinal'])}}</div>
+        <div class="uk-text-right uk-margin-remove-top uk-text-bold">{{CurrencyHelper::Format($setupList['receipt']['priceFinalTotal'])}}</div>
         
     </div>
     

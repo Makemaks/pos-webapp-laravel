@@ -20,7 +20,7 @@ return new class extends Migration
             $table->bigInteger('ordertable_account_id')->nullable();
             $table->bigInteger('ordertable_id')->nullable();
             $table->string('ordertable_type')->nullable()->comment('user');
-            $table->json('order_status')->comment('cancelled::refunded'); 
+            $table->tinyInteger('order_status')->comment('cancelled::refunded'); 
             $table->json('order_group')->nullable();
             $table->tinyInteger('order_type')->default(0)->comment('internal::external'); 
             $table->float('order_amount_received')->nullable();

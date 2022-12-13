@@ -56,7 +56,7 @@ class Warehouse extends Model
         ->where($column,  $filter);
     }
 
-    public static function Available($id, $store_id = null){
+    public static function WarehouseExplore($id, $store_id = null){
        
         if ($store_id) {
             $stockList = Warehouse::where('warehouse_stock_id', $id )

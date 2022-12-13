@@ -630,10 +630,10 @@ class Setting extends Model
 
                     //check if value has percentage
                     if ($value['discount_type'] == array_search('percentage', Setting::SettingOfferType()) ) {
-                        $receipt['totalPrice'] = MathHelper::Discount($value['discount_value'], $receipt['totalPrice']);
+                        $receipt['priceTotal'] = MathHelper::Discount($value['discount_value'], $receipt['priceTotal']);
                         $receipt['discountPercentageTotal'] = $receipt['discountPercentageTotal'] + $value['discount_value'];
                     } else {
-                        $receipt['totalPrice'] = $receipt['totalPrice'] - $value['discount_value'];
+                        $receipt['priceTotal'] = $receipt['priceTotal'] - $value['discount_value'];
                         $receipt['discountAmountTotal'] = $receipt['discountAmountTotal'] + $value['discount_value'];
                     }
                 }
@@ -644,7 +644,7 @@ class Setting extends Model
 
             if ( count($setupList[ 'delivery' ]) > 0 ) {
                 $receipt['deliveryTotal'] = $receipt['deliveryTotal'] + collect($setupList[ 'delivery' ])->sum('value');
-                $receipt['totalPrice'] = $receipt['totalPrice'] + $receipt['deliveryTotal'];
+                $receipt['priceTotal'] = $receipt['priceTotal'] + $receipt['deliveryTotal'];
             }
 
             if (count($setupList[ 'voucher' ]) > 0) {
@@ -653,10 +653,10 @@ class Setting extends Model
 
                     //check if value has percentage
                     if ($value['discount_type'] == array_search('percentage', Setting::SettingOfferType()) ) {
-                        $receipt['totalPrice'] = MathHelper::Discount($value['discount_value'], $receipt['totalPrice']);
+                        $receipt['priceTotal'] = MathHelper::Discount($value['discount_value'], $receipt['priceTotal']);
                         $receipt['voucherPercentageTotal'] = $receipt['voucherPercentageTotal'] + $value['discount_value'];
                     } else {
-                        $receipt['totalPrice'] = $receipt['totalPrice'] - $value['discount_value'];
+                        $receipt['priceTotal'] = $receipt['priceTotal'] - $value['discount_value'];
                         $receipt['voucherAmountTotal'] = $receipt['voucherAmountTotal'] + $value['discount_value'];
                     }
                 }
@@ -696,7 +696,7 @@ class Setting extends Model
                        /* foreach ($settingModel->setting_customer as $setting_customer) {
                            
                             if (Setting::SettingOfferType()[$setting_offer['decimal']['discount_type']] == 'percentage') {
-                                $value =  MathHelper::Discount($setting_offer['decimal']['discount_value'], $receipt['totalPrice']); //percentage to amount
+                                $value =  MathHelper::Discount($setting_offer['decimal']['discount_value'], $receipt['priceTotal']); //percentage to amount
                                 $percentage = $setting_offer['decimal']['discount_value'];
                             } else{
                                 $value = $setting_offer['decimal']['discount_value'];
@@ -709,7 +709,7 @@ class Setting extends Model
                                 'converted_value' => $value, 'converted_percentage' => $percentage 
                             ];
         
-                            $receipt['totalPrice'] = $receipt['totalPrice'] - $value;
+                            $receipt['priceTotal'] = $receipt['priceTotal'] - $value;
                         } */
                     }
                 }
@@ -719,12 +719,12 @@ class Setting extends Model
 
             if (count($setupList['credit']) > 0) {
                 $receipt['creditTotal'] = $receipt['creditTotal'] + collect()->sum('value');
-                $receipt['totalPriceVAT'] = $receipt['totalPriceVAT'] - $receipt['creditTotal'];
+                $receipt['priceVATTotal'] = $receipt['priceVATTotal'] - $receipt['creditTotal'];
             }
 
             if ( count($setupList[ 'cash' ]) > 0 ) {
                 $receipt['cashTotal'] = $receipt['cashTotal'] + collect()->sum('value');
-                $receipt['totalPriceVAT'] = $receipt['totalPriceVAT'] - $receipt['cashTotal'];
+                $receipt['priceVATTotal'] = $receipt['priceVATTotal'] - $receipt['cashTotal'];
             }
 
         }
@@ -769,24 +769,18 @@ class Setting extends Model
 
 
 
-        $settingCurrentOfferType = 0;
+        $settingCurrentOfferType = [];
         $total = [];
 
         foreach ($settingCurrentOffer as $settingCurrentOfferKey => $settingCurrentOfferValue) {
 
             if (Setting::SettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
 
-                $settingCurrentOfferType = ['price'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)];
+                $settingCurrentOfferType = ['stock_price_proccessed'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)];
 
             } else {
-                $settingCurrentOfferType = ['price' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
+                $settingCurrentOfferType = ['stock_price_proccessed' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
 
-            }
-
-
-            if (count($settingCurrentOfferType) > 0) {
-                $total[$settingCurrentOfferKey] = $settingCurrentOfferValue;
-                $total[$settingCurrentOfferKey] += ['total' => $settingCurrentOfferType];
             }
 
         }
@@ -795,7 +789,7 @@ class Setting extends Model
 
 
 
-        return $total;
+        return $settingCurrentOfferType;
     }
 
     

@@ -187,7 +187,7 @@ class Order extends Model
 
             $receipt = [];
             $receipt['priceVAT'] = 0;
-            $receipt['totalPrice'] = 0;
+            $receipt['priceTotal'] = 0;
             $receipt['discountTotal'] = 0;
             $receipt['subTotal'] = 0;
             $orderData = [];

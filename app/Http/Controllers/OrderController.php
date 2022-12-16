@@ -52,7 +52,7 @@ class OrderController extends Controller
         ->groupBy('order_id')
         ->paginate(10);
 
-        dd($this->orderList);
+        // dd($this->orderList);
 
         return view('order.index', ['data' => $this->Data()]);   
       

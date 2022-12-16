@@ -143,6 +143,7 @@ Route::get('menu/stock/', [MenuController::class,'Stock'])->name('menu.stock');
 Route::get('menu/setting/', [MenuController::class,'Setting'])->name('menu.setting');
 Route::get('menu/order/', [MenuController::class,'Order'])->name('menu.order');
 Route::get('menu/customer/', [MenuController::class,'Customer'])->name('menu.customer');
+Route::get('menu/schedule/', [MenuController::class,'Schedule'])->name('menu.schedule');
 
 Route::get('menu/home/', [MenuController::class,'Home'])->name('menu.home');
 

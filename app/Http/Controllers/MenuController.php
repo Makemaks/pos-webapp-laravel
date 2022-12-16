@@ -15,6 +15,7 @@ use App\Models\Account;
 use App\Models\Company;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Schema;
 
 class MenuController extends Controller
 {
@@ -27,6 +28,7 @@ class MenuController extends Controller
     private $fileModel;
     private $companyList;
     private $warehouseList;
+    private $columnList;
 
    public function stock(Request $request){
 
@@ -310,6 +312,14 @@ class MenuController extends Controller
 
    }
 
+   public function schedule(Request $request){
+        // $request->session()->flash('view', $request->view);
+        // $request->session()->flash('action', $request->route()->getActionMethod());
+        
+        $this->columnList = Schema::getColumnListing($request->view);
+        return view('menu.schedule.index', ['data' => $this->Data()]);
+   }
+
    private function Init(){
       $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
       ->first();
@@ -317,8 +327,8 @@ class MenuController extends Controller
       $this->companyList  = Company::Store('company_store_id', Auth::user()->store_id)->get();
 
       $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
-      dd(Auth::user()->store_id);
-      dd($this->settingModel);
+    //   dd(Auth::user()->store_id);
+    //   dd($this->settingModel);
       $this->settingModel = Setting::find($this->settingModel->setting_id);
       
 
@@ -345,6 +355,7 @@ class MenuController extends Controller
             'storeList' => $this->storeList,
             'companyList' => $this->companyList,
             'warehouseList' => $this->warehouseList,
+            'columnList' => $this->columnList
         ];
    }
 

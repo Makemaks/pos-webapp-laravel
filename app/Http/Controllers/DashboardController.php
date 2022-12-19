@@ -77,7 +77,7 @@ class DashboardController extends Controller
             ->whereIn('expense_user_id', $accountList->pluck('user_id'))
             ->get();
 
-        $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
+        $this->settingModel =  $datePeriod['settingModel'];
 
         $this->stockList = Stock::List('stock_store_id', Auth::user()->store_id)->get();
 

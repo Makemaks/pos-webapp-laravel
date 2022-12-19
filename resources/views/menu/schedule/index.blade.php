@@ -9,34 +9,49 @@
     Save
 </button>
 
-<ul class="uk-subnav uk-subnav-pill" uk-switcher>
-    <li>
-        <a href="#">
-            {{Str::upper(Request::get('view'))}}
-        </a>
-    </li>
-</ul>
+<div class="uk-margin">
+   
 
-<ul class="uk-margin">
-    <div>
-        <label class="uk-form-label" for="form-stacked-text">Column</label>
-        <select class="uk-select" name="" id="">
-            @foreach($data['columnList'] as $column)
-                <option value="{{$column}}">{{$column}}</option>
-            @endforeach
-        </select>
-        
-    </div>
+    <ul class="uk-subnav uk-subnav-pill" uk-switcher id="0">
+        <li><a href="#">Schedule</a></li>
+        <li><a href="#" uk-icon="plus"></a></li>
+    </ul>
+    
+    <ul class="uk-switcher uk-margin">
+        <li>
+            {{-- list of schedule in system --}}
+        </li>
+        <li>
+            <ul class="uk-subnav uk-subnav-pill" uk-switcher id="1">
+                <li><a href="#">Task</a></li>
+                <li><a href="#">Create</a></li>
+                <li><a href="#">Update</a></li>
+                <li><a href="#">Delete</a></li>
+            </ul>
+            
+            <ul class="uk-switcher uk-margin">
+                <li>
+                    <form action="">
+            
+                    </form>
+                </li>
+                <li>
+                    <form action="">
+                        
+                    </form>
+                </li>
+                <li>
+                    <form action="">
+                        
+                    </form>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    
+</div>
 
-    <div>
-        <label class="uk-form-label" for="form-stacked-text">Actions</label>
-        <select class="uk-select" name="" id="">
-            <option value="1">Task</option>
-            <option value="2">Update</option>
-            <option value="3">Delete</option>
-        </select>
-        
-    </div>
-</ul>
+
+
 
 @endsection

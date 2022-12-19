@@ -31,7 +31,7 @@ class HomeController extends Controller
     private $sessionCartList = [];
     private $schemeList;
     private $personList;
-    private $request;
+    private $setupList;
     
 
     public function __construct()
@@ -48,7 +48,7 @@ class HomeController extends Controller
 
          //setup new
        
-        $this->request = Receipt::SessionInitialize($request);
+        $this->setupList = Receipt::SessionInitialize($request);
         
         $this->user = 0;
 
@@ -66,8 +66,8 @@ class HomeController extends Controller
 
         $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
         ->groupBy('stock_id')
-        ->where('warehouse_quantity', '>', 0)
-        ->paginate(20);
+        ->where('warehouse_stock_quantity', '>', 0)
+        ->paginate(10);
        
         $userList = User::Store('user_account_id', $this->userModel->account_id)->pluck('user_id');
 
@@ -111,7 +111,7 @@ class HomeController extends Controller
             'userList' => $this->userList,
             'personModel' => $this->personModel,
             'personList' => $this->personList,
-            'request' => $this->request
+            'setupList' => $this->setupList
            
         ];
     }

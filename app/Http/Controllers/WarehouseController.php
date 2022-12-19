@@ -44,7 +44,7 @@ class WarehouseController extends Controller
         if ($request->has('action')) {
             $warehouse = Warehouse::find($request->warehouse_id);
             $warehouse_quantity = $warehouse->warehouse_quantity - $request->receipt_quantity;
-            Warehouse::where('warehouse_id', $request->warehouse_id)->update(['warehouse_quantity' => $warehouse_quantity]);
+            Warehouse::where('warehouse_id', $request->warehouse_id)->update(['warehouse_stock_quantity' => $warehouse_quantity]);
             return redirect()->back();
         }
 
@@ -84,7 +84,7 @@ class WarehouseController extends Controller
                     if ($wareHouseKey == $receiptQuantityKey) {
                         $warehouse = Warehouse::find($warehouseId);
                         $warehouse_quantity = $warehouse->warehouse_quantity - $receiptQuantity;
-                        Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_quantity' => $warehouse_quantity]);
+                        Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_stock_quantity' => $warehouse_quantity]);
                     }
                 }
             }

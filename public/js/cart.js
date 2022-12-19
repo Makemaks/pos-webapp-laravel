@@ -121,7 +121,7 @@ function Delete(row_id){
 
 
 //add a stock_id to cart
-function Add(stock_id, stock_name, stock_price){
+function Add(stock_id, store_id){
  
      //update basket count
      var cartCountID = document.getElementById('cartCountID'); 
@@ -136,10 +136,8 @@ function Add(stock_id, stock_name, stock_price){
          method: 'POST',
          data: {
             stock_id: stock_id, 
-            stock_name:stock_name, 
-            stock_price: stock_price, 
-            stock_quantity:stock_quantity, 
-           },      
+            store_id:store_id, 
+         },      
          success:function(data){
            /* alert(data.success);
            setFocus('barcodeInputID'); */

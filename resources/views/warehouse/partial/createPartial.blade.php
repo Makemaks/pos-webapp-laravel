@@ -40,7 +40,7 @@
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
                                 <input class="uk-input" type="text" name="{{$keystock}}" value="{{$stock}}">
                             </div>
-                        @elseif($keystock == 'warehouse_price' || $keystock == 'warehouse_price_override' || $keystock == 'warehouse_quantity')
+                        @elseif($keystock == 'warehouse_price' || $keystock == 'warehouse_price_override' || $keystock == 'warehouse_stock_quantity')
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-select">{{ Str::upper(Str::after($keystock, '_' )) }}</label>
                                 <input class="uk-input" type="number" name="{{$keystock}}" value="{{$stock}}">

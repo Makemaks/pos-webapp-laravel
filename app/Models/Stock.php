@@ -364,32 +364,45 @@ class Stock extends Model
     }
 
 
-    public static function StockPriceProcessed($stock){
-        $stockOffer = [];
-        $stockCurrentOffer = [];
-        $stock_offer_processed = [
-            'stock_offer_processed' => ['stock_price' => 0, 'stock_price_processed' => 0]
-        ];
+    public static function StockPriceProcessed($stock, $setupList){
 
-        $stock_offer_processed['stock_offer_processed']['stock_price'] = MathHelper::FloatRoundUp(Stock::StockPriceCustomer($stock->stock_price), 2);
+        if ($stock->stock_id == 39) {
+            $a = 0;
+        }
+
+        $stockOffer = 0;
+        $stockCurrentOffer = [];
+        $stock_price = MathHelper::FloatRoundUp(Stock::StockPriceDefault($stock->stock_price), 2);
+        $setupList['receipt']['stock']['stock_price'] = $stock_price;
+        $setupList['receipt']['stock']['stock_price_processed'] = $stock_price;
+
+      
+
+        $setupList['receipt']['stock']['stock_price'] = MathHelper::FloatRoundUp(Stock::StockPriceCustomer($stock->stock_price), 2);
         //check if customer has price
-        if ($stock_offer_processed['stock_offer_processed']['stock_price'] == 0) {
+        if ($setupList['receipt']['stock']['stock_price'] == 0) {
             //get original price
-            $stock_offer_processed['stock_offer_processed']['stock_price'] = MathHelper::FloatRoundUp(Stock::StockPriceDefault($stock->stock_price), 2);
+            $setupList['receipt']['stock']['stock_price'] = $stock_price;
         }
 
         //find discount
         if ($stock->stock_merchandise['setting_offer_id']) {
             $stockCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::OfferType()));
-            $stockOffer = Setting::SettingCurrentOfferType( $stockCurrentOffer, $stock_offer_processed['stock_offer_processed']['stock_price'] );
+           if ($stockCurrentOffer) {
+                $stockPriceMin = Stock::StockPriceMin($stockCurrentOffer);
+                $discount_value = Setting::SettingCurrentOfferType( $stockPriceMin, $setupList['receipt']['stock']['stock_price'] );
+                $setupList['receipt']['stock']['stock_price_processed'] = $discount_value - Stock::StockPriceMin($stockOffer);
+           }
+
+          
         }
 
-        if($stockOffer){
-            $stock_offer_processed['stock_offer_processed']['stock_price_processed'] = Stock::StockPriceMin($stockOffer);
-        }
+       /*  if($stockOffer){
+            $setupList['receipt']['stock']['stock_price_processed'] = $stockOffer - Stock::StockPriceMin($stockOffer);
+        } */
 
   
-        return $stock_offer_processed;
+        return $setupList;
     }
 
     public static function Offer(){

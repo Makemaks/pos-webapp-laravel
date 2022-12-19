@@ -29,7 +29,7 @@
     
     <ul class="uk-switcher uk-margin">
         <li>
-            @include('stock.partial.indexPartial')
+            @include('home.partial.stockPartial')
         </li>
         <li>
             <div id="contentID">

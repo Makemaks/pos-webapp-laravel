@@ -110,7 +110,10 @@ class Receipt extends Model
                     "priceTotal" => 0,
                     "subTotal" => 0,
                     "priceFinalTotal" => 0,
-                ]
+                    'stock' => ['stock_price' => 0, 'stock_price_processed' => 0],
+                    'finalise_key' => ['value' => 0, 'type' => 0]
+                ],
+                
 
             ];
             
@@ -121,7 +124,7 @@ class Receipt extends Model
 
         $setupList =  $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList');
 
-        return $request;
+        return $setupList;
     }
 
     public static function SessionCartInitialize($sessionCartList){
@@ -138,6 +141,7 @@ class Receipt extends Model
             $stockList[] = [
                 'stock_id' => $stock->stock_id,
                 'user_id' => $sessionCart['user_id'],
+                'store_id' => $sessionCart['store_id'],
                 'stock_name' => $stock->stock_merchandise['stock_name'],
                 'stock_quantity' => $sessionCart['stock_quantity'],
                 'stock_price' => MathHelper::FloatRoundUp($price, 2),
@@ -181,45 +185,43 @@ class Receipt extends Model
     }
 
     //data , stock , loop
-    public static function Calculate($data, $stockItem, $loop, $setupList){
+    public static function Calculate($data, $stockItem, $loop){
         //convert sting to val
         
         $stock = Stock::find($stockItem['stock_id']);
-        $setupList['receipt']['stock_vat_rate'] = 0;
+        $data['setupList']['receipt']['stock_vat_rate'] = 0;
         $stockItem['stock_vat_id'] = $stock->stock_merchandise['stock_vat_id'];
       
         //stock current offer or price
-        $setupList['receipt'] += Stock::StockPriceProcessed($stock);
+        $data['setupList'] = Stock::StockPriceProcessed($stock, $data['setupList']);
         //get quantity
-        $stock_price_processed = Stock::StockPriceQuantity( $setupList['receipt']['stock_offer_processed']['stock_price_processed'], $stockItem['stock_quantity']);
-        
+        $stock_price_processed = Stock::StockPriceQuantity( $data['setupList']['receipt']['stock']['stock_price_processed'], $stockItem['stock_quantity']);
 
         //stock vat
         if ($stockItem['stock_vat_id']) {
-            $setupList['receipt']['stock_vat_rate'] = $data['settingModel']->setting_vat[$stockItem['stock_vat_id']]['rate'];
-            $stock_price_processed = MathHelper::VAT($setupList['receipt']['stock_vat_rate'], $stock_price_processed);
+            $data['setupList']['receipt']['stock_vat_rate'] = $data['settingModel']->setting_vat[$stockItem['stock_vat_id']]['rate'];
+            $stock_price_processed = MathHelper::VAT($data['setupList']['receipt']['stock_vat_rate'], $stock_price_processed);
         }
 
+        $data['setupList']['receipt']['stock']['stock_price_processed'] = $stock_price_processed;
 
-        $setupList['receipt']['stock_offer_processed']['stock_price_processed'] = $stock_price_processed;
         //add price to subtotal
-        $setupList['receipt']['subTotal'] = $setupList['receipt']['subTotal'] + $stock_price_processed;
+        $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] + $stock_price_processed;
 
 
         if ($loop->last) {
             
             //final discount
              //calculate overall vat
-            $setupList['receipt'] = Setting::SettingFinaliseKey($data, $setupList['receipt']);
-            $setupList['receipt']['totalSettingVAT'] = collect($data['settingModel']->setting_vat)->where('deafult', 0)->sum('rate');
+            $data = Setting::SettingFinaliseKey($data);
+            $data['setupList']['receipt']['totalSettingVAT'] = collect($data['settingModel']->setting_vat)->where('deafult', 0)->sum('rate');
             
-            $setupList['receipt']['priceVATTotal'] = MathHelper::VAT($setupList['receipt']['totalSettingVAT'], $setupList['receipt']['subTotal']);
-            $setupList['receipt']['priceFinalTotal'] =  $setupList['receipt']['priceVATTotal'] + $setupList['receipt']['priceTotal'];
+            $data['setupList']['receipt']['priceVATTotal'] = MathHelper::VAT($data['setupList']['receipt']['totalSettingVAT'], $data['setupList']['receipt']['subTotal']);
+            $data['setupList']['receipt']['priceFinalTotal'] =  $data['setupList']['receipt']['priceVATTotal'] + $data['setupList']['receipt']['priceTotal'];
             
         }
 
-
-        return $setupList;
+        return $data;
 
     }
 

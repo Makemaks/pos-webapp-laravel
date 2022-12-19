@@ -32,7 +32,7 @@ class CartAPIController extends Controller
     private $personList;
     private $discount;
     private $html;
-    private $request;
+    private $requestInput;
    
     public function index(Request $request)
     {
@@ -105,8 +105,6 @@ class CartAPIController extends Controller
      public function Store(Request $request){
 
         //$request->session()->forget('type');
-
-
         $this->init();
         $this->request = $request;
         $a = $request->all();
@@ -123,17 +121,14 @@ class CartAPIController extends Controller
              ->first();
             
             if ($this->stockModel) {
-                $requestInput['stock_id'] = $this->stockModel->stock_id;
-                $requestInput['user_id'] = $this->stockModel->user_id;
-                $requestInput['stock_name'] = $this->stockModel->stock_merchandise['stock_name'];
-                $requestInput['stock_price'] = $this->stockModel->stock_price[1][1]['price'];
-                $requestInput['stock_quantity'] = 1;
-                $requestInput['stock_discount'] = 0;
-               
-           
-                //$requestInput['plan'] = '';
+                $this->requestInput['stock_id'] = $this->stockModel->stock_id;
+                $this->requestInput['store_id'] = $this->stockModel->stock_store_id;
+                $this->requestInput['user_id'] = $this->stockModel->user_id;
+                $this->requestInput['stock_quantity'] = 1;
+                $this->requestInput['stock_discount'] = 0;
+                $this->requestInput['stock_price'] = 0;
 
-                $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $requestInput);
+                $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $this->requestInput);
                 $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList');
             }
 
@@ -144,23 +139,31 @@ class CartAPIController extends Controller
         elseif ($request->has('stock_id')) {
 
             //add to cart
-            $requestInput = $request->all();
-            $requestInput['stock_discount'] = 0;
-            $requestInput += ['user_id' => Auth::user()->user_id];
+            $this->requestInput = $request->all();
+            $this->requestInput['stock_discount'] = 0;
+            $this->requestInput['stock_quantity'] = 1;
+            $this->requestInput['stock_price'] = 0;
+            $this->requestInput += ['user_id' => Auth::user()->user_id];
            
-            $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $requestInput);
-            $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList');
+            $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'cartList', $this->requestInput);
+            $this->cartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList');
+
+            $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList');
+
+            
+
             $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
+
         }
 
         elseif($request->has('action') && $request['action'] == 'float'){
-           
 
             $request->session()->push('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.$request['action'], $request->all());
             $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList'.'.'.$request['action']);
             $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
         }
-         //discount
+
+        //discount
         elseif ( $request->has('type') && $request->has('value') && $request->session()->has('type')){
 
             //specific receipt
@@ -172,7 +175,6 @@ class CartAPIController extends Controller
                $type = $request->session()->get('type');
                $action = 'setupList';
                $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
-
            }
            else{
                 //for receipt
@@ -183,7 +185,6 @@ class CartAPIController extends Controller
                 $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList');
                 $request['type'] = 'discount';
                 $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
-               
            }
 
            //return response()->json(['view' => $this->view, 'success' => $request['type'].'Added.', 'html' => $this->html]);
@@ -350,7 +351,7 @@ class CartAPIController extends Controller
             'userList' => $this->userList,
             'personModel' => $this->personModel,
             'personList' => $this->personList,
-            'request' => $this->request
+            'requestInput' => $this->requestInput
         ];
     }
 

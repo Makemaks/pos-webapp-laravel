@@ -177,7 +177,7 @@ class OrderController extends Controller
             foreach ($request->warehouse_id as $wareHouseKey => $warehouseId) {
                 $warehouse = Warehouse::find($request->receipt_quantity[$wareHouseKey]);
                 $warehouse_quantity = $warehouse->warehouse_quantity - $request->receipt_quantity[$wareHouseKey];
-                Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_quantity' => $warehouse_quantity]);
+                Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_stock_quantity' => $warehouse_quantity]);
                 Receipt::where('receipt_id', $request->receipt_id[$wareHouseKey])->update(['receipt_status' => 0]);
             }
 

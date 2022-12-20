@@ -15,7 +15,7 @@
        
         
         @if ( Session::has('report') )
-            @include( 'report.'. Session::get('report') )
+            @include( 'report.partial'. Session::get('report') )
         @else
             <div class="uk-alert-danger uk-border-rounded" uk-alert>
                 <a class="uk-alert-close" uk-close></a>

@@ -42,6 +42,7 @@ class ReportController extends Controller
             // flushing sessions
             $request->session()->forget('date');
             $request->session()->forget('user');
+            $request->session()->flash('report', $request->get('report'));
 
             // New Session, If user Filter 
             if ($request->has('report') && $this->datePeriod['user_id']) {

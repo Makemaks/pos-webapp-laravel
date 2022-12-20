@@ -13,9 +13,9 @@
 
 @section('content')
     <form action="{{ route($route . '.index') }}" method="GET">
-
+        {{Session::get('report')}}
         @include('report.partial.dropDownPartial')
-        @include('partial.reportPartial' . $table)
+        @include('report.partial.pages.' . Session::get('report'))
        
         @if ($table !== '')
            

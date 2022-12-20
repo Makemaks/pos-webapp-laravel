@@ -1,7 +1,7 @@
 @php
 
 use App\Models\Stock;
-$totalCostPrice = 0;
+$totalPrice = 0;
 $price = 0;
 
 $clerkBreakdown = $data['clerkBreakdown'];
@@ -13,12 +13,12 @@ if (count($clerkBreakdown) > 0) {
         $personName = json_decode($person);
 
 
-        $totalCostPrice = Stock::OrderTotal($receiptList);
+        $totalPrice = Stock::OrderTotal($receiptList);
 
         $arrayclerkBreakdown[] = [
             'Number' => $receiptList->first()->receipt_user_id,
             'Name' => $receiptList->first()->person_firstname,
-            'total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2),
+            'total' => App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2),
         ];
     }
 } else {

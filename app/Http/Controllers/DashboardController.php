@@ -42,6 +42,44 @@ class DashboardController extends Controller
     public function Index(Request $request)
     {
 
+        if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin') {
+            $this->Admin($request);
+            return view('dashboard.admin.index', ['data' => $this->Data()]);
+        } else {
+            $this->User($request);
+            return view('dashboard.user.index', ['data' => $this->Data()]);
+        }
+        
+    }
+
+    public function Create()
+    {
+    }
+
+    public function Store(Request $request)
+    {
+    }
+
+    public function show()
+    {
+    }
+
+    public function Update()
+    {
+    }
+
+    public function Destroy()
+    {
+    }
+
+    private function init()
+    {
+        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+            ->first();
+        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+    }
+
+    private function Admin(Request $request){
         $datePeriod = Store::DatePeriod($request);
 
         $this->userModel = $datePeriod['userModel'];
@@ -128,28 +166,11 @@ class DashboardController extends Controller
                 ]);
             }
 
-            return view('dashboard.index', ['data' => $this->Data()]);
         }
     }
 
-    public function Create()
-    {
-    }
-
-    public function Store(Request $request)
-    {
-    }
-
-    public function show()
-    {
-    }
-
-    public function Update()
-    {
-    }
-
-    public function Destroy()
-    {
+    private function User(Request $request){
+        
     }
 
     private function Data()

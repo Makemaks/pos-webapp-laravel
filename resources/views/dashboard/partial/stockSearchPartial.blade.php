@@ -11,16 +11,18 @@ if (count($stockList) > 0) {
                 $stockNameJson = json_decode($receipt->stock_merchandise, true);
                 $stockName = $stockNameJson['stock_name'];
 
-                $totalCostPrice = \App\Models\Stock::OrderTotal($receiptList);
+                $totalPrice = \App\Models\Stock::OrderTotal($receiptList);
                 $quantity_each_stock = $receiptList->count();
+
+                $arraystockSearch[] = [
+                    'Stock Name' => $stockName,
+                    'Sales' => $quantity_each_stock,
+                    'Total' => App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2),
+                ];
             }
         }
 
-        $arraystockSearch[] = [
-            'Stock Name' => $stockName,
-            'Sales' => $quantity_each_stock,
-            'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCostPrice, 2),
-        ];
+      
     }
 } else {
     $arraystockSearch[] = [

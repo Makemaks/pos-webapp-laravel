@@ -300,7 +300,7 @@ class Order extends Model
                 ->where('warehouse_type', 2)
                 ->first();
                 
-                $warehouse_quantity = $warehouseStock->warehouse_quantity - $sessionCartList['stock_quantity'];
+                $warehouse_quantity = $warehouseStock->warehouse_stock_quantity - $sessionCartList['stock_quantity'];
             
                 Warehouse::where( 'warehouse_id', $warehouseStock->warehouse_id)
                 ->update(['warehouse_stock_quantity' => $warehouse_quantity]);

@@ -10,7 +10,8 @@
     use App\Models\Setting;
     use App\Models\Warehouse;
 
-    $route = Str::before(Request::route()->getName(), '.');   
+    $route = Str::before(Request::route()->getName(), '.');
+    
 @endphp
 
 @include('stock.partial.groupPartial')
@@ -22,7 +23,7 @@
         <div>
             <div class="uk-padding-small uk-box-shadow-small">
                 <select name="" id="" class="uk-select">
-                    <option value="">SELECT</option>
+                    <option value="">FILTER</option>
                     @foreach (Setting::SettingStockGroup() as $setting_stock_group)
                         <option onclick="stockGroup({{$loop->iteration}}, '{{$setting_stock_group}}', null)">{{Str::ucfirst($setting_stock_group)}}</option>
                     @endforeach

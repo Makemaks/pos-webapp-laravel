@@ -67,7 +67,7 @@ class HomeController extends Controller
         $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
         ->groupBy('stock_id')
         ->where('warehouse_stock_quantity', '>', 0)
-        ->paginate(10);
+        ->paginate(9);
        
         $userList = User::Store('user_account_id', $this->userModel->account_id)->pluck('user_id');
 

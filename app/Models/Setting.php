@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Session;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 use App\Models\Expertise;
 use App\Models\Setting;
@@ -301,7 +302,7 @@ class Setting extends Model
                 "status": "",
                 "description": "",
                 "value": "",
-                "group": "",
+                "setting_key_group": "",
                 "setting_key_type": ""
             }
         }',
@@ -422,22 +423,6 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingKeyType()
-    {
-
-        return [
-            "VOUCHER",
-            "CASH",
-            "CREDIT",
-            "TERMINAL",
-
-            //"DISCOUNT",
-            //"DELIVERY"
-        ];
-
-
-    }
-
     public static function SettingOfferType()
     {
         return [
@@ -528,7 +513,10 @@ class Setting extends Model
         return [
             'finalise', //coupons
             'status', //one offs
-            'transaction'
+            'transaction',#
+            'character',
+            'totaliser',
+            'menu'
         ];
     }
 
@@ -739,9 +727,10 @@ class Setting extends Model
 
                     //discount days
                     if (array_search( Carbon::now()->dayOfWeek, $stock_offer_value['available_day'] )) {
-                        $stockOffer[$stock_offer_key] = $stock_offer_value;
+                        if ($stock_offer_value['decimal']['discount_value'] > 0 && $stock_offer_value['decimal']['discount_value'] != NULL ) {
+                            $stockOffer[$stock_offer_key] = $stock_offer_value;
+                        }
                     }
-
                 }
             }
         }
@@ -758,12 +747,12 @@ class Setting extends Model
 
         foreach ($settingCurrentOffer as $settingCurrentOfferKey => $settingCurrentOfferValue) {
 
-            if (Setting::SettingOfferType()[$settingCurrentOffer['decimal']['discount_type']] == 'percentage') {
+            if (Setting::SettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
 
-                $settingCurrentOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOffer['decimal']['discount_value'], $price)];
+                $settingCurrentOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)];
 
             } else {
-                $settingCurrentOfferType[] = ['discount_value' => $price - $settingCurrentOffer['decimal']['discount_value'] ];
+                $settingCurrentOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
 
             }
 
@@ -773,7 +762,7 @@ class Setting extends Model
 
 
 
-        return $settingCurrentOfferType;
+        return collect($settingCurrentOfferType)->sum('discount_value');
     }
 
     

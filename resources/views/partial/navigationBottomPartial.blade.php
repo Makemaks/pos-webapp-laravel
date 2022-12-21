@@ -82,7 +82,7 @@ use App\Helpers\StringHelper;
                     <button class="uk-button uk-border-rounded uk-button-large uk-light" type="button" style="background-color: #{{StringHelper::getColor()}}">
                          PAY 
                     </button>
-                    <div uk-dropdown="mode: click">
+                    {{-- <div uk-dropdown="mode: click">
                         <ul class="uk-nav uk-dropdown-nav">
                       
                            
@@ -106,7 +106,7 @@ use App\Helpers\StringHelper;
                            @endif
                           
                         </ul>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 

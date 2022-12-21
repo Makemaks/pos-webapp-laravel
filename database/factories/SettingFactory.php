@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Helpers\ConfigHelper;
 use App\Helpers\CountryHelper;
+use App\Helpers\KeyHelper;
 use App\Models\Setting;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -156,40 +157,56 @@ class SettingFactory extends Factory
             ];
         }
 
+       
+
+        /* setting key */
+        for ($i = 0; $i < count(KeyHelper::StatusKey()); $i++) {
+            $setting_key_type[1][$i + 1] = KeyHelper::StatusKey()[$i];
+        }
+        for ($i = 0; $i < count(KeyHelper::FinaliseKey()); $i++) {
+            $setting_key_type[2][$i + 1] = KeyHelper::FinaliseKey()[$i];
+        }
+        for ($i = 0; $i < count(KeyHelper::TransactionKey()); $i++) {
+            $setting_key_type[3][$i + 1] = KeyHelper::TransactionKey()[$i];
+        }
+        for ($i = 0; $i < count(KeyHelper::CharacterKey()); $i++) {
+            $setting_key_type[4][$i + 1] = KeyHelper::CharacterKey()[$i];
+        }
+        for ($i = 0; $i < count(KeyHelper::TotaliserKey()); $i++) {
+            $setting_key_type[5][$i + 1] = KeyHelper::TotaliserKey()[$i];
+        }
+
+     
+
+        for ($i= 1; $i < count(Setting::SettingKeyGroup()); $i++) { 
+            
+          
+
+            foreach ($setting_key_type[$i] as $key => $value) {
+                $setting_key[] = [
+                    "status" => $this->faker->numberBetween($min = 0, $max = 1),
+                    "description" => $this->faker->sentence(),
+                    "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
+                    "setting_key_type" => $key, 
+                    "setting_key_group"  => $i,
+                    "image" => ''
+                ];
+            }
+    
+        }
+
+
+        
+        
         for ($i=0; $i < 20; $i++) { 
             $setting_stock_set[$i+1] = [
                 "name"=> $this->faker->word,
                 "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
                 "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::brand::plu
             ];
-
-
-            $setting_key[$i + 1] = [
-                "status" => $this->faker->numberBetween($min = 0, $max = 1),
-                "description" => $this->faker->sentence(),
-                "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
-                "setting_key_type" => $this->faker->numberBetween($min = 1, $max = 7), 
-                "group"  => $this->faker->numberBetween($min = 1, $max = 7),
-                "image" => ''
-            ];
         }
 
-
-
-        $array = [
-            "CASH",
-            "CREDIT",
-            "NO FUNCTION",
-            "ACCOUNT",
-            "EFT",
-            "HOTEL_TRANSFER",
-            "VOUCHER",
-        ];
-
-        for ($i = 0; $i < count($array); $i++) {
-            $setting_key_type[$i + 1] = $array[$i];
-        }
-
+        
         for ($i=0; $i < count(ConfigHelper::Nutrition()); $i++) { 
             $stock_nutrition[$i + 1] = ConfigHelper::Nutrition()[$i]['name'];
         }

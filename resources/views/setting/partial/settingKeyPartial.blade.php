@@ -1,6 +1,8 @@
 @php
     use App\Helpers\StringHelper;
     use App\Models\Setting;
+
+    $route = Str::before(Request::route()->getName(), '.');
 @endphp
 
 
@@ -45,9 +47,9 @@
 
 
 @else
-    <form action="{{ route('setting.store') }}" method="POST">
+    <form action="{{ route('setting.store') }}" method="POST" class="uk-form-stacked">
         @csrf
-        <div class="uk-child-width-1-2" uk-grid>
+        <div>
             @foreach ($data['settingModel']->setting_key  as $keySettingKey => $itemSettingKey)
                 @foreach ($itemSettingKey as $keyItemSettingKey => $valueItemSettingKey)
                     @if ($keyItemSettingKey == 'type')
@@ -66,12 +68,15 @@
                                 @endif
                             </select>
                         </div>
+                    @elseif ($keyItemSettingKey == 'image')
+                       
                     @elseif ($keyItemSettingKey == 'setting_key_type')
                         <div class ="uk-margin">
                             <label class="uk-form-label" for="form-stacked-text">{{Str::upper($keyItemSettingKey)}}</label>
                             <select class="uk-select" id="form-stacked-select" name="form[setting_key][{{$keyItemSettingKey}}]">
                                 <option value="" selected disabled>SELECT ...</option>
                                 @if ($data['settingModel']->setting_key_type)
+                                    
                                     @foreach ($data['settingModel']->setting_key_type  as $key_setting_key_type  => $item_setting_key_type)
                                             
                                         <option value="{{$key_setting_key_type}}" @if($key_setting_key_type == $valueItemSettingKey) selected @endif>
@@ -92,7 +97,7 @@
                                     @foreach (Setting::SettingKeyGroup() as $keySettingKeyGroup =>$valueSettingKeyGroup)
                                             
                                         <option value="{{$keySettingKeyGroup}}" @if($keySettingKeyGroup == Session::get('group')) selected @endif>
-                                            {{$valueSettingKeyGroup}}
+                                            {{Str::upper($valueSettingKeyGroup)}}
                                         </option>
                                             
                                     @endforeach
@@ -118,7 +123,7 @@
                                 @foreach (Setting::SettingOfferStatus()  as $keySettingOfferStatus  => $valueSettingOfferStatus)
                                         
                                     <option value="{{$keySettingOfferStatus}}" @if($keySettingOfferStatus == $valueItemSettingKey) selected @endif>
-                                        {{$valueSettingOfferStatus}}
+                                        {{Str::upper($valueSettingOfferStatus)}}
                                     </option>
                                         
                                 @endforeach
@@ -136,13 +141,15 @@
             <input name="setting_id" class="uk-input" type="hidden" value="{{$data['settingModel']->setting_id}}">
         </div>
 
-        <div class="uk-child-width-expand@m" uk-grid>
-            <div>
-                <button class="uk-button uk-button-default uk-border-rounded uk-width-1-1 uk-button-danger" type="submit">
-                    SAVE
-                </button>
-            </div>     
-        </div>
+        @if ($route != 'home')
+            <div class="uk-child-width-expand@m" uk-grid>
+                <div>
+                    <button class="uk-button uk-button-default uk-border-rounded uk-width-1-1 uk-button-danger" type="submit">
+                        SAVE
+                    </button>
+                </div>     
+            </div>
+        @endif
     </form>
 
 @endif

@@ -1,9 +1,13 @@
 
 @php
     use App\Helpers\StringHelper;
+
+    $settingList = [
+        'Float'
+    ];
 @endphp
 
-<div class="uk-child-width-1-4@s uk-text-center uk-grid-small uk-grid-match" uk-grid>
+{{-- <div class="uk-child-width-1-4@s uk-text-center uk-grid-small uk-grid-match" uk-grid>
        
     <div>
         <button class="uk-light uk-border-rounded uk-button uk-link-reset" style="background-color: #{{StringHelper::getColor()}}" id="discountPercentageID" value="discount" onclick="showSetupList('discount')">
@@ -38,4 +42,6 @@
            </div>
         </button>
     </div>
-</div>
+</div> --}}
+
+

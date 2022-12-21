@@ -387,11 +387,15 @@ class Stock extends Model
 
         //find discount
         if ($stock->stock_merchandise['setting_offer_id']) {
-            $stockCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::OfferType()));
-           if ($stockCurrentOffer) {
-                $stockPriceMin = Stock::StockPriceMin($stockCurrentOffer);
+            //find discount
+            $settingCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::OfferType()));
+           
+            if (count($settingCurrentOffer) > 0) {
+                $setupList['receipt']['stock']['stock_price_processed'] = Setting::SettingCurrentOfferType($settingCurrentOffer, $setupList['receipt']['stock']['stock_price']);
+              
+                /* $stockPriceMin = Stock::StockPriceMin($stockCurrentOffer);
                 $discount_value = Setting::SettingCurrentOfferType( $stockPriceMin, $setupList['receipt']['stock']['stock_price'] );
-                $setupList['receipt']['stock']['stock_price_processed'] = $discount_value - Stock::StockPriceMin($stockOffer);
+                $setupList['receipt']['stock']['stock_price_processed'] = $discount_value - Stock::StockPriceMin($stockOffer); */
            }
 
           
@@ -405,12 +409,14 @@ class Stock extends Model
         return $setupList;
     }
 
-    public static function Offer(){
+    public static function StockOffer(){
         return [
             "Discount %",
             "Set Price",
             "Discount amount cheapest",
             "Discount % cheapest",
+            "Discount amount expensive",
+            "Discount % expensive",
             "Discount amount last item",
             "Discount % last item"
         ];

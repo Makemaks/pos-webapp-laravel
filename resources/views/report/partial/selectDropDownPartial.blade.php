@@ -185,6 +185,8 @@
 @endphp    
 
     <input type="hidden" name="format" value="pdf">  
+    <input type="hidden" name="report_type" value="show_report">
+
     <label class="uk-form-label" for="form-stacked-text">REPORT </label> <br>
     <select class="uk-select uk-width-expand" name="fileName">
         <option selected disabled>Please Select Report</option>

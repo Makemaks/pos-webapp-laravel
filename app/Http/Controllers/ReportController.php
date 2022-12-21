@@ -23,14 +23,16 @@ class ReportController extends Controller
     {
 
         $this->Init($request);
-        // dd($request->all());
+        if($request->report_type && !$request->isdownload) {
+            return view('report.index', ['data' => $this->Data()]);
+        }
         // If its export PDF / CSV
         
         if ($request->fileName) {
             // If PDF
             $this->title = $request->fileName;
             if ($request->format == 'pdf') {
-                $this->pdfView = view('report.partial.' . $request->fileName, ['data' => $this->Data()])->render();
+                $this->pdfView = view('report.partial.pages.plu.' . $request->fileName, ['data' => $this->Data()])->render();
                 $render = \view('report.create', ['data' => $this->Data()])->render();
                 $pdf = App::make('dompdf.wrapper');
                 $pdf->loadHTML($render)->setPaper('a4', 'portrait')->setWarnings(false)->save('myfile.pdf');

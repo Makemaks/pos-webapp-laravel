@@ -44,13 +44,17 @@
                             <td><a href="{{route('order.edit', $order->order_id)}}"
                                     class="uk-button uk-button-default uk-border-rounded">{{$order->order_id}}</a></td>
                             <td>{{Order::OrderType()[$order->order_type]}}</td>
-                            @if ($order->payment_type)
-                            <td>{{$order->payment_type}}</td>
-                            @endif
+                            
+                            <td>
+                                @if ($order->payment_type)
+                                    {{$order->payment_type}}
+                                @endif
+                            </td>
+                           
                             <td>
                                 <select class="uk-select">
                                     @foreach (Order::OrderStatus() as $status)
-                                        <option  value="{{$loop->iteration}}" @if($order->order_status == $loop->iteration) selected @endif>{{$status}}</option>
+                                        <option  value="{{$loop->index}}" @if($order->order_status == $loop->iteration) selected @endif>{{$status}}</option>
                                     @endforeach
                                 </select>
                                 <input type="text" value="{{$order->order_id}}" name="order[{{$orderKey}}][order_id]" hidden>
@@ -61,8 +65,9 @@
                             <td>{{ json_decode($userPerson->person_name, true)['person_firstname'] }}</td>
                             <td>{{$order->created_at}}</td>
                             <td>
+                                
                                 <a href="{{route('order.index', ['order_id'=>$order->order_id, 'view' =>'availaibility'])}}"
-                                    class="uk-button uk-button-default uk-border-rounded">Availaibility</a>
+                                    class="uk-button uk-button-default uk-border-rounded">Explore</a>
                             </td>
                         </tr>
                         @endforeach

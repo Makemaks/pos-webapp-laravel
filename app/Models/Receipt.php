@@ -22,21 +22,12 @@ class Receipt extends Model
     public $timestamps = true;
 
     protected $attributes = [
-
-      
-        "receipt_discount" => '{
-            "1": {
-                "type": "",
-                "value": ""
-            }
-        }'
-
-       
+        "receipt_setting_key" => '{}'
     ];
 
     protected $casts = [
       
-        "receipt_discount" => 'array'
+        "receipt_setting_key" => 'array'
     ];
 
     public static function List($column,  $filter){
@@ -96,11 +87,10 @@ class Receipt extends Model
                 "delivery" => [],
                 "discount" => [],
                 "customer" => [],
-                "order_finalise_key" => [],
+                "order_setting_key" => [],
+                //"receipt_setting_key" => [],
                 "order_offer" => [],
                 "receipt" => [
-                    "stock_price_quantity" => 0,
-                    "stock_vat_rate" => 0,
                     "deliveryTotal" => 0,
                     "voucherAmountTotal" => 0,
                     "voucherPercentageTotal" => 0,
@@ -108,11 +98,14 @@ class Receipt extends Model
                     "discountPercentageTotal" => 0,
                     "creditTotal" => 0,
                     "cashTotal" => 0,
-                    "totalPriceVAT" => 0,
-                    "totalPrice" => 0,
+                    "priceVATTotal" => 0,
+                    "priceTotal" => 0,
                     "subTotal" => 0,
-                    "totalPriceFinal" => 0,
-                ]
+                    "priceFinalTotal" => 0,
+                    'stock' => ['stock_price' => 0, 'stock_price_processed' => 0],
+                    'finalise_key' => ['value' => 0, 'type' => 0]
+                ],
+                
 
             ];
             
@@ -123,7 +116,7 @@ class Receipt extends Model
 
         $setupList =  $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList');
 
-        return $request;
+        return $setupList;
     }
 
     public static function SessionCartInitialize($sessionCartList){
@@ -140,6 +133,7 @@ class Receipt extends Model
             $stockList[] = [
                 'stock_id' => $stock->stock_id,
                 'user_id' => $sessionCart['user_id'],
+                'store_id' => $sessionCart['store_id'],
                 'stock_name' => $stock->stock_merchandise['stock_name'],
                 'stock_quantity' => $sessionCart['stock_quantity'],
                 'stock_price' => MathHelper::FloatRoundUp($price, 2),
@@ -183,57 +177,47 @@ class Receipt extends Model
     }
 
     //data , stock , loop
-    public static function Calculate($data, $stockItem, $loop, $setupList){
+    public static function Calculate($data, $stockItem, $loop){
         //convert sting to val
         
         $stock = Stock::find($stockItem['stock_id']);
-        
+        $data['setupList']['receipt']['stock_vat_rate'] = 0;
         $stockItem['stock_vat_id'] = $stock->stock_merchandise['stock_vat_id'];
-        $stockPrice = $stockItem['stock_price'];
-        //stock current offer
-        if ($stockItem['setting_offer_id']) {
-            
-            $settingCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::OfferType()) );
-            
-            //if there is an offer on stock
-            if ($settingCurrentOffer) {
-                $setupList['receipt']['settingCurrentOfferType'] = Setting::SettingCurrentOfferType( $settingCurrentOffer, $setupList['receipt']['stock_price_quantity']);
-                $stockPriceOffer = Stock::StockPriceMin( $setupList['receipt']['settingCurrentOfferType'] );
-                
-                $stockPrice = $stockPriceOffer['total']['price'];
-            }
-            
-        }
-
-        $setupList['receipt']['stock_price_quantity'] = Stock::StockPriceQuantity($stockPrice, $stockItem['stock_quantity']);
       
-        
+        //stock current offer or price
+        $data['setupList'] = Stock::StockPriceProcessed($stock, $data['setupList']);
+        //get quantity
+        $stock_price_processed = Stock::StockPriceQuantity( $data['setupList']['receipt']['stock']['stock_price_processed'], $stockItem['stock_quantity']);
 
         //stock vat
         if ($stockItem['stock_vat_id']) {
-            $setupList['receipt']['stock_vat_rate'] = $data['settingModel']->setting_vat[$stockItem['stock_vat_id']]['rate'];
-            $setupList['receipt']['stock_price_quantity'] = MathHelper::VAT($setupList['receipt']['stock_vat_rate'], $setupList['receipt']['stock_price_quantity']);
-            
+            $data['setupList']['receipt']['stock_vat_rate'] = $data['settingModel']->setting_vat[$stockItem['stock_vat_id']]['rate'];
+            $stock_price_processed = MathHelper::VAT($data['setupList']['receipt']['stock_vat_rate'], $stock_price_processed);
         }
 
+        $data['setupList']['receipt']['stock']['stock_price_processed'] = $stock_price_processed;
+
         //add price to subtotal
-        $setupList['receipt']['subTotal'] = $setupList['receipt']['subTotal'] + $setupList['receipt']['stock_price_quantity'];
+        if($loop->first){
+            $data['setupList']['receipt']['subTotal'] = 0;
+        }
+
+        $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] + $stock_price_processed;
 
 
         if ($loop->last) {
             
             //final discount
              //calculate overall vat
-            $setupList['receipt'] = Setting::SettingFinaliseKey($data, $setupList['receipt']);
-            $setupList['receipt']['totalSettingVAT'] = collect($data['settingModel']->setting_vat)->where('deafult', 0)->sum('rate');
+            $data = Setting::SettingFinaliseKey($data);
+            $data['setupList']['receipt']['totalSettingVAT'] = collect($data['settingModel']->setting_vat)->where('default', 0)->sum('rate');
             
-            $setupList['receipt']['totalPriceVAT'] = MathHelper::VAT($setupList['receipt']['totalSettingVAT'], $setupList['receipt']['subTotal']);
-            $setupList['receipt']['totalPriceFinal'] =  $setupList['receipt']['totalPriceVAT'] + $setupList['receipt']['totalPrice'];
+            $data['setupList']['receipt']['priceVATTotal'] = MathHelper::VAT($data['setupList']['receipt']['totalSettingVAT'], $data['setupList']['receipt']['subTotal']);
+            $data['setupList']['receipt']['priceVATTotal'] =  $data['setupList']['receipt']['priceVATTotal'] + $data['setupList']['receipt']['priceTotal'];
             
         }
 
-
-        return $setupList;
+        return $data;
 
     }
 
@@ -320,6 +304,14 @@ class Receipt extends Model
     
     }
 
-
+    public static function ReceiptStatus(){
+        return [
+            'processed',
+            'cancelled',
+            'refunded'
+        ];
+           
+      
+    }
    
 }

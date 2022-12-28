@@ -46,7 +46,7 @@ use App\Helpers\DateTimeHelper;
                         <form action="{{route('home.index')}}">
                             @csrf
                             <select name="store-form" class="uk-select" onchange="this.form.submit()">
-                                <option selected disabled></option>
+                                <option selected disabled>SELECT</option>
                                 
                                 @isset($storeList)
                                     @foreach ($storeList as $store)

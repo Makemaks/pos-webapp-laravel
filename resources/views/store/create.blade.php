@@ -4,10 +4,8 @@
   
 @endphp
 @section('content')    
-   <form id="store-update" action="{{route('store.store')}}" method="POST">
+   <form id="store-update" enctype="multipart/form-data" action="{{route('store.store')}}" method="POST">
        @csrf
-       <div class="">
-            @include('store.partial.createPartial')
-       </div>
+        @include('store.partial.createPartial')
    </form>
 @endsection

@@ -40,25 +40,23 @@
         @include('partial.navigationPartial')
     </div>
     
-    <div class="uk-container uk-container-expand uk-margin-top">
+    <div class="uk-container uk-container-expand">
       
         <div class="uk-grid-collapse" uk-grid>
 
             @auth
-                
-                <div class="uk-width-auto@m">
-                    <div>
-                        @include('partial.menuPartial')
+                @if ($route != 'home')
+                    <div class="uk-width-auto@m">
+                        <div>
+                            @include('partial.menuPartial')
+                        </div>
                     </div>
-                </div>
-
+                @endif
             @endauth
 
         
             <div class="uk-width-expand@m uk-padding-small">
-                <div class="">
-                    @yield('content')
-                </div>
+                @yield('content')
             </div>
 
             
@@ -66,15 +64,9 @@
                 
                 @if ($route == 'home')
                     <div class="uk-width-1-3@s uk-padding-small">
-
-                        @if($route == 'home')
-                        
-                            <div id="receiptID">
-                                @include('receipt.partial.indexPartial')
-                            </div>
-                            
-                        @endif
-
+                        <div id="receiptID">
+                            @include('receipt.partial.indexPartial')
+                        </div>
                     </div>
                 @endif
             @endauth

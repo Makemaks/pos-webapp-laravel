@@ -20,7 +20,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\InitController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AddressController;
-use App\Http\Controllers\API\AppAPIController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StockController;
@@ -44,11 +43,13 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\WarehouseController;
 
+
+use App\Http\Controllers\API\AppAPIController;
 use App\Http\Controllers\API\HomeAPIController;
 use App\Http\Controllers\API\GatewayAPIController;
 use App\Http\Controllers\API\ChartAPIController;
 use App\Http\Controllers\API\CartAPIController;
-use App\Http\Controllers\API\SchemeAPIController;
+use App\Http\Controllers\API\SettingAPIController;
 use App\Http\Controllers\API\OrderAPIController;
 
 
@@ -75,7 +76,7 @@ Route::get('admin-store/{store}', [AuthenticationController::class, 'adminStore'
 Route::resource('home', HomeController::class);
 Route::resource('user', UserController::class);
 Route::resource('company', CompanyController::class);
-// Route::resource('address', AddressController::class);
+Route::resource('address', AddressController::class);
 Route::resource('person', PersonController::class);
 Route::resource('store', StoreController::class);
 Route::resource('order', OrderController::class);
@@ -88,7 +89,7 @@ Route::resource('reservation', ReservationController::class);
 // Route::resource('scheme', SchemeController::class);
 // Route::resource('plan', PlanController::class);
 
-// Route::resource('account', AccountController::class);
+Route::resource('account', AccountController::class);
 Route::resource('report', ReportController::class);
 Route::resource('ticket', TicketController::class);
 Route::resource('warehouse', WarehouseController::class);
@@ -153,7 +154,7 @@ Route::apiResources([
     'gateway-api' => GatewayAPIController::class,
     'chart-api' => ChartAPIController::class,
     'cart-api' => CartAPIController::class,
-    'scheme-api' => SchemeAPIController::class,
+    'setting-api' => SettingAPIController::class,
     'order-api' => OrderAPIController::class,
     'app-api' =>AppAPIController::class,
 ]);

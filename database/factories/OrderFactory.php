@@ -21,7 +21,7 @@ class OrderFactory extends Factory
     public function definition()
     {
         for ($i = 0; $i < 5; $i++) {
-            $order_finalise_key[$i + 1] = [
+            $order_setting_key[$i + 1] = [
                 'ref' => $this->faker->numberBetween($min = 1, $max = 7),
                 'total' => $this->faker->numberBetween($min = 50, $max = 200),
             ];
@@ -56,9 +56,9 @@ class OrderFactory extends Factory
             'order_user_id' => $this->faker->numberBetween($min = 1, $max = 2),
             'ordertable_id' => $this->faker->numberBetween($min = 1, $max = 2),
             'ordertable_type' => $this->faker->randomElement($array = array( 'User', 'Company' )),
-            'order_status' => $order_status,
+            'order_status' => $this->faker->numberBetween($min = 0, $max = 9),
             'order_type' => $this->faker->numberBetween($min = 0, $max = 1), //online,takeaway
-            'order_finalise_key' => $order_finalise_key,
+            'order_setting_key' => $order_setting_key,
             'order_setting_vat' => $order_vat,
             'order_group' => $order_group
         ];

@@ -3,10 +3,11 @@
     use App\Helpers\CountryHelper;
     use App\Helpers\MathHelper;
     use App\Helpers\StringHelper;
-    use App\Models\Warehouse;
+    
     use App\Models\User;
     use App\Models\Stock;
     use App\Models\Setting;
+    use App\Models\Warehouse;
 
     $route = Str::before(Request::route()->getName(), '.');
     
@@ -25,215 +26,54 @@
 @endphp
 
 
-
-
-@if ($route != 'home-api')
-
-    <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
-        <thead>
-            <tr>
-               @foreach ($tableHeader as $item)
-                    <th>{{$item}}</th>
-               @endforeach
-            </tr>
-        </thead>
-        <tbody>
-           @foreach ($data['stockList'] as $stock)
-                <tr>
-                    <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock->stock_id}}</a></td>
-                    <td>{{$stock->stock_merchandise['stock_name']}}</td>
-                    <td>
-                        {{-- @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_set) )
-                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['plu_id']]['name']}}
-                        @endi --}}
-                    </td>
-
-                    <td>{{$stock->stock_merchandise['random_code']}}</td>
-                    <td>
-                        @if ( array_key_exists($stock->stock_merchandise['group_id'], $data['settingModel']->setting_stock_set) )
-                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['group_id']]['name']}}
-                        @endif
-                    </td>
-                    <td>
-                        {{-- dept --}}
-                        @if ( array_key_exists($stock->stock_merchandise['category_id'], $data['settingModel']->setting_stock_set) )
-                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['category_id']]['name']}}
-                        @endif
-                    </td>
-                    <td>
-                       @if ($stock->stock_merchandise['stock_vat_id'])
-                         {{$stock->stock_merchandise['stock_vat_id']}}
-                       @else
-                            @foreach ($data['settingModel']->setting_vat as $item)
-                                @if ($item['default'] == 0)
-                                    {{$item['rate']}}
-                                @endif
-                            @endforeach
-                       @endif
-
-                    </td>
-                    <td>
-                        @php
-                            $price = 0;
-                            $price = MathHelper::FloatRoundUp(Stock::StockPriceDefault($stock->stock_price), 2);
-                           
-                        @endphp
-                       {{$price}}
-                    </td>
-                    {{-- <td>{{$stock->stock_merchandise['stock_quantity']}}</td> --}}
-                </tr>
+<table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
+    <thead>
+        <tr>
+           @foreach ($tableHeader as $item)
+                <th>{{$item}}</th>
            @endforeach
-        </tbody>
-    </table>
+        </tr>
+    </thead>
+    <tbody>
+       @foreach ($data['stockList'] as $stock)
+            <tr>
+                <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock->stock_id}}</a></td>
+                <td>{{$stock->stock_merchandise['stock_name']}}</td>
+                <td>
+                    {{-- @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_set) )
+                        {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['plu_id']]['name']}}
+                    @endi --}}
+                </td>
 
-@else
+                <td>{{$stock->stock_merchandise['random_code']}}</td>
+                <td>
+                    @if ( array_key_exists($stock->stock_merchandise['group_id'], $data['settingModel']->setting_stock_set) )
+                        {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['group_id']]['name']}}
+                    @endif
+                </td>
+                <td>
+                    {{-- dept --}}
+                    @if ( array_key_exists($stock->stock_merchandise['category_id'], $data['settingModel']->setting_stock_set) )
+                        {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['category_id']]['name']}}
+                    @endif
+                </td>
+                <td>
+                   @if ($stock->stock_merchandise['stock_vat_id'])
+                     {{$stock->stock_merchandise['stock_vat_id']}}
+                   @else
+                        @foreach ($data['settingModel']->setting_vat as $item)
+                            @if ($item['default'] == 0)
+                                {{$item['rate']}}
+                            @endif
+                        @endforeach
+                   @endif
 
-    <div>
-        @include('stock.partial.groupPartial')
-    </div>
-
-    <hr>
-
-    <div class="uk-overflow-auto uk-height-large" uk-height-viewport="offset-top: true; offset-bottom: 10">
-
-        <div class="uk-grid-match uk-child-width-1-4@s uk-grid-small uk-padding-small" uk-grid>
-        
-            @isset($data['stockList'])
-                @foreach ($data['stockList'] as $stock)
-    
-                    @php
-                        $price = 0;
-                        $storeID = $stock->stock_store_id;
-                        $image =  'stock/'.$storeID.'/'.$stock->image;   
-                        $stockOffer = [];
-                        $stockCurrentOffer = [];
-                        
-                      
-
-                        $price = MathHelper::FloatRoundUp(Stock::StockPriceCustomer($stock->stock_price), 2);
-                        //check if customer has price
-                        if ($price == 0) {
-                           //get original price
-                            $price = MathHelper::FloatRoundUp(Stock::StockPriceDefault($stock->stock_price), 2);
-                        }
-
-                        //find discount
-                        if ($stock->stock_merchandise['setting_offer_id']) {
-                            $stockCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::OfferType()));
-                            $stockOffer = Setting::SettingCurrentOfferType( $stockCurrentOffer, $price );
-                        }
-
-                        if($stockOffer){
-                            $stockOfferMin =  Stock::StockPriceMin($stockOffer);
-                        }
-
-                    @endphp
-    
-                    <div>
-
-                        <div class="uk-padding-small uk-box-shadow-small" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
-                            
-                            <div class="">
-                                <b>{{Str::ucfirst($stock->stock_merchandise['stock_name'])}}</b>
-                            </div>
-
-                            <div title="Price">
-                                @if (count($stockOffer) > 0)
-                                    <p class="uk-text-small uk-margin-remove-bottom">{{ MathHelper::FloatRoundUp( $stockOfferMin['total']['price'], 2) }}</h3>
-                                    
-                                @else
-                                    <p class="uk-text-small uk-margin-remove-bottom">{{$price}}</h3>
-                                @endif
-                            </div>
-                            
-                            <div class="uk-grid-small" uk-grid>
-                                {{-- <div class="uk-width-auto" title="{{$stock->stock_id}}" >
-                                    <img class="uk-border-circle" width="40" height="40" src="images/avatar.jpg">
-                                   
-                                </div> --}}
-
-                                <div title="Qty">
-                                    @php
-                                        $color = '';
-                                        $warehouseStockList = Warehouse::Available($stock->stock_id, $storeID);
-                                        $count = 0;
-
-                                        if($warehouseStockList->count() > 0) {
-                                            
-                                            if (Warehouse::WarehouseType()[$warehouseStockList->first()->warehouse_type] == 'transfer') {
-                                                $color = 'uk-text-warning';
-                                            }
-                                            else{
-                                                $color = 'uk-text-danger';
-                                            }
-                                            
-                                            $count = $warehouseStockList->first()->warehouse_quantity;
-                                        }
-                                
-                                    @endphp
-                                   
-                                   <h3 {{$color}}">{{$count}}</h6>
-                                </div>
-                                
-                                <div title="VAT">
-                                    <span class="uk-text-small uk-text-warning">
-                                        @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
-                                            @foreach ($data['settingModel']->setting_vat as $item)
-                                                @if ($item['default'] == 0)
-                                                    {{ MathHelper::FloatRoundUp($item['rate'], 2) }}
-                                                @endif
-                                            @endforeach
-                                        @else
-                                            @if (array_key_exists( $stock->stock_merchandise['stock_vat_id'], $data['settingModel']->setting_vat) )
-                                                   {{ MathHelper::FloatRoundUp($data['settingModel']->setting_vat[ $stock->stock_merchandise['stock_vat_id'] ]['rate'], 2) }}
-                                            @endif
-                                        @endif    
-                                    </span>
-                                </div>
-
-                                <div title="Offer">
-                                    @if (count($stockOffer) > 0)
-                                        <s class="uk-text-meta uk-margin-remove-top uk-text-danger">{{$price}}</s>
-                                    @endif
-                                </div>
-                            </div>
-
-                           
-
-                            <div>
-                                <div class="uk-child-width-1-3" uk-grid>
-                                    <div>
-                                        @if ($stockCurrentOffer)
-                                            <span class="uk-text-success" uk-icon="icon: star; ratio: 1.5"></span>
-                                        @endif
-                                   </div>
-
-                                    <div title="Offer">
-                                        @if (count($stockOffer) > 0)
-                                           {{ MathHelper::FloatRoundUp( $stockOfferMin['decimal']['discount_value'], 2)}}
-                                        @endif
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-   
-
-                 
-                @endforeach
-                
-            @endisset
-    
-           
-        </div>
-
-      <div class="uk-margin-large">
-            @isset($data['stockList'])
-                @include('partial.paginationPartial', ['paginator' => $data['stockList']])
-            @endisset
-      </div>
-    </div>
-   
-@endif
+                </td>
+                <td>
+                    {{MathHelper::FloatRoundUp(Stock::StockPriceDefault($stock->stock_price), 2)}}
+                </td>
+                {{-- <td>{{$stock->stock_merchandise['stock_quantity']}}</td> --}}
+            </tr>
+       @endforeach
+    </tbody>
+</table>

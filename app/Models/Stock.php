@@ -158,9 +158,6 @@ class Stock extends Model
         return Stock::leftJoin('store', 'store.store_id', '=', 'stock.stock_store_id');
     }
 
-
-   
-
     public static function GroupCategoryBrandPlu($data, $type, $stock_merchandise_key)
     {
 
@@ -241,8 +238,9 @@ class Stock extends Model
         return $totalPrice;
     }
 
-    public static function Discount($stock_price, $discount){
 
+    public static function Discount($stock_price, $discount){
+        //enter discount manually
         $price = 0;
 
         foreach (json_decode($discount) as $keyOverride => $valueDiscount) {
@@ -283,9 +281,11 @@ class Stock extends Model
 
     
 
-
-    public static function StockVAT($stock){
     
+    public static function StockVAT($stock){
+    //get vat 
+
+        $stock_vat = [];
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 
@@ -293,9 +293,9 @@ class Stock extends Model
         
         if ($stock->stock_merchandise['stock_vat_id']) {
             $stock_vat = $settingModel->setting_vat[$stock->stock_merchandise['stock_vat_id']];
-            return  $stock_vat['rate'];
         }
 
+        return $stock_vat;
     }
 
    
@@ -360,12 +360,58 @@ class Stock extends Model
         return collect( $settingCurrentOfferType )->where('total.price',  $min)->first();
     }
 
-    public static function Offer(){
+
+    public static function StockPriceProcessed($stock, $setupList){
+
+        $stockOffer = 0;
+        $settingCurrentOffer = [];
+        $stock_price = MathHelper::FloatRoundUp(Stock::StockPriceDefault($stock->stock_price), 2);
+        $setupList['receipt']['stock']['stock_price'] = $stock_price;
+        $setupList['receipt']['stock']['stock_price_processed'] = $stock_price;
+
+      
+
+        $setupList['receipt']['stock']['stock_price'] = MathHelper::FloatRoundUp(Stock::StockPriceCustomer($stock->stock_price), 2);
+        //check if customer has price
+        if ($setupList['receipt']['stock']['stock_price'] == 0) {
+            //get original price
+            $setupList['receipt']['stock']['stock_price'] = $stock_price;
+        }
+
+        //find discount
+        if ($stock->stock_merchandise['setting_offer_id']) {
+            //find discount
+            foreach ($stock->stock_merchandise['setting_offer_id']  as $key => $setting_offer_id) {
+                $settingCurrentOffer[$key] = Setting::SettingOffer($setting_offer_id);
+            }
+           
+            if (count($settingCurrentOffer) > 0) {
+                $setupList['receipt']['stock']['stock_price_processed'] = Setting::SettingDiscount($settingCurrentOffer, $setupList['receipt']['stock']['stock_price']);
+              
+                /* $stockPriceMin = Stock::StockPriceMin($settingCurrentOffer);
+                $discount_value = Setting::SettingDiscount( $stockPriceMin, $setupList['receipt']['stock']['stock_price'] );
+                $setupList['receipt']['stock']['stock_price_processed'] = $discount_value - Stock::StockPriceMin($stockOffer); */
+           }
+
+          
+        }
+
+       /*  if($stockOffer){
+            $setupList['receipt']['stock']['stock_price_processed'] = $stockOffer - Stock::StockPriceMin($stockOffer);
+        } */
+
+  
+        return $setupList;
+    }
+
+    public static function StockOffer(){
         return [
             "Discount %",
             "Set Price",
             "Discount amount cheapest",
             "Discount % cheapest",
+            "Discount amount expensive",
+            "Discount % expensive",
             "Discount amount last item",
             "Discount % last item"
         ];

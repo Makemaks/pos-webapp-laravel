@@ -1,8 +1,8 @@
 @extends('layout.master')
 
-@inject ('personModel', 'App\Models\Person')
-@inject('dateTimeHelper', 'App\Helpers\DateTimeHelper')
-
-@section('content')
-    @include('company.partial.createPartial')
+@section('content')    
+   <form id="store-update" action="{{route('company.store')}}" method="POST">
+       @csrf
+        @include('company.partial.createPartial')
+   </form>
 @endsection

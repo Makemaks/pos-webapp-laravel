@@ -21,7 +21,7 @@ class Warehouse extends Model
             "type": "",
             "description": ""
         }',
-        'warehouse_stock_price' => '{
+        /* 'warehouse_stock_price' => '{
             "1" : {
                 "name": "",
                 "description": "",
@@ -35,13 +35,13 @@ class Warehouse extends Model
                 "warehouse_stock_price_id" = "",
                 "warehouse_stock_price_quantity" = ""
             }"
-        }',
+        }', */
     ];
 
     protected $casts = [
         "warehouse_reason" => 'array',
-        "warehouse_stock_price" => 'array',
-        "warehouse_stock_price_quantity" => 'array',
+       /*  "warehouse_stock_price" => 'array',
+        "warehouse_stock_price_quantity" => 'array', */
     ];
 
     public static function Store(){
@@ -53,26 +53,11 @@ class Warehouse extends Model
     public static function List($column,  $filter){
         return Warehouse::
         leftJoin('stock', 'stock.stock_id', '=', 'warehouse.warehouse_stock_id')
+        ->leftJoin('store', 'store.store_id', '=', 'warehouse.warehouse_store_id')
         ->where($column,  $filter);
     }
 
-    public static function Available($id, $store_id = null){
-       
-        if ($store_id) {
-            $stockList = Warehouse::where('warehouse_stock_id', $id )
-            ->where('warehouse_quantity','>', 0)
-            ->where('warehouse_store_id', $store_id)
-            ->get();
-        } else {
-            $stockList = Warehouse::where('warehouse_stock_id', $id )
-            ->where('warehouse_quantity','>', 0)
-            ->get();
-           
-        }
-        
-
-        return $stockList;
-    }
+    
 
     public static function WarehouseStatus(){
         return [

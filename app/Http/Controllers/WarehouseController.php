@@ -44,7 +44,7 @@ class WarehouseController extends Controller
         if ($request->has('action')) {
             $warehouse = Warehouse::find($request->warehouse_id);
             $warehouse_quantity = $warehouse->warehouse_quantity - $request->receipt_quantity;
-            Warehouse::where('warehouse_id', $request->warehouse_id)->update(['warehouse_quantity' => $warehouse_quantity]);
+            Warehouse::where('warehouse_id', $request->warehouse_id)->update(['warehouse_stock_quantity' => $warehouse_quantity]);
             return redirect()->back();
         }
 
@@ -62,10 +62,10 @@ class WarehouseController extends Controller
                 ->get();
 
             $this->warehouseList = Warehouse::Store()
-                ->whereIn('warehouse_user_id', $accountList->pluck('user_id'))
-                ->paginate(20);
+            ->whereIn('warehouse_user_id', $accountList->pluck('user_id'))
+            ->get();
 
-            $this->Init();
+            
         }
 
         return view('warehouse.index', ['data' => $this->Data()]);
@@ -84,7 +84,7 @@ class WarehouseController extends Controller
                     if ($wareHouseKey == $receiptQuantityKey) {
                         $warehouse = Warehouse::find($warehouseId);
                         $warehouse_quantity = $warehouse->warehouse_quantity - $receiptQuantity;
-                        Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_quantity' => $warehouse_quantity]);
+                        Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_stock_quantity' => $warehouse_quantity]);
                     }
                 }
             }
@@ -101,27 +101,18 @@ class WarehouseController extends Controller
 
     public function Store(Request $request)
     {
-        if ($request->has('receipt_quantity')) {
-            foreach ($request->warehouse_id as $wareHouseKey => $warehouseId) {
-                foreach ($request->receipt_quantity as $receiptQuantityKey => $receiptQuantity) {
-                    if ($wareHouseKey == $receiptQuantityKey) {
-                        $warehouse = Warehouse::find($warehouseId);
-                        $warehouse_quantity = $warehouse->warehouse_quantity - $receiptQuantity;
-                        Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_quantity' => $warehouse_quantity]);
-                    }
-                }
-            }
-            return redirect()->back();
-        }
+       
         Warehouse::insert($request->except('_token', '_method'));
-        return view('warehouse.index', ['data' => $this->Data()]);
+       
+        
+        return redirect()->back()->with('success', 'Transfer added Successfuly');
     }
 
     public function Edit($warehouse)
     {
         $this->warehouseList = Warehouse::where('warehouse_id', $warehouse)->get();
         $this->stockModel = Stock::find($this->warehouseList->first()->warehouse_stock_id);
-
+        $this->stockModel['edit'] = true;
         $this->Init();
 
         return view('warehouse.edit', ['data' => $this->Data()]);

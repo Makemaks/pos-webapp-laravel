@@ -58,18 +58,30 @@ class MenuController extends Controller
 
              break;
 
-        case 'case-sizes':
-
-            $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
-           
-
-            return redirect()->route('setting.index');
+        case 'supplier':
+            return redirect()->route('company.index');
 
             break;
 
-        case 'recipes':
+        case 'case-size':
 
+            $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+            ->first();
+                    
             $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+            return view('menu.setting.settingCaseSize', ['data' => $this->Data()]);
+
+            // return redirect()->route('setting.index');
+
+            break;
+
+        case 'recipe':
+
+            $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+            ->first();
+                    
+            $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+            return view('menu.setting.settingRecipe', ['data' => $this->Data()]);
             
 
             return redirect()->route('setting.index');
@@ -124,19 +136,19 @@ class MenuController extends Controller
             case 'finalise-key':
                 $group = array_search( $request->view, Setting::SettingKeyGroup());
                 $request->session()->flash('group', $group);
-                return view('menu.setting.key', ['data' => $this->Data()]);
+                return view('menu.setting.settingKey', ['data' => $this->Data()]);
                 break;
 
             case 'status-key':
                 $group = array_search( $request->view, Setting::SettingKeyGroup());
                 $request->session()->flash('group', $group);
-                return view('menu.setting.key', ['data' => $this->Data()]);
+                return view('menu.setting.settingKey', ['data' => $this->Data()]);
                 break;
 
             case 'transaction-key':
                 $group = array_search( $request->view, Setting::SettingKeyGroup());
                 $request->session()->flash('group', $group);
-                return view('menu.setting.key', ['data' => $this->Data()]);
+                return view('menu.setting.settingKey', ['data' => $this->Data()]);
                 break;
 
             case 'receipt':

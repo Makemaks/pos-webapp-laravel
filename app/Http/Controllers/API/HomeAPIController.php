@@ -49,6 +49,8 @@ class HomeAPIController extends Controller
 
         //used for pagination
         $this->request = $request;
+
+        $all = $request->all();
         
         $request->session()->flash('action', $request['action']);
         $request->session()->flash('view', 0);
@@ -99,9 +101,9 @@ class HomeAPIController extends Controller
             
             $this->stockList = Stock::Warehouse($where, $this->userModel->store_id)
             ->groupBy('stock_id')
-            ->where('warehouse_quantity', '>', 0)
+            ->where('warehouse_stock_quantity', '>', 0)
             ->where($where, $request->session()->get('id'))
-            ->paginate(20);
+            ->paginate(10);
 
             $this->html = view('stock.partial.indexPartial', ['data' => $this->Data()])->render();
             //$this->html = view('stock.partial.groupPartial', ['data' => $this->Data()])->render();
@@ -167,7 +169,7 @@ class HomeAPIController extends Controller
             
             $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
             ->groupBy('stock_id')
-            ->where('warehouse_quantity', '>', 0);
+            ->where('warehouse_stock_quantity', '>', 0);
 
            if ($request->has('view')) {
                 $this->stockList = $this->stockList->orWhere('stock_merchandise->stock_name', 'like', '%'.$request['value'].'%');
@@ -211,7 +213,7 @@ class HomeAPIController extends Controller
     */
     public function create()
     {
-        
+        $hi = 1;
     }
 
     /**
@@ -222,7 +224,7 @@ class HomeAPIController extends Controller
     */
     public function store(Request $request)
     {
-        
+        $hi = 1;
     }
 
     /**
@@ -233,6 +235,7 @@ class HomeAPIController extends Controller
     */
     public function show($id)
     {
+        $hi = 1;
         //
     }
 
@@ -244,7 +247,7 @@ class HomeAPIController extends Controller
     */
     public function edit($id)
     {
-
+        $hi = 1;
     }
 
     /**
@@ -256,6 +259,7 @@ class HomeAPIController extends Controller
     */
     public function update(Request $request, $id)
     {
+        $hi = 1;
         //
     }
 

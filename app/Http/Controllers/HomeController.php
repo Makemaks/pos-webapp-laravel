@@ -27,11 +27,12 @@ class HomeController extends Controller
     
     private $storeModel;
     private $settingModel;
+    private $settingList;
     private $paymentModel;
     private $sessionCartList = [];
     private $schemeList;
     private $personList;
-    private $request;
+    private $setupList;
     
 
     public function __construct()
@@ -44,11 +45,9 @@ class HomeController extends Controller
     {
 
         $this->init();
-       
-
          //setup new
        
-        $this->request = Receipt::SessionInitialize($request);
+        $this->setupList = Receipt::SessionInitialize($request);
         
         $this->user = 0;
 
@@ -64,10 +63,15 @@ class HomeController extends Controller
 
         $this->settingModel->setting_stock_set = collect($this->settingModel->setting_stock_set)->where('type', 0);
 
-      /*   $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
-        ->paginate(12); */
+        $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
+        ->groupBy('stock_id')
+        ->where('warehouse_stock_quantity', '>', 0)
+        ->paginate(9);
        
-       
+        $userList = User::Store('user_account_id', $this->userModel->account_id)->pluck('user_id');
+
+        $this->personList = Person::Address('person_organisation_id', $this->userModel->organisation_id)
+        ->paginate(20);
       
         return view('home.index', ['data' => $this->Data()]);
     }
@@ -84,8 +88,7 @@ class HomeController extends Controller
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
-
-       
+        $this->settingList = Setting::where('settingtable_id', $this->userModel->store_id);
     }
 
     private function Session(Request $request){
@@ -103,10 +106,11 @@ class HomeController extends Controller
             'sessionCartList' => $this->sessionCartList,
             'schemeList' => $this->schemeList,
             'settingModel' => $this->settingModel,
+            'settingList' => $this->settingList,
             'userList' => $this->userList,
             'personModel' => $this->personModel,
             'personList' => $this->personList,
-            'request' => $this->request
+            'setupList' => $this->setupList
            
         ];
     }

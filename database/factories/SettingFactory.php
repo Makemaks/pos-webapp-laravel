@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Helpers\ConfigHelper;
 use App\Helpers\CountryHelper;
+use App\Helpers\KeyHelper;
 use App\Models\Setting;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -156,40 +157,36 @@ class SettingFactory extends Factory
             ];
         }
 
+      
+
+        $count = 0;
+        for ($i= 0; $i < count(Setting::SettingKeyGroup()); $i++) { 
+            
+            foreach (KeyHelper::Type()[$i] as $key => $value) {
+                $count++;
+                $setting_key[$count] = [
+                    "setting_key_group"  => $i,
+                    "setting_key_type" => $key, 
+                    "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
+                    "name"=> $this->faker->word,
+                    "status" => $this->faker->numberBetween($min = 0, $max = 1),
+                    "description" => '',
+                    "image" => ''
+                ];
+            }
+    
+        }
+
+        
         for ($i=0; $i < 20; $i++) { 
             $setting_stock_set[$i+1] = [
                 "name"=> $this->faker->word,
                 "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
                 "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::brand::plu
             ];
-
-
-            $setting_key[$i + 1] = [
-                "status" => $this->faker->numberBetween($min = 0, $max = 1),
-                "description" => $this->faker->sentence(),
-                "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
-                "setting_key_type" => $this->faker->numberBetween($min = 1, $max = 7), 
-                "group"  => $this->faker->numberBetween($min = 1, $max = 7),
-                "image" => ''
-            ];
         }
 
-
-
-        $array = [
-            "CASH",
-            "CREDIT",
-            "NO FUNCTION",
-            "ACCOUNT",
-            "EFT",
-            "HOTEL_TRANSFER",
-            "VOUCHER",
-        ];
-
-        for ($i = 0; $i < count($array); $i++) {
-            $setting_key_type[$i + 1] = $array[$i];
-        }
-
+        
         for ($i=0; $i < count(ConfigHelper::Nutrition()); $i++) { 
             $stock_nutrition[$i + 1] = ConfigHelper::Nutrition()[$i]['name'];
         }
@@ -252,7 +249,7 @@ class SettingFactory extends Factory
         return [
             
             'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 10),
-            'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company')),
+            'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company', 'Organisation')),
             'setting_api' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
             'setting_stock_set'  => $setting_stock_set,
@@ -270,7 +267,7 @@ class SettingFactory extends Factory
             'setting_receipt' => $setting_receipt,
             
             'setting_key' => $setting_key,
-            'setting_key_type' => $setting_key_type,
+            
             'setting_group' => $setting_group,
             'setting_customer' => $setting_customer,
             'setting_stock_tag_group' => $setting_stock_tag_group,

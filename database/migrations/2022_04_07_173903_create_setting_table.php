@@ -45,7 +45,6 @@ return new class extends Migration
             $table->json('setting_pos')->nullable()->comment('Tills');
 
             $table->json('setting_key')->nullable();
-            $table->json('setting_key_type')->nullable();
 
             $table->json('setting_receipt')->nullable();
 

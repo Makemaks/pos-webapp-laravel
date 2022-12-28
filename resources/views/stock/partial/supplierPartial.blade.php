@@ -1,14 +1,29 @@
 @php
     use App\Models\Company;
-
-    $iconArray = [
-        "reply",
-       "forward"
-    ];
-
-
-  
+    use App\Models\Stock;
+    use Carbon\Carbon;
+   
+    $companyList = new Stock();
+ 
 @endphp
+@if (count($data['companyList']) )
+    <ul class="uk-subnav">
+        <li>
+            <template></template>
+            <button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="stockTransaferUpdate" value="stockTransaferUpdate">
+            Save
+            </button>
+        </li>
+        <li>
+            <div>
+                <button class="uk-button uk-button-default uk-border-rounded" type="submit" form="stockTransaferUpdate" name="deleteButton" value="deleteButton">DELETE</button>
+            </div>
+        </li>
+    </ul>
+    <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+        <li><a href="#" uk-icon="list"></a></li>
+        <li><a href="#" uk-icon="plus"></a></li>
+    </ul>
 
 <h3>SUPPLIERS</h3>
                   
@@ -78,7 +93,19 @@
         </table>
     </li>
 
-    <li>
+        <li>
+            <form action="{{ route('company.store') }}" method="POST">
+                @csrf
+                @method('POST')
+                @include('company.partial.createPartial')
+                <div class="uk-child-width-expand@m" uk-grid>
+                    <div>
+                        <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push" type="submit"></button>
+                    </div>     
+                </div>
+            </form>
+        </li>
+    </ul>
 
         <table class="uk-table uk-table-responsive uk-table-divider">
             <thead>

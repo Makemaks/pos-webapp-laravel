@@ -5,6 +5,7 @@
     use App\Models\Receipt;
 
     $route = Str::before(Request::route()->getName(), '.');
+  
 @endphp
 
 {{-- <div class="uk-grid-small" uk-grid>
@@ -16,22 +17,22 @@
     </div>
 </div> --}}
 
-<div class="uk-overflow-auto uk-height-large" uk-height-viewport="offset-top: true; offset-bottom: 10">
+<div>
 
     <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
         <thead>
             <tr>
                 <th>Name</th>
-                @if ($route != 'home-api')
+                @if ($route != 'home-api' && $route != 'home')
                     <th>DOB</th>
                     <th>Type</th>
                     <th>Role</th>
                 @endif
                 <th>Email/Tel</th>
-                <th><span uk-icon="plus"></span></th>
-                <th><span uk-icon="plus"></span></th>
                 <th>Group</th>
                 <th>Discount</th>
+                <th><span uk-icon="plus"></span></th>
+                <th><span uk-icon="plus"></span></th>
             </tr>
         </thead>
         <tbody>
@@ -46,7 +47,7 @@
                             @include('person.partial.personPartial', ['data' => $data, 'view' => null])
                         </td>
                        
-                        @if ($route != 'home-api')
+                        @if ($route != 'home-api' && $route != 'home')
                             <td>{{$person->person_dob}}</td>
                             <td>{{Person::PersonType()[$person->person_type]}}</td>
                             <td>{{$person->person_role}}</td>
@@ -58,23 +59,8 @@
                               
                             @endforeach
                             @foreach (json_decode($person->address_phone) as $address_phone)
-                                <p class="uk-margin-remove-top">{{$address_phone}}</p>
+                                <p class="uk-margin-remove-top uk-margin-remove-bottom">{{$address_phone}}</p>
                             @endforeach
-                        </td>
-                       
-                        <td>
-                            <button uk-icon="cart" class="uk-button uk-button-default uk-border-rounded" onclick="useCustomer({{$person->person_id}})"></button>
-                        </td>
-                        <td>
-                            @php
-                                $user = User::Person('user_person_id', $person->person_id)->first();
-                            @endphp
-                            
-                            @if ($user == Null)
-                                <a uk-icon="user" class="uk-button uk-button-default uk-border-rounded" href="{{route('user.create', ['person_id' => $person->person_id])}}">
-                                    
-                                </a>
-                            @endif
                         </td>
                         <td>
                             @if ($person->person_stock_price)
@@ -89,6 +75,21 @@
                               
                             @endif
                         </td>
+                        <td>
+                            <button uk-icon="cart" class="uk-button uk-button-default uk-border-rounded" onclick="useCustomer({{$person->person_id}})"></button>
+                        </td>
+                        <td>
+                            @php
+                                $user = User::Person('user_person_id', $person->person_id)->first();
+                            @endphp
+                            
+                            @if ($user == Null)
+                                <a uk-icon="user" class="uk-button uk-button-default uk-border-rounded" href="{{route('user.create', ['person_id' => $person->person_id])}}">
+                                    
+                                </a>
+                            @endif
+                        </td>
+                        
                     </tr>
                 @endif
                 

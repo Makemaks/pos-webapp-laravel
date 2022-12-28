@@ -24,6 +24,7 @@ use App\Helpers\StringHelper;
     $cartList = null;
     $awaitingCartList = [];
 
+
     if (Auth::check()) {
         if (Session::has('user-session-' . Auth::user()->user_id . '.cartList')) {
             $cartList = Session::get('user-session-' . Auth::user()->user_id . '.cartList');
@@ -38,7 +39,10 @@ use App\Helpers\StringHelper;
 
         <div class="uk-navbar-left">
 
-           
+            <div class="uk-navbar-item" id="useCustomerID">
+                @include('person.partial.personPartial', ['data' => $data, 'view' => 'receipt'])
+            </div>
+    
 
            <div class="uk-navbar-item">
                 <div class="uk-button-group">
@@ -58,7 +62,7 @@ use App\Helpers\StringHelper;
                 <button class="uk-button uk-border-rounded uk-button-large uk-light" type="button" style="background-color: #{{StringHelper::getColor()}}" onclick="settingFinaliseKey('cancel')">
                     CANCEL
                </button>
-            </div>
+            </div> 
 
           
 
@@ -73,37 +77,9 @@ use App\Helpers\StringHelper;
 
           
             <div class="uk-navbar-item" id="payButtonID">
-              
-                <div class="uk-inline">
-                    <button class="uk-button uk-border-rounded uk-button-large uk-light" type="button" style="background-color: #{{StringHelper::getColor()}}">
-                         PAY 
-                    </button>
-                    <div uk-dropdown="mode: click">
-                        <ul class="uk-nav uk-dropdown-nav">
-                      
-                           
-                            <li class="uk-nav-header" uk-icon="icon: cart"></li>
-                           @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && User::UserType()[Auth::User()->user_type] == 'Admin' && Person::PersonType()[$data['userModel']->person_type] == 'Customer')
-                                @foreach (Setting::SettingPaymentGateway() as $payment_gaeway)
-                                
-                                    <li><button class="uk-margin-small uk-button uk-button-default uk-border-rounded uk-width-expand" onclick="paymentType('{{Str::lower($payment_gaeway)}}')">
-                                        {{ $payment_gaeway}}
-                                    </button></li>
-                                    
-                                @endforeach
-                           @else
-                                @foreach (Setting::SettingKeyType() as $setting_key)
-                                            
-                                    <li><button class="uk-margin-small uk-button uk-button-default uk-border-rounded uk-width-expand" onclick="settingFinaliseKey('{{Str::lower($setting_key)}}')">
-                                        {{ $setting_key}}
-                                    </button></li>
-                                    
-                                @endforeach
-                           @endif
-                          
-                        </ul>
-                    </div>
-                </div>
+                <button class="uk-button uk-border-rounded uk-button-large uk-light" onclick="StoreSettingKey()" type="button" style="background-color: #{{StringHelper::getColor()}}">
+                    <span uk-icon="tag"></span>
+                </button>
             </div>
 
 

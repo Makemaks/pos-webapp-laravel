@@ -136,19 +136,19 @@ class MenuController extends Controller
             case 'finalise-key':
                 $group = array_search( $request->view, Setting::SettingKeyGroup());
                 $request->session()->flash('group', $group);
-                return view('menu.setting.key', ['data' => $this->Data()]);
+                return view('menu.setting.settingKey', ['data' => $this->Data()]);
                 break;
 
             case 'status-key':
                 $group = array_search( $request->view, Setting::SettingKeyGroup());
                 $request->session()->flash('group', $group);
-                return view('menu.setting.key', ['data' => $this->Data()]);
+                return view('menu.setting.settingKey', ['data' => $this->Data()]);
                 break;
 
             case 'transaction-key':
                 $group = array_search( $request->view, Setting::SettingKeyGroup());
                 $request->session()->flash('group', $group);
-                return view('menu.setting.key', ['data' => $this->Data()]);
+                return view('menu.setting.settingKey', ['data' => $this->Data()]);
                 break;
 
             case 'receipt':

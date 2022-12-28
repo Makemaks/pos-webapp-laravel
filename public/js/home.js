@@ -1,3 +1,12 @@
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    /* cache: false,
+    contentType: false,
+    processData: false,     */
+});
+
 function stockGroup(id, type, view){
 
     $.ajax({        
@@ -173,7 +182,7 @@ function addRefund(element){
 
 }
 
-function settingFinaliseKey(setting_finalise_key){
+/* function settingFinaliseKey(setting_finalise_key){
    
     var cartCountID = document.getElementById('cartCountID'); 
 
@@ -202,25 +211,29 @@ function settingFinaliseKey(setting_finalise_key){
                 }
             });
         }
-   }
+   } 
   
-}  
+}  */
 
 
-
-function showSetupList(type){
-    $.ajax({        
-        url:"/home-api",
-        method: 'GET',
-        data: {
-            action: "setupList",
-            type: type
-        },      
-        success:function(data){
-            document.getElementById('contentID').innerHTML = data['html']; 
+function SelectAll(bx, tableID){
+    var table = document.getElementById(tableID.id);
+    var rowCount = table.rows.length;
+  
+    for (let i = 0; i < rowCount; i++ )
+    {
+        var row = table.rows[i];
+        var chkbox = row.cells[0].childNodes[1];
+        if (null != chkbox && chkbox.checked == false) {
+            chkbox.checked = true;
         }
-    });
+        else if(null != chkbox && chkbox.checked == true){
+            chkbox.checked = false;
+        }
+    }
+           
 }
+
 
 
 

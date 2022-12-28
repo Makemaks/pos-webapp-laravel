@@ -32,12 +32,12 @@ class Order extends Model
 
         "order_setting_vat" => '{}',
         "order_status" => '{}',
-        "order_finalise_key" => '{}',
+        "order_setting_key" => '{}',
         "order_group" => '{}',
     ];
 
     protected $casts = [
-        "order_finalise_key" => 'array',
+        "order_setting_key" => 'array',
         "order_setting_vat" => 'array',
         "order_group" => 'array',
         "order_status" => 'array',
@@ -208,8 +208,7 @@ class Order extends Model
             if($request->session()->has('user-session-'.Auth::user()->user_id. '.cartList')){
 
                 $sessionCartListUser = $request->session()->get('user-session-'.Auth::user()->user_id. '.cartList');
-                /* $tempSessionCartList = Receipt::SessionCartInitialize($sessionCartListUser);
-                $sessionCartListUser = $tempSessionCartList; */
+              
             }
 
             if ( $request->session()->has('user-session-'.Auth::user()->user_id. '.customerCartList') ) {
@@ -235,7 +234,6 @@ class Order extends Model
             
             }else{
                 $orderData += [
-                   
                     'order_type' => array_search('Online', Order::OrderType())
                 ];
             }
@@ -260,9 +258,9 @@ class Order extends Model
           
 
             //add finalise key
-            if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_finalise_key') ) > 0) {
+            if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_setting_key') ) > 0) {
                 $orderData += [
-                    'order_finalise_key' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_finalise_key')
+                    'order_setting_key' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_setting_key')
                 ];
             }
 

@@ -74,12 +74,12 @@
             </div>
 
             {{-- FINALISE Key --}}
-            <div>
+            {{-- <div>
                 <div class="uk-card uk-card-default uk-card-body">
                     @include('dashboard.partial.finaliseKeyPartial')
                     @include('document.button', ['table' => 'finaliseKeyPartial'])
                 </div>
-            </div>
+            </div> --}}
 
             {{-- last 100 sales --}}
             <div>

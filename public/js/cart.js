@@ -4,7 +4,7 @@ $.ajaxSetup({
     }
 });
 
-function stockTranferList() {
+/* function stockTranferList() {
     var getStockId = [];
     $.each($("input:checkbox[name='stock_transfer_chk']:checked"), function () {
         getStockId.push($(this).val());
@@ -22,7 +22,8 @@ function stockTranferList() {
           }
         }
     });
-}
+} */
+
 //quantity plus and minus
 function Quantity(buttonType, cartValue){
     var quantityID = document.getElementById('quantityID-'+cartValue);
@@ -132,7 +133,7 @@ function Add(stock_id, store_id){
     
  
      $.ajax({        
-         url:"/cart-api/",
+         url:"/cart-api",
          method: 'POST',
          data: {
             stock_id: stock_id, 
@@ -210,12 +211,6 @@ function searchInput(element)
 }
 
 
-
-
-
-
- 
-
 function emptyFields(elementID){
     var elements = document.getElementsByTagName(elementID);
     for (var ii=0; ii < elements.length; ii++) {
@@ -259,7 +254,7 @@ function update(){
    }
 }
 
-function addSetupList(type){
+/* function addSetupList(type){
 
     var searchInputID = document.getElementById('searchInputID');
     var cartCountID = document.getElementById('cartCountID'); 
@@ -280,9 +275,9 @@ function addSetupList(type){
     }
 
    
-}
+} */
 
-
+/* 
 function deleteSetupList(id = null){
     $.ajax({        
         url:"/cart-api/"+id,
@@ -296,23 +291,9 @@ function deleteSetupList(id = null){
             showSetupList(data['type']);
         }
     });
-}
+} */
 
 
-function useSettingFinaliseKey(type, key){
-    $.ajax({        
-        url:"/cart-api",
-        method: 'POST',
-        data: {
-            action: 'useFinaliseKey',
-            type: type,
-            key: key
-        },      
-        success:function(data){
-            document.getElementById('contentID').innerHTML = data['html']; 
-        }
-    });
-}
 
 
 

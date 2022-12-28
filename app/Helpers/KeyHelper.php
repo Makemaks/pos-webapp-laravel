@@ -3,8 +3,19 @@ namespace App\Helpers;
 
 class KeyHelper{
 
+    public static function Type(){
+        return [
+            //group and type
+            KeyHelper::Finalise(),
+            KeyHelper::Status(),
+            KeyHelper::Transaction(),
+            KeyHelper::Character(),
+            KeyHelper::Totaliser(),
+            KeyHelper::Menu()
+        ];
+    }
 
-    public static function Statuskey(){
+    public static function Status(){
         return [
             
             'NO FUNCTION',
@@ -120,51 +131,51 @@ class KeyHelper{
         ];
     }
 
-    public static function Finalisekey(){
+    public static function Finalise(){
         return [
             'NO FUNCTION',
             'ACCOUNT',
             'CASH',
             'CHEQUE',
-            'EFT',
+            'EFT',//electronic fund transfer
             'HOTEL TRANSFER',
             'VOUCHER'
-            
         ];
     }
 
-    public static function TransactionKey(){
-            return [
-                'NO FUNCTION',
-                '- AMOUNT',
-                '-%',
-                '+ AMOUNT',
-                '+%',
-                'CANCEL',
-                'CHECK TRANSFER',
-                'DEPOSIT',
-                'EFT PREAUTH',
-                'ERROR CORRECT',
-                'EXCHANGE POINTS',
-                'HOUSE BON',
-                'MEDIA EXCHANGE',
-                'NEW BALANCE',
-                'NO SALE',
-                'PAID OUT',
-                'PAY ACCOUNT',
-                'POINTS ADJUSTMENT',
-                'PRICE CHANGE',
-                'REASON TABLE',
-                'RECEIVED ON ACCOUNT',
-                'REFUND',
-                'TIPS',
-                'VOUCHER',
-                'DELIVERY'
-            ];
+    public static function Transaction(){
+        return [
+            'NO FUNCTION',
+            '- AMOUNT',
+            '- %',
+            '+ AMOUNT',
+            '+ %',
+            'CANCEL',
+            'CHECK TRANSFER',
+            'DEPOSIT',
+            'EFT PREAUTH',
+            'ERROR CORRECT',
+            'EXCHANGE POINTS',
+            'HOUSE BON',
+            'MEDIA EXCHANGE',
+            'NEW BALANCE',
+            'NO SALE',
+            'PAID OUT',
+            'PAY ACCOUNT',
+            'POINTS ADJUSTMENT',
+            'PRICE CHANGE',
+            'REASON TABLE',
+            'RECEIVED ON ACCOUNT',
+            'REFUND',
+            'TIPS',
+            'VOUCHER',
+            'DELIVERY'
+        ];
     }
 
-    public static function CharacterKey(){
+    public static function Character(){
         return [
+            'NO FUNCTION',
             'Half',
             'Dbl',
             'Device 1',
@@ -184,8 +195,9 @@ class KeyHelper{
         ];
     }
 
-    public static function TotaliserKey(){
+    public static function Totaliser(){
         return [
+            'NO FUNCTION',
             'NET sales',
             'Dbl',
             'GROSS Sales',
@@ -198,9 +210,13 @@ class KeyHelper{
             'TOTAL DRAWER',
             'TRAINING MODE',
             'REFUND MODE',
-            'REFUN/VOID'
+            'REFUND/VOID'
         ];
     }
 
-
+    public static function Menu(){
+        return [
+            
+        ];
+    }
 }

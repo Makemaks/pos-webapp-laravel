@@ -27,6 +27,7 @@ class HomeController extends Controller
     
     private $storeModel;
     private $settingModel;
+    private $settingList;
     private $paymentModel;
     private $sessionCartList = [];
     private $schemeList;
@@ -44,8 +45,6 @@ class HomeController extends Controller
     {
 
         $this->init();
-       
-
          //setup new
        
         $this->setupList = Receipt::SessionInitialize($request);
@@ -89,8 +88,7 @@ class HomeController extends Controller
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
-
-       
+        $this->settingList = Setting::where('settingtable_id', $this->userModel->store_id);
     }
 
     private function Session(Request $request){
@@ -108,6 +106,7 @@ class HomeController extends Controller
             'sessionCartList' => $this->sessionCartList,
             'schemeList' => $this->schemeList,
             'settingModel' => $this->settingModel,
+            'settingList' => $this->settingList,
             'userList' => $this->userList,
             'personModel' => $this->personModel,
             'personList' => $this->personList,

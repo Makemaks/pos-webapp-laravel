@@ -366,12 +366,8 @@ class Stock extends Model
 
     public static function StockPriceProcessed($stock, $setupList){
 
-        if ($stock->stock_id == 39) {
-            $a = 0;
-        }
-
         $stockOffer = 0;
-        $stockCurrentOffer = [];
+        $settingCurrentOffer = [];
         $stock_price = MathHelper::FloatRoundUp(Stock::StockPriceDefault($stock->stock_price), 2);
         $setupList['receipt']['stock']['stock_price'] = $stock_price;
         $setupList['receipt']['stock']['stock_price_processed'] = $stock_price;
@@ -388,13 +384,15 @@ class Stock extends Model
         //find discount
         if ($stock->stock_merchandise['setting_offer_id']) {
             //find discount
-            $settingCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::OfferType()));
+            foreach ($stock->stock_merchandise['setting_offer_id']  as $key => $setting_offer_id) {
+                $settingCurrentOffer[$key] = Setting::SettingOffer($setting_offer_id);
+            }
            
             if (count($settingCurrentOffer) > 0) {
-                $setupList['receipt']['stock']['stock_price_processed'] = Setting::SettingCurrentOfferType($settingCurrentOffer, $setupList['receipt']['stock']['stock_price']);
+                $setupList['receipt']['stock']['stock_price_processed'] = Setting::SettingDiscount($settingCurrentOffer, $setupList['receipt']['stock']['stock_price']);
               
-                /* $stockPriceMin = Stock::StockPriceMin($stockCurrentOffer);
-                $discount_value = Setting::SettingCurrentOfferType( $stockPriceMin, $setupList['receipt']['stock']['stock_price'] );
+                /* $stockPriceMin = Stock::StockPriceMin($settingCurrentOffer);
+                $discount_value = Setting::SettingDiscount( $stockPriceMin, $setupList['receipt']['stock']['stock_price'] );
                 $setupList['receipt']['stock']['stock_price_processed'] = $discount_value - Stock::StockPriceMin($stockOffer); */
            }
 

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Session;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Arr;
 
 use App\Models\Expertise;
 use App\Models\Setting;
@@ -298,16 +299,15 @@ class Setting extends Model
 
         'setting_key' => '{
             "1": {
-                "group": "",
+                "setting_key_group": "",
+                "setting_key_type": "",
+                "name": "",
                 "status": "",
                 "description": "",
                 "value": "",
-                "setting_key_group": "",
-                "setting_key_type": ""
+                "image": ""
             }
         }',
-
-        'setting_key_type' => '{}',
 
         'setting_group' => '{
             "default_country": "",
@@ -375,7 +375,7 @@ class Setting extends Model
         "setting_api" => 'array',
 
         'setting_key' => 'array',
-        'setting_key_type' => 'array',
+       
         'setting_group' => 'array',
         'setting_customer' => 'array',
         'setting_preset_message' => 'array',
@@ -510,10 +510,11 @@ class Setting extends Model
     }
 
     public static function SettingKeyGroup(){
+        //see key helper in helpers
         return [
-            'finalise', //coupons
-            'status', //one offs
-            'transaction',#
+            'finalise',
+            'status',
+            'transaction',
             'character',
             'totaliser',
             'menu'
@@ -523,71 +524,60 @@ class Setting extends Model
     //session and grand total
     public static function SettingFinaliseKey($data){
 
-        if ($data['setupList']['receipt']['finalise_key']['type'] == 'cash' && $data['setupList']['receipt']['finalise_key']['value']) {
-            $data['setupList']['order_finalise_key'] += [
-                'value' =>$data['setupList']['order_finalise_key']['value'],
-                'type' => $data['setupList']['order_finalise_key']['type']
-            ];
-        }
-
-        //credit
-        /* if ($data['setupList']['receipt']['finalise_key']['type'] == 'credit' && $data['request']['value']){
-            $customer =  $data['setupList']['receipt']['customer'];
-            $this->personModel = Person::find($customer['value']);
-
-            $data['setupList']['order_finalise_key'] = [
-                'value' =>$data['setupList']['order_finalise_key']['value'],
-                'type' => $data['setupList']['order_finalise_key']['type']
-            ];
-
-        }
-        */
-
-         /*  //delivery
-        if ($data['setupList']['receipt']['finalise_key']['type'] == 'delivery' && $data['request']['value']){
-
-            $data['setupList']['receipt'][$data['setupList']['receipt']['finalise_key']['type']][] = [
-                 'value' =>$data['setupList']['order_finalise_key']['value'],
-                'type' => $data['setupList']['order_finalise_key']['type']
-            ];
-        }
- */
-        //voucher
-       /*  if ($data['setupList']['receipt']['finalise_key']['type'] == 'voucher' && $data['request']['value']){
-            foreach ($data['settingModel']->setting_offer as $key => $value) {
+        if (count($data['setupList']['order_setting_key']) > 0) {
+            
+            /* foreach ($data['settingModel']->setting_offer as $key => $value) {
                 if ($value['string']['barcode'] === $data['request']->session()->get('searchInputID') &&
                 $value['date']['end_date'] > Carbon::now() &&
                 array_search( Carbon::now()->dayOfWeek, $value['available_day']) ) {
 
                     $data['settingModel']->setting_offer = [ $key => $value ];
-                    $data['setupList']['receipt'][$data['setupList']['receipt']['finalise_key']['type']][] = [
+                    $data['setupList']['receipt'][$data['setupList']['order_setting_key']][] = [
                         'discount_type' => $value['decimal']['discount_type'],
                         'discount_value' => $value['decimal']['discount_value']
                     ];
                     break;
 
                 }
+            } */
+
+            $order_setting_key = collect($data['setupList']['order_setting_key'])->where('setting_key_group', 2);
+
+            foreach ($order_setting_key as $key => $value) {
+                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('VOUCHER')) {
+                    $data['setupList']['order_setting_key'] = Setting::SettingOffer($value['value']);
+                }
+                
+                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('- AMOUNT')) {
+                    $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] - $value['value'];
+                }
+
+                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('+ AMOUNT')) {
+                    $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] + $value['value'];
+                }
+
+                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('- %')) {
+                    $value['value'] = MathHelper::Discount($value['value'], $data['setupList']['receipt']['subTotal']);
+                    $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] - $value['value'];
+                }
+
+                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('+ %')) {
+                    $value['value'] = MathHelper::Discount($value['value'], $data['setupList']['receipt']['subTotal']);
+                    $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] + $value['value'];
+                }
+
+                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('DELIVERY')) {
+                    $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['priceVATTotal'] + $value['value'];
+                }
             }
+
+            
+            
         }
- */
-        //discount
-       /*  if ($data['setupList']['receipt']['finalise_key']['type'] == 'discount' && $data['request']['value']){
+       
+       
+      
 
-            if ( Str::contains($data['request']['value'], '%') ) {
-                $discountValue = Str::remove('%', $data['request']['value']);
-                $discount_type = 0;
-                $data['setupList']['receipt'][$data['setupList']['receipt']['finalise_key']['type']][] = ['discount_type' => $discount_type, 'discount_value' => $discountValue];
-            }
-            elseif($data['request']['value'] != null) {
-                $discountValue = $data['request']['value'];
-                $discount_type = 1;
-                $data['setupList']['receipt'][$data['setupList']['finalise_key']['type']][] = ['discount_type' => $discount_type, 'discount_value' => $discountValue];
-            }
-
-        }
- */
-
-    
 
         return Setting::ReCalculate($data);
 
@@ -600,24 +590,7 @@ class Setting extends Model
         if ($data['setupList']) {
 
             //discount
-            if (count($data['setupList'][ 'discount' ]) > 0) {
-
-                foreach ( $data['setupList'][ 'discount' ] as $key => $value) {
-
-                    //check if value has percentage
-                    if ($value['discount_type'] == array_search('percentage', Setting::SettingOfferType()) ) {
-                        $data['setupList']['receipt']['priceTotal'] = MathHelper::Discount($value['discount_value'], $data['setupList']['receipt']['priceTotal']);
-                        $data['setupList']['receipt']['discountPercentageTotal'] = $data['setupList']['receipt']['discountPercentageTotal'] + $value['discount_value'];
-                    } else {
-                        $data['setupList']['receipt']['priceTotal'] = $data['setupList']['receipt']['priceTotal'] - $value['discount_value'];
-                        $data['setupList']['receipt']['discountAmountTotal'] = $data['setupList']['receipt']['discountAmountTotal'] + $value['discount_value'];
-                    }
-                }
-
-
-            }
-
-
+           
             if ( count($data['setupList'][ 'delivery' ]) > 0 ) {
                 $data['setupList']['receipt']['deliveryTotal'] = $data['setupList']['receipt']['deliveryTotal'] + collect($data['setupList'][ 'delivery' ])->sum('value');
                 $data['setupList']['receipt']['priceTotal'] = $data['setupList']['receipt']['priceTotal'] + $data['setupList']['receipt']['deliveryTotal'];
@@ -707,31 +680,29 @@ class Setting extends Model
     }
 
     //compare current
-    public static function SettingCurrentOffer($stock, $offerType){
+    public static function SettingOffer($setting_offer_id){
 
         $stockOffer = [];
 
 
-        if ($stock->stock_merchandise['setting_offer_id']) {
+        $userModel = User::Account('account_id', Auth::user()->user_account_id)
+        ->first();
 
-            $userModel = User::Account('account_id', Auth::user()->user_account_id)
-            ->first();
+        $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
 
-            $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
+        $setting_offer = $settingModel->setting_offer[ $setting_offer_id ];
+       
+    
+        //filter offer by date
+        /* $offer = collect($settingModel->setting_offer)
+        ->where('date.end_date', '>', Carbon::now())
+        ->whereIn('available_day.*', $setting_offer['available_day']); */
 
-            $setting_offer = collect($settingModel->setting_offer)->only( $stock->stock_merchandise['setting_offer_id'] );
+        foreach ($settingModel->setting_offer as $key => $value) {
+            if ($value['date']['end_date'] > Carbon::now() &&
+            array_search( Carbon::now()->dayOfWeek, $setting_offer['available_day']) ) {
 
-            //filter offer by date
-            foreach ($setting_offer as $stock_offer_key => $stock_offer_value) {
-                if ( $stock_offer_value['date']['start_date'] >= Carbon::now() && $offerType == $stock_offer_value['boolean']['type']) {
-
-                    //discount days
-                    if (array_search( Carbon::now()->dayOfWeek, $stock_offer_value['available_day'] )) {
-                        if ($stock_offer_value['decimal']['discount_value'] > 0 && $stock_offer_value['decimal']['discount_value'] != NULL ) {
-                            $stockOffer[$stock_offer_key] = $stock_offer_value;
-                        }
-                    }
-                }
+                $stockOffer = $settingModel->setting_offer[$key];
             }
         }
 
@@ -740,29 +711,28 @@ class Setting extends Model
 
 
     //stock
-    public static function SettingCurrentOfferType($settingCurrentOffer, $price){
+    public static function SettingDiscount($settingCurrentOffer, $price){
 
-        $settingCurrentOfferType = [];
+        $settingCurrentOfferType[] = ['discount_value' => $price];
         $total = [];
 
         foreach ($settingCurrentOffer as $settingCurrentOfferKey => $settingCurrentOfferValue) {
 
-            if (Setting::SettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
+            if (count($settingCurrentOfferValue) > 0) {
+                if (Setting::SettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
 
-                $settingCurrentOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)];
-
-            } else {
-                $settingCurrentOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
-
+                    $settingCurrentOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)];
+    
+                } else {
+                    $settingCurrentOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
+    
+                }
+    
             }
-
         }
 
-        //collect($settingCurrentOfferType)->min('price')
-
-
-
         return collect($settingCurrentOfferType)->sum('discount_value');
+
     }
 
     

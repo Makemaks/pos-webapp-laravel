@@ -157,46 +157,26 @@ class SettingFactory extends Factory
             ];
         }
 
-       
+      
 
-        /* setting key */
-        for ($i = 0; $i < count(KeyHelper::StatusKey()); $i++) {
-            $setting_key_type[1][$i + 1] = KeyHelper::StatusKey()[$i];
-        }
-        for ($i = 0; $i < count(KeyHelper::FinaliseKey()); $i++) {
-            $setting_key_type[2][$i + 1] = KeyHelper::FinaliseKey()[$i];
-        }
-        for ($i = 0; $i < count(KeyHelper::TransactionKey()); $i++) {
-            $setting_key_type[3][$i + 1] = KeyHelper::TransactionKey()[$i];
-        }
-        for ($i = 0; $i < count(KeyHelper::CharacterKey()); $i++) {
-            $setting_key_type[4][$i + 1] = KeyHelper::CharacterKey()[$i];
-        }
-        for ($i = 0; $i < count(KeyHelper::TotaliserKey()); $i++) {
-            $setting_key_type[5][$i + 1] = KeyHelper::TotaliserKey()[$i];
-        }
-
-     
-
-        for ($i= 1; $i < count(Setting::SettingKeyGroup()); $i++) { 
+        $count = 0;
+        for ($i= 0; $i < count(Setting::SettingKeyGroup()); $i++) { 
             
-          
-
-            foreach ($setting_key_type[$i] as $key => $value) {
-                $setting_key[] = [
-                    "status" => $this->faker->numberBetween($min = 0, $max = 1),
-                    "description" => $this->faker->sentence(),
-                    "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
-                    "setting_key_type" => $key, 
+            foreach (KeyHelper::Type()[$i] as $key => $value) {
+                $count++;
+                $setting_key[$count] = [
                     "setting_key_group"  => $i,
+                    "setting_key_type" => $key, 
+                    "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
+                    "name"=> $this->faker->word,
+                    "status" => $this->faker->numberBetween($min = 0, $max = 1),
+                    "description" => '',
                     "image" => ''
                 ];
             }
     
         }
 
-
-        
         
         for ($i=0; $i < 20; $i++) { 
             $setting_stock_set[$i+1] = [
@@ -268,7 +248,7 @@ class SettingFactory extends Factory
 
         return [
             
-            'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 20),
+            'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company', 'Organisation')),
             'setting_api' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
@@ -287,7 +267,7 @@ class SettingFactory extends Factory
             'setting_receipt' => $setting_receipt,
             
             'setting_key' => $setting_key,
-            'setting_key_type' => $setting_key_type,
+            
             'setting_group' => $setting_group,
             'setting_customer' => $setting_customer,
             'setting_stock_tag_group' => $setting_stock_tag_group,

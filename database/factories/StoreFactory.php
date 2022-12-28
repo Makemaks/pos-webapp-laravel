@@ -24,7 +24,7 @@ class StoreFactory extends Factory
         return [
             'store_image' => '',
             'store_name' => $this->faker->word,
-            'root_store_id'=> $this->faker->numberBetween($min = 1, $max = 10),
+            'root_store_id'=> 1,
             'store_account_id'=> $this->faker->numberBetween($min = 1, $max = 10),
             'store_company_id'=> $this->faker->numberBetween($min = 1, $max = 10),
         ];

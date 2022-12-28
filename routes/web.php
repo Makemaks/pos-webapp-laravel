@@ -20,7 +20,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\InitController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AddressController;
-use App\Http\Controllers\API\AppAPIController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StockController;
@@ -44,11 +43,13 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\WarehouseController;
 
+
+use App\Http\Controllers\API\AppAPIController;
 use App\Http\Controllers\API\HomeAPIController;
 use App\Http\Controllers\API\GatewayAPIController;
 use App\Http\Controllers\API\ChartAPIController;
 use App\Http\Controllers\API\CartAPIController;
-use App\Http\Controllers\API\SchemeAPIController;
+use App\Http\Controllers\API\SettingAPIController;
 use App\Http\Controllers\API\OrderAPIController;
 
 
@@ -153,7 +154,7 @@ Route::apiResources([
     'gateway-api' => GatewayAPIController::class,
     'chart-api' => ChartAPIController::class,
     'cart-api' => CartAPIController::class,
-    'scheme-api' => SchemeAPIController::class,
+    'setting-api' => SettingAPIController::class,
     'order-api' => OrderAPIController::class,
     'app-api' =>AppAPIController::class,
 ]);

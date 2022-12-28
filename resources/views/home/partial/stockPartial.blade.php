@@ -16,16 +16,16 @@
 
 @include('stock.partial.groupPartial')
    
-<div class="uk-overflow-auto uk-height-large" uk-height-viewport="offset-top: true; offset-bottom: 10">
+<div>
         
-    <div class="uk-grid-match uk-child-width-1-3@s uk-grid-small uk-padding-small uk-text-small" uk-grid>
+    <div class="uk-grid-match uk-child-width-1-3@s uk-grid-small uk-text-small" uk-grid>
     
         <div>
             <div class="uk-padding-small uk-box-shadow-small">
                 <select name="" id="" class="uk-select">
-                    <option value="">FILTER</option>
+                    <option disabled>FILTER</option>
                     @foreach (Setting::SettingStockGroup() as $setting_stock_group)
-                        <option onclick="stockGroup({{$loop->iteration}}, '{{$setting_stock_group}}', null)">{{Str::ucfirst($setting_stock_group)}}</option>
+                        <option onclick="stockGroup({{$loop->iteration}}, '{{$setting_stock_group}}', null)">{{Str::upper($setting_stock_group)}}</option>
                     @endforeach
                 </select>
             </div>
@@ -80,9 +80,7 @@
                                 <div class="uk-margin-remove-top" uk-grid>
                                     <div>
                                         @if ($data['setupList']['receipt']['stock']['stock_price_processed'])
-                                            {{ MathHelper::FloatRoundUp( $data['setupList']['receipt']['stock']['stock_price_processed'], 2) }}    
-                                        @else
-                                            {{ MathHelper::FloatRoundUp( $data['setupList']['receipt']['stock']['stock_price'], 2) }}    
+                                            {{ MathHelper::FloatRoundUp( $data['setupList']['receipt']['stock']['stock_price_processed'], 2) }}
                                         @endif
                                     </div>
                                     <div>

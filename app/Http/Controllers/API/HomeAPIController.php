@@ -49,6 +49,8 @@ class HomeAPIController extends Controller
 
         //used for pagination
         $this->request = $request;
+
+        $all = $request->all();
         
         $request->session()->flash('action', $request['action']);
         $request->session()->flash('view', 0);
@@ -211,7 +213,7 @@ class HomeAPIController extends Controller
     */
     public function create()
     {
-        
+        $hi = 1;
     }
 
     /**
@@ -222,7 +224,7 @@ class HomeAPIController extends Controller
     */
     public function store(Request $request)
     {
-        
+        $hi = 1;
     }
 
     /**
@@ -233,6 +235,7 @@ class HomeAPIController extends Controller
     */
     public function show($id)
     {
+        $hi = 1;
         //
     }
 
@@ -244,7 +247,7 @@ class HomeAPIController extends Controller
     */
     public function edit($id)
     {
-
+        $hi = 1;
     }
 
     /**
@@ -256,6 +259,7 @@ class HomeAPIController extends Controller
     */
     public function update(Request $request, $id)
     {
+        $hi = 1;
         //
     }
 

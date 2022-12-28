@@ -27,7 +27,7 @@ return new class extends Migration
             $table->text('order_note')->nullable();
             $table->json('order_delivery')->nullable(); //order details::shipped at
             $table->json('order_discount')->nullable(); //extra discount can be added
-            $table->json('order_finalise_key')->nullable();
+            $table->json('order_setting_key')->nullable();
             $table->bigInteger('order_setting_pos_id');
             $table->json('order_setting_vat')->nullable(); //extra vat can be added
 

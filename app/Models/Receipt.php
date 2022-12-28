@@ -22,21 +22,12 @@ class Receipt extends Model
     public $timestamps = true;
 
     protected $attributes = [
-
-      
-        "receipt_discount" => '{
-            "1": {
-                "type": "",
-                "value": ""
-            }
-        }'
-
-       
+        "receipt_setting_key" => '{}'
     ];
 
     protected $casts = [
       
-        "receipt_discount" => 'array'
+        "receipt_setting_key" => 'array'
     ];
 
     public static function List($column,  $filter){
@@ -96,7 +87,8 @@ class Receipt extends Model
                 "delivery" => [],
                 "discount" => [],
                 "customer" => [],
-                "order_finalise_key" => [],
+                "order_setting_key" => [],
+                //"receipt_setting_key" => [],
                 "order_offer" => [],
                 "receipt" => [
                     "deliveryTotal" => 0,
@@ -206,6 +198,10 @@ class Receipt extends Model
         $data['setupList']['receipt']['stock']['stock_price_processed'] = $stock_price_processed;
 
         //add price to subtotal
+        if($loop->first){
+            $data['setupList']['receipt']['subTotal'] = 0;
+        }
+
         $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] + $stock_price_processed;
 
 
@@ -214,10 +210,10 @@ class Receipt extends Model
             //final discount
              //calculate overall vat
             $data = Setting::SettingFinaliseKey($data);
-            $data['setupList']['receipt']['totalSettingVAT'] = collect($data['settingModel']->setting_vat)->where('deafult', 0)->sum('rate');
+            $data['setupList']['receipt']['totalSettingVAT'] = collect($data['settingModel']->setting_vat)->where('default', 0)->sum('rate');
             
             $data['setupList']['receipt']['priceVATTotal'] = MathHelper::VAT($data['setupList']['receipt']['totalSettingVAT'], $data['setupList']['receipt']['subTotal']);
-            $data['setupList']['receipt']['priceFinalTotal'] =  $data['setupList']['receipt']['priceVATTotal'] + $data['setupList']['receipt']['priceTotal'];
+            $data['setupList']['receipt']['priceVATTotal'] =  $data['setupList']['receipt']['priceVATTotal'] + $data['setupList']['receipt']['priceTotal'];
             
         }
 

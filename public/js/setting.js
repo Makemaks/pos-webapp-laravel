@@ -15,13 +15,13 @@ function IndexSetting(element, type){
             settingKeyFormID:settingKeyFormID,
         },
         success:function(data){
-            document.getElementById('settingKeyID').innerHTML = data['html']; 
+            document.getElementById('settingKeyFormID').innerHTML = data['html']; 
         }
     });
     
 }
 
-function StoreSettingKey(){
+function StoreSettingKey(type){
 
     var settingKeyFormID = $("#settingKeyFormID").serialize();
     var cartFormID = $("#cartFormID").serialize();
@@ -33,10 +33,6 @@ function StoreSettingKey(){
             settingKeyFormID:settingKeyFormID,
             cartFormID: cartFormID
         },
-        dataType:'JSON',
-       /*  contentType: false,
-        cache: false,
-        processData: false, */
         success:function(data){
             document.getElementById('receiptID').innerHTML = data['html']; 
         }

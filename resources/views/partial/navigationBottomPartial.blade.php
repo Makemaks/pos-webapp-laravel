@@ -59,7 +59,7 @@ use App\Helpers\StringHelper;
 
 
             <div class="uk-navbar-item" id="cancelButtonID" hidden>
-                <button class="uk-button uk-border-rounded uk-button-large uk-light" type="button" style="background-color: #{{StringHelper::getColor()}}" onclick="settingFinaliseKey('cancel')">
+                <button class="uk-button uk-border-rounded uk-button-large uk-light" type="button" style="background-color: #{{StringHelper::getColor()}}" onclick="SettingKey('cancel')">
                     CANCEL
                </button>
             </div> 
@@ -70,7 +70,7 @@ use App\Helpers\StringHelper;
                <form id="order-store" action="{{route( 'order.store') }}" method="POST">
                     @csrf
                </form>
-               <button form="order-store" value="order_finalise_key" type="submit" class="uk-button uk-border-rounded uk-button-large uk-light" type="button" style="background-color: #{{StringHelper::getColor()}}">
+               <button form="order-store" value="order_setting_key" type="submit" class="uk-button uk-border-rounded uk-button-large uk-light" type="button" style="background-color: #{{StringHelper::getColor()}}">
                     CONFIRM
                 </button>
             </div>

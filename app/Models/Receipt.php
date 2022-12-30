@@ -81,29 +81,16 @@ class Receipt extends Model
 
         if ( $request->session()->has('user-session-'.Auth::user()->user_id.'.'.'setupList') == false) {
             $setupList = [
-                "cash" => [],
-                "credit" => [],
-                "voucher" => [],
-                "delivery" => [],
-                "discount" => [],
-                "customer" => [],
-                "order_setting_key" => [],
-                //"receipt_setting_key" => [],
-                "order_offer" => [],
-                "receipt" => [
-                    "deliveryTotal" => 0,
-                    "voucherAmountTotal" => 0,
-                    "voucherPercentageTotal" => 0,
-                    "discountAmountTotal" => 0,
-                    "discountPercentageTotal" => 0,
-                    "creditTotal" => 0,
-                    "cashTotal" => 0,
-                    "priceVATTotal" => 0,
-                    "priceTotal" => 0,
-                    "subTotal" => 0,
-                    "priceFinalTotal" => 0,
+                'customer' => [],
+                'order_setting_key' => [],
+                'receipt' => [
+                    'settingVATTotal' => 0,
+                    'settingKeyTotal' => ['-' => 0, '+' => 0],
+                    'priceVATTotal' => 0,
+                    'priceTotal' => 0,
+                    'subTotal' => 0,
                     'stock' => ['stock_price' => 0, 'stock_price_processed' => 0],
-                    'finalise_key' => ['value' => 0, 'type' => 0]
+                    'setting_key' => ['value' => 0, 'type' => 0]
                 ],
                 
 
@@ -119,11 +106,11 @@ class Receipt extends Model
         return $setupList;
     }
 
-    public static function SessionCartInitialize($sessionCartList){
+    public static function SessionCartInitialize($cartList){
         
         $stockList = NULL;
 
-        foreach ($sessionCartList as $sessionCart) {
+        foreach ($cartList as $sessionCart) {
 
             $stock = Stock::find($sessionCart['stock_id']);
 
@@ -209,10 +196,10 @@ class Receipt extends Model
             
             //final discount
              //calculate overall vat
-            $data = Setting::SettingFinaliseKey($data);
-            $data['setupList']['receipt']['totalSettingVAT'] = collect($data['settingModel']->setting_vat)->where('default', 0)->sum('rate');
+            $data = Setting::SettingKey($data);
+            $data['setupList']['receipt']['settingVATTotal'] = collect($data['settingModel']->setting_vat)->where('default', 0)->sum('rate');
             
-            $data['setupList']['receipt']['priceVATTotal'] = MathHelper::VAT($data['setupList']['receipt']['totalSettingVAT'], $data['setupList']['receipt']['subTotal']);
+            $data['setupList']['receipt']['priceVATTotal'] = MathHelper::VAT($data['setupList']['receipt']['settingVATTotal'], $data['setupList']['receipt']['subTotal']);
             $data['setupList']['receipt']['priceVATTotal'] =  $data['setupList']['receipt']['priceVATTotal'] + $data['setupList']['receipt']['priceTotal'];
             
         }
@@ -231,8 +218,8 @@ class Receipt extends Model
 
         if ($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList')) {
             
-            $this->sessionCartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList.'.$receipt); 
-            $request->session()->put('user-session-'.Auth::user()->user_id. '.cartList', $this->sessionCartList);       
+            $this->cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList.'.$receipt); 
+            $request->session()->put('user-session-'.Auth::user()->user_id. '.cartList', $this->cartList);       
         }
 
         //return redirect()->route('home.index');
@@ -257,7 +244,7 @@ class Receipt extends Model
 
         if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList')){
             //remove session
-            $this->sessionCartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList');
+            $this->cartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList');
         }
 
         //return view('receipt-manager.awaiting.index', ['data' => $this->Data()]);

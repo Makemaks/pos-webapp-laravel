@@ -23,27 +23,33 @@
     $currency = "";
   
     if ( Session::has('user-session-'.Auth::user()->user_id.'.'.'setupList')) {
-        $data['setupList'] = Session::get('user-session-'.Auth::user()->user_id. '.setupList');
+        $data['setupList'] = Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList');
     }
    
     $data['userModel'] = User::Account('user_account_id', Auth::user()->user_account_id)
     ->first();
 
    
-    if(Session::has('user-session-'.Auth::user()->user_id. '.cartList') && isset($stockList) == false){
+    if(Session::has('user-session-'.Auth::user()->user_id.'.'.'cartList') && isset($stockList) == false){
        
-        $data['sessionCartList'] = Session::get('user-session-'.Auth::user()->user_id. '.cartList');
+        $data['cartList'] = Session::get('user-session-'.Auth::user()->user_id.'.'.'cartList');
         
-        $stockList = Receipt::SessionCartInitialize($data['sessionCartList']);
+        $stockList = Receipt::SessionCartInitialize($data['cartList']);
     }
   
 @endphp
 
 @include('receipt.partial.receiptMenuPartial')
-
 <form action="" id="cartFormID" method="POST">
-    <div uk-height-viewport="offset-top: true; offset-bottom: 50px">
-        <div class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
+  
+    <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+        <li><a href="#" uk-icon="home" class="uk-border-rounded"></a></li>
+        <li><a href="#" uk-icon="list" class="uk-border-rounded"></a></li>
+        <li><a href="#" uk-icon="tag" class="uk-border-rounded"></a></li>
+    </ul>
+
+    <ul class="uk-switcher uk-margin">
+        <li class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
             <table class="uk-table uk-table-small uk-table-divider">
                 <thead>
                     <tr>
@@ -55,12 +61,12 @@
                         <th>VAT</th>
                         <th>DISCOUNT</th>
                         <th>{{$currencySymbol}}</th>
-                       
+                    
                     </tr>
                 </thead>
                 <tbody id="cartListID" class="uk-overflow-auto">
                     @isset ($stockList)
-                   
+                
                         @foreach ($stockList as $stockKey => $stockItem)
                             @php
                                 $data = Receipt::Calculate( $data, $stockItem, $loop );
@@ -79,7 +85,7 @@
                                     </td>
     
                                     <td>
-                                      
+                                    
                                         <button class="uk-button uk-button-text" uk-toggle="target: #toggle-stock-{{$loop->index}}">
                                             {{$stockItem['stock_name']}} 
                                             @if ($stockItem['stock_quantity'] > 1)
@@ -109,7 +115,7 @@
                                             {{ MathHelper::FloatRoundUp( $data['setupList']['receipt']['stock']['stock_price'], 2) }}    
                                         @endif
                                     </td>
-                                  
+                                
                                 </tr>
     
                                 {{-- <tr id="toggle-stock-{{$loop->index}}" hidden>
@@ -127,120 +133,67 @@
                 </tbody>
                 
             </table>
-    
-            {{-- @if (count($data['setupList']['order_setting_key']) > 0)
-                <table class="uk-table uk-table-small uk-table-divider">
-                        <thead>
-                            <tr>
-                                <th>NAME</th>
-                                <th>VALUE</th>
-                                <th>GROUP</th>
-                                <th>TYPE</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($data['setupList']['order_setting_key'] as $order_setting_key)
+        </li>
+        <li class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
+            @include('receipt.partial.listPartial')
+            
+           {{--  <div class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
+                <table class="uk-table uk-table-small">
+                
+                    <tbody>
+                    
+                        @if (count($data['setupList']['order_setting_key']) > 0)
+                            @foreach ($data['setupList']['order_setting_key'] as $order_setting_key_list)
                                 <tr>
-                                    <td>
-                                        <button class="uk-button uk-button-text" uk-toggle="target: #toggle-orderFinaliseKey-{{$loop->index}}">
-                                            {{$order_setting_key['name']}}
-                                        </button>
-                                    </td>
-                                    <td>{{$order_setting_key['value']}}</td>
-                                    <td>{{ Str::upper(Setting::SettingKeyGroup()[$order_setting_key['setting_key_group']]) }}</td>
-                                    <td>{{KeyHelper::Type()[$order_setting_key['setting_key_group']][$order_setting_key['setting_key_type']]}}</td>
-                                </tr>
-                                <tr id="toggle-orderFinaliseKey-{{$loop->index}}" hidden>
-                                    <td colspan="4">
-                                        <button type="button" id="delete-orderFinaliseKey-{{$order_setting_key['id']}}" onclick="RemoveSettingKey({{$order_setting_key['id']}})" class="uk-text-danger uk-button uk-width-1-1 uk-button-default uk-border-rounded" uk-icon="trash"></button>
-                                    </td>
+                                    @foreach ($order_setting_key_list as $order_setting_key)
+                                        <td>
+                                            {{ $order_setting_key['name'] }} @ {{ Setting::SettingKeyGroup()[ $order_setting_key['setting_key_group'] ]}} ~ {{ KeyHelper::Type()[$order_setting_key['setting_key_group']][ $order_setting_key['setting_key_type']]  }}
+                                        </td> 
+                                        <td>
+                                            {{$order_setting_key['value']}}
+                                        </td> 
+                                    @break
+                                    @endforeach
                                 </tr>
                             @endforeach
-                        </tbody>
+                        @endif
+
+                    </tbody>
                 </table>
-            @endif --}}
-    
-        </div>
         
+            </div> --}}
+        </li>
+        <li class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
+            @include('setting.settingKey.index')
+        </li>
+    </ul>
+
+    <div class="uk-margin uk-overflow-auto uk-height-small">
+        <table class="uk-table uk-table-small">
         
-    
-        <div class="uk-margin-top-large uk-child-width-1-2@m" uk-grid>
-    
-            @if (count($data['setupList']['order_setting_key']) > 0)
-                <div class="uk-margin-remove-top">KEYS</div>
-                <div class="uk-text-right uk-margin-remove-top">{{count($data['setupList']['order_setting_key'])}}</div>
-            @endif
-    
+            <tbody>
             
-           {{--  @if ($data['setupList']['receipt']['creditTotal'] > 0)
-                
-                <div class="uk-margin-remove-top">Credit {{$currency}}
-                    <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('credit')"></span>
-                </div>
-                <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($data['setupList']['receipt']['discountTotal'])}}</div>
-               
-            @endif --}}
-    
-            {{-- @if ($data['setupList']['receipt']['voucherAmountTotal'] > 0)
-                
-                <div class="uk-margin-remove-top">Voucher {{$currency}}
-                    <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('voucher')"></span>
-                </div>
-                <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($data['setupList']['receipt']['voucherAmountTotal'])}}</div>
-               
-            @endif --}}
-    
-          {{--   @if ($data['setupList']['receipt']['voucherPercentageTotal'] > 0)
-                
-                <div class="uk-margin-remove-top">Voucher %{{$currency}}
-                    <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('voucher')"></span>
-                </div>
-                <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($data['setupList']['receipt']['voucherPercentageTotal'])}}</div>
-               
-            @endif --}}
-                
-            {{-- @if ($data['setupList']['receipt']['discountAmountTotal'] > 0)
-                
-                <div class="uk-margin-remove-top">Discount{{$currency}}
-                    <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('discount')"></span>
-                </div>
-                <div class="uk-text-right uk-margin-remove-top"> - {{CurrencyHelper::Format($data['setupList']['receipt']['discountAmountTotal'])}}</div>
-               
-            @endif --}}
-    
-            {{-- @if ($data['setupList']['receipt']['discountPercentageTotal'] > 0)
-                
-                <div class="uk-margin-remove-top">Discount %{{$currency}}
-                    <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('discount')"></span>
-                </div>
-                <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($data['setupList']['receipt']['discountPercentageTotal'])}}</div>
-            
-            @endif --}}
-    
-           {{--  @if ($data['setupList']['receipt']['deliveryTotal'] > 0)
-              
-                <div class="uk-margin-remove-top">Delivery {{$currency}}
-                    <span class="uk-text-danger" uk-icon="close" onclick="showSetupList('delivery')"></span>
-                </div>
-                <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($data['setupList']['receipt']['deliveryTotal'])}}</div>
-             
-            @endif --}}
-    
-            @isset ($data['setupList']['receipt']['totalSettingVAT'])
-              
-                <div class="uk-margin-remove-top">VAT % {{MathHelper::FloatRoundUp($data['setupList']['receipt']['totalSettingVAT'], 2)}}</div>
-                <div class="uk-text-right uk-margin-remove-top">{{MathHelper::FloatRoundUp($data['setupList']['receipt']['priceVATTotal'] - $data['setupList']['receipt']['subTotal'], 2)}}</div>
-                
-            @endisset
-    
-           
-            <div class="uk-margin-remove-top">SUB TOTAL {{$currency}}</div>
-            <div class="uk-text-right uk-margin-remove-top">{{CurrencyHelper::Format($data['setupList']['receipt']['subTotal'])}}</div>
-        
-            <div class="uk-margin-remove-top uk-text-bold">TOTAL {{$currency}}</div>
-            <div class="uk-text-right uk-margin-remove-top uk-text-bold">{{CurrencyHelper::Format($data['setupList']['receipt']['priceVATTotal'])}}</div>
-            
-        </div>
-      
+                <tr>
+                    @isset ($data['setupList']['receipt']['settingVATTotal'])
+                        <td>VAT % {{MathHelper::FloatRoundUp($data['setupList']['receipt']['settingVATTotal'], 2)}}</td>
+                        <td>{{MathHelper::FloatRoundUp($data['setupList']['receipt']['priceVATTotal'] - $data['setupList']['receipt']['subTotal'], 2)}}</td>
+                    @endisset
+                </tr>
+
+                <tr>
+                    <td>SUB TOTAL {{$currency}}</td>
+                    <td>{{CurrencyHelper::Format($data['setupList']['receipt']['subTotal'])}}</td>
+                </tr>
+
+                <tr>
+                    <td>TOTAL {{$currency}}</td>
+                    <td>{{CurrencyHelper::Format($data['setupList']['receipt']['priceVATTotal'])}}</td>
+                </tr>
+
+            </tbody>
+        </table>
+
     </div>
+
+
 </form>

@@ -56,11 +56,11 @@ class CartAPIController extends Controller
 
     
         //voucher
-        elseif ($request->has('searchInputID') && $request->session()->has('setting_finalise_key')) {
-            $request->session()->reflash('setting_finalise_key');
+        elseif ($request->has('searchInputID') && $request->session()->has('setting_setting_key')) {
+            $request->session()->reflash('setting_setting_key');
             $request->session()->flash('searchInputID', $request['searchInputID']);
 
-            $this->html = view('home.partial.settingFinaliseKeyPartial', ['data' => $this->Data()])->render();
+            $this->html = view('home.partial.settingKeyPartial', ['data' => $this->Data()])->render();
             return response()->json(['view' => $this->view, 'success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
         }
         elseif ($request['action'] == 'setupList' && $request->has('type')) {

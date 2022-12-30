@@ -193,7 +193,7 @@
 
    
 
-    <div class="uk-margin">
+    <div class="uk-margin-top">
         @isset($data['stockList'])
             @include('partial.paginationPartial', ['paginator' => $data['stockList']])
         @endisset

@@ -103,7 +103,7 @@ class HomeController extends Controller
             'stockList' => $this->stockList,
             'userModel' => $this->userModel,
             'personModel' => $this->personModel,
-            'sessionCartList' => $this->sessionCartList,
+            'cartList' => $this->sessionCartList,
             'schemeList' => $this->schemeList,
             'settingModel' => $this->settingModel,
             'settingList' => $this->settingList,

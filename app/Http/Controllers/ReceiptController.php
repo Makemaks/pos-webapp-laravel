@@ -274,7 +274,7 @@ class ReceiptController extends Controller
             'paymentList' => $this->paymentList,
             'paymentModel' => $this->paymentModel,
             'userModel' => $this->userModel,
-            'sessionCartList' => $this->sessionCartList,
+            'cartList' => $this->sessionCartList,
             'sessionSchemeList' => $this->sessionSchemeList,
             'sessionPlanList' => $this->sessionPlanList,
             'cardList' => $this->cardList,

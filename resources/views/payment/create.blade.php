@@ -12,7 +12,7 @@
     use App\Models\Order;
    $currency = CurrencyHelper::Currency();
 
-   $totalPrice = Order::Total($data['sessionCartList']);
+   $totalPrice = Order::Total($data['cartList']);
 
 @endphp
 @section('content')  
@@ -20,7 +20,7 @@
 <div class="uk-container uk-container-xsmall">
   
         @csrf
-        @if ($data['sessionCartList'] && count($data['sessionCartList']) > 0)
+        @if ($data['cartList'] && count($data['cartList']) > 0)
 
             <div>    
                 <div class="uk-grid uk-margin-bottom" uk-grid>

@@ -1,4 +1,4 @@
-@php
+{{-- @php
      use App\Helpers\StringHelper;
 @endphp
 <div class="uk-overflow-auto uk-height-large" uk-height-viewport="offset-top: true; offset-bottom: 10">
@@ -42,3 +42,4 @@
     
 </div>
 
+ --}}

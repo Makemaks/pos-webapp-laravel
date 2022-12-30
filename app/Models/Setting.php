@@ -9,7 +9,7 @@ use Session;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Arr;
-
+use App\Helpers\KeyHelper;
 use App\Models\Expertise;
 use App\Models\User;
 
@@ -496,14 +496,6 @@ class Setting extends Model
         ];
     }
 
-
-    public static function SettingKey($setting, $value){
-
-        $key = array_search($value, $setting->setting_key_type);
-
-        return collect($setting->setting_key)->where('setting_key_type', $key)->first();
-    }
-
     public static function OfferType(){
         return [
             'voucher', //coupons
@@ -526,7 +518,7 @@ class Setting extends Model
     }
 
     //session and grand total
-    public static function SettingFinaliseKey($data){
+    public static function SettingKey($data){
 
         if (count($data['setupList']['order_setting_key']) > 0) {
             
@@ -545,45 +537,49 @@ class Setting extends Model
                 }
             } */
 
-            $order_setting_key = collect($data['setupList']['order_setting_key'])->where('setting_key_group', 2);
+            $data['setupList']['receipt']['settingKeyTotal']['-'] = 0;
+            $data['setupList']['receipt']['settingKeyTotal']['+'] = 0;
+            $order_setting_key = collect($data['setupList']['order_setting_key'])->collapse()->where('setting_key_group', 2);
 
             foreach ($order_setting_key as $key => $value) {
                 if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('VOUCHER')) {
                     $data['setupList']['order_setting_key'] = Setting::SettingOffer($value['value']);
+                    $data['setupList']['receipt']['settingKeyTotal']['-'] = $data['setupList']['receipt']['settingKeyTotal']['-'] + $value['value'];
                 }
                 
                 if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('- AMOUNT')) {
-                    $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] - $value['value'];
+                    $data['setupList']['receipt']['settingKeyTotal']['-'] = $data['setupList']['receipt']['settingKeyTotal']['-'] + $value['value'];
                 }
 
                 if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('+ AMOUNT')) {
-                    $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] + $value['value'];
+                    $data['setupList']['receipt']['settingKeyTotal']['+'] = $data['setupList']['receipt']['settingKeyTotal']['+'] + $value['value'];
                 }
 
                 if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('- %')) {
-                    $value['value'] = MathHelper::Discount($value['value'], $data['setupList']['receipt']['subTotal']);
-                    $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] - $value['value'];
+                    $data['setupList']['receipt']['settingKeyTotal']['-'] = $data['setupList']['receipt']['settingKeyTotal']['-'] + $value['value'];
                 }
 
                 if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('+ %')) {
-                    $value['value'] = MathHelper::Discount($value['value'], $data['setupList']['receipt']['subTotal']);
-                    $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] + $value['value'];
+                    $data['setupList']['receipt']['settingKeyTotal']['+'] = $data['setupList']['receipt']['settingKeyTotal']['+'] + $value['value'];
                 }
 
                 if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('DELIVERY')) {
-                    $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['priceVATTotal'] + $value['value'];
+                    $data['setupList']['receipt']['settingKeyTotal']['+'] = $data['setupList']['receipt']['settingKeyTotal']['+'] + $value['value'];
                 }
+
+                
             }
 
             
-            
+            /* $data['setupList']['receipt']['settingKeyTotal']['-'] = $minusSettingKey;
+            $data['setupList']['receipt']['settingKeyTotal']['+'] = $plusSettingKey; */
         }
        
        
       
 
 
-        return Setting::ReCalculate($data);
+        return $data;
 
     }
 
@@ -595,26 +591,7 @@ class Setting extends Model
 
             //discount
            
-            if ( count($data['setupList'][ 'delivery' ]) > 0 ) {
-                $data['setupList']['receipt']['deliveryTotal'] = $data['setupList']['receipt']['deliveryTotal'] + collect($data['setupList'][ 'delivery' ])->sum('value');
-                $data['setupList']['receipt']['priceTotal'] = $data['setupList']['receipt']['priceTotal'] + $data['setupList']['receipt']['deliveryTotal'];
-            }
-
-            if (count($data['setupList'][ 'voucher' ]) > 0) {
-                foreach ($data['setupList'][ 'voucher' ] as $key => $value) {
-
-
-                    //check if value has percentage
-                    if ($value['discount_type'] == array_search('percentage', Setting::SettingOfferType()) ) {
-                        $data['setupList']['receipt']['priceTotal'] = MathHelper::Discount($value['discount_value'], $data['setupList']['receipt']['priceTotal']);
-                        $data['setupList']['receipt']['voucherPercentageTotal'] = $data['setupList']['receipt']['voucherPercentageTotal'] + $value['discount_value'];
-                    } else {
-                        $data['setupList']['receipt']['priceTotal'] = $data['setupList']['receipt']['priceTotal'] - $value['discount_value'];
-                        $data['setupList']['receipt']['voucherAmountTotal'] = $data['setupList']['receipt']['voucherAmountTotal'] + $value['discount_value'];
-                    }
-                }
-
-            }
+          
 
             //customer
             if ( count($data['setupList']['customer']) > 0 ){

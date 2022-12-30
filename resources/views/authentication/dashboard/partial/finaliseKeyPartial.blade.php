@@ -25,10 +25,10 @@ foreach ($setting_model->setting_key as $key => $setting) {
 }
 
 foreach ($orderList as $key => $order) {
-    $order_finalise_key_value = json_decode($order->first()->order_finalise_key, true);
+    $order_setting_key_value = json_decode($order->first()->order_setting_key, true);
 
-    if ($order_finalise_key_value) {
-        foreach ($order_finalise_key_value as $key => $order_key) {
+    if ($order_setting_key_value) {
+        foreach ($order_setting_key_value as $key => $order_key) {
             foreach ($setting_model->setting_key as $settingKey => $value) {
                 if (array_key_exists($value['setting_key_type'], $array) && $order_key['ref'] == $settingKey && $value['value'] != null) {
                     //

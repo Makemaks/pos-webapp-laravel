@@ -37,12 +37,13 @@
             @include('person.partial.indexPartial')
         </li>
         <li class="uk-overflow-auto uk-height-large uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 10">
-            <div id="settingKeyID">
-                @include('home.partial.settingKeyPartial')
-            </div>
+            <form action="{{ route('setting.store') }}" method="POST" class="uk-form-stacked" id="settingKeyFormID">
+                @csrf
+                @include('setting.settingKey.create')
+            <form>
         </li>
         <li class="uk-overflow-auto uk-height-large uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 10">
-            @include('home.partial.settingPartial')
+            
         </li>
     </ul>
 

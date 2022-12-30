@@ -70,10 +70,10 @@ class HomeAPIController extends Controller
             
             $this->html = view('stock.partial.groupPartial', ['data' => $this->Data()])->render();
         }
-        elseif($request->has('setting_finalise_key')){
-            $request->session()->flash('setting_finalise_key', $request['setting_finalise_key']);
+        elseif($request->has('setting_setting_key')){
+            $request->session()->flash('setting_setting_key', $request['setting_setting_key']);
             
-            $this->html = view('home.partial.settingFinaliseKeyPartial', ['data' => $this->Data()])->render();
+            $this->html = view('home.partial.settingKeyPartial', ['data' => $this->Data()])->render();
             return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
         }
         elseif ($request->has('id') && $request->has('view') || $request['action'] == "0" ) {
@@ -290,7 +290,7 @@ class HomeAPIController extends Controller
             'stockList' => $this->stockList,
             'userModel' => $this->userModel,
             'personModel' => $this->personModel,
-            'sessionCartList' => $this->sessionCartList,
+            'cartList' => $this->sessionCartList,
             'orderList' => $this->orderList,
             'settingModel' => $this->settingModel,
             'userList' => $this->userList,

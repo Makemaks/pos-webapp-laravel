@@ -126,7 +126,8 @@ class Receipt extends Model
                 'stock_price' => MathHelper::FloatRoundUp($price, 2),
                 'stock_vat_id' => $stock->stock_merchandise['stock_vat_id'],
                 'stock_discount' => $sessionCart['stock_discount'], //manually added
-                'setting_offer_id' =>  $stock->stock_merchandise['setting_offer_id']
+                'setting_offer_id' =>  $stock->stock_merchandise['setting_offer_id'],
+                'receipt_setting_key' => []
             ];
         } 
 

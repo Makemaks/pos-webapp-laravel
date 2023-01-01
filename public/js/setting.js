@@ -4,7 +4,7 @@ $.ajaxSetup({
     }
 });
 
-function IndexSetting(element, type){
+function IndexSetting(){
 
     var settingKeyFormID = $("#settingKeyFormID").serialize();
    
@@ -21,7 +21,7 @@ function IndexSetting(element, type){
     
 }
 
-function StoreSettingKey(type){
+function StoreSettingKey(){
 
     var settingKeyFormID = $("#settingKeyFormID").serialize();
     var cartFormID = $("#cartFormID").serialize();
@@ -34,7 +34,9 @@ function StoreSettingKey(type){
             cartFormID: cartFormID
         },
         success:function(data){
-            document.getElementById('receiptID').innerHTML = data['html']; 
+            if (data['html']) {
+                document.getElementById('receiptID').innerHTML = data['html'];
+            } 
         }
     });
     

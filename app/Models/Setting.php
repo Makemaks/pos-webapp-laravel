@@ -302,13 +302,15 @@ class Setting extends Model
 
         'setting_key' => '{
             "1": {
-                "setting_key_group": "",
-                "setting_key_type": "",
-                "name": "",
-                "status": "",
-                "description": "",
-                "value": "",
-                "image": ""
+                "1": {
+                    "setting_key_group": "",
+                    "setting_key_type": "",
+                    "name": "",
+                    "status": "",
+                    "description": "",
+                    "value": "",
+                    "image": ""
+                }
             }
         }',
 

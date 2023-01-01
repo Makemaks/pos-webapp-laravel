@@ -52,25 +52,25 @@ class SettingAPIController extends Controller
           
 
             parse_str($request->get('settingKeyFormID'), $requestInput['settingKeyFormID']);
-            $setting_key = ['0' => $requestInput['settingKeyFormID']['form']['setting_key']];
+            $setting_key = ['1' => $requestInput['settingKeyFormID']['form']['setting_key']];
 
-            if ($setting_key[0]['setting_key_group'] != '' && $setting_key[0]['setting_key_type'] != '') {
-                $a = $this->settingModel->setting_key;
-                $setting_key = collect($this->settingModel->setting_key)->where('setting_key_group', $setting_key[0]['setting_key_group'])
-                ->where('setting_key_type', $setting_key[0]['setting_key_type'])->toArray();
+            if ($setting_key[1]['setting_key_group'] != '' && $setting_key[1]['setting_key_type'] != '') {
+              
+                foreach (collect($this->settingModel->setting_key) as $setting_key_list) {
+                    if (head($setting_key_list)['setting_key_group'] == $setting_key[1]['setting_key_group'] && 
+                    head($setting_key_list)['setting_key_type'] == $setting_key[1]['setting_key_type']) {
+                        
+                        $setting_key[1] = $setting_key_list;
+                        break;
+                    }
+                }
+                
             }
 
             
             $this->settingModel->setting_key = $setting_key;
             
-            
-            /* if(count( $this->setupList['order_setting_key']) ){
-
-                $setting_key = $this->settingModel->setting_key->intersect($this->setupList['order_setting_key']);
-                $this->settingModel->setting_key = $setting_key;
-                
-            } */
-            
+        
             $this->html = view('setting.settingKey.create', ['data' => $this->Data()])->render();
         } 
       
@@ -100,6 +100,7 @@ class SettingAPIController extends Controller
           
             $this->init();
             $requestInput = [];
+            $setting_key = [];
             parse_str($request->get('settingKeyFormID'), $requestInput['settingKeyFormID']);
             parse_str($request->get('cartFormID'), $requestInput['cartFormID']);
             $this->cartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList'); 
@@ -110,9 +111,9 @@ class SettingAPIController extends Controller
                 if ( $request->has('cartFormID') && count($requestInput['cartFormID']) > 0 ) {
                     //add setting_key to cart item
                     $this->cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList');
-                    foreach ($requestInput['cartFormID']['form']['receipt_stock_id'] as $key => $receipt_setting_key) {
+                    foreach ($requestInput['cartFormID']['receipt_stock_id'] as $key => $receipt_setting_key) {
                         foreach ($this->cartList as $cart_key => $cart_Item) {
-                            $cart_Item['receipt_setting_key'][$key] = $receipt_setting_key;
+                            $this->cartList[$cart_key]['receipt_setting_key'][$cart_key + 1] = $requestInput['settingKeyFormID']['form']['setting_key'];
                         }
                     }
 
@@ -120,10 +121,10 @@ class SettingAPIController extends Controller
                     
                 }else{
                     //add setting_key to order
-                    $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList'); 
-                    $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
-                    $this->setupList['order_setting_key'][] = [ $requestInput['settingKeyFormID']['setting_key_id'] => $requestInput['settingKeyFormID']['form']['setting_key'] ];
+                    $this->setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
+                    $this->setupList['order_setting_key'][ count($this->setupList['order_setting_key']) + 1 ] = [ $requestInput['settingKeyFormID']['setting_key_id'] => $requestInput['settingKeyFormID']['form']['setting_key'] ];
                     $request->session()->put('user-session-'.Auth::user()->user_id.'.'.'setupList', $this->setupList);
+                    $this->settingModel->setting_key = $this->setupList['order_setting_key'];
                 }
             
               

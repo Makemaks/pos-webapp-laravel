@@ -164,7 +164,7 @@ class SettingFactory extends Factory
             
             foreach (KeyHelper::Type()[$i] as $key => $value) {
                 $count++;
-                $setting_key[$count] = [
+                $setting_key[$count][$count] = [
                     "setting_key_group"  => $i,
                     "setting_key_type" => $key, 
                     "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),

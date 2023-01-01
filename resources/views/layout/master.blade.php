@@ -61,7 +61,6 @@
 
             
             @auth
-                
                 @if ($route == 'home')
                     <div class="uk-width-1-3@s uk-padding-small">
                         <div id="receiptID">
@@ -77,8 +76,6 @@
             <div class="uk-position-bottom uk-background-default uk-box-shadow-large" style="z-index: 2;">
                 @include('partial.numpadPartial')
             </div>
-           
-            
         @endif
 
      

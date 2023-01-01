@@ -21,6 +21,8 @@
     $openControlID = '';
     $closeControlID = 'hidden';
     $currency = "";
+    $disabled = 'disabled';
+    $array = [];
   
     if ( Session::has('user-session-'.Auth::user()->user_id.'.'.'setupList')) {
         $data['setupList'] = Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList');
@@ -33,7 +35,6 @@
     if(Session::has('user-session-'.Auth::user()->user_id.'.'.'cartList') && isset($stockList) == false){
        
         $data['cartList'] = Session::get('user-session-'.Auth::user()->user_id.'.'.'cartList');
-        
         $stockList = Receipt::SessionCartInitialize($data['cartList']);
     }
   
@@ -58,9 +59,13 @@
                             {{-- <button type="button" class="uk-button uk-button-default uk-border-rounded uk-button-small" onclick="control(0)" uk-icon="pencil" {{$openControlID}}></button>
                             <button type="button" class="uk-button uk-button-default uk-border-rounded uk-button-small" onclick="control(1)" uk-icon="close" id="controlHideID" {{$closeControlID}}></button> --}}
                         </th>
-                        <th>VAT</th>
-                        <th>DISCOUNT</th>
+                        <th>
+
+                        </th>
+                        <th></th>
+                        
                         <th>{{$currencySymbol}}</th>
+                        
                     
                     </tr>
                 </thead>
@@ -80,8 +85,29 @@
                             @endphp
                             
                                 <tr id="cartItemID-{{$loop->index}}">
+                                   
+
                                     <td>
-                                        <input type="checkbox" name="receipt_stock_id[]" value="{{$stockItem['stock_id']}}" class="uk-checkbox">
+                                        <input type="checkbox" name="receipt_stock_id[]" value="{{$stockKey}}" class="uk-checkbox">
+                                    </td>
+
+                                    <td>
+                                        <div class="uk-inline">
+                                            <div uk-icon="icon: tag" type="button"></div>
+                                            <div uk-dropdown="mode: click">
+                                                @if ( count($stockItem['receipt_setting_key']) > 0 )
+                                                    @foreach ($stockItem['receipt_setting_key'] as $setting_key)
+                                                        @foreach ( head($setting_key) as $key => $value )
+                                                        
+                                                        <div class="uk-margin" @if(in_array($key, $array) == true) hidden @else @endif>
+                                                            @include('setting.settingKey.partial.tablePartial')
+                                                        </div>
+                                                    
+                                                        @endforeach
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
                                     </td>
     
                                     <td>
@@ -97,18 +123,45 @@
         
                                     
                                     <td>
-                                        @if ($data['setupList']['receipt']['stock_vat_rate'])
-                                            {{ MathHelper::FloatRoundUp($data['setupList']['receipt']['stock_vat_rate'], 2)}}
-                                        @endif
+                                        
                                     </td>
         
-                                    <td>
-                                        @if ($stockItem['stock_discount'])
-                                            {{-- {{ Stock::Discount($stockPriceQuantity, $stock_discount['type'], $stock_discount['value']) }} --}}
-                                        @endif
-                                    </td>
         
                                     <td>
+                                        <div class="uk-inline">
+                                            <div uk-icon="icon: triangle-down" type="button"></div>
+                                            <div uk-dropdown="mode: click">
+                                                <table class="uk-table uk-table-small uk-table-divider">
+                                                    
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>VAT %</td>
+                                                            <td> 
+                                                                @if ($data['setupList']['receipt']['stock_vat_rate'])
+                                                                    {{ MathHelper::FloatRoundUp($data['setupList']['receipt']['stock_vat_rate'], 2)}}
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>DISCOUNT</td>
+                                                            <td>
+                                                                @if ($stockItem['stock_discount'])
+                                                                    {{-- {{ Stock::Discount($stockPriceQuantity, $stock_discount['type'], $stock_discount['value']) }} --}}
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                        
+                                                    </tbody>
+                                                </table>
+
+                                               <div class="uk-margin">
+                                                   
+                                               </div>
+                                               <div class="uk-margin">
+                                                    
+                                               </div>
+                                            </div>
+                                        </div>
                                         @if ($data['setupList']['receipt']['stock']['stock_price_processed'])
                                             {{ MathHelper::FloatRoundUp( $data['setupList']['receipt']['stock']['stock_price_processed'], 2) }}    
                                         @else

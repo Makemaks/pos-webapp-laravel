@@ -23,7 +23,7 @@
         <div>
             <div class="uk-padding-small uk-box-shadow-small">
                 <select name="" id="" class="uk-select">
-                    <option disabled>FILTER</option>
+                    <option disabled selected>FILTER</option>
                     @foreach (Setting::SettingStockGroup() as $setting_stock_group)
                         <option onclick="stockGroup({{$loop->iteration}}, '{{$setting_stock_group}}', null)">{{Str::upper($setting_stock_group)}}</option>
                     @endforeach

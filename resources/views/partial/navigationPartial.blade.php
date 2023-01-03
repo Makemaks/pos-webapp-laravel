@@ -75,6 +75,13 @@ use App\Helpers\DateTimeHelper;
                     
                 @endif
 
+                @if(!in_array($route, ['dashboard','home']))
+                    <div class="uk-navbar-item uk-visible@s">
+                        @include('partial.scheduleModalPartial', ['schedule' => $route])
+                        <a uk-toggle="target: #schedule-{{ $route }}" class="uk-button uk-button-default">Set Schedule</a>
+                    </div>
+                @endif
+
             @endauth
 
            {{-- <div class="uk-navbar-item">

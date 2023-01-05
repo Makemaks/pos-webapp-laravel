@@ -14,6 +14,8 @@ class ReportController extends Controller
 {   
     use ReportTrait;
     
+    protected $masterPluData;
+
     /**
      * Display a listing of the resource.
      *
@@ -26,16 +28,15 @@ class ReportController extends Controller
     {
 
         $this->Init($request);
+        $this->masterPluData = $this->getMasterPluReport();
         if($request->report_type && !$request->isdownload) {
-            if($request->fileName == 'plu-id-links') {
-                // dd($this->getMasterPluReport());
-
-            }  
+            // if($request->fileName == 'plu-id-links') {
+            //     $this->masterPluData = $this->getMasterPluReport();
+            // }  
             return view('report.index', ['data' => $this->Data()]);
              
         }
         // If its export PDF / CSV
-        dd($request->all());
         if ($request->fileName) {
             // If PDF
             $this->title = $request->fileName;
@@ -75,72 +76,6 @@ class ReportController extends Controller
 
             return view('report.index', ['data' => $this->Data()]);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     private function Init(Request $request){
@@ -219,7 +154,8 @@ class ReportController extends Controller
 
             'eat_in_eat_out' => $this->eat_in_eat_out ?? null,
             'accountList' => $this->accountList ?? null,
-            'stockList' => $this->stockList ?? null
+            'stockList' => $this->stockList ?? null,
+            'master_plu_data' => $this->masterPluData ?? null,
         ];
     }
 }

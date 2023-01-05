@@ -71,18 +71,6 @@
 </div>
 
 <div class="uk-margin">
-    <div class="uk-form-label">Format</div>
-    <div class="uk-form-controls uk-form-controls-text">
-        <label><input class="uk-radio" type="radio" name="download_format"> HTML</label>
-        <label><input class="uk-radio" type="radio" name="download_format"> PDF</label>
-        <label><input class="uk-radio" type="radio" name="download_format"> CSV</label>
-        <label><input class="uk-radio" type="radio" name="download_format"> RTF</label>
-        <label><input class="uk-radio" type="radio" name="download_format"> XPS</label>
-        <label><input class="uk-radio" type="radio" name="download_format"> XML</label>
-    </div>
-</div>
-
-<div class="uk-margin">
 
     <div>
         <label class="uk-form-label" for="form-stacked-text"></label>

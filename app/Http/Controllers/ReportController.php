@@ -14,7 +14,15 @@ class ReportController extends Controller
 {   
     use ReportTrait;
     
+    /**
+     * Holds the master plu data
+     */
     protected $masterPluData;
+
+     /**
+     * Holds the allergen plu data
+     */
+    protected $allergenPluData;
 
     /**
      * Display a listing of the resource.
@@ -29,6 +37,7 @@ class ReportController extends Controller
 
         $this->Init($request);
         $this->masterPluData = $this->getMasterPluReport();
+        $this->allergenPluData = $this->getAllergenPluReport();
         if($request->report_type && !$request->isdownload) {
             // if($request->fileName == 'plu-id-links') {
             //     $this->masterPluData = $this->getMasterPluReport();
@@ -156,6 +165,7 @@ class ReportController extends Controller
             'accountList' => $this->accountList ?? null,
             'stockList' => $this->stockList ?? null,
             'master_plu_data' => $this->masterPluData ?? null,
+            'allergen_plu_data' => $this->allergenPluData ?? null,
         ];
     }
 }

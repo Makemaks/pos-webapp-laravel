@@ -106,9 +106,9 @@ class GatewayAPIController extends Controller
                     $order_id = Order::insertGetId($orderInput);
             
                    
-                    if($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList')){
+                    if($request->session()->has('user-session-'.Auth::user()->user_id.'.awaitingCartList')){
                         //remove session
-                        $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'awaitingCartList.'.$receipt);
+                        $request->session()->pull('user-session-'.Auth::user()->user_id.'.awaitingCartList.'.$receipt);
                     }
 
                     $this->stockList = Stock::whereIn('stock_id', json_decode($request['stockList']))->get();

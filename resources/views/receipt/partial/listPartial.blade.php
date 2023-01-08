@@ -1,9 +1,9 @@
 
 @php
     $total = 0;
-    if( Session::has('user-session-'.Auth::user()->user_id.'.'.'waitingList') ){
+    if( Session::has('user-session-'.Auth::user()->user_id.'.waitingList') ){
        
-       $data['waitingList'] = Session::get('user-session-'.Auth::user()->user_id.'.'.'waitingList');
+       $data['waitingList'] = Session::get('user-session-'.Auth::user()->user_id.'.waitingList');
 
    }
 @endphp

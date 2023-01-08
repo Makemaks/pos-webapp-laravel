@@ -1,70 +1,122 @@
 @php
-    use App\Helpers\StringHelper;
     use App\Models\Setting;
     use App\Helpers\KeyHelper;
-
-    
 @endphp
 
-@if ($key == 'value')
-    <input class="uk-input" type="number" name="setting_key[{{$key}}][{{$loop->iteration}}]" value="{{$value}}" {{$disabled}}>
-@elseif ($key == 'setting_key_type')
+{{--  <input name="setting_id" class="uk-input" type="hidden" value="{{$data['settingModel']->setting_id}}"> --}}
+<input name="setting_key_id" type="hidden" class="uk-input" value="{{$key}}">
+
+@foreach ( $setting_key as $keyItemSettingKey => $valueItemSettingKey)
+
+    @if ($keyItemSettingKey == 'image')
+        <div class ="uk-margin">
+            <label class="uk-form-label" for="form-horizontal-input">{{Str::upper($keyItemSettingKey)}}</label>
+            <div class="uk-form-controls">
+                <input name="form[setting_key][{{$keyItemSettingKey}}]" class="uk-input" type="text" value="{{$valueItemSettingKey}}">
+            </div>
+        </div>
+    @elseif ($keyItemSettingKey == 'setting_key_type')
+    
+        <div class ="uk-margin">
+            <label class="uk-form-label" for="form-horizontal-select">{{Str::upper($keyItemSettingKey)}}</label>
+            <div class="uk-form-controls">
+                <select class="uk-select" id="form-horizontal-select" name="form[setting_key][{{$keyItemSettingKey}}]" onchange="IndexSetting()">
                 
-    
-    <select class="uk-select" name="setting_key[{{$key}}][{{$loop->iteration}}]" {{$disabled}}>
-        @if (head( $data['settingModel']->setting_key[1] )['setting_key_group'] != '')  
-
-            @php
-                $setting_key_group = head( $data['settingModel']->setting_key[1] )['setting_key_group'];
-            @endphp
-
-            @foreach (KeyHelper::Type()[ $setting_key_group ] as $setting_key_type_key => $setting_key_type)
-                <option @if($setting_key_type_key == $value) selected @endif value="{{$setting_key_type_key}}">
-                    {{Str::upper($setting_key_type)}}
-                </option>
-            @endforeach
-        @else
-            <option value="0" selected>SELECT ...</option>
-        @endif
-    
-    </select>
-    
-@elseif ($key == 'description')
-    
-        <textarea class="uk-textarea" name="setting_key[{{$key}}][{{$loop->iteration}}]" rows="1" {{$disabled}}>{{$value}}</textarea>
-
-@elseif ($key == 'status')
-    <select class="uk-select" id="form-stacked-select" name="setting_key[{{$key}}][{{$loop->iteration}}]" {{$disabled}}>
+                    @if (head( $data['settingModel']->setting_key )['setting_key_group'] != '')
+                        <option value="" selected disabled>SELECT ...</option>
+                        @foreach (KeyHelper::Type()[ head( $data['settingModel']->setting_key )['setting_key_group'] ]  as $key_setting_key_type  => $item_setting_key_type)
+                                
+                            <option value="{{$key_setting_key_type}}" @if($key_setting_key_type == $valueItemSettingKey) selected @endif>
+                                {{$item_setting_key_type}}
+                            </option>
+                        @endforeach
+                    @else
+                        <option value="0" selected>SELECT ...</option>
+                    @endif
+                </select>    
+            </div>  
+                    
+        </div>
+    @elseif ($keyItemSettingKey == 'setting_key_group')
         
-        @if (head( $data['settingModel']->setting_key[1] )['setting_key_group'] != '')
-            @foreach (Setting::SettingOfferStatus()  as $keySettingOfferStatus  => $valueSettingOfferStatus)
-                <option value="{{$keySettingOfferStatus}}" @if($keySettingOfferStatus == $value) selected @endif>
-                    {{$valueSettingOfferStatus}}
-                </option>
-            @endforeach
-        @else
-            <option value="0" selected>SELECT ...</option>
-        @endif
+        <div class ="uk-margin">
+            <label class="uk-form-label" for="form-horizontal-select">{{Str::upper($keyItemSettingKey)}}</label>
+            <div class="uk-form-controls">
+                <select class="uk-select" id="form-horizontal-select" name="form[setting_key][{{$keyItemSettingKey}}]" onchange="IndexSetting()">
+                
+                    <option value="" selected>SELECT ...</option>
+                    
+                    @foreach (Setting::SettingKeyGroup() as $keySettingKeyGroup =>$valueSettingKeyGroup)
+                    
+                        <option value="{{$keySettingKeyGroup}}" @if($keySettingKeyGroup == $valueItemSettingKey) selected @endif>
+                            {{Str::upper($valueSettingKeyGroup)}}
+                        </option>
+                            
+                    @endforeach
+                    
+                </select>
+            </div>
+        </div>
+    @elseif ($keyItemSettingKey == 'setting_vat_id')
+    
+        <div class ="uk-margin">
+            <label class="uk-form-label" for="form-horizontal-select">{{Str::upper($keyItemSettingKey)}}</label>
+            <div class="uk-form-controls">
+                <select name="form[setting_key][{{$keyItemSettingKey}}]" class="uk-select">
+                    <option selected="selected" disabled>SELECT ...</option>
+                    @foreach ($data['settingModel']->setting_vat as $setting_vat)
+                        <option value="{{$loop->index}}" @if($loop->index == $valueItemSettingKey) selected @endif>
+                            {{$setting_vat['name']}}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    
+    
+    @elseif ($keyItemSettingKey == 'value')
+        <div class ="uk-margin">
+            <label class="uk-form-label" for="form-horizontal-select">{{Str::upper($keyItemSettingKey)}}</label>
+            <div class="uk-form-controls">
+                <input type="number" class="uk-input" name="form[setting_key][{{$keyItemSettingKey}}]" value="{{$valueItemSettingKey}}">
+            </div>
+        </div>
 
-    </select>    
+    @elseif ($keyItemSettingKey == 'description')
+        <div class ="uk-margin">
+            <label class="uk-form-label" for="form-horizontal-select">{{Str::upper($keyItemSettingKey)}}</label>
+            <div class="uk-form-controls">
+                <textarea class="uk-textarea" name="form[setting_key][{{$keyItemSettingKey}}]" rows="1"></textarea>
+            </div>
+        </div>
+    @elseif ($keyItemSettingKey == 'status')
+        <div class="uk-margin">
+            <label class="uk-form-label" for="form-horizontal-select">{{Str::upper($keyItemSettingKey)}}</label>
+            <div class="uk-form-controls">
+                <select class="uk-select" id="form-horizontal-select" name="form[setting_key][{{$keyItemSettingKey}}]">
+                
+                    @if (head( $data['settingModel']->setting_key )['status'] != '')
+                            <option value="" selected disabled>SELECT ...</option>
+                        @foreach (Setting::SettingOfferStatus()  as $keySettingOfferStatus  => $valueSettingOfferStatus)
+                                
+                            <option value="{{$keySettingOfferStatus}}" @if($keySettingOfferStatus == $valueItemSettingKey) selected @endif>
+                                {{Str::upper($valueSettingOfferStatus)}}
+                            </option>
+                                
+                        @endforeach
+                    @else
+                        <option value="0" selected>SELECT ...</option>
+                    @endif
+                </select>  
+            </div>
+        </div>
+    @else
+        <div class ="uk-margin">
+            <label class="uk-form-label" for="form-horizontal-select">{{Str::upper($keyItemSettingKey)}}</label>
+            <div class="uk-form-controls">
+                <input name="form[setting_key][{{$keyItemSettingKey}}]" class="uk-input" type="text" value="{{$valueItemSettingKey}}">
+            </div>
+        </div>
+    @endif 
+@endforeach
 
-@elseif ($key == 'setting_key_group')
-    <select class="uk-select" id="form-stacked-select" name="setting_key[{{$key}}][{{$loop->iteration}}]" {{$disabled}}>
-        
-        @if (head( $data['settingModel']->setting_key[1] )['setting_key_group'] != '')
-            @foreach (Setting::SettingKeyGroup() as $setting_key_group_key => $setting_key_group)
-                <option value="{{$setting_key_group_key}}" @if($setting_key_group_key == $value) selected @endif>
-                    {{Str::upper($setting_key_group)}}
-                </option>
-            @endforeach
-        @else
-            <option value="0" selected>SELECT ...</option>
-        @endif
-        
-    </select>
-
-@elseif ($key == 'image')
-    <input class="uk-input" type="text" value="{{$value}}" name="setting_key[{{$key}}][{{$loop->iteration}}]" {{$disabled}}>
-@else
-    <input class="uk-input" type="text" placeholder="Input" value="{{$value}}" name="setting_key[{{$key}}][{{$loop->iteration}}]" {{$disabled}}>
-@endif

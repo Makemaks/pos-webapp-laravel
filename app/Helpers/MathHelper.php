@@ -14,14 +14,22 @@ class MathHelper{
     }
 
     public static function VAT(float $vat, float $price){
-        $vatToPay = ($vat / 100) * $price;
-        return $price + $vatToPay;
+        $vat = ($vat / 100) * $price;
+
+        return [
+            'vat' => $vat,
+            'total' => $price + $vat,
+        ];
     }
 
 
     public static function Discount(float $discount, float $price){
         $discount = ($discount / 100) * $price;
-        return $price - $discount;
+        
+        return [
+            'discount' => $discount,
+            'total' => $price + $discount,
+        ];
     }
 
     public static function PercentageDifference(float $valueA, float $valueB){

@@ -302,15 +302,14 @@ class Setting extends Model
 
         'setting_key' => '{
             "1": {
-                "1": {
-                    "setting_key_group": "",
-                    "setting_key_type": "",
-                    "name": "",
-                    "status": "",
-                    "description": "",
-                    "value": "",
-                    "image": ""
-                }
+                "setting_key_group": "",
+                "setting_key_type": "",
+                "name": "",
+                "status": "",
+                "description": "",
+                "value": "",
+                "image": "",
+                "setting_vat_id": ""
             }
         }',
 
@@ -318,8 +317,7 @@ class Setting extends Model
             "default_country": "",
             "default_currency": {},
             "logo": {},
-            "stock_price_group": "",
-            "special_stock_price_group": ""
+            
         }',
 
         'setting_customer' => '{
@@ -329,10 +327,10 @@ class Setting extends Model
             "customer_marketing": {}
         }',
         
-        'setting_stock_price' => '{
+        'setting_stock_price_level' => '{
             "1": {
                 "name": "",
-                "description": ""
+                "description": "",
             }
         }',
 
@@ -342,7 +340,7 @@ class Setting extends Model
     protected $casts = [
 
         'setting_stock_set' => 'array',
-        'setting_stock_price' => 'array',
+        'setting_stock_price_level' => 'array',
         'setting_stock_set' => 'array',
 
         'setting_stock_label'  => 'array',
@@ -577,10 +575,6 @@ class Setting extends Model
             $data['setupList']['receipt']['settingKeyTotal']['+'] = $plusSettingKey; */
         }
        
-       
-      
-
-
         return $data;
 
     }
@@ -593,8 +587,6 @@ class Setting extends Model
 
             //discount
            
-          
-
             //customer
             if ( count($data['setupList']['customer']) > 0 ){
 
@@ -626,7 +618,7 @@ class Setting extends Model
                        /* foreach ($settingModel->setting_customer as $setting_customer) {
                            
                             if (Setting::SettingOfferType()[$setting_offer['decimal']['discount_type']] == 'percentage') {
-                                $value =  MathHelper::Discount($setting_offer['decimal']['discount_value'], $data['setupList']['receipt']['priceTotal']); //percentage to amount
+                                $value =  MathHelper::Discount($setting_offer['decimal']['discount_value'], $data['setupList']['receipt']['priceTotal'])['total']; //percentage to amount
                                 $percentage = $setting_offer['decimal']['discount_value'];
                             } else{
                                 $value = $setting_offer['decimal']['discount_value'];
@@ -663,38 +655,32 @@ class Setting extends Model
     }
 
     //compare current
-    public static function SettingOffer($setting_offer_id){
+    public static function SettingOffer($setting_offer){
 
         $stockOffer = [];
-
 
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 
         $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
 
-        $setting_offer = $settingModel->setting_offer[ $setting_offer_id ];
-       
-    
-        //filter offer by date
-        /* $offer = collect($settingModel->setting_offer)
-        ->where('date.end_date', '>', Carbon::now())
-        ->whereIn('available_day.*', $setting_offer['available_day']); */
+        foreach ($setting_offer  as $key => $setting_offer_id) {
+            $setting_offer = $settingModel->setting_offer[ $setting_offer_id ];
 
-        foreach ($settingModel->setting_offer as $key => $value) {
-            if ($value['date']['end_date'] > Carbon::now() &&
+            if ($setting_offer['date']['end_date'] > Carbon::now() &&
             array_search( Carbon::now()->dayOfWeek, $setting_offer['available_day']) ) {
 
-                $stockOffer = $settingModel->setting_offer[$key];
+                $stockOffer[$key] = $settingModel->setting_offer[$key];
             }
         }
+
 
         return $stockOffer;
     }
 
 
     //stock
-    public static function SettingDiscount($settingCurrentOffer, $price){
+    public static function SettingCurrentOffer($settingCurrentOffer, $price){
 
         $settingCurrentOfferType[] = ['discount_value' => $price];
         $total = [];
@@ -704,7 +690,7 @@ class Setting extends Model
             if (count($settingCurrentOfferValue) > 0) {
                 if (Setting::SettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
 
-                    $settingCurrentOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)];
+                    $settingCurrentOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)['total'] ];
     
                 } else {
                     $settingCurrentOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];

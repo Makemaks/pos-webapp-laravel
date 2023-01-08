@@ -22,231 +22,190 @@
     $closeControlID = 'hidden';
     $currency = "";
     $disabled = 'disabled';
-    $array = [];
+
+    if ($route == 'home' || Str::contains($route, 'api')) {
+        $array = [
+            'name',
+            'value',
+            'setting_key_group',
+            'setting_key_type',
+        ];
+    }else{
+        $disabled = '';
+    }
   
-    if ( Session::has('user-session-'.Auth::user()->user_id.'.'.'setupList')) {
-        $data['setupList'] = Session::get('user-session-'.Auth::user()->user_id.'.'.'setupList');
+    if ( Session::has('user-session-'.Auth::user()->user_id.'.setupList')) {
+        $data['setupList'] = Session::get('user-session-'.Auth::user()->user_id.'.setupList');
     }
    
     $data['userModel'] = User::Account('user_account_id', Auth::user()->user_account_id)
     ->first();
 
    
-    if(Session::has('user-session-'.Auth::user()->user_id.'.'.'cartList') && isset($stockList) == false){
-       
-        $data['cartList'] = Session::get('user-session-'.Auth::user()->user_id.'.'.'cartList');
-        $stockList = Receipt::SessionCartInitialize($data['cartList']);
+    if(Session::has('user-session-'.Auth::user()->user_id.'.cartList')){
+        $stockList = Session::get('user-session-'.Auth::user()->user_id.'.cartList');
+        // /$stockList = Receipt::SessionCartInitialize($data['cartList'], $data['setupList']);
     }
   
 @endphp
 
 @include('receipt.partial.receiptMenuPartial')
 <form action="" id="cartFormID" method="POST">
-  
-    <ul class="uk-subnav uk-subnav-pill" uk-switcher>
-        <li><a href="#" uk-icon="home" class="uk-border-rounded"></a></li>
-        <li><a href="#" uk-icon="list" class="uk-border-rounded"></a></li>
-        <li><a href="#" uk-icon="tag" class="uk-border-rounded"></a></li>
+    {{-- <span>
+        <button type="button" class="uk-button uk-button-default uk-border-rounded uk-button-small" onclick="control(0)" uk-icon="pencil" {{$openControlID}}></button>
+        <button type="button" class="uk-button uk-button-default uk-border-rounded uk-button-small" onclick="control(1)" uk-icon="close" id="controlHideID" {{$closeControlID}}></button>
+       {{$currencySymbol}}
+   </span> --}}
+
+    <ul class="uk-iconnav">
+        <li><input type="checkbox" class="uk-checkbox" onclick="SelectAll('receiptTableID')"></li>
+        <li><button type="button" class="uk-text-danger" onclick="deleteStock(this)" uk-icon="trash" {{$openControlID}}></button></li>
+        <li><button uk-icon="tag" type="button" onclick="IndexSetting('stock')"></button></li>
+       
     </ul>
+    
 
-    <ul class="uk-switcher uk-margin">
-        <li class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
-            <table class="uk-table uk-table-small uk-table-divider">
-                <thead>
-                    <tr>
-                        <th>
-                            <input type="checkbox" value="" class="uk-checkbox" onclick="SelectAll(this, cartListID)">
-                            {{-- <button type="button" class="uk-button uk-button-default uk-border-rounded uk-button-small" onclick="control(0)" uk-icon="pencil" {{$openControlID}}></button>
-                            <button type="button" class="uk-button uk-button-default uk-border-rounded uk-button-small" onclick="control(1)" uk-icon="close" id="controlHideID" {{$closeControlID}}></button> --}}
-                        </th>
-                        <th>
-
-                        </th>
-                        <th></th>
-                        
-                        <th>{{$currencySymbol}}</th>
-                        
-                    
-                    </tr>
-                </thead>
-                <tbody id="cartListID" class="uk-overflow-auto">
+    <div class="uk-overflow-auto uk-height-small uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 25">
+       
+        
+            <div class="" id="receiptTableID">
+        
+                <div id="cartListID">
                     @isset ($stockList)
                 
                         @foreach ($stockList as $stockKey => $stockItem)
                             @php
                                 $data = Receipt::Calculate( $data, $stockItem, $loop );
-                                Session::pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
-                                Session::put('user-session-'.Auth::user()->user_id.'.'.'setupList', $data['setupList']);
-    
-                                $cartList = Session::pull('user-session-'.Auth::user()->user_id.'.'.'cartList');
-                                $cartList[$loop->index]['stock_price'] = $data['setupList']['receipt']['stock']['stock_price_processed'];
-                                Session::put('user-session-'.Auth::user()->user_id.'.'.'cartList', $cartList);
+                                Session::pull('user-session-'.Auth::user()->user_id.'.setupList');
+                                Session::put('user-session-'.Auth::user()->user_id.'.setupList', $data['setupList']);
+            
+                                $cartList = Session::pull('user-session-'.Auth::user()->user_id.'.cartList');
+                                /* $cartList[$loop->index]['stock_price'] = $data['setupList']['receipt']['stock']['stock_price_processed']; */
+                                Session::put('user-session-'.Auth::user()->user_id.'.cartList', $cartList);
                                 
                             @endphp
                             
-                                <tr id="cartItemID-{{$loop->index}}">
-                                   
+                                <div class="uk-box-shadow-small uk-padding-small uk-margin uk-display-block" id="cartItemID-{{$loop->index}}">
+            
+                                    <div {{-- uk-toggle="target: #toggle-stock-{{$loop->index}}" --}}>
+                                        <span>
+                                            <input type="checkbox" name="receipt_stock_id[]" value="{{$stockKey}}" class="uk-checkbox">
+                                        </span>
 
-                                    <td>
-                                        <input type="checkbox" name="receipt_stock_id[]" value="{{$stockKey}}" class="uk-checkbox">
-                                    </td>
-
-                                    <td>
-                                        <div class="uk-inline">
-                                            <div uk-icon="icon: tag" type="button"></div>
-                                            <div uk-dropdown="mode: click">
-                                                @if ( count($stockItem['receipt_setting_key']) > 0 )
-                                                    @foreach ($stockItem['receipt_setting_key'] as $setting_key)
-                                                        @foreach ( head($setting_key) as $key => $value )
-                                                        
-                                                        <div class="uk-margin" @if(in_array($key, $array) == true) hidden @else @endif>
-                                                            @include('setting.settingKey.partial.tablePartial')
-                                                        </div>
-                                                    
-                                                        @endforeach
-                                                    @endforeach
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </td>
-    
-                                    <td>
-                                    
-                                        <button class="uk-button uk-button-text" uk-toggle="target: #toggle-stock-{{$loop->index}}">
-                                            {{$stockItem['stock_name']}} 
-                                            @if ($stockItem['stock_quantity'] > 1)
-                                                <span class="uk-text-meta uk-text-top"> {{$stockItem['stock_quantity']}}</span>
-                                            @endif
-                                        </button>
-                                        
-                                    </td>
-        
-                                    
-                                    <td>
-                                        
-                                    </td>
-        
-        
-                                    <td>
-                                        <div class="uk-inline">
-                                            <div uk-icon="icon: triangle-down" type="button"></div>
-                                            <div uk-dropdown="mode: click">
-                                                <table class="uk-table uk-table-small uk-table-divider">
-                                                    
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>VAT %</td>
-                                                            <td> 
-                                                                @if ($data['setupList']['receipt']['stock_vat_rate'])
-                                                                    {{ MathHelper::FloatRoundUp($data['setupList']['receipt']['stock_vat_rate'], 2)}}
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>DISCOUNT</td>
-                                                            <td>
-                                                                @if ($stockItem['stock_discount'])
-                                                                    {{-- {{ Stock::Discount($stockPriceQuantity, $stock_discount['type'], $stock_discount['value']) }} --}}
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                        
-                                                    </tbody>
-                                                </table>
-
-                                               <div class="uk-margin">
-                                                   
-                                               </div>
-                                               <div class="uk-margin">
-                                                    
-                                               </div>
-                                            </div>
-                                        </div>
-                                        @if ($data['setupList']['receipt']['stock']['stock_price_processed'])
-                                            {{ MathHelper::FloatRoundUp( $data['setupList']['receipt']['stock']['stock_price_processed'], 2) }}    
-                                        @else
-                                            {{ MathHelper::FloatRoundUp( $data['setupList']['receipt']['stock']['stock_price'], 2) }}    
+                                        {{$stockItem['stock_name']}} 
+                                        @if ($stockItem['stock_quantity'] > 1)
+                                            <span class="uk-text-meta uk-text-top"> {{$stockItem['stock_quantity']}}</span>
                                         @endif
-                                    </td>
-                                
-                                </tr>
-    
-                                {{-- <tr id="toggle-stock-{{$loop->index}}" hidden>
-                                    <td colspan="5">
-                                        @include('receipt.partial.controlPartial',
-                                            [
-                                                'cartValue' => $loop->index,
-                                                'quantity' => $stockItem['stock_quantity']
-                                            ])
-                                    </td>
-                                </tr> --}}
+
+                                        <span class="uk-align-right">
+                                            @if ( count($stockItem['stock_vat']) > 0 || count($stockItem['stock_setting_offer']) > 0)
+                                                <del>{{ CurrencyHelper::Format( $stockItem['stock_price'] ) }} </del>
+                                                <span>{{ CurrencyHelper::Format( $data['setupList']['receipt']['stock']['stock_price_processed'] )}}</span>
+                                            @else
+                                                {{ CurrencyHelper::Format( $stockItem['stock_price'] ) }}
+                                            @endif
+                                        </span>
+
+                                        <span>
+                                            @if ($data['setupList']['receipt']['stock_vat_rate'])
+                                                %{{ MathHelper::FloatRoundUp($data['setupList']['receipt']['stock_vat_rate'], 2)}}
+                                            @endif
+                                            
+                                            @if ($stockItem['stock_setting_offer'])
+                                            | {{ CurrencyHelper::Format( Setting::SettingCurrentOffer($stockItem['stock_setting_offer'], $data['setupList']['receipt']['stock']['stock_price_processed']) )}}
+                                            @endif
+                                        </span>
+                                        
+                                    </div>
+
+                                    
+                                    <div>
+                                        @foreach ($stockItem['receipt_setting_key'] as $receipt_setting_key_key => $receipt_setting_key_item)
+                                            @php
+                                                $data['settingModel']->setting_key = $receipt_setting_key_item;
+                                            @endphp  
+                                            @foreach ($receipt_setting_key_item as $key => $setting_key)
+                                                <div class="uk-inline">
+                                                    <button uk-icon="triangle-up" type="button">{{ $setting_key['value'] }}</button>
+                                                    <div uk-dropdown="mode: click; pos: top-left" class="uk-overflow-auto uk-height-large">
+                                                        @include('setting.settingKey.partial.tablePartial')
+                                                    </div>
+                                                </div>
+                                            @endforeach
+
+                                        @endforeach
+                                    </div>
+
+                                        {{-- @include('receipt.partial.controlPartial',
+                                        [
+                                            'cartValue' => $loop->index,
+                                            'quantity' => $stockItem['stock_quantity']
+                                        ]) --}}
+                                        
+                                </div>
+            
                         @endforeach
-        
-                    @endisset
-                </tbody>
-                
-            </table>
-        </li>
-        <li class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
-            @include('receipt.partial.listPartial')
             
-           {{--  <div class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
-                <table class="uk-table uk-table-small">
-                
-                    <tbody>
-                    
-                        @if (count($data['setupList']['order_setting_key']) > 0)
-                            @foreach ($data['setupList']['order_setting_key'] as $order_setting_key_list)
-                                <tr>
-                                    @foreach ($order_setting_key_list as $order_setting_key)
-                                        <td>
-                                            {{ $order_setting_key['name'] }} @ {{ Setting::SettingKeyGroup()[ $order_setting_key['setting_key_group'] ]}} ~ {{ KeyHelper::Type()[$order_setting_key['setting_key_group']][ $order_setting_key['setting_key_type']]  }}
-                                        </td> 
-                                        <td>
-                                            {{$order_setting_key['value']}}
-                                        </td> 
-                                    @break
-                                    @endforeach
-                                </tr>
-                            @endforeach
-                        @endif
-
-                    </tbody>
-                </table>
-        
-            </div> --}}
-        </li>
-        <li class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 30">
-            @include('setting.settingKey.index')
-        </li>
-    </ul>
-
-    <div class="uk-margin uk-overflow-auto uk-height-small">
-        <table class="uk-table uk-table-small">
-        
-            <tbody>
-            
-                <tr>
-                    @isset ($data['setupList']['receipt']['settingVATTotal'])
-                        <td>VAT % {{MathHelper::FloatRoundUp($data['setupList']['receipt']['settingVATTotal'], 2)}}</td>
-                        <td>{{MathHelper::FloatRoundUp($data['setupList']['receipt']['priceVATTotal'] - $data['setupList']['receipt']['subTotal'], 2)}}</td>
                     @endisset
-                </tr>
+                </div>
+                
+            </div>
+       
+       
+    </div>
+  
 
-                <tr>
-                    <td>SUB TOTAL {{$currency}}</td>
-                    <td>{{CurrencyHelper::Format($data['setupList']['receipt']['subTotal'])}}</td>
-                </tr>
+    <div class="uk-margin">
+       
+        <div>
+            @foreach ($data['setupList']['order_setting_key'] as $order_setting_key_key => $order_setting_key_item)
+                @php
+                    $data['settingModel']->setting_key = $order_setting_key_item;
+                @endphp                  
+                @foreach ($order_setting_key_item as $key => $setting_key)
+                    <div class="uk-inline">
+                        <button uk-icon="triangle-up" type="button">{{ $setting_key['value'] }}</button>
+                        <div uk-dropdown="mode: click; pos: top-left" class="uk-overflow-auto uk-height-large">
+                            @include('setting.settingKey.partial.tablePartial')
+                        </div>
+                    </div>
+                @endforeach
+                
+            @endforeach
+        </div>
 
-                <tr>
-                    <td>TOTAL {{$currency}}</td>
-                    <td>{{CurrencyHelper::Format($data['setupList']['receipt']['priceVATTotal'])}}</td>
-                </tr>
+            
+        <div>
+            @if ( $data['setupList']['receipt']['subTotal'] > 0 )
+                <span class="uk-text-bold">SUB TOTAL {{$currency}}</span>
+                <span>{{CurrencyHelper::Format($data['setupList']['receipt']['subTotal'])}}</span>
+            @endif
+        </div>
 
-            </tbody>
-        </table>
+        <div>
+            @if ( $data['setupList']['receipt']['subTotal'] > 0)
+                <span class="uk-text-bold">VAT %</span>
+                <span uk-icon="triangle-right"></span> {{ MathHelper::FloatRoundUp( collect($data['settingModel']->setting_vat)->where('default', 0)->sum('rate'), 2 ) }} 
+                <span uk-icon="triangle-up"></span> {{ MathHelper::FloatRoundUp( $data['setupList']['receipt']['stock_vat_total_rate'], 2 ) }}
+                
+                <span uk-icon="arrow-right"></span>
+                <span>
+                    {{ MathHelper::FloatRoundUp($data['setupList']['receipt']['order_vat_total_amount'], 2) }} |
+                    {{ MathHelper::FloatRoundUp( $data['setupList']['receipt']['stock_vat_total_amount'], 2 ) }}
+                </span>
+                
+            @endif
+        </div>
+
+        <div>
+            @if ( $data['setupList']['receipt']['priceTotal'] > 0 )
+                <span class="uk-text-bold">TOTAL {{$currency}}</span>
+                <span>{{CurrencyHelper::Format($data['setupList']['receipt']['priceTotal'])}}</span>
+            @endif
+           
+        </div>
+
+          
 
     </div>
-
-
 </form>

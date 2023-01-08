@@ -49,8 +49,6 @@ class HomeController extends Controller
        
         $this->setupList = Receipt::SessionInitialize($request);
         
-        $this->user = 0;
-
         $this->userList = User::Store('person_user_id', $this->userModel->user_id)
         ->orderBy('person_name->person_firstname')
         ->get();
@@ -62,6 +60,9 @@ class HomeController extends Controller
         ->get();
 
         $this->settingModel->setting_stock_set = collect($this->settingModel->setting_stock_set)->where('type', 0);
+        $settingModel = new Setting();
+      
+        $this->settingModel->setting_key = $settingModel->setting_key;
 
         $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
         ->groupBy('stock_id')
@@ -85,9 +86,10 @@ class HomeController extends Controller
     }
     
     private function init(){
+        $a = Auth::user()->user_account_id;
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id',  $this->userModel->store_id)->first();
         $this->settingList = Setting::where('settingtable_id', $this->userModel->store_id);
     }
 

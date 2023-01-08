@@ -180,7 +180,7 @@ class Order extends Model
     public static function Process($request, $data){
         
 
-        if ($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'setupList')) {
+        if ($request->session()->has('user-session-'.Auth::user()->user_id.'.setupList')) {
 
             $userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
@@ -240,10 +240,10 @@ class Order extends Model
 
 
             //customer details
-            if (count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.customer') ) > 0) {
+            if (count( $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList.customer') ) > 0) {
 
                 $orderData += [
-                    'ordertable_id' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.customer')['value'],
+                    'ordertable_id' => $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList.customer')['value'],
                     'ordertable_type' => 'User'
                 ];
             
@@ -258,16 +258,16 @@ class Order extends Model
           
 
             //add finalise key
-            if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_setting_key') ) > 0) {
+            if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList.order_setting_key') ) > 0) {
                 $orderData += [
-                    'order_setting_key' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_setting_key')
+                    'order_setting_key' => $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList.order_setting_key')
                 ];
             }
 
             //add finalise key
-            if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_offer') ) > 0) {
+            if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList.order_offer') ) > 0) {
                 $orderData += [
-                    'order_offer' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList.order_offer')
+                    'order_offer' => $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList.order_offer')
                 ];
             }
             

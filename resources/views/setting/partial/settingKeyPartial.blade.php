@@ -1,6 +1,14 @@
 @php
-    if(isset($active) == false){
-        $active = '0';
+
+    $route = Str::before(Request::route()->getName(), '.');
+    $active = '0';
+
+    if (Str::contains($route, 'home')) {
+        $active = '1';
+    }
+
+    if (Session::has('view') == false) {
+        Session::flash('view', 'Setting Key');
     }
 @endphp
 
@@ -15,19 +23,16 @@
 
     <ul class="uk-switcher uk-margin">
         <li>
-            <form id="settingKeyListID" action="{{route('setting.update', isset($data['settingModel']->setting_id))}}" method="POST">
-                @csrf
-                @method('PATCH')
+           
                 @include('setting.settingKey.index')
-            </form>
+            
         </li>
 
         <li>
            
-            <form action="{{ route('setting.store') }}" method="POST" class="uk-form-stacked" id="settingKeyFormID">
-                @csrf
+            
                 @include('setting.settingKey.create')
-            <form>
+            
         </li>
     </ul>
 </div>

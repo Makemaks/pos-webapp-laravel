@@ -4,24 +4,27 @@ $.ajaxSetup({
     }
 });
 
-function IndexSetting(){
+function IndexSetting(view = null){
 
     var settingKeyFormID = $("#settingKeyFormID").serialize();
+    var cartFormID = $("#cartFormID").serialize();
    
     $.ajax({        
         url:"/setting-api",
         method: 'GET',
         data:{
             settingKeyFormID:settingKeyFormID,
+            cartFormID: cartFormID,
+            view:view
         },
         success:function(data){
-            document.getElementById('settingKeyFormID').innerHTML = data['html']; 
+            document.getElementById('settingKeyID').innerHTML = data['html']; 
         }
     });
     
 }
 
-function StoreSettingKey(){
+function StoreSettingKey(view = null){
 
     var settingKeyFormID = $("#settingKeyFormID").serialize();
     var cartFormID = $("#cartFormID").serialize();
@@ -31,12 +34,11 @@ function StoreSettingKey(){
         method: 'POST',
         data:{
             settingKeyFormID:settingKeyFormID,
-            cartFormID: cartFormID
+            cartFormID: cartFormID,
+            view:view
         },
         success:function(data){
-            if (data['html']) {
-                document.getElementById('receiptID').innerHTML = data['html'];
-            } 
+            document.getElementById('receiptID').innerHTML = data['html'];
         }
     });
     

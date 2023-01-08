@@ -18,7 +18,7 @@ function stockGroup(id, type, view){
             view:view
         },      
         success:function(data){
-            document.getElementById('contentID').innerHTML = data['html'];
+            document.getElementById('stockID').innerHTML = data['html'];
             if (!view) {
                 document.getElementById("stockGroupID").hidden = false;
             }
@@ -36,7 +36,7 @@ function showCustomer(){
         data: {action: 'showCustomer'},      
         success:function(data){
          
-           document.getElementById('contentID').innerHTML = data['html']; 
+           document.getElementById('stockID').innerHTML = data['html']; 
        }
      });
 
@@ -106,7 +106,7 @@ function createCustomer(){
         data: {action: 'createCustomer'},      
         success:function(data){
          
-           document.getElementById('contentID').innerHTML = data['html']; 
+           document.getElementById('stockID').innerHTML = data['html']; 
        }
      });
 
@@ -121,7 +121,7 @@ function showStock(){
         method: 'GET',
         data: {action: 'showStock'},      
         success:function(data){
-           document.getElementById('contentID').innerHTML = data['html']; 
+           document.getElementById('stockID').innerHTML = data['html']; 
            document.getElementById("stockGroupID").hidden = true;
        }
      });
@@ -136,7 +136,7 @@ function showOrder(){
         method: 'GET',
         data: {action: 'showOrder'},      
         success:function(data){
-           document.getElementById('contentID').innerHTML = data['html']; 
+           document.getElementById('stockID').innerHTML = data['html']; 
            //document.getElementById("stockGroupID").hidden = true;
        }
      });
@@ -155,7 +155,7 @@ function pagination(page, action, view){
             view:view
         },      
         success:function(data){
-        document.getElementById('contentID').innerHTML = data['html']; 
+        document.getElementById('stockID').innerHTML = data['html']; 
         //document.getElementById("stockGroupID").hidden = true;
     }
     });
@@ -175,7 +175,7 @@ function addRefund(element){
             data: {action: 'showKeypad'},      
             success:function(data){
              
-               document.getElementById('contentID').innerHTML = data['html']; 
+               document.getElementById('stockID').innerHTML = data['html']; 
            }
          });
     }
@@ -200,7 +200,7 @@ function addRefund(element){
                     setting_setting_key: setting_setting_key
                 },      
                 success:function(data){
-                    document.getElementById('contentID').innerHTML = data['html']; 
+                    document.getElementById('stockID').innerHTML = data['html']; 
                     document.getElementById('cancelButtonID').hidden = false;
                     document.getElementById('confirmButtonID').hidden = false;
                     document.getElementById('payButtonID').hidden = true;
@@ -216,8 +216,8 @@ function addRefund(element){
 }  */
 
 
-function SelectAll(bx, tableID){
-    var table = document.getElementById(tableID.id);
+function SelectAll(elementID){
+    var table = document.getElementById(elementID);
     var rowCount = table.rows.length;
   
     for (let i = 0; i < rowCount; i++ )

@@ -68,7 +68,7 @@
         <div>
             <h3 class="uk-card-title">SPECIALS MANAGER</h3>
             <h6>INSTRUCTIONS FOR USE</h6>
-            <p class="uk-text-tiny">The Specials Manager widget is designed to allow limited access users to
+            <p class="uk-text-small">The Specials Manager widget is designed to allow limited access users to
                 edit
                 nominated fields of PLU's within defined PLU Ranges at a site level. <br> <br> To configure this
                 widget

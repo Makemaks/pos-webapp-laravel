@@ -20,7 +20,7 @@
 
     
     $orderTotal = 0;
-    $stockList = Receipt::ReceiptDisplay( $data['orderList'] );
+    $stockList = Receipt::ReceiptCartInitialize( $data['orderList'] );
 @endphp
 
 @include('receipt.partial.indexPartial', [ 'stockList' => $stockList])
@@ -31,7 +31,7 @@
 {{-- @php
    
     $order_setting_vat = array_sum($orderList->pluck('order_setting_vat')->toArray());
-    $priceVAT = MathHelper::VAT($order_setting_vat, $orderTotal);
+    $priceVAT = MathHelper::VAT($order_setting_vat, $orderTotal)['total'];
 @endphp
 <div class="uk-margin-medium uk-box-shadow-small uk-text-lead uk-light uk-border-rounded uk-width-expand uk-button uk-button-default" uk-icon="icon: tag">
     {{$currency}}

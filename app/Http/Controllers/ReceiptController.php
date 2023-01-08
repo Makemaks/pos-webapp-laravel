@@ -216,7 +216,7 @@ class ReceiptController extends Controller
     }
 
     private function ClearSession(){
-        $request->session()->forget('user-session-'.Auth::user()->user_id.'.'.'cartList');
+        $request->session()->forget('user-session-'.Auth::user()->user_id.'.cartList');
 
         $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList',[]);
     }

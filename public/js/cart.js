@@ -90,34 +90,26 @@ function control(type){
    
 }
 
-function Delete(row_id){
+function DeleteCart(element){
 
     //update basket count
     var quantityID = document.getElementById('quantityID-'+row_id);
     var cartCountID = document.getElementById('cartCountID'); 
   
-
-    $.ajax({
-        url:"/cart-api/" + row_id,
+    var stockFormID = $("#stockFormID").serialize();
+   
+    $.ajax({        
+        url:"/cart-api",
         method: 'DELETE',
-        data: {
-            quantity: quantityID.innerText,
-        },   
-        success: function (data) {
-        
-            //setFocus('barcodeInputID');
-
-            cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(quantityID.innerText);
-            document.getElementById('receiptID').innerHTML = data['html'];
-            control(0);
-           
+        data:{
+            stockFormID:stockFormID,
         },
-        error: function (data) {
-        
+        success:function(data){
+            cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(quantityID.innerText);
+            document.getElementById('stockID').innerHTML = data['html']; 
         }
     });
-  
-    
+
 }
 
 
@@ -268,7 +260,7 @@ function update(){
                 value: searchInputID.value,
             },      
             success:function(data){
-                document.getElementById('contentID').innerHTML = data['html']; 
+                document.getElementById('stockID').innerHTML = data['html']; 
                 //document.getElementById('receiptID').innerHTML = data['html']; 
             }
         });

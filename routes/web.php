@@ -51,7 +51,7 @@ use App\Http\Controllers\API\ChartAPIController;
 use App\Http\Controllers\API\CartAPIController;
 use App\Http\Controllers\API\SettingAPIController;
 use App\Http\Controllers\API\OrderAPIController;
-
+use App\Http\Controllers\API\StockAPIController;
 
 Route::middleware(['datetimeMiddleware'])->group(function () {
   
@@ -156,7 +156,8 @@ Route::apiResources([
     'cart-api' => CartAPIController::class,
     'setting-api' => SettingAPIController::class,
     'order-api' => OrderAPIController::class,
-    'app-api' =>AppAPIController::class,
+    'app-api' => AppAPIController::class,
+    'stock-api' => StockAPIController::class,
 ]);
 
 /* Route::get('order-manager/checkout/', [OrderManagerController::class, 'Checkout'])->name('order-manager.checkout');

@@ -56,8 +56,10 @@ class StockFactory extends Factory
 
 
         for ($i = 0; $i < $this->faker->numberBetween($min = 1, $max = 5); $i++) {
-            $setting_offer_id[$i + 1] = $this->faker->numberBetween($min = 1, $max = 5);
+            $stock_setting_offer[$i + 1] = $this->faker->numberBetween($min = 1, $max = 5);
         }
+
+
         $stock_merchandise = [
 
             "recipe_link" => $this->faker->numberBetween($min = 1, $max = 5),
@@ -86,7 +88,7 @@ class StockFactory extends Factory
             'stock_description' => $this->faker->paragraph,
             "set_menu" => $this->faker->numberBetween($min = 1, $max = 5),
             "stock_tag" => $this->faker->numberBetween($min = 1, $max = 5),
-            "setting_offer_id" => $this->faker->randomElement($array = array(NULL, $setting_offer_id)),
+           
             "stock_type"=> $this->faker->numberBetween($min = 0, $max = 1),
             "stock_maximum_cart_quantity" => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 2) )),
             "alternative_text" => '',
@@ -113,14 +115,19 @@ class StockFactory extends Factory
             $stock_allergen[$i + 1] = $i + 1;
         }
 
+        $count = 1;
         $stock_price = [];
-        for ($i=0; $i < 10; $i++) { 
+        for ($j=0; $j < 5; $j++) { 
                 
-            $stock_price[$i + 1] = [
-                "price" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
-                "schedule_datetime" =>  "",
-                "stock_price_group_id"  => $this->faker->numberBetween($min = 1, $max = 5)
-            ];
+            for ($i=0; $i < 10; $i++) { 
+                $stock_price[$count] = [
+                    "price" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+                    "setting_stock_price_level" => $i + 1,
+                    "setting_stock_price_group" => $j,
+                ];
+                $count++;
+            }
+           
         }
         
 
@@ -135,13 +142,14 @@ class StockFactory extends Factory
         }
 
 
-        $stock_manager_special = $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 5)));
-
-        if ($stock_manager_special != NULL) {
-            $stock_manager_special = [];
-            for ($j=0; $j < 2; $j++) { 
-                $stock_manager_special[$j + 1][1] = ['price' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20)];
-            }
+        $special_stock_price = [];
+        for ($i=0; $i < 50; $i++) { 
+                
+            $special_stock_price[$i + 1] = [
+                "price" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+                "setting_stock_price_level" => $i,
+                "setting_stock_price_group_special" => $this->faker->numberBetween($min = 1, $max = 5),
+            ];
         }
        
        
@@ -164,8 +172,8 @@ class StockFactory extends Factory
             'stock_nutrition' => $stock_nutrition,
             'stock_allergen' => $stock_allergen,
             'stock_price_quantity' => $stock_price_quantity,
-            'stock_manager_special' => $stock_manager_special,
-
+            'special_stock_price' => $special_stock_price,
+            'stock_setting_offer' => $stock_setting_offer
 
         ];
     }

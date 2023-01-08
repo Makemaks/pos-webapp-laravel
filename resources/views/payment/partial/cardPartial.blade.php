@@ -30,7 +30,7 @@
           
                 {{$currency}}
                 @php
-                    $priceVAT = $mathHelper->VAT($data['settingModel']->setting_vat, $totalPrice) 
+                    $priceVAT = $mathHelper->VAT($data['settingModel']->setting_vat, $totalPrice)['total'];
                 @endphp
                 <span class="uk-margin-right" id="checkoutButtonID">{{$currencyHelper->Format($priceVAT)}}</span>
           

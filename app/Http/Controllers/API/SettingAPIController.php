@@ -41,41 +41,49 @@ class SettingAPIController extends Controller
     {
 
         $a = $request->all();
-        $this->Init();
-        $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList'); 
-       
-        if ($request->has('settingKeyFormID')) {
+        $this->init();
+        $requestInput = [];
+        $setting_key = [];
+        parse_str($request->get('settingKeyFormID'), $requestInput['settingKeyFormID']);
+        parse_str($request->get('cartFormID'), $requestInput['cartFormID']);
+        $this->cartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.cartList'); 
+        $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList'); 
+
+        //show stock with setting key
+        if ($request['view']) {
+            $request->session()->flash('view', $request->get('view'));
+            $this->html = view('home.partial.receiptPartial', ['data' => $this->Data()])->render();
+        } else {
             $requestInput = [];
             $setting_key = [];
             $settingModel = new Setting();
-            //$settingModel->setting_id = $this->settingModel->setting_id;
-          
-
+        
             parse_str($request->get('settingKeyFormID'), $requestInput['settingKeyFormID']);
-            $setting_key = ['1' => $requestInput['settingKeyFormID']['form']['setting_key']];
+            $setting_key = $requestInput['settingKeyFormID']['form']['setting_key'];
 
-            if ($setting_key[1]['setting_key_group'] != '' && $setting_key[1]['setting_key_type'] != '') {
+            if ($setting_key['setting_key_group'] != '' && $setting_key['setting_key_type'] != '') {
               
-                foreach (collect($this->settingModel->setting_key) as $setting_key_list) {
-                    if (head($setting_key_list)['setting_key_group'] == $setting_key[1]['setting_key_group'] && 
-                    head($setting_key_list)['setting_key_type'] == $setting_key[1]['setting_key_type']) {
-                        
-                        $setting_key[1] = $setting_key_list;
-                        break;
-                    }
-                }
+                $setting_key_list = collect($this->settingModel->setting_key)->where( 'setting_key_group', $setting_key['setting_key_group'] )
+                ->where( 'setting_key_type', $setting_key['setting_key_type'] );
+                
+                $this->settingModel->setting_key = $setting_key_list->toArray();
                 
             }
 
-            
-            $this->settingModel->setting_key = $setting_key;
-            
         
             $this->html = view('setting.settingKey.create', ['data' => $this->Data()])->render();
-        } 
+        }
+     
       
         
         return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
+    
+    
+    
+    
+    
+    
+    
     }
 
     /**
@@ -103,35 +111,38 @@ class SettingAPIController extends Controller
             $setting_key = [];
             parse_str($request->get('settingKeyFormID'), $requestInput['settingKeyFormID']);
             parse_str($request->get('cartFormID'), $requestInput['cartFormID']);
-            $this->cartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'cartList'); 
+            $this->cartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.cartList'); 
 
             if (count($requestInput['settingKeyFormID']['form']['setting_key']) > 0 && count($this->cartList) > 0) {
               
                 //$requestInput['settingKeyFormID']['form']['setting_key'];
                 if ( $request->has('cartFormID') && count($requestInput['cartFormID']) > 0 ) {
                     //add setting_key to cart item
-                    $this->cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'cartList');
-                    foreach ($requestInput['cartFormID']['receipt_stock_id'] as $key => $receipt_setting_key) {
-                        foreach ($this->cartList as $cart_key => $cart_Item) {
-                            $this->cartList[$cart_key]['receipt_setting_key'][$cart_key + 1] = $requestInput['settingKeyFormID']['form']['setting_key'];
-                        }
+                    $this->cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.cartList');
+                    
+                    foreach ($requestInput['cartFormID']['receipt_stock_id'] as $key => $receipt_stock_id) {
+                        $count = count($this->cartList[$receipt_stock_id]['receipt_setting_key']);
+                        $this->cartList[$receipt_stock_id]['receipt_setting_key'][$count + 1] = [ $requestInput['settingKeyFormID']['setting_key_id'] => $requestInput['settingKeyFormID']['form']['setting_key'] ];
                     }
-
-                    $request->session()->put('user-session-'.Auth::user()->user_id.'.'.'cartList', $this->cartList);
+                    
+                    $request->session()->flash('view', $request->get('view'));
+                    $request->session()->put('user-session-'.Auth::user()->user_id.'.cartList', $this->cartList);
+                    $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
                     
                 }else{
                     //add setting_key to order
-                    $this->setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
+                    $this->setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.setupList');
                     $this->setupList['order_setting_key'][ count($this->setupList['order_setting_key']) + 1 ] = [ $requestInput['settingKeyFormID']['setting_key_id'] => $requestInput['settingKeyFormID']['form']['setting_key'] ];
-                    $request->session()->put('user-session-'.Auth::user()->user_id.'.'.'setupList', $this->setupList);
-                    $this->settingModel->setting_key = $this->setupList['order_setting_key'];
+                    $request->session()->put('user-session-'.Auth::user()->user_id.'.setupList', $this->setupList);
+                    //$this->settingModel->setting_key = $this->setupList['order_setting_key'];
+                    $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
                 }
             
               
-                $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList'); 
+                $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList'); 
                
 
-                $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
+                
                 return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
             }
             

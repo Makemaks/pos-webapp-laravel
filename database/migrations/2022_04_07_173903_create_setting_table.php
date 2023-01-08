@@ -28,10 +28,15 @@ return new class extends Migration
             $table->json('setting_stock_case_size')->nullable();
 
             $table->json('setting_printer')->nullable();
+            
             $table->json('setting_stock_tag_group')->nullable();
             $table->json('setting_stock_tag')->nullable();
-            $table->json('setting_stock_price')->nullable();
-           
+
+            $table->json('setting_stock_price_level')->nullable();
+            $table->tinyInteger('setting_stock_price_group')->nullable();
+            $table->tinyInteger('setting_stock_price_group_special')->nullable();
+
+            
 
             $table->json('setting_message_notification_category')->nullable();
             $table->json('setting_message_group')->nullable();

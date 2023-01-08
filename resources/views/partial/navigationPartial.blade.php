@@ -116,28 +116,7 @@ use App\Helpers\DateTimeHelper;
         <div class="uk-navbar-center">
             @if ($route == 'home')
                 <div class="uk-navbar-item">
-                    <div class="uk-button-group">
-                       
-
-                        <div class="uk-button-group">
-                        {{--  <button class="uk-button uk-button-default">Dropdown</button> --}}
-                            <div class="uk-inline">
-                                <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
-                                <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
-                                    <ul class="uk-nav uk-dropdown-nav">
-                                        <li class="uk-active"><a href="#">Stock</a></li>
-                                        
-                                
-                                        <li class="uk-nav-header">Header</li>
-                                        <li><a href="#">Item</a></li>
-                                        <li><a href="#">Item</a></li>
-                                        <li class="uk-nav-divider"></li>
-                                        <li><a href="#">Item</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                   
                 </div>
             @endif
         </div>

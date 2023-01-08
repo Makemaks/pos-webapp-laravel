@@ -62,7 +62,7 @@
             
             @auth
                 @if ($route == 'home')
-                    <div class="uk-width-1-3@s uk-padding-small">
+                    <div class="uk-width-1-2@s uk-width-1-3@m uk-padding-small">
                         <div id="receiptID">
                             @include('receipt.partial.indexPartial')
                         </div>

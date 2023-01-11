@@ -5,6 +5,7 @@
                 <tr>
                     <th>PLU</th>
                     <th>Name</th>
+                    <th>Allergen</th>
                 </tr>
             </thead>
             <tbody>
@@ -12,6 +13,7 @@
                     <tr>
                         <td>{{ $item['plu_id'] }}</td>
                         <td>{{ $item['plu_name'] }}</td>
+                        <td>{{ $item['plu_allergen'] }}</td>
                     </tr>
                 @endforeach
             </tbody>

@@ -55,7 +55,6 @@ class SettingAPIController extends Controller
             $setting_key = ['0' => $requestInput['settingKeyFormID']['form']['setting_key']];
 
             if ($setting_key[0]['setting_key_group'] != '' && $setting_key[0]['setting_key_type'] != '') {
-                $a = $this->settingModel->setting_key;
                 $setting_key = collect($this->settingModel->setting_key)->where('setting_key_group', $setting_key[0]['setting_key_group'])
                 ->where('setting_key_type', $setting_key[0]['setting_key_type'])->toArray();
             }

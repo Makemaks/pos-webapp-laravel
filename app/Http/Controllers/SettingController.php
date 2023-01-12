@@ -139,8 +139,8 @@ class SettingController extends Controller
             $this->settingModel['setting_stock_set'] = $this->settingModel['setting_stock_set'][$request->index];
             $this->settingModel['edit'] = true;
             return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
-        } else if($request->stock_offer['index']) {
-            $this->settingModel['setting_offer'] = $this->settingModel['setting_offer'][$request->stock_offer['index']];
+        } else if($request->stock_setting_offer['index']) {
+            $this->settingModel['setting_offer'] = $this->settingModel['setting_offer'][$request->stock_setting_offer['index']];
             $this->settingModel['edit'] = true;
             return view('menu.setting.mix-&-match', ['data' => $this->Data()]);
         }

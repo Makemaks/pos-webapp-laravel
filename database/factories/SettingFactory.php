@@ -99,8 +99,8 @@ class SettingFactory extends Factory
 
             $setting_offer[$i + 1] = [
                 "decimal" => [
-                    "gain" => $this->faker->numberBetween($min = 1, $max = 500),
-                    "collect" => $this->faker->numberBetween($min = 1, $max = 500),
+                    "gain_points" => $this->faker->numberBetween($min = 1, $max = 500),
+                    "collect_points_value" => $this->faker->numberBetween($min = 1, $max = 500),
                     "discount_type" => $this->faker->numberBetween($min = 0, $max = 1),
                     "discount_value" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 1, $max = 5),
                 ],

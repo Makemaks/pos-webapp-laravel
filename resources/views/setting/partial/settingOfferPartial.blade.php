@@ -118,10 +118,10 @@
                                                                 <td>
                                                                     <select class="uk-select" id="form-stacked-select" name="setting_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
                                                                         <option value="" selected disabled>SELECT ...</option>
-                                                                        @foreach (Stock::OfferStatus()  as $key_stock_offer  => $item_stock_offer)
+                                                                        @foreach (Stock::OfferStatus()  as $key_stock_setting_offer  => $item_stock_setting_offer)
                                                                                 
-                                                                            <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
-                                                                                {{$item_stock_offer}}
+                                                                            <option value="{{$key_stock_setting_offer}}" @if($key_stock_setting_offer == $stockitem) selected @endif>
+                                                                                {{$item_stock_setting_offer}}
                                                                             </option>
                                                                                 
                                                                         @endforeach
@@ -133,10 +133,10 @@
                                                                 <td>
                                                                     <select class="uk-select" id="form-stacked-select" name="setting_offer[{{$keyStockoffer}}][{{$key}}][{{$stockkey}}]">
                                                                         <option value="" selected disabled>SELECT ...</option>
-                                                                        @foreach (Setting::OfferType()  as $key_stock_offer  => $item_stock_offer)
+                                                                        @foreach (Setting::SettingOfferType()  as $key_stock_setting_offer  => $item_stock_setting_offer)
                                                                                 
-                                                                            <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
-                                                                                {{ Str::upper($item_stock_offer)}}
+                                                                            <option value="{{$key_stock_setting_offer}}" @if($key_stock_setting_offer == $stockitem) selected @endif>
+                                                                                {{ Str::upper($item_stock_setting_offer)}}
                                                                             </option>
                                                                                 
                                                                         @endforeach
@@ -176,7 +176,7 @@
 
                                                 @isset($data['stockModel'])
                                                     <td>
-                                                        <input class="uk-radio" type="radio" name="stock_merchandise[stock_offer]" value="{{$keyStockoffer}}" @if(isset($data['stockModel']->stock_merchandise['stock_offer']) == $keyStockoffer) checked @endif>
+                                                        <input class="uk-radio" type="radio" name="stock_merchandise[stock_setting_offer]" value="{{$keyStockoffer}}" @if(isset($data['stockModel']->stock_merchandise['stock_setting_offer']) == $keyStockoffer) checked @endif>
                                                     </td>
                                                 @endisset
                                             </tr>
@@ -225,7 +225,7 @@
                                                     <select class="uk-select" id="form-stacked-select" name="form[setting_offer][{{$key}}][{{$stockkey}}]">
                                                         <option value="" selected disabled>SELECT ...</option>
                                                         
-                                                            @foreach (Setting::SettingOfferType()  as $key_setting_discount_type  => $item_setting_discount_type)
+                                                            @foreach (Setting::SettingSettingOfferType()  as $key_setting_discount_type  => $item_setting_discount_type)
                                                                     
                                                                 <option value="{{$key_setting_discount_type}}" @if($key_setting_discount_type == $stock) selected @endif>
                                                                     {{Str::upper($item_setting_discount_type)}}
@@ -255,10 +255,10 @@
                                                     <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
                                                     <select class="uk-select" id="form-stacked-select" name="form[setting_offer][{{$key}}][{{$stockkey}}]">
                                                         <option value="" selected disabled>SELECT ...</option>
-                                                        @foreach (Setting::SettingOfferStatus()  as $key_stock_offer  => $item_stock_offer)
+                                                        @foreach (Setting::SettingOfferStatus()  as $key_stock_setting_offer  => $item_stock_setting_offer)
                                                                 
-                                                            <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
-                                                                {{$item_stock_offer}}
+                                                            <option value="{{$key_stock_setting_offer}}" @if($key_stock_setting_offer == $stockitem) selected @endif>
+                                                                {{$item_stock_setting_offer}}
                                                             </option>
                                                                 
                                                         @endforeach
@@ -270,10 +270,10 @@
                                                     <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
                                                     <select class="uk-select" id="form-stacked-select" name="form[setting_offer][{{$key}}][{{$stockkey}}]">
                                                         <option value="" selected disabled>SELECT ...</option>
-                                                        @foreach (Setting::SettingOfferType()  as $key_stock_offer  => $item_stock_offer)
+                                                        @foreach (Setting::SettingSettingOfferType()  as $key_stock_setting_offer  => $item_stock_setting_offer)
                                                                 
-                                                            <option value="{{$key_stock_offer}}" @if($key_stock_offer == $stockitem) selected @endif>
-                                                                {{$item_stock_offer}}
+                                                            <option value="{{$key_stock_setting_offer}}" @if($key_stock_setting_offer == $stockitem) selected @endif>
+                                                                {{$item_stock_setting_offer}}
                                                             </option>
                                                                 
                                                         @endforeach

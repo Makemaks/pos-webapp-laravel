@@ -46,6 +46,9 @@
         $stockList = Session::get('user-session-'.Auth::user()->user_id.'.cartList');
         // /$stockList = Receipt::SessionCartInitialize($data['cartList'], $data['setupList']);
     }
+
+    $gain_points = 0;
+    $collect_points_value = 0;
   
 @endphp
 
@@ -57,7 +60,7 @@
        {{$currencySymbol}}
    </span> --}}
 
-    <ul class="uk-iconnav">
+    <ul class="uk-iconnav uk-margin-small">
         <li><input type="checkbox" class="uk-checkbox" onclick="SelectAll('receiptTableID')"></li>
         <li><button type="button" class="uk-text-danger" onclick="deleteStock(this)" uk-icon="trash" {{$openControlID}}></button></li>
         <li><button uk-icon="tag" type="button" onclick="IndexSetting('stock')"></button></li>
@@ -65,12 +68,12 @@
     </ul>
     
 
-    <div class="uk-overflow-auto uk-height-small uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 25">
+    <div class="">
        
         
-            <div class="" id="receiptTableID">
+            <div class="uk-overflow-auto uk-height-small uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 25" id="receiptTableID">
         
-                <div id="cartListID">
+                <ul class="uk-list uk-list-collapse uk-list-divider" id="cartListID">
                     @isset ($stockList)
                 
                         @foreach ($stockList as $stockKey => $stockItem)
@@ -82,59 +85,45 @@
                                 $cartList = Session::pull('user-session-'.Auth::user()->user_id.'.cartList');
                                 /* $cartList[$loop->index]['stock_price'] = $data['setupList']['receipt']['stock']['stock_price_processed']; */
                                 Session::put('user-session-'.Auth::user()->user_id.'.cartList', $cartList);
-                                
+
+                                $gain_points = collect($stockItem['stock_setting_offer'])->where('gain_points')->sum();
+                                $collect_points_value  = collect($stockItem['stock_setting_offer'])->where('gain_points')->sum();
+                               
                             @endphp
                             
-                                <div class="uk-box-shadow-small uk-padding-small uk-margin uk-display-block" id="cartItemID-{{$loop->index}}">
+                                <li id="cartItemID-{{$loop->index}}" {{-- uk-toggle="target: #toggle-stock-{{$loop->index}}" --}}>
             
-                                    <div {{-- uk-toggle="target: #toggle-stock-{{$loop->index}}" --}}>
+                                    
                                         <span>
                                             <input type="checkbox" name="receipt_stock_id[]" value="{{$stockKey}}" class="uk-checkbox">
                                         </span>
+                                        
+                                        <span> {{$stockItem['stock_name']}} </span>
 
-                                        {{$stockItem['stock_name']}} 
+                                        <span>
+
+                                            @if ($stockItem['receipt_setting_key'])
+                                                @include('home.partial.settingKeyPartial', [ 'setting_key' => $stockItem['receipt_setting_key'] ])
+                                            @endif
+
+                                        </span>
+
                                         @if ($stockItem['stock_quantity'] > 1)
                                             <span class="uk-text-meta uk-text-top"> {{$stockItem['stock_quantity']}}</span>
                                         @endif
 
                                         <span class="uk-align-right">
+
+                                            @include('home.partial.settingOffer')
+
+                                            
                                             @if ( count($stockItem['stock_vat']) > 0 || count($stockItem['stock_setting_offer']) > 0)
                                                 <del>{{ CurrencyHelper::Format( $stockItem['stock_price'] ) }} </del>
                                                 <span>{{ CurrencyHelper::Format( $data['setupList']['receipt']['stock']['stock_price_processed'] )}}</span>
                                             @else
-                                                {{ CurrencyHelper::Format( $stockItem['stock_price'] ) }}
+                                                {{ CurrencyHelper::Format( $stockItem['stock_price'] - $setting_offer_total ) }}
                                             @endif
                                         </span>
-
-                                        <span>
-                                            @if ($data['setupList']['receipt']['stock_vat_rate'])
-                                                %{{ MathHelper::FloatRoundUp($data['setupList']['receipt']['stock_vat_rate'], 2)}}
-                                            @endif
-                                            
-                                            @if ($stockItem['stock_setting_offer'])
-                                            | {{ CurrencyHelper::Format( Setting::SettingCurrentOffer($stockItem['stock_setting_offer'], $data['setupList']['receipt']['stock']['stock_price_processed']) )}}
-                                            @endif
-                                        </span>
-                                        
-                                    </div>
-
-                                    
-                                    <div>
-                                        @foreach ($stockItem['receipt_setting_key'] as $receipt_setting_key_key => $receipt_setting_key_item)
-                                            @php
-                                                $data['settingModel']->setting_key = $receipt_setting_key_item;
-                                            @endphp  
-                                            @foreach ($receipt_setting_key_item as $key => $setting_key)
-                                                <div class="uk-inline">
-                                                    <button uk-icon="triangle-up" type="button">{{ $setting_key['value'] }}</button>
-                                                    <div uk-dropdown="mode: click; pos: top-left" class="uk-overflow-auto uk-height-large">
-                                                        @include('setting.settingKey.partial.tablePartial')
-                                                    </div>
-                                                </div>
-                                            @endforeach
-
-                                        @endforeach
-                                    </div>
 
                                         {{-- @include('receipt.partial.controlPartial',
                                         [
@@ -142,42 +131,35 @@
                                             'quantity' => $stockItem['stock_quantity']
                                         ]) --}}
                                         
-                                </div>
+                                </li>
+                               
+                               
             
                         @endforeach
             
                     @endisset
-                </div>
+                </ul>
                 
             </div>
        
        
     </div>
   
+    <div>
+        @if ($gain_points)
+            <div class="uk-box-shadow-small uk-padding-small uk-margin">
+                <span>You have earned {{$gain_points}} points, total {{$collect_points_value}}</span>
+            </div>
+        @endif
+    </div>
 
-    <div class="uk-margin">
-       
-        <div>
-            @foreach ($data['setupList']['order_setting_key'] as $order_setting_key_key => $order_setting_key_item)
-                @php
-                    $data['settingModel']->setting_key = $order_setting_key_item;
-                @endphp                  
-                @foreach ($order_setting_key_item as $key => $setting_key)
-                    <div class="uk-inline">
-                        <button uk-icon="triangle-up" type="button">{{ $setting_key['value'] }}</button>
-                        <div uk-dropdown="mode: click; pos: top-left" class="uk-overflow-auto uk-height-large">
-                            @include('setting.settingKey.partial.tablePartial')
-                        </div>
-                    </div>
-                @endforeach
-                
-            @endforeach
-        </div>
+    <div>
 
             
         <div>
             @if ( $data['setupList']['receipt']['subTotal'] > 0 )
                 <span class="uk-text-bold">SUB TOTAL {{$currency}}</span>
+                @include('home.partial.settingKeyPartial', [ 'setting_key' => $data['setupList']['order_setting_key'] ])
                 <span>{{CurrencyHelper::Format($data['setupList']['receipt']['subTotal'])}}</span>
             @endif
         </div>

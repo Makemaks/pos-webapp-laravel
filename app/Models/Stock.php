@@ -359,9 +359,9 @@ class Stock extends Model
     }
 
     //find the minum offer price
-    public static function StockPriceMin($settingCurrentOfferType){
-        $min = collect( $settingCurrentOfferType )->pluck('total')->min('price');
-        return collect( $settingCurrentOfferType )->where('total.price',  $min)->first();
+    public static function StockPriceMin($settingCurrentSettingOfferType){
+        $min = collect( $settingCurrentSettingOfferType )->pluck('total')->min('price');
+        return collect( $settingCurrentSettingOfferType )->where('total.price',  $min)->first();
     }
 
 
@@ -419,6 +419,7 @@ class Stock extends Model
        
         $requestInput['receipt_setting_key'] = [];
         $requestInput['stock_setting_offer'] = [];
+        
         
         if ( count($setupList['receipt']['setting_key'])  > 0 ) {
             $requestInput['receipt_setting_key'][] = $setupList['receipt']['setting_key'];

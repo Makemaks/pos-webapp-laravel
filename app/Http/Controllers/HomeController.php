@@ -10,6 +10,7 @@ use Session;
 use App\Models\User;
 use App\Models\Person;
 use App\Models\Stock;
+use App\Models\Store;
 use App\Models\Warehouse;
 use App\Models\Setting;
 use App\Models\Receipt;
@@ -64,10 +65,12 @@ class HomeController extends Controller
       
         $this->settingModel->setting_key = $settingModel->setting_key;
 
-        $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
+        $this->stockList = Stock::Warehouse('warehouse_store_id', $this->userModel->store_id)
         ->groupBy('stock_id')
         ->where('warehouse_stock_quantity', '>', 0)
-        ->paginate(9);
+        ->paginate(16);
+
+       
        
         $userList = User::Store('user_account_id', $this->userModel->account_id)->pluck('user_id');
 
@@ -89,6 +92,7 @@ class HomeController extends Controller
         $a = Auth::user()->user_account_id;
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
+        $this->storeModel = Store::find($this->userModel->store_id);
         $this->settingModel = Setting::where('settingtable_id',  $this->userModel->store_id)->first();
         $this->settingList = Setting::where('settingtable_id', $this->userModel->store_id);
     }
@@ -104,6 +108,7 @@ class HomeController extends Controller
             'authenticatedUser' => $this->authenticatedUser,
             'stockList' => $this->stockList,
             'userModel' => $this->userModel,
+            'storeModel' => $this->storeModel,
             'personModel' => $this->personModel,
             'cartList' => $this->sessionCartList,
             'schemeList' => $this->schemeList,
@@ -113,6 +118,7 @@ class HomeController extends Controller
             'personModel' => $this->personModel,
             'personList' => $this->personList,
             'setupList' => $this->setupList
+            
            
         ];
     }

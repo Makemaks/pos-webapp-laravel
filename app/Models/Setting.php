@@ -227,8 +227,8 @@ class Setting extends Model
             "1": {
 
                 "decimal": {
-                    "gain": "",
-                    "collect": "",
+                    "gain_points": "",
+                    "collect_points_value": "",
                     "discount_type": "",
                     "discount_value": ""
                 },
@@ -427,7 +427,7 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingOfferType()
+    public static function SettingSettingOfferType()
     {
         return [
             "percentage",
@@ -496,12 +496,13 @@ class Setting extends Model
         ];
     }
 
-    public static function OfferType(){
+    public static function SettingOfferType(){
         return [
             'voucher', //coupons
             'discount', //one offs
-            'multiple-buy',
-            'mix-match'
+            'multi-buy',
+            'mix-match',
+            'gift-card'
         ];
     }
 
@@ -617,7 +618,7 @@ class Setting extends Model
 
                        /* foreach ($settingModel->setting_customer as $setting_customer) {
                            
-                            if (Setting::SettingOfferType()[$setting_offer['decimal']['discount_type']] == 'percentage') {
+                            if (Setting::SettingSettingOfferType()[$setting_offer['decimal']['discount_type']] == 'percentage') {
                                 $value =  MathHelper::Discount($setting_offer['decimal']['discount_value'], $data['setupList']['receipt']['priceTotal'])['total']; //percentage to amount
                                 $percentage = $setting_offer['decimal']['discount_value'];
                             } else{
@@ -682,25 +683,65 @@ class Setting extends Model
     //stock
     public static function SettingCurrentOffer($settingCurrentOffer, $price){
 
-        $settingCurrentOfferType[] = ['discount_value' => $price];
+        $settingCurrentSettingOfferType[] = ['discount_value' => $price];
         $total = [];
 
         foreach ($settingCurrentOffer as $settingCurrentOfferKey => $settingCurrentOfferValue) {
 
-            if (count($settingCurrentOfferValue) > 0) {
-                if (Setting::SettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
+            if ($settingCurrentOfferValue['date']['end_date'] > Carbon::now() &&
+            array_search( Carbon::now()->dayOfWeek, $settingCurrentOfferValue['available_day']) ) {
 
-                    $settingCurrentOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)['total'] ];
-    
-                } else {
-                    $settingCurrentOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
-    
+                 //discount
+                 if ( Setting::SettingOfferType()[$settingCurrentOfferValue['boolean']['type']] == 'voucher' ) {
+
+                    if (Setting::SettingSettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
+
+                        $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)['total'] ];
+        
+                    } else {
+                        $settingCurrentSettingOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
+                    }
+
                 }
-    
+                elseif( Setting::SettingOfferType()[$settingCurrentOfferValue['boolean']['type']] == 'discount' ){
+
+                    if (Setting::SettingSettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
+
+                        $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)['total'] ];
+        
+                    } else {
+                        $settingCurrentSettingOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
+                    }
+                }
+                elseif( Setting::SettingOfferType()[$settingCurrentOfferValue['boolean']['type']] == 'multi-buy' ){
+
+                    if (Setting::SettingSettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
+
+                        $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)['total'] ];
+        
+                    } else {
+                        $settingCurrentSettingOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
+                    }
+
+                }
+                
+                elseif( Setting::SettingOfferType()[$settingCurrentOfferValue['boolean']['type']] == 'mix-match' ){
+                    
+                    if (Setting::SettingSettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
+
+                        $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)['total'] ];
+        
+                    } else {
+                        $settingCurrentSettingOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
+                    }
+                }
+
             }
+
+        
         }
 
-        return collect($settingCurrentOfferType)->sum('discount_value');
+        return collect($settingCurrentSettingOfferType)->sum('discount_value');
 
     }
 

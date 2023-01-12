@@ -114,29 +114,29 @@
 
                     <div>
                        
-                        <div class="uk-padding-small uk-box-shadow-small">
+                        <div class="uk-height-small uk-box-shadow-small">
 
-                                <div>
+                                <div class="uk-padding-remove-top">
                                     @include('home.partial.settingOffer')
-                                    <span onclick="Add('{{$stockItem->stock_id}}', '{{$stockItem->warehouse_store_id}}')" class="uk-text-bold" title="{{$stockItem->stock_id}}">{{$stockItem->stock_merchandise['stock_name']}}</span>
-                                   
-                                    <span>
-                                        <div class="uk-inline uk-align-right">
-                                            <button type="button" uk-icon="home"></button>
-                                                <div uk-dropdown="mode: click">
-                                                    <ul>
-                                                        @foreach ($data['warehouseStoreList'] as $keyStockTransfer => $warehouse)
-                                                            <li>{{$warehouse->store_name}} - {{$warehouse->warehouse_stock_quantity}}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
-                                        </div>
+                                    <span onclick="Add('{{$stockItem->stock_id}}', '{{$stockItem->warehouse_store_id}}')" class="uk-text-bold" title="{{$stockItem->stock_id}}">
+                                        {{Str::limit($stockItem->stock_merchandise['stock_name'], 10)}}
                                     </span>
-
-                                  
+                                   
                                 </div>
 
-                                
+                                <div class="uk-align-right">
+                                    <span class="uk-inline">
+                                        <button type="button" uk-icon="home"></button>
+                                            <div uk-dropdown="mode: click;pos:bottom-right">
+                                                <ul>
+                                                    @foreach ($data['warehouseStoreList'] as $keyStockTransfer => $warehouse)
+                                                        <li>{{$warehouse->store_name}} - {{$warehouse->warehouse_stock_quantity}}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                    </span>
+                                </div>
+                               
 
                                 {{-- <li>
                                             <div class="uk-width-auto" title="{{$stockItem->stock_id}}">

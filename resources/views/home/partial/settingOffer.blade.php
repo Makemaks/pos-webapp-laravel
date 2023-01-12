@@ -5,7 +5,7 @@
 
 <span class="uk-inline">
     <button uk-icon="triangle-down" type="button"></button>
-    <div uk-dropdown="mode: click;pos: left-bottom" class="uk-overflow-auto uk-height-medium">
+    <div uk-dropdown="mode: click;pos: bottom-left" class="uk-overflow-auto uk-height-medium">
         <ul class="uk-list uk-list-collapse uk-list-divider">
             
 

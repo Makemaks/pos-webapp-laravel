@@ -12,6 +12,7 @@ class AccountController extends Controller
 
     public function Index(Request $request)
     {
+        $a = $request->all();
         $request->session()->flash('view', 'account');
         $request->session()->flash('action', null);
         $this->accountList = Account::orderBY('account_id', 'desc')->paginate(10);
@@ -21,12 +22,14 @@ class AccountController extends Controller
 
     public function Store(Request $request) 
     {
+        $a = $request->all();
         Account::insert($request->form);
         return redirect()->route('account.index');
     }
 
     public function Update(Request $request)
     {
+        $a = $request->all();
         dd($request->all());
         if($request->account_delete){
             foreach($request->account_delete as $account){

@@ -26,6 +26,9 @@
         <form id="accountUpdate" action="{{route('account.update', 'account')}}" method="POST">
             @csrf
             @method('PATCH')
+
+            @include('partial.scheduleModalPartial', ['view' => $view, 'action' => $action])
+            
             <div>       
                 <table class="uk-table uk-table-divider uk-table-small uk-table-responsive">
 
@@ -82,7 +85,7 @@
                             </tr>
                             @endforeach
                         </tbody>
-                        @include('partial.scheduleModalPartial', ['view' => $view, 'action' => $action])
+                        
                 </table>
                 @include('partial.paginationPartial', ['paginator' => $data['accountList']])
             </div>

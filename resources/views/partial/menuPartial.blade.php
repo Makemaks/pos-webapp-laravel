@@ -4,22 +4,6 @@
     use App\Models\Setting;
 
     $route = Str::before(Request::route()->getName(), '.');
-
-    $tables_in_db = DB::select('SHOW TABLES');
-    $db = "Tables_in_".env('DB_DATABASE');
-    $tables = [];
-    foreach($tables_in_db as $table){
-        if($table->{$db} == 'password_resets' || $table->{$db} == 'migrations' || $table->{$db} == 'failed_jobs') {
-            $tables = $tables;
-        } else {
-            $tables[] = $table->{$db};
-        }
-    };
-
-//    $table = collect($tables)->except('migrations')->toArray();
-
-    // dd($table->forget(['password_resets','migrations','failed_jobs'])->toArray());
-
 @endphp
 
 
@@ -83,7 +67,6 @@
             ],
             "ticket" => [],
             "account" => [],
-            'schedule' => $tables
 
         ];
    } else {

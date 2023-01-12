@@ -326,7 +326,9 @@ class MenuController extends Controller
 
       $this->companyList  = Company::Store('company_store_id', Auth::user()->store_id)->get();
 
-      $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
+    //   $this->settingModel = Setting::where('settingtable_id', Auth::user()->store_id)->first();
+      $this->settingModel = Setting::where('settingtable_id', 1)->first();
+      
     //   dd(Auth::user()->store_id);
     //   dd($this->settingModel);
       $this->settingModel = Setting::find($this->settingModel->setting_id);

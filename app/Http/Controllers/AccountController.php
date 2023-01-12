@@ -10,8 +10,10 @@ class AccountController extends Controller
     private $accountList;
     private $accountModel;
 
-    public function Index()
+    public function Index(Request $request)
     {
+        $request->session()->flash('view', 'account');
+        $request->session()->flash('action', null);
         $this->accountList = Account::orderBY('account_id', 'desc')->paginate(10);
         // $accountList = Account::List('account_id', Auth::user()->user_account_id)->paginate(10);
         return view('account.index', ['data' => $this->Data()]);
@@ -25,6 +27,7 @@ class AccountController extends Controller
 
     public function Update(Request $request)
     {
+        dd($request->all());
         if($request->account_delete){
             foreach($request->account_delete as $account){
                 Account::destroy($account);

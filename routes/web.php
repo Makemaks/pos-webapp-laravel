@@ -50,6 +50,7 @@ use App\Http\Controllers\API\ChartAPIController;
 use App\Http\Controllers\API\CartAPIController;
 use App\Http\Controllers\API\SchemeAPIController;
 use App\Http\Controllers\API\OrderAPIController;
+use App\Http\Controllers\ScheduleController;
 
 Route::get('login', [AuthenticationController::class, 'Login'])->name('authentication.login');
 Route::get('forgot-password', [AuthenticationController::class, 'ForgotPassword'])->name('authentication.forgot-password');
@@ -99,7 +100,7 @@ Route::resource('account', AccountController::class);
 // Route::get('mail/', [MailController::class, 'Index'])->name('mail.index');
 // Route::post('mail/send', [MailController::class, 'Send'])->name('mail.send');
 
-
+Route::post('schedule', [ScheduleController::class, 'Schedule'])->name('schedule');
 
 /* Route::get('home/', [HomeController::class,'Index'])->name('home.index');
 Route::get('home/store', [HomeController::class,'Create'])->name('home.create');

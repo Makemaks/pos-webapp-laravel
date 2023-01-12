@@ -1,5 +1,8 @@
 @php
     use App\Models\Account;
+
+    $action = Request::session()->get('action');
+    $view = Request::session()->get('view');
 @endphp
 
 <button class="uk-button uk-button-default uk-border-rounded uk-button-danger" type="submit" form="accountUpdate" value="accountUpdate">
@@ -77,8 +80,9 @@
                                     @endif
                                 @endforeach
                             </tr>
-                        @endforeach
-                    </tbody>
+                            @endforeach
+                        </tbody>
+                        @include('partial.scheduleModalPartial', ['view' => $view, 'action' => $action])
                 </table>
                 @include('partial.paginationPartial', ['paginator' => $data['accountList']])
             </div>

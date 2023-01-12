@@ -2,6 +2,8 @@
     use App\Models\Store;
     use App\Models\User;
     $route = Str::before(Request::route()->getName(), '.');
+    $action = Request::session()->get('action');
+    $view = Request::session()->get('view');
 @endphp
 
 <!DOCTYPE html>
@@ -56,6 +58,9 @@
             <div class="uk-width-expand@m uk-padding-small">
                 
                 <div class="">
+                    @if(!in_array($route, ['dashboard','home','report']) && !in_array($action, ['Stock','Order']))
+                        <a uk-toggle="target: #schedule-{{ $view }}" class="uk-button uk-button-default">Set Schedule</a>
+                    @endif
                     @yield('content')
                 </div>
             </div>

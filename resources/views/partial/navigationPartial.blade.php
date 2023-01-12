@@ -54,7 +54,7 @@ use App\Helpers\DateTimeHelper;
                    
                     <div class="uk-navbar-item uk-visible@s">
                         <div>
-                            {{Auth::user()->store_id}}
+                            {{-- {{Auth::user()->store_id}} --}}
                             <form action="{{route('dashboard.index')}}">
                                 @csrf
                                 <select name="store-form" class="uk-select" onchange="this.form.submit()">
@@ -73,13 +73,6 @@ use App\Helpers\DateTimeHelper;
                         </div>
                     </div>
                     
-                @endif
-
-                @if(!in_array($route, ['dashboard','home']))
-                    <div class="uk-navbar-item uk-visible@s">
-                        @include('partial.scheduleModalPartial', ['schedule' => $route])
-                        <a uk-toggle="target: #schedule-{{ $route }}" class="uk-button uk-button-default">Set Schedule</a>
-                    </div>
                 @endif
 
             @endauth

@@ -20,17 +20,17 @@ class UserController extends Controller
 
 
 
-    public function Index()
+    public function Index(Request $request)
     {
-
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
-            ->first();
-
+        ->first();
 
         $this->userList = User::Store('person_user_id', $this->userModel->user_id)
-            ->paginate(20);
+        ->paginate(20);
 
-        $request->session->push('person_id', $request['person_id']);
+        if ($request->has('person_id')) {
+        $request->session->flash('person_id', $request['person_id']);
+        }
 
         return view('user.index', ['data' => $this->Data()]);
     }

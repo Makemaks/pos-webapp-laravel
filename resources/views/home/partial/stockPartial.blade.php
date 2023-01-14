@@ -63,10 +63,7 @@
             </div>
 
             <div>
-                <div class="uk-search uk-search-default">
-                    <span class="uk-search-icon-flip" uk-search-icon></span>
-                    <input class="uk-search-input uk-width-expand" type="search" placeholder="Search" aria-label="Search">
-                </div>
+                <button class="uk-button uk-button-default uk-border-rounded" type="button" uk-icon="search" onclick="showKeypad()" onchange="searchInput(this)" autocomplete="off">
             </div>
        </div>
 

@@ -112,7 +112,7 @@ class StockFactory extends Factory
 
         for ($i = 0; $i < rand(1, 8); $i++) {
             $stock_allergen[$i + 1] = $i + 1;
-            $stock_setting_vat[$i + 1] = $i + 1;
+            
         }
 
         $count = 1;
@@ -140,8 +140,12 @@ class StockFactory extends Factory
                 "stock_price_group_id" => $this->faker->numberBetween($min = 1, $max = 5),
             ];
            
+            
         }
 
+        for ($i=0; $i < 5; $i++) { 
+            $stock_setting_vat[$i + 1] = $i + 1;
+        }
        
 
         return [

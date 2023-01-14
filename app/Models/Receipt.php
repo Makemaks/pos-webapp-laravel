@@ -98,11 +98,12 @@ class Receipt extends Model
                     'order_vat_total_amount' => 0,
                     'priceTotal' => 0,
                     'subTotal' => 0,
-                    'stock' => ['stock_price' => 0, 'stock_price_processed' => 0, 'stock_setting_offer_total' => 0],
-                    'setting_key' => []
+                    'stock' => ['stock_price' => 0, 'stock_price_offer' => 0, 'stock_setting_offer_total' => 0],
+                    'setting_key' => [],
+                    'setting_offer' => []
                 ],
-                'requestInput' => $requestInput
-                
+                'requestInput' => $requestInput,
+                'stock' => [],
 
             ];
             
@@ -165,14 +166,14 @@ class Receipt extends Model
             $data['setupList']['receipt']['priceTotal'] = 0;
             $data['setupList']['receipt']['stock_vat_total_rate'] = 0;
             $data['setupList']['receipt']['stock_vat_total_amount'] = 0;
-            $data['setupList']['receipt']['stock_price_processed'] = 0;
+            $data['setupList']['receipt']['stock_price_offer'] = 0;
         }
 
 
         $stock_price_processed = Stock::StockPriceQuantity( $stockItem['stock_price'], $stockItem['stock_quantity']);
         //offers
         if ( count($stockItem['stock_setting_offer']) > 0 ) {
-            $data['setupList']['receipt']['stock']['stock_setting_offer_total'] = Setting::SettingCurrentOffer($stockItem['stock_setting_offer'], $data['setupList']['receipt']['stock']['stock_price_processed']);
+            $data['setupList']['receipt']['stock']['stock_setting_offer_total'] = Setting::SettingOffer($stockItem['stock_setting_offer'], $data['setupList']['receipt']['stock']['stock_price_offer']);
             $data['setupList']['receipt']['subTotal'] =  $data['setupList']['receipt']['stock']['stock_setting_offer_total'] - $data['setupList']['receipt']['stock']['stock_setting_offer_total'];
             $stock_price_processed = $stock_price_processed - $data['setupList']['receipt']['stock']['stock_setting_offer_total'];
         }
@@ -181,21 +182,21 @@ class Receipt extends Model
         if ( count($stockItem['stock_vat']) > 0 ) {
            
             $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] + $stock_price_processed;
-            $data['setupList']['receipt']['stock_vat_rate'] = head($stockItem['stock_vat'])['rate'];
+            $data['setupList']['receipt']['stock_vat_rate'] = collect($stockItem['stock_vat'])->sum('rate');
             $data['setupList']['receipt']['stock_vat_total_rate'] =  $data['setupList']['receipt']['stock_vat_total_rate'] + $data['setupList']['receipt']['stock_vat_rate'];
-            $stock_price_processed = MathHelper::VAT($data['setupList']['receipt']['stock_vat_rate'], $stock_price_processed)['total'];
-            $data['setupList']['receipt']['stock']['stock_price_processed'] = $stock_price_processed;
+            $stock_price_processed = MathHelper::VAT($data['setupList']['receipt']['stock_vat_rate'], $stock_price_processed) + $stock_price_processed;
+            $data['setupList']['receipt']['stock']['stock_price_offer'] = $stock_price_processed;
             
-            $data['setupList']['receipt']['stock_vat_total_amount'] = $data['setupList']['receipt']['stock_vat_total_amount'] + MathHelper::VAT($data['setupList']['receipt']['stock_vat_rate'], $stock_price_processed)['vat'];
+            $data['setupList']['receipt']['stock_vat_total_amount'] = $data['setupList']['receipt']['stock_vat_total_amount'] + MathHelper::VAT($data['setupList']['receipt']['stock_vat_rate'], $stock_price_processed);
             
         }else{
            
             $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] + $stock_price_processed;
             $setting_vat_rate = collect($data['settingModel']->setting_vat)->where('default', 0)->first()['rate'];
-            $stock_price_processed = MathHelper::VAT($setting_vat_rate, $stock_price_processed)['total'];
-            $data['setupList']['receipt']['stock']['stock_price_processed'] = $stock_price_processed;
+            $stock_price_processed = MathHelper::VAT($setting_vat_rate, $stock_price_processed) + $stock_price_processed;
+            $data['setupList']['receipt']['stock']['stock_price_offer'] = $stock_price_processed;
             
-            $data['setupList']['receipt']['order_vat_total_amount'] = $data['setupList']['receipt']['order_vat_total_amount'] + MathHelper::VAT( $setting_vat_rate, $stock_price_processed )['vat'];
+            $data['setupList']['receipt']['order_vat_total_amount'] = $data['setupList']['receipt']['order_vat_total_amount'] + MathHelper::VAT( $setting_vat_rate, $stock_price_processed );
         
         }
 

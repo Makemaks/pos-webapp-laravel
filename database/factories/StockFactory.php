@@ -83,7 +83,6 @@ class StockFactory extends Factory
             "unit_size" => $this->faker->numberBetween($min = 1, $max = 20),
 
             "outer_barcode" => $this->faker->ean13,
-            "stock_vat_id" => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 5))),
             'stock_name' => $this->faker->word,
             'stock_description' => $this->faker->paragraph,
             "set_menu" => $this->faker->numberBetween($min = 1, $max = 5),
@@ -113,6 +112,7 @@ class StockFactory extends Factory
 
         for ($i = 0; $i < rand(1, 8); $i++) {
             $stock_allergen[$i + 1] = $i + 1;
+            $stock_setting_vat[$i + 1] = $i + 1;
         }
 
         $count = 1;
@@ -124,6 +124,7 @@ class StockFactory extends Factory
                     "price" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
                     "setting_stock_price_level" => $i + 1,
                     "setting_stock_price_group" => $j,
+                    "is_special_price" => $this->faker->numberBetween($min = 0, $max = 1),
                 ];
                 $count++;
             }
@@ -141,17 +142,6 @@ class StockFactory extends Factory
            
         }
 
-
-        $special_stock_price = [];
-        for ($i=0; $i < 50; $i++) { 
-                
-            $special_stock_price[$i + 1] = [
-                "price" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
-                "setting_stock_price_level" => $i,
-                "setting_stock_price_group_special" => $this->faker->numberBetween($min = 1, $max = 5),
-            ];
-        }
-       
        
 
         return [
@@ -160,19 +150,18 @@ class StockFactory extends Factory
             'stock_price' => $stock_price,
             'stock_supplier' => $stock_supplier,
             'stock_store_id' => $this->faker->numberBetween($min = 1, $max = 10),
-
+            'root_stock_id' => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 10) ) ),
             'stock_gross_profit' => $stock_gross_profit,
 
-
             'stock_merchandise' => $stock_merchandise,
-
+            'stock_setting_vat' =>  $stock_setting_vat,
 
             'stock_terminal_flag' => $stock_terminal_flag,
             'stock_web' => $stock_web,
             'stock_nutrition' => $stock_nutrition,
             'stock_allergen' => $stock_allergen,
             'stock_price_quantity' => $stock_price_quantity,
-            'special_stock_price' => $special_stock_price,
+           
             'stock_setting_offer' => $stock_setting_offer
 
         ];

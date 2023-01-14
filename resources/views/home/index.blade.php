@@ -6,7 +6,7 @@
     use App\Models\Setting;
     use App\Models\Company;
     use App\Helpers\StringHelper;
-
+   
 @endphp
 
 @push('scripts')
@@ -28,22 +28,22 @@
     </ul>
     
     <ul class="uk-switcher uk-margin">
-        <li class="uk-overflow-auto uk-height-large uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 10">
+        <li class="uk-overflow-auto uk-height-large uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 5">
             <div id="stockID">
                 @include('home.partial.stockPartial')
             </div>
         </li>
-        <li class="uk-overflow-auto uk-height-large uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 10">
+        <li class="uk-overflow-auto uk-height-large uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 5">
             @include('person.partial.indexPartial')
         </li>
-        <li class="uk-overflow-auto uk-height-large uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 10">
+        <li class="uk-overflow-auto uk-height-large uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 5">
             {{-- @include('menu.partial.crudPartial') --}}
            <div id="settingKeyID">
                 @include('setting.settingKey.create')
            </div>
         </li>
         
-        <li class="uk-overflow-auto uk-height-large uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 10">
+        <li class="uk-overflow-auto uk-height-large uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 5">
             
         </li>
     </ul>

@@ -58,8 +58,8 @@
                     @endif
                 </td>
                 <td>
-                   @if ($stock->stock_merchandise['stock_vat_id'])
-                     {{$stock->stock_merchandise['stock_vat_id']}}
+                   @if ($stock->stock_setting_vat)
+                     {{$stock->stock_setting_vat}}
                    @else
                         @foreach ($data['settingModel']->setting_vat as $item)
                             @if ($item['default'] == 0)

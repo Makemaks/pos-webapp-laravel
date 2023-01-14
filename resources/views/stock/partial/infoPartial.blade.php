@@ -111,10 +111,10 @@
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">VAT</label>
                 
-                <select name="stock_merchandise[stock_vat_id]" class="uk-select">
+                <select name="stock_merchandise[setting_stock_vat]" class="uk-select">
                     <option selected="selected" disabled>SELECT ...</option>
                     @foreach ($data['settingModel']->setting_vat as $setting_vat)
-                        <option value="{{old( 'stock_merchandise[stock_vat_id]', isset($data['stockModel']->stock_merchandise['stock_vat_id']) )}}">
+                        <option value="{{old( 'stock_merchandise[setting_stock_vat]', isset($data['stockModel']->setting_stock_vat) )}}">
                             {{$setting_vat['name']}}
                         </option>
                     @endforeach

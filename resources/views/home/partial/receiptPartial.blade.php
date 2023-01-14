@@ -17,10 +17,10 @@
     use App\Models\Receipt;
 
     $route = Str::before(Request::route()->getName(), '.'); 
-    $currencySymbol = Setting::SettingCurrency($data);
+   
     $openControlID = '';
     $closeControlID = 'hidden';
-    $currency = "";
+    
     $disabled = 'disabled';
 
     if ($route == 'home' || Str::contains($route, 'api')) {

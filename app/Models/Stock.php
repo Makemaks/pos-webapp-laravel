@@ -31,8 +31,15 @@ class Stock extends Model
                 "price": "",
                 "setting_stock_price_level": "",
                 "setting_stock_price_group": "",
-                "setting_stock_price_group_special": ""
+                "is_special_price" : ""
             }
+        }',
+
+        'stock_price_quantity' => '{
+            "1": "{
+                "stock_price_quantity" = "",
+                "setting_stock_price_group" = "",
+            }"
         }',
 
         "stock_supplier" => '{
@@ -77,7 +84,7 @@ class Stock extends Model
             "outer_barcode": "",
             "qty_adjustment": "",
             
-            "stock_vat_id": "",
+            "setting_stock_vat": "",
             "stock_name": "",
             "stock_description": "",
             "stock_quantity": "",
@@ -111,27 +118,17 @@ class Stock extends Model
             "value": "",
             "measurement": ""
         }',
-        'stock_price_quantity' => '{
-            "1": "{
-                "stock_price_id" = "",
-                "warehouse_stock_price_quantity" = "",
-            }"
-        }',
+        
 
-        "special_stock_price" => '{
-            "1": {
-                "price": "",
-                "setting_stock_price_row" : "",
-                "setting_stock_price_column" : ""
-            }
-        }',
         "stock_setting_offer" => '{}',
+        "stock_setting_vat" => '{}',
 
     ];
 
 
     protected $casts = [
         'stock_price' => 'array',
+        'stock_setting_vat' => 'array',
         'stock_setting_offer' => 'array',
         'special_stock_price' => 'array',
         'stock_supplier' => 'array',
@@ -291,8 +288,8 @@ class Stock extends Model
 
         $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
         
-        if ($stock->stock_merchandise['stock_vat_id']) {
-            $stock_vat = [ $stock->stock_merchandise['stock_vat_id'] => $settingModel->setting_vat[$stock->stock_merchandise['stock_vat_id']] ];
+        foreach ($stock->stock_setting_vat as $key => $stock_setting_vat) {
+            $stock_vat[] = $settingModel->setting_vat[$stock_setting_vat];
         }
 
         return $stock_vat;
@@ -372,7 +369,7 @@ class Stock extends Model
         $stock_price = MathHelper::FloatRoundUp(Stock::StockPriceDefault($stock->stock_price, $setupList), 2);
 
         $setupList['receipt']['stock']['stock_price'] = $stock_price;
-        $setupList['receipt']['stock']['stock_price_processed'] = $stock_price;
+        $setupList['receipt']['stock']['stock_price_offer'] = $stock_price;
 
         $setupList['receipt']['stock']['stock_price'] = MathHelper::FloatRoundUp(Stock::StockPriceCustomer($stock->stock_price), 2);
         //check if customer has price
@@ -385,21 +382,16 @@ class Stock extends Model
         //find discount
         if ($stock->stock_setting_offer) {
             //find discount
-            $settingCurrentOffer = Setting::SettingOffer($stock->stock_setting_offer);
-
-            if (count($settingCurrentOffer) > 0) {
-                $setupList['receipt']['stock']['stock_price_processed'] = Setting::SettingCurrentOffer($settingCurrentOffer, $setupList['receipt']['stock']['stock_price']);
+            $setupList = Setting::SettingOffer($stock->stock_setting_offer, $setupList);
+                
               
-                /* $stockPriceMin = Stock::StockPriceMin($settingCurrentOffer);
-                $discount_value = Setting::SettingOffer( $stockPriceMin, $setupList['receipt']['stock']['stock_price'] );
-                $setupList['receipt']['stock']['stock_price_processed'] = $discount_value - Stock::StockPriceMin($stockOffer); */
-           }
-
-          
+            /* $stockPriceMin = Stock::StockPriceMin($settingCurrentOffer);
+            $discount_value = Setting::SettingOffer( $stockPriceMin, $setupList['receipt']['stock']['stock_price'] );
+            $setupList['receipt']['stock']['stock_price_offer'] = $discount_value - Stock::StockPriceMin($stockOffer); */
         }
 
        /*  if($stockOffer){
-            $setupList['receipt']['stock']['stock_price_processed'] = $stockOffer - Stock::StockPriceMin($stockOffer);
+            $setupList['receipt']['stock']['stock_price_offer'] = $stockOffer - Stock::StockPriceMin($stockOffer);
         } */
 
   
@@ -408,29 +400,29 @@ class Stock extends Model
 
     public static function StockInit($stock, $store, $setupList){
 
-
         $setupList = Stock::StockPriceProcessed($stock, $setupList);
-        $requestInput['stock_id'] = $stock->stock_id;
-        $requestInput['stock_name'] = $stock->stock_merchandise['stock_name'];
-        $requestInput['store_id'] = $store->store_id;
-        $requestInput['stock_quantity'] = 1;
-        $requestInput['stock_price'] = $setupList['receipt']['stock']['stock_price_processed'];
-        $requestInput['user_id'] = Auth::user()->user_id;
-       
-        $requestInput['receipt_setting_key'] = [];
-        $requestInput['stock_setting_offer'] = [];
+        $setupList['stock']['stock_id'] = $stock->stock_id;
+        $setupList['stock']['stock_name'] = $stock->stock_merchandise['stock_name'];
+        $setupList['stock']['store_id'] = $store->store_id;
+        $setupList['stock']['stock_quantity'] = 1;
+        $setupList['stock']['stock_price'] = $setupList['receipt']['stock']['stock_price'];
+        $setupList['stock']['stock_price_offer'] = $setupList['receipt']['stock']['stock_price_offer'];
+        $setupList['stock']['user_id'] = Auth::user()->user_id;
+        $setupList['stock']['receipt_setting_key'] = []; //keys added to this item
+        $setupList['stock']['stock_setting_offer'] = []; //list of offers on this item
         
         
         if ( count($setupList['receipt']['setting_key'])  > 0 ) {
-            $requestInput['receipt_setting_key'][] = $setupList['receipt']['setting_key'];
+            $setupList['stock']['receipt_setting_key'][] = $setupList['receipt']['setting_key'];
         }
         
         if ( $stock->stock_setting_offer ) {
-            $requestInput['stock_setting_offer'] = Setting::SettingOffer($stock->stock_setting_offer);
+            $setupList['stock']['stock_setting_offer'] = $setupList['receipt']['setting_offer'];
         }
-        $requestInput['stock_vat'] = Stock::StockVAT($stock);
+        $setupList['stock']['stock_vat'] = Stock::StockVAT($stock); //vat on this item
 
-        return $requestInput;
+
+        return $setupList;
     }
 
     public static function StockOffer(){

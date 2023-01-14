@@ -655,9 +655,12 @@ class Setting extends Model
         return $data;
     }
 
-    //compare current
-    public static function SettingOffer($setting_offer){
+    //stock
+    public static function SettingOffer($setting_offer, $setupList){
 
+        $settingCurrentSettingOfferType = [];
+        $total = [];
+        $price = $setupList['receipt']['stock']['stock_price'];
         $stockOffer = [];
 
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
@@ -666,88 +669,76 @@ class Setting extends Model
         $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
 
         foreach ($setting_offer  as $key => $setting_offer_id) {
-            $setting_offer = $settingModel->setting_offer[ $setting_offer_id ];
+            $stock_setting_offer = $settingModel->setting_offer[ $setting_offer_id ];
 
-            if ($setting_offer['date']['end_date'] > Carbon::now() &&
-            array_search( Carbon::now()->dayOfWeek, $setting_offer['available_day']) ) {
-
-                $stockOffer[$key] = $settingModel->setting_offer[$key];
-            }
-        }
-
-
-        return $stockOffer;
-    }
-
-
-    //stock
-    public static function SettingCurrentOffer($settingCurrentOffer, $price){
-
-        $settingCurrentSettingOfferType[] = ['discount_value' => $price];
-        $total = [];
-
-        foreach ($settingCurrentOffer as $settingCurrentOfferKey => $settingCurrentOfferValue) {
-
-            if ($settingCurrentOfferValue['date']['end_date'] > Carbon::now() &&
-            array_search( Carbon::now()->dayOfWeek, $settingCurrentOfferValue['available_day']) ) {
-
-                 //discount
-                 if ( Setting::SettingOfferType()[$settingCurrentOfferValue['boolean']['type']] == 'voucher' ) {
-
-                    if (Setting::SettingSettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
-
-                        $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)['total'] ];
-        
-                    } else {
-                        $settingCurrentSettingOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
-                    }
-
-                }
-                elseif( Setting::SettingOfferType()[$settingCurrentOfferValue['boolean']['type']] == 'discount' ){
-
-                    if (Setting::SettingSettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
-
-                        $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)['total'] ];
-        
-                    } else {
-                        $settingCurrentSettingOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
-                    }
-                }
-                elseif( Setting::SettingOfferType()[$settingCurrentOfferValue['boolean']['type']] == 'multi-buy' ){
-
-                    if (Setting::SettingSettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
-
-                        $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)['total'] ];
-        
-                    } else {
-                        $settingCurrentSettingOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
-                    }
-
-                }
+            
                 
-                elseif( Setting::SettingOfferType()[$settingCurrentOfferValue['boolean']['type']] == 'mix-match' ){
-                    
-                    if (Setting::SettingSettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
+                if ($stock_setting_offer['date']['end_date'] > Carbon::now() &&
+                array_search( Carbon::now()->dayOfWeek, $stock_setting_offer['available_day']) ) {
 
-                        $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)['total'] ];
-        
-                    } else {
-                        $settingCurrentSettingOfferType[] = ['discount_value' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
+                    //discount
+                    if ( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'voucher' ) {
+
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
+
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $price - $stock_setting_offer['decimal']['discount_value'] ];
+                        }
+
                     }
+                    elseif( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'discount' ){
+
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
+
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $price - $stock_setting_offer['decimal']['discount_value'] ];
+                        }
+                    }
+                    elseif( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'multi-buy' ){
+
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
+
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $price - $stock_setting_offer['decimal']['discount_value'] ];
+                        }
+
+                    }
+                    
+                    elseif( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'mix-match' ){
+                        
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
+
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $price - $stock_setting_offer['decimal']['discount_value'] ];
+                        }
+                    }
+
                 }
+           
 
-            }
-
+            $stockOffer[$key] = $settingModel->setting_offer[$key];
         
         }
 
-        return collect($settingCurrentSettingOfferType)->sum('discount_value');
+        
+        $setupList['receipt']['setting_offer'] = $stockOffer;
+        $setupList['receipt']['stock']['stock_setting_offer_total'] = collect($settingCurrentSettingOfferType)->sum('discount_value');
+        $setupList['receipt']['stock']['stock_price_offer'] = $setupList['receipt']['stock']['stock_price_offer'] - $setupList['receipt']['stock']['stock_setting_offer_total'];
+        return $setupList;
 
     }
 
     
     public static function SettingCurrency($data){
-        $currencySymbol = '$';
+        $currencySymbol = '£';
 
         $setting_default_currency =  collect($data['settingModel']->setting_group['default_currency'])
         ->where('default', 0)

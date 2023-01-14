@@ -78,12 +78,14 @@
                 
                         @foreach ($stockList as $stockKey => $stockItem)
                             @php
+                                $data['setupList']['stock'] = $stockItem;
+
                                 $data = Receipt::Calculate( $data, $stockItem, $loop );
                                 Session::pull('user-session-'.Auth::user()->user_id.'.setupList');
                                 Session::put('user-session-'.Auth::user()->user_id.'.setupList', $data['setupList']);
             
                                 $cartList = Session::pull('user-session-'.Auth::user()->user_id.'.cartList');
-                                /* $cartList[$loop->index]['stock_price'] = $data['setupList']['receipt']['stock']['stock_price_processed']; */
+                                /* $cartList[$loop->index]['stock_price'] = $data['setupList']['receipt']['stock']['stock_price_offer']; */
                                 Session::put('user-session-'.Auth::user()->user_id.'.cartList', $cartList);
 
                                 $gain_points = collect($stockItem['stock_setting_offer'])->where('gain_points')->sum();
@@ -93,7 +95,6 @@
                             
                                 <li id="cartItemID-{{$loop->index}}" {{-- uk-toggle="target: #toggle-stock-{{$loop->index}}" --}}>
             
-                                    
                                         <span>
                                             <input type="checkbox" name="receipt_stock_id[]" value="{{$stockKey}}" class="uk-checkbox">
                                         </span>
@@ -119,9 +120,9 @@
                                             
                                             @if ( count($stockItem['stock_vat']) > 0 || count($stockItem['stock_setting_offer']) > 0)
                                                 <del>{{ CurrencyHelper::Format( $stockItem['stock_price'] ) }} </del>
-                                                <span>{{ CurrencyHelper::Format( $data['setupList']['receipt']['stock']['stock_price_processed'] )}}</span>
+                                                <span>{{ CurrencyHelper::Format( $data['setupList']['receipt']['stock']['stock_price_offer'] )}}</span>
                                             @else
-                                                {{ CurrencyHelper::Format( $stockItem['stock_price'] - $setting_offer_total ) }}
+                                                {{ CurrencyHelper::Format( $stockItem['stock_price'] ) }}
                                             @endif
                                         </span>
 

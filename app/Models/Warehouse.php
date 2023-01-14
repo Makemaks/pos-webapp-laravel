@@ -21,27 +21,11 @@ class Warehouse extends Model
             "type": "",
             "description": ""
         }',
-        /* 'warehouse_stock_price' => '{
-            "1" : {
-                "name": "",
-                "description": "",
-                "price": "",
-                "schedule_datetime": "",
-                "setting_stock_price_group_id" : ""
-            }
-        }',
-        'warehouse_stock_price_quantity' => '{
-            "1": "{
-                "warehouse_stock_price_id" = "",
-                "warehouse_stock_price_quantity" = ""
-            }"
-        }', */
+     
     ];
 
     protected $casts = [
         "warehouse_reason" => 'array',
-       /*  "warehouse_stock_price" => 'array',
-        "warehouse_stock_price_quantity" => 'array', */
     ];
 
     public static function Store(){

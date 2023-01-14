@@ -160,13 +160,13 @@ class Stock extends Model
         $price = 0;
         $departmentTotal = [];
 
-         foreach ($data['settingModel']->setting_stock_group as $key => $value) {
+         foreach ($data['settingModel']->setting_stock_set as $key => $value) {
 
-         
 
             if ($value['type'] == $type) {
 
                 $quantity = 0;
+                $totalCostPrice = 0;
 
                 foreach ($data['orderList'] as $orderList) {
 
@@ -179,9 +179,11 @@ class Stock extends Model
 
                             $price = $orderList->receipt_stock_cost;
 
-                            $totalCostPrice = $totalCostPrice + $price * $orderList->receipt_quantity;
-
                             $quantity = $quantity + $orderList->receipt_quantity;
+
+                            if($quantity != 0)
+                            $totalCostPrice = $totalCostPrice + $price * $quantity;
+
                             
                         }
 

@@ -86,7 +86,7 @@ use App\Models\Person;
             </tr>
         </thead>
         <tbody>
-            {{-- @dd($data['orderList']) --}}
+           
             @foreach($data['orderList'] as $orderList)
             @php
             $storeName = Store::where('store_id',$orderList->store_id)->pluck('store_name')->first();

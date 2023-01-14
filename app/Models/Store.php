@@ -112,7 +112,7 @@ class Store extends Model
     }
 
     public static function DatePeriod(Request $request)
-    {
+    {   
         $user_id = null;
         $started_at = '0000-00-00 00:00:00';
         $ended_at = Carbon::now()->toDateTimeString();
@@ -289,6 +289,7 @@ class Store extends Model
             $ended_at = $request->ended_at;
         }
 
+      
         $userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
 
         $orderList =  Store::Order('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])

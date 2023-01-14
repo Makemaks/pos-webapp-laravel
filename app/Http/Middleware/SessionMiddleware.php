@@ -48,8 +48,8 @@ class SessionMiddleware
         
         if($request['id'] && $request['view']){
           
-            $setting_stock_group = $settingModel->setting_stock_group[$request['id']]['type'];
-            $request->session()->flash('type', Setting::SettingStockGroup()[$setting_stock_group - 1] );
+            $setting_stock_set = $settingModel->setting_stock_set[$request['id']]['type'];
+            $request->session()->flash('type', Setting::SettingStockGroup()[$setting_stock_set - 1] );
 
             $request->session()->flash('view', $request['view']);
             $request->session()->flash('id', $request['id']);

@@ -17,10 +17,9 @@ for ($i = 1; $i < count($data['settingModel']->setting_pos); $i++) {
     $totalCreditQuantity = $totalCredit + $data['settingModel']->setting_pos[$i]['credit']['quantity'];
     $totalCreditAmount = $totalCredit + $data['settingModel']->setting_pos[$i]['credit']['amount'];
 }
-
 $totaliser = [
-    'NET sales' => ['Quantity' => $data['orderList']->count(), 'Total' => App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2)],
-    'GROSS Sales' => ['Quantity' => $data['expenseList']->count(), 'Total' => App\Helpers\MathHelper::FloatRoundUp($expenseTotal, 2)],
+    'NET sales' => ['Quantity' => $data['orderList']->count(), 'Total' => App\Helpers\MathHelper::FloatRoundUp($expenseTotal, 2)],
+    'GROSS Sales' => ['Quantity' => $data['orderList']->count(), 'Total' => App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2)],
     'CASH in Drawer' => ['Quantity' => $totalCashQuantity, 'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCashAmount, 2)],
     'CREDIT in Drawer' => ['Quantity' => $totalCreditQuantity, 'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCreditAmount, 2)],
     'TOTAL in Drawer' => ['Quantity' => $totalCashQuantity + $totalCreditQuantity, 'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCashAmount + $totalCreditAmount, 2)],

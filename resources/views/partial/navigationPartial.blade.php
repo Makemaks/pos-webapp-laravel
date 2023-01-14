@@ -10,6 +10,7 @@ use App\Helpers\DateTimeHelper;
     $route = Str::before(Request::route()->getName(), '.');
 
    if (Auth::check()) {
+
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 

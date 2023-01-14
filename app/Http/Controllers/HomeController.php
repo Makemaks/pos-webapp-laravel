@@ -76,7 +76,7 @@ class HomeController extends Controller
         ->orderBy('person_name->person_firstname', 'asc')
         ->get();
 
-        $this->settingModel->setting_stock_group = collect($this->settingModel->setting_stock_group)->where('type', 0);
+        $this->settingModel->setting_stock_set = collect($this->settingModel->setting_stock_set)->where('type', 0);
 
       /*   $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
         ->paginate(12); */

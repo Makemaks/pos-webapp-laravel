@@ -29,7 +29,7 @@ class Setting extends Model
         'setting_logo' => '{}',
 
 
-        'setting_stock_group' => '{
+        'setting_stock_set' => '{
             "1": {
                 "name": "",
                 "code": "",
@@ -83,7 +83,7 @@ class Setting extends Model
         'setting_reason' => '{
             "1": {
                 "name": "",
-                "setting_stock_group": ""
+                "setting_stock_set": ""
             }
         }',
 
@@ -361,7 +361,7 @@ class Setting extends Model
         'setting_logo' => 'array',
 
         'setting_stock_cost' => 'array',
-        'setting_stock_group' => 'array',
+        'setting_stock_set' => 'array',
 
         'setting_stock_label'  => 'array',
 

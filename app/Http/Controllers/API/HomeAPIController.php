@@ -62,8 +62,8 @@ class HomeAPIController extends Controller
 
             $request->session()->flash('id', $request['id']);
 
-            $setting_stock_group = collect($this->settingModel->setting_stock_group)->where('type', $request->get('id'));
-            $this->settingModel->setting_stock_group = $setting_stock_group;
+            $setting_stock_set = collect($this->settingModel->setting_stock_set)->where('type', $request->get('id'));
+            $this->settingModel->setting_stock_set = $setting_stock_set;
             
             $this->html = view('stock.partial.groupPartial', ['data' => $this->Data()])->render();
         }
@@ -82,10 +82,10 @@ class HomeAPIController extends Controller
             $request->session()->flash('view', $request['view']);
             $request->session()->flash('action', 0);
 
-            $setting_stock_group = $this->settingModel->setting_stock_group[$request->session()->get('id')];
+            $setting_stock_set = $this->settingModel->setting_stock_set[$request->session()->get('id')];
 
-            $setting_stock_group = collect($this->settingModel->setting_stock_group)->where('type', $setting_stock_group['type']);
-            $this->settingModel->setting_stock_group = $setting_stock_group;
+            $setting_stock_set = collect($this->settingModel->setting_stock_set)->where('type', $setting_stock_set['type']);
+            $this->settingModel->setting_stock_set = $setting_stock_set;
 
             
             $where = 'stock_merchandise->'.$request->session()->get('type').'_id';

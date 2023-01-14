@@ -15,10 +15,10 @@ trait AllergonTrait
      */
     public function getAllergenPluReport() :array
     {
-        $settings = Setting::select('setting_stock_group','setting_id')->get(); 
+        $settings = Setting::select('setting_stock_set','setting_id')->get(); 
         foreach($settings as $setting) {
             $key = 0;
-            foreach($setting->setting_stock_group as $pluId => $settngStockGroup) {
+            foreach($setting->setting_stock_set as $pluId => $settngStockGroup) {
                 if($settngStockGroup['type'] == '2') {
                     $collectPluIds[$key]['plu_id'] = $pluId;
                     $collectPluIds[$key]['plu_name'] = $settngStockGroup['name'];

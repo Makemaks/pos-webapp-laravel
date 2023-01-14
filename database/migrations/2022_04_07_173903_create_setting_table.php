@@ -24,7 +24,7 @@ return new class extends Migration
 
 
             
-            $table->json('setting_stock_group')->nullable()->comment('group::category::plu::brand');
+            $table->json('setting_stock_set')->nullable()->comment('group::category::plu::brand');
             $table->json('setting_stock_cost')->nullable();
 
             $table->json('setting_stock_label')->nullable();

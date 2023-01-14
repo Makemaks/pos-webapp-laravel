@@ -38,31 +38,31 @@
 </div>
 
 <div class="uk-height-large uk-overflow-auto uk-padding" id="stockGroupID" hidden> 
-    @if ($data['settingModel']->setting_stock_group)
+    @if ($data['settingModel']->setting_stock_set)
    
         <div class="uk-grid-small uk-child-width-1-4@s uk-button" uk-grid>
 
 
 
-            @foreach($data['settingModel']->setting_stock_group as $key_setting_stock_group => $item_setting_stock_group)
+            @foreach($data['settingModel']->setting_stock_set as $key_setting_stock_set => $item_setting_stock_set)
             
             
                     @php
-                        $setting_stock_type = Setting::SettingStockGroup()[$item_setting_stock_group['type']];
+                        $setting_stock_type = Setting::SettingStockGroup()[$item_setting_stock_set['type']];
                         $where = 'stock_merchandise->'.$setting_stock_type.'_id';
-                        $count = Stock::where($where, $key_setting_stock_group)->count();
+                        $count = Stock::where($where, $key_setting_stock_set)->count();
                     @endphp
             
 
                     <div>
-                        <div onclick="stockGroup({{$key_setting_stock_group}}, '{{$setting_stock_type}}', '{{$item_setting_stock_group['name']}}' )">
+                        <div onclick="stockGroup({{$key_setting_stock_set}}, '{{$setting_stock_type}}', '{{$item_setting_stock_set['name']}}' )">
                     
                             <div class="uk-padding-small uk-height-small uk-light uk-border-rounded" style="background-color: #{{StringHelper::getColor()}}">
                                 
                                 <div>
                                     <div uk-grid>
                                         <div class="uk-width-expand">
-                                            <span class="uk-text-bold">{{Str::ucfirst($item_setting_stock_group['name'])}}</span>
+                                            <span class="uk-text-bold">{{Str::ucfirst($item_setting_stock_set['name'])}}</span>
                                         </div>
                                     </div>
                                 

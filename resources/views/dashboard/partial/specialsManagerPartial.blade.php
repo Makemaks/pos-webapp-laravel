@@ -52,7 +52,7 @@
                                         
                                     </td>           
                                 @endfor
-
+                                       
                                 <td>
                                     {{$data['settingModel']->setting_stock_set[$stockModel->stock_merchandise['category_id']]['name']}}
                                 </td>

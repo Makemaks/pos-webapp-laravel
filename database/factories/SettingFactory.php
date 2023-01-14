@@ -159,7 +159,7 @@ class SettingFactory extends Factory
         }
 
         for ($i=0; $i < 20; $i++) { 
-            $setting_stock_group[$i+1] = [
+            $setting_stock_set[$i+1] = [
                 "name"=> $this->faker->word,
                 "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
                 "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::plu::brand
@@ -238,7 +238,7 @@ class SettingFactory extends Factory
             'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company', 'Organisation')),
             'setting_api' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
-            'setting_stock_group'  => $setting_stock_group,
+            'setting_stock_set'  => $setting_stock_set,
            
            
             'setting_vat' => $setting_vat,

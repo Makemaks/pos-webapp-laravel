@@ -42,8 +42,10 @@ class DashboardController extends Controller
     public function Index(Request $request)
     {
 
+        $this->init();
         if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin') {
             $this->Admin($request);
+           
             return view('dashboard.admin.index', ['data' => $this->Data()]);
         } else {
             $this->User($request);
@@ -76,6 +78,7 @@ class DashboardController extends Controller
     {
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
+           
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
     }
 

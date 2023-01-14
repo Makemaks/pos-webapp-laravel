@@ -6,7 +6,7 @@ $table = $data['table'];
 
 $arrays = [];
 
-foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $valueDepartment) {
+foreach ($data['settingModel']->setting_stock_set_category_plu as $key => $valueDepartment) {
     if ($valueDepartment['type'] == 2) {
         foreach ($dataModel as $user_id => $value) {
             foreach ($value as $key => $values) {

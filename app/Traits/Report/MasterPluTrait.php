@@ -15,10 +15,10 @@ trait MasterPluTrait
      */
     public function getMasterPluReport() :array
     {
-        $settings = Setting::select('setting_stock_group')->get(); 
+        $settings = Setting::select('setting_stock_set')->get(); 
         foreach($settings as $setting) {
             $key = 0;
-            foreach($setting->setting_stock_group as $pluId => $settngStockGroup) {
+            foreach($setting->setting_stock_set as $pluId => $settngStockGroup) {
                 if($settngStockGroup['type'] == '2') {
                     $collectPluIds[$key]['plu_id'] = $pluId;
                     $collectPluIds[$key]['linked_to_master_plu'] = $settngStockGroup['name'];

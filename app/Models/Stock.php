@@ -160,7 +160,7 @@ class Stock extends Model
         $price = 0;
         $departmentTotal = [];
 
-         foreach ($data['settingModel']->setting_stock_group as $key => $value) {
+         foreach ($data['settingModel']->setting_stock_set as $key => $value) {
 
          
 

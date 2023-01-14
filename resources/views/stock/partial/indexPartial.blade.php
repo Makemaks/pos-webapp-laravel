@@ -51,21 +51,21 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                     <td>{{$stock->stock_merchandise['stock_name']}}</td>
 
                     <td>
-                        @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_group) )
-                            {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['plu_id']]['name']}}
+                        @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['plu_id']]['name']}}
                         @endif
                     </td>
 
                     <td>{{$stock->stock_merchandise['random_code']}}</td>
                     <td>
-                        @if ( array_key_exists($stock->stock_merchandise['group_id'], $data['settingModel']->setting_stock_group) )
-                            {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['group_id']]['name']}}
+                        @if ( array_key_exists($stock->stock_merchandise['group_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['group_id']]['name']}}
                         @endif
                     </td>
                     <td>
                         {{-- dept --}}
-                        @if ( array_key_exists($stock->stock_merchandise['category_id'], $data['settingModel']->setting_stock_group) )
-                            {{$data['settingModel']->setting_stock_group[$stock->stock_merchandise['category_id']]['name']}}
+                        @if ( array_key_exists($stock->stock_merchandise['category_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['category_id']]['name']}}
                         @endif
                     </td>
                     <td>

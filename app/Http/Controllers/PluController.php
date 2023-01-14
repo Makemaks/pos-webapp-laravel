@@ -26,15 +26,15 @@ class PluController extends Controller
     public function index()
     {
         $this->init();
-        // dd($this->userModel->store_id);
+       
         $warehouseQuantity = warehouse::where('warehouse_type',1)
             ->orwhere('warehouse_type',2)
             ->where('warehouse_store_id',$this->userModel->store_id)
             ->get();
-        dd($warehouseQuantity);
+       
         
-        $this->settingModel->setting_stock_group = collect($this->settingModel->setting_stock_group)->where('type', 3);
-        dd($this->settingModel);   
+        $this->settingModel->setting_stock_set = collect($this->settingModel->setting_stock_set)->where('type', 3);
+        
     }
 
     /**

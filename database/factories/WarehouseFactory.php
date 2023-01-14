@@ -56,8 +56,8 @@ class WarehouseFactory extends Factory
                 "warehouse_store_id" => $this->faker->numberBetween($min = 1, $max = 10),
                 "warehouse_stock_id"=> $this->faker->numberBetween($min = 1, $max = 100),
                 "warehouse_user_id"=> $this->faker->numberBetween($min = 1, $max = 2),
-                "warehouse_stock_price"=> $this->faker->randomElement($array = array (NULL,$this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50))),
-                "warehouse_stock_price_quantity"=>  $this->faker->numberBetween($min = 1, $max = 50),
+               /*  "warehouse_stock_price"=> $this->faker->randomElement($array = array (NULL,$this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50))),
+                "warehouse_stock_price_quantity"=>  $this->faker->numberBetween($min = 1, $max = 50), */
                 "warehouse_stock_quantity"=>  $this->faker->numberBetween($min = 1, $max = 50),
                 "warehouse_name" => $this->faker->randomElement($array = array (NULL,$this->faker->word)),
                 "warehouse_note" => $this->faker->randomElement($array = array (NULL,$this->faker->sentence)),

@@ -37,8 +37,8 @@ class Stock extends Model
 
         'stock_price_quantity' => '{
             "1": "{
-                "stock_price_quantity" = "",
-                "setting_stock_price_group" = "",
+                "stock_price_quantity": "",
+                "setting_stock_price_group": ""
             }"
         }',
 
@@ -87,7 +87,6 @@ class Stock extends Model
             "setting_stock_vat": "",
             "stock_name": "",
             "stock_description": "",
-            "stock_quantity": "",
             "stock_image": "",
             "stock_tag": "",
             "stock_type": "",
@@ -128,6 +127,7 @@ class Stock extends Model
 
     protected $casts = [
         'stock_price' => 'array',
+        'stock_price_quantity' => 'array',
         'stock_setting_vat' => 'array',
         'stock_setting_offer' => 'array',
         'special_stock_price' => 'array',

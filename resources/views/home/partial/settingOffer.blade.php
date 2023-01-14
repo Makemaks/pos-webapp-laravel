@@ -19,6 +19,7 @@
 
         <div class="uk-margin-small">
             <b>OVERVIEW</b>
+            <div class="uk-margin-remove-top">{{$data['setupList']['stock']['stock_name']}}</div>
         </div>
        
         <div class="uk-margin-small">
@@ -34,13 +35,6 @@
             </div>
         </div>
 
-
-        <div class="uk-margin-small">
-            <b>Name</b>
-            <div>
-                {{$data['setupList']['stock']['stock_name']}}
-            </div>
-        </div>
 
         <div class="uk-margin-small">
             <b>OFFER</b>

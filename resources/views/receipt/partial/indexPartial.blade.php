@@ -85,7 +85,7 @@
                                 Session::put('user-session-'.Auth::user()->user_id.'.setupList', $data['setupList']);
             
                                 $cartList = Session::pull('user-session-'.Auth::user()->user_id.'.cartList');
-                                /* $cartList[$loop->index]['stock_price'] = $data['setupList']['receipt']['stock']['stock_price_offer']; */
+                                /* $cartList[$loop->index]['stock_price'] = $data['setupList']['stock']['stock_price_offer']; */
                                 Session::put('user-session-'.Auth::user()->user_id.'.cartList', $cartList);
 
                                 $gain_points = collect($stockItem['stock_setting_offer'])->where('gain_points')->sum();
@@ -120,7 +120,7 @@
                                             
                                             @if ( count($stockItem['stock_vat']) > 0 || count($stockItem['stock_setting_offer']) > 0)
                                                 <del>{{ CurrencyHelper::Format( $stockItem['stock_price'] ) }} </del>
-                                                <span>{{ CurrencyHelper::Format( $data['setupList']['receipt']['stock']['stock_price_offer'] )}}</span>
+                                                <span>{{ CurrencyHelper::Format( $data['setupList']['stock']['stock_price_offer'] )}}</span>
                                             @else
                                                 {{ CurrencyHelper::Format( $stockItem['stock_price'] ) }}
                                             @endif

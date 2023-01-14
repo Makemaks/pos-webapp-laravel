@@ -170,10 +170,10 @@ class Receipt extends Model
         }
 
 
-        $stock_price_processed = Stock::StockPriceQuantity( $stockItem['stock_price'], $stockItem['stock_quantity']);
+        $stock_price_processed = Stock::StockPriceQuantity( $data['setupList']['stock']['stock_price_offer'], $stockItem['stock_quantity']);
         //offers
         if ( count($stockItem['stock_setting_offer']) > 0 ) {
-            $data['setupList']['receipt']['stock']['stock_setting_offer_total'] = Setting::SettingOffer($stockItem['stock_setting_offer'], $data['setupList']['receipt']['stock']['stock_price_offer']);
+            $data['setupList']['receipt']['stock']['stock_setting_offer_total'] = Setting::SettingOffer($stockItem['stock_setting_offer'], $data['setupList']['stock']['stock_price_offer']);
             $data['setupList']['receipt']['subTotal'] =  $data['setupList']['receipt']['stock']['stock_setting_offer_total'] - $data['setupList']['receipt']['stock']['stock_setting_offer_total'];
             $stock_price_processed = $stock_price_processed - $data['setupList']['receipt']['stock']['stock_setting_offer_total'];
         }
@@ -185,7 +185,7 @@ class Receipt extends Model
             $data['setupList']['receipt']['stock_vat_rate'] = collect($stockItem['stock_vat'])->sum('rate');
             $data['setupList']['receipt']['stock_vat_total_rate'] =  $data['setupList']['receipt']['stock_vat_total_rate'] + $data['setupList']['receipt']['stock_vat_rate'];
             $stock_price_processed = MathHelper::VAT($data['setupList']['receipt']['stock_vat_rate'], $stock_price_processed) + $stock_price_processed;
-            $data['setupList']['receipt']['stock']['stock_price_offer'] = $stock_price_processed;
+            $data['setupList']['stock']['stock_price_offer'] = $stock_price_processed;
             
             $data['setupList']['receipt']['stock_vat_total_amount'] = $data['setupList']['receipt']['stock_vat_total_amount'] + MathHelper::VAT($data['setupList']['receipt']['stock_vat_rate'], $stock_price_processed);
             
@@ -194,7 +194,7 @@ class Receipt extends Model
             $data['setupList']['receipt']['subTotal'] = $data['setupList']['receipt']['subTotal'] + $stock_price_processed;
             $setting_vat_rate = collect($data['settingModel']->setting_vat)->where('default', 0)->first()['rate'];
             $stock_price_processed = MathHelper::VAT($setting_vat_rate, $stock_price_processed) + $stock_price_processed;
-            $data['setupList']['receipt']['stock']['stock_price_offer'] = $stock_price_processed;
+            $data['setupList']['stock']['stock_price_offer'] = $stock_price_processed;
             
             $data['setupList']['receipt']['order_vat_total_amount'] = $data['setupList']['receipt']['order_vat_total_amount'] + MathHelper::VAT( $setting_vat_rate, $stock_price_processed );
         

@@ -161,7 +161,7 @@
             searchInputID.value = searchInputID.value + element.innerText;
         }
 
-        setFocus('keypadInputID');
+        document.getElementById('searchInputID').focus();
     
     }
 
@@ -176,7 +176,7 @@
         letterType = 'lowercase';
         //sessionStorage.setItem('buttonType', element.id);
         sessionStorage.setItem('openKeypad', true);
-      
+        document.getElementById('searchInputID').focus();
         
     }
 
@@ -188,6 +188,8 @@
         sessionStorage.setItem('openKeypad', false);
         //sessionStorage.removeItem('buttonType');
     }
+
+   
 
 </script>
 

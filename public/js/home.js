@@ -217,7 +217,7 @@ function addRefund(element){
 
 
 function SelectAll(elementID){
-    var table = document.getElementById(elementID);
+    /* var table = document.getElementById(elementID);
     var rowCount = table.rows.length;
   
     for (let i = 0; i < rowCount; i++ )
@@ -230,7 +230,23 @@ function SelectAll(elementID){
         else if(null != chkbox && chkbox.checked == true){
             chkbox.checked = false;
         }
-    }
+    } */
+    var ele=document.getElementById(elementID);
+   
+        for(var i=0; i<ele.childElementCount; i++){
+
+            var row = ele.children[i];
+            var chkbox = row.childNodes[1].childNodes[1];
+
+            if (null != chkbox && chkbox.checked == false) {
+                chkbox.checked = true;
+            }
+            else if(null != chkbox && chkbox.checked == true){
+                chkbox.checked = false;
+            }
+        }
+
+    var ele=document.getElementsByName('chk');
            
 }
 

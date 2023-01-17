@@ -121,8 +121,12 @@ class SettingAPIController extends Controller
                     $this->cartList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.cartList');
                     
                     foreach ($requestInput['cartFormID']['receipt_stock_id'] as $key => $receipt_stock_id) {
-                        $count = count($this->cartList[$receipt_stock_id]['receipt_setting_key']);
-                        $this->cartList[$receipt_stock_id]['receipt_setting_key'][$count + 1] = [ $requestInput['settingKeyFormID']['setting_key_id'] => $requestInput['settingKeyFormID']['form']['setting_key'] ];
+                        $count = count($this->cartList[$receipt_stock_id]['stock_setting_key']);
+
+                        if ($requestInput['settingKeyFormID']['form']['setting_key']['value']) {
+                            $this->cartList[$receipt_stock_id]['stock_setting_key'][$count + 1] = [ $requestInput['settingKeyFormID']['setting_key_id'] => $requestInput['settingKeyFormID']['form']['setting_key'] ];
+                        }
+                        
                     }
                     
                     $request->session()->flash('view', $request->get('view'));

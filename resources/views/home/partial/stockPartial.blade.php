@@ -68,7 +68,7 @@
        </div>
 
 
-        <div class="uk-child-width-1-4@s uk-grid-small uk-text-small" uk-grid>
+        <div class="uk-child-width-1-4@s uk-grid-small" uk-grid>
 
             @isset($data['stockList'])
                 @foreach ($data['stockList'] as $stockItem)
@@ -79,8 +79,8 @@
                         
                         //$data['setupList'] = Stock::StockPriceProcessed($stockItem, $data['setupList']);
                       
-                        $data['setupList'] = Stock::StockInit($stockItem, $data['storeModel'], $data['setupList']);
-                        
+                        $stockInitialize = Stock::StockInitialize($stockItem, $data['storeModel'], $data['setupList']);
+                        $data['setupList'] = Stock::StockPriceProcessed($stockInitialize, $data['setupList']);
 
                         $data['warehouseList'] = Warehouse::List('warehouse_stock_id', $stockItem->stock_id)
                         ->where('warehouse_store_id', $stockItem->warehouse_store_id)
@@ -111,6 +111,8 @@
                             }
                         }
 
+                       
+
                     @endphp
 
                     <div>
@@ -132,8 +134,9 @@
                                         {{Str::limit($stockItem->stock_merchandise['stock_name'], 10)}}
                                     </div>
 
-                                    <div>@include('home.partial.settingOffer')</div>
-                                    
+                                    <div>
+                                        @include('home.partial.settingOffer')
+                                    </div>
                                 </div>
                                
 
@@ -151,7 +154,10 @@
                                                     
                                                         <li>
                                                             <span>
-                                                                <button class="uk-button uk-button-default uk-border-rounded uk-button-small" type="button" uk-icon="cart"></button>
+                                                                <button onclick="Add('{{$stockItem->stock_id}}', '{{$warehouseStore->first()->warehouse_store_id}}')" title="{{$stockItem->stock_id}}" class="uk-button uk-button-default uk-border-rounded uk-button-small" type="button">
+                                                                    <span uk-icon="icon: cart"></span>
+                                                                    {{-- <span uk-icon="icon: plus"></span> --}}
+                                                                </button>
                                                            </span>
                                                             {{$warehouseStore->first()->store_name}} - {{$warehouseStore->sum('warehouse_stock_quantity')}}
 
@@ -170,10 +176,7 @@
             @endisset
 
         </div>
-            
-       
-    
-       
+           
     
         <div class="uk-margin-top">
             @isset($data['stockList'])

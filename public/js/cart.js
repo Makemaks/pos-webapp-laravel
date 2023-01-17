@@ -170,9 +170,7 @@ function ClearSelect(select){
     select.add(option);
 }
 
-function setFocus(elementID){
-    document.getElementById(elementID).focus();
-}
+
 
 function searchInput(element)
 {

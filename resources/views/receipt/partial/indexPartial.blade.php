@@ -60,37 +60,34 @@
        {{$currencySymbol}}
    </span> --}}
 
-    <ul class="uk-iconnav uk-margin-small">
-        <li><input type="checkbox" class="uk-checkbox" onclick="SelectAll('receiptTableID')"></li>
-        <li><button type="button" class="uk-text-danger" onclick="deleteStock(this)" uk-icon="trash" {{$openControlID}}></button></li>
-        <li><button uk-icon="tag" type="button" onclick="IndexSetting('stock')"></button></li>
-       
-    </ul>
+    <div class="uk-grid-small uk-margin-bottom" uk-grid>
+        <div><button type="button" class="uk-border-rounded uk-button uk-button-default uk-button-small" uk-icon="check" onclick="SelectAll('cartListID')"></button></div>
+        <div><button type="button" class="uk-border-rounded uk-button uk-button-default uk-button-small"  uk-icon="trash" onclick="deleteStock(this)" uk-icon="trash" {{$openControlID}}></button></div>
+    </div>
     
-
     <div class="">
        
-        
-            <div class="uk-overflow-auto uk-height-small uk-padding-small" uk-height-viewport="offset-top: true; offset-bottom: 25" id="receiptTableID">
+            <div class="uk-overflow-auto uk-height-small" uk-height-viewport="offset-top: true; offset-bottom: 25">
         
                 <ul class="uk-list uk-list-collapse uk-list-divider" id="cartListID">
                     @isset ($stockList)
                 
                         @foreach ($stockList as $stockKey => $stockItem)
                             @php
-                                $data['setupList']['stock'] = $stockItem;
+
+                                $data['setupList'] = Stock::StockPriceProcessed($stockItem, $data['setupList']);
 
                                 $data = Receipt::Calculate( $data, $stockItem, $loop );
                                 Session::pull('user-session-'.Auth::user()->user_id.'.setupList');
                                 Session::put('user-session-'.Auth::user()->user_id.'.setupList', $data['setupList']);
             
                                 $cartList = Session::pull('user-session-'.Auth::user()->user_id.'.cartList');
-                                /* $cartList[$loop->index]['stock_price'] = $data['setupList']['stock']['stock_price_offer']; */
+                                /* $cartList[$loop->index]['stock_price'] = $data['setupList']['stock_price_offer']; */
                                 Session::put('user-session-'.Auth::user()->user_id.'.cartList', $cartList);
 
                                 $gain_points = collect($stockItem['stock_setting_offer'])->where('gain_points')->sum();
                                 $collect_points_value  = collect($stockItem['stock_setting_offer'])->where('gain_points')->sum();
-                               
+
                             @endphp
                             
                                 <li id="cartItemID-{{$loop->index}}" {{-- uk-toggle="target: #toggle-stock-{{$loop->index}}" --}}>
@@ -101,14 +98,7 @@
                                         
                                         <span> {{$stockItem['stock_name']}} </span>
 
-                                        <span>
-
-                                            @if ($stockItem['receipt_setting_key'])
-                                                @include('home.partial.settingKeyPartial', [ 'setting_key' => $stockItem['receipt_setting_key'] ])
-                                            @endif
-
-                                        </span>
-
+            
                                         @if ($stockItem['stock_quantity'] > 1)
                                             <span class="uk-text-meta uk-text-top"> {{$stockItem['stock_quantity']}}</span>
                                         @endif
@@ -118,12 +108,19 @@
                                             @include('home.partial.settingOffer')
 
                                             
-                                            @if ( count($stockItem['stock_vat']) > 0 || count($stockItem['stock_setting_offer']) > 0)
-                                                <del>{{ CurrencyHelper::Format( $stockItem['stock_price'] ) }} </del>
-                                                <span>{{ CurrencyHelper::Format( $data['setupList']['stock']['stock_price_offer'] )}}</span>
-                                            @else
-                                                {{ CurrencyHelper::Format( $stockItem['stock_price'] ) }}
+                                            @if ( count($stockItem['stock_setting_vat']) > 0 || count($stockItem['stock_setting_offer']) > 0)
+                                                <del>{{ CurrencyHelper::Format( $data['setupList']['stock_price'] ) }} </del>
+                                                
                                             @endif
+
+                                            @php
+                                                $stock_vat_total = MathHelper::VAT(collect($data['setupList']['stock_setting_vat'])->sum('rate'), $data['setupList']['stock_price_offer'] );
+                                                $stock_price_processed = $data['setupList']['stock_price_offer'] + $stock_vat_total;
+                                            @endphp
+
+                                            <span>{{MathHelper::FloatRoundUp( $stock_price_processed, 2)}}</span>
+                                           
+                                            
                                         </span>
 
                                         {{-- @include('receipt.partial.controlPartial',
@@ -134,61 +131,83 @@
                                         
                                 </li>
                                
-                               
-            
                         @endforeach
             
                     @endisset
                 </ul>
                 
             </div>
-       
-       
     </div>
   
-    <div>
-        @if ($gain_points)
-            <div class="uk-box-shadow-small uk-padding-small uk-margin">
-                <span>You have earned {{$gain_points}} points, total {{$collect_points_value}}</span>
-            </div>
-        @endif
-    </div>
+    
 
-    <div>
+   <div>
+       
+        <ul class="uk-list uk-list-collapse">
+
+            <li>
+                @if ($gain_points)
+                    <div class="uk-box-shadow-small uk-padding-small uk-margin">
+                        <span>You have earned {{$gain_points}} points, total {{$collect_points_value}}</span>
+                    </div>
+                @endif
+            </li>
+
+            <li>
+                @if ( count( $data['setupList']['order_setting_key']) > 0 )
+                   
+                    <span class="uk-text-bold">
+                        KEY {{$currency}}
+                    </span>
+                    <span>
+                        <div class="uk-inline">
+                            <button uk-icon="triangle-right" type="button"></button>
+                            <div class="uk-overflow-auto uk-height-medium" uk-dropdown="mode: click; pos: right-top">
+
+                                @include('home.partial.settingKeyPartial', [ 'setting_key' => $data['setupList']['order_setting_key'] ])
+                               
+                            </div>
+                        </div>
+                    </span>
+                    <span class="uk-align-right">
+                        {{$data['setupList']['order_setting_key_total']}}
+                    </span>
+                @endif
+               
+            </li>
+
+            <li>
+                @if ( $data['setupList']['order_sub_total'] > 0 )
+                    <span class="uk-text-bold">SUB TOTAL {{$currency}}</span>
+                    <span class="uk-align-right">{{CurrencyHelper::Format($data['setupList']['order_sub_total'])}}</span>
+                @endif
+            </li>
+
+            <li>
+                @if ( $data['setupList']['order_sub_total'] > 0)
+                    <span class="uk-text-bold">VAT %</span>
+                    <span uk-icon="triangle-right"></span> {{ MathHelper::FloatRoundUp( collect($data['settingModel']->setting_vat)->where('default', 0)->sum('rate'), 2 ) }} 
+                    <span uk-icon="triangle-up"></span> {{ MathHelper::FloatRoundUp( $data['setupList']['stock_vat_rate_total'], 2 ) }}
+                    
+                    
+                    <span class="uk-align-right">
+                        <span uk-icon="triangle-right"></span>{{ MathHelper::FloatRoundUp($data['setupList']['order_vat_amount_total'], 2) }}
+                        <span uk-icon="triangle-up"></span>{{ MathHelper::FloatRoundUp( $data['setupList']['stock_vat_amount_total'], 2 ) }}
+                    </span>
+                    
+                @endif
+            </li>
+
+            <li>
+                @if ( $data['setupList']['order_price_total'] > 0 )
+                    <span class="uk-text-bold">TOTAL {{$currency}}</span>
+                    <span class="uk-align-right uk-text-bold">{{CurrencyHelper::Format($data['setupList']['order_price_total'])}}</span>
+                @endif
+            
+            </li>
 
             
-        <div>
-            @if ( $data['setupList']['receipt']['subTotal'] > 0 )
-                <span class="uk-text-bold">SUB TOTAL {{$currency}}</span>
-                @include('home.partial.settingKeyPartial', [ 'setting_key' => $data['setupList']['order_setting_key'] ])
-                <span>{{CurrencyHelper::Format($data['setupList']['receipt']['subTotal'])}}</span>
-            @endif
-        </div>
 
-        <div>
-            @if ( $data['setupList']['receipt']['subTotal'] > 0)
-                <span class="uk-text-bold">VAT %</span>
-                <span uk-icon="triangle-right"></span> {{ MathHelper::FloatRoundUp( collect($data['settingModel']->setting_vat)->where('default', 0)->sum('rate'), 2 ) }} 
-                <span uk-icon="triangle-up"></span> {{ MathHelper::FloatRoundUp( $data['setupList']['receipt']['stock_vat_total_rate'], 2 ) }}
-                
-                <span uk-icon="arrow-right"></span>
-                <span>
-                    {{ MathHelper::FloatRoundUp($data['setupList']['receipt']['order_vat_total_amount'], 2) }} |
-                    {{ MathHelper::FloatRoundUp( $data['setupList']['receipt']['stock_vat_total_amount'], 2 ) }}
-                </span>
-                
-            @endif
-        </div>
-
-        <div>
-            @if ( $data['setupList']['receipt']['priceTotal'] > 0 )
-                <span class="uk-text-bold">TOTAL {{$currency}}</span>
-                <span>{{CurrencyHelper::Format($data['setupList']['receipt']['priceTotal'])}}</span>
-            @endif
-           
-        </div>
-
-          
-
-    </div>
+        </ul>
+   </div>
 </form>

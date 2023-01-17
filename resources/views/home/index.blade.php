@@ -50,8 +50,4 @@
 
 </div>
 
-
-
-
-
 @endsection

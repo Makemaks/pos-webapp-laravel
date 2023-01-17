@@ -64,18 +64,19 @@ class StockAPIController extends Controller
                 }
                 
 
-                $this->stockList = Stock::Warehouse('store_id', $this->userModel->store_id)
+                $this->stockList = Stock::Warehouse('warehouse_store_id', $this->userModel->store_id)
                 ->groupBy('stock_id')
-                ->where('warehouse_stock_quantity', '>', 0)
-                ->paginate(9);
+                //->where('warehouse_stock_quantity', '>', 0)
+                ->paginate(24);
     
                 $this->html = view('home.partial.stockPartial', ['data' => $this->Data()])->render();
            }
            elseif ($request->has('action') && $request['action'] == 'showStock' || $request['view'] == "0") {
                 
-                $this->stockList = Stock::Warehouse('stock_store_id', $this->userModel->store_id)
+                $this->stockList = Stock::Warehouse('warehouse_store_id', $this->userModel->store_id)
                 ->groupBy('stock_id')
-                ->where('warehouse_stock_quantity', '>', 0);
+                //->where('warehouse_stock_quantity', '>', 0)
+                ->paginate(24);
     
             if ($request->has('view')) {
                     $this->stockList = $this->stockList->orWhere('stock_merchandise->stock_name', 'like', '%'.$request['value'].'%');
@@ -161,7 +162,8 @@ class StockAPIController extends Controller
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
-
+        $this->storeModel = Store::find($this->userModel->store_id);
+        
     }
 
     
@@ -175,7 +177,8 @@ class StockAPIController extends Controller
             'orderList' => $this->orderList,
             'settingModel' => $this->settingModel,
             'userList' => $this->userList,
-            'setupList' => $this->setupList
+            'setupList' => $this->setupList,
+            'storeModel' => $this->storeModel
         ];
     }
 }

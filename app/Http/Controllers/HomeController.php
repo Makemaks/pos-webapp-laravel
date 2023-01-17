@@ -65,6 +65,8 @@ class HomeController extends Controller
       
         $this->settingModel->setting_key = $settingModel->setting_key;
 
+        //$a = Stock::paginate(20);
+
         $this->stockList = Stock::Warehouse('warehouse_store_id', $this->userModel->store_id)
         ->groupBy('stock_id')
         //->where('warehouse_stock_quantity', '>', 0)

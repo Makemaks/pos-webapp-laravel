@@ -79,17 +79,11 @@ class HomeAPIController extends Controller
             $this->orderList = Receipt::Order('order_store_id', $this->userModel->store_id)
             ->orderByDesc('order_id')
             ->groupBy('order_id')
-            ->paginate(20);
+            ->paginate(24);
            
             $this->html = view('order.partial.indexPartial', ['data' => $this->Data()])->render();
         }
         
-       
-      
-
-       
-    
-    
     
         return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
     }

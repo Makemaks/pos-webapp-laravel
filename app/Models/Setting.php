@@ -14,6 +14,7 @@ use App\Models\Expertise;
 use App\Models\User;
 
 use App\Helpers\MathHelper;
+
 use App\Helpers\CurrencyHelper;
 use Carbon\Carbon;
 
@@ -521,51 +522,60 @@ class Setting extends Model
     //session and grand total
     public static function SettingKey($setupList, $setting_key_list){
 
+        $count = 0;
+
         if (count( $setting_key_list ) > 0) {
             
+              //$setting_key = collect($setting_key_list)->collapse()->where('setting_key_group', $value['setting_key_group']);
+
+            if ($setupList['order_sub_total']) {
+                $setupList['stock_price_processed'] = $setupList['order_sub_total'];
+            }
+
+            //$setting_key = collect($setting_key_list)->collapse()->where('setting_key_group', $value['setting_key_group']);
            
-            $setting_key_processed = [];
-            $setting_key['-'] = 0;
-            $setting_key['+'] = 0;
-            $setting_key_list = collect($setting_key_list)->collapse()->where('setting_key_group', 2);
+            foreach ( $setting_key_list as $key => $value) {
 
-            foreach ($setting_key_list as $key => $value) {
+                $value = head($value);
+                $setting_key_type = KeyHelper::Type()[ $value['setting_key_group'] ][ $value['setting_key_type'] ];
 
-                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('VOUCHER')) {
-                    //$data['setupList']['order_setting_key'] = Setting::SettingOffer($value['value']);
-                   $setting_key['-'] = $setting_key['-'] + $value['value'];
+                /*  
+                $setting_key_value = collect($settingModel->setting_key)->where('setting_key_group', $value['setting_key_group'] )
+                ->where('setting_key_type', $value['setting_key_type'] )
+                ->first()['value']; */
+                if ( Str::contains( $setting_key_type, '%') || Str::contains( $setting_key_type, '+') || Str::contains( $setting_key_type, '-')) {
+
+                    if($count == 0){
+                       $setupList['setting_key_amount_total'] = $value['value'];
+                    }
+                    else{
+
+                        if( Str::contains( $setting_key_type, '%') ){
+                            $setting_key_amount = MathHelper::VAT($value['value'], $setupList['stock_price_processed']);
+                            $value['value'] =  $setting_key_amount;
+                        }
+                        
+                        if ( Str::contains($setting_key_type, '+' ) ) {
+                            $setupList['setting_key_amount_total'] = $setupList['setting_key_amount_total'] + $value['value'];
+                            $setupList['stock_price_processed'] = $setupList['stock_price_processed'] + $value['value'];
+                        }
+                        elseif( Str::contains( $setting_key_type, '-' ) ){
+                            $setupList['setting_key_amount_total'] = $setupList['setting_key_amount_total'] + $value['value'];
+                            $setupList['stock_price_processed'] = $setupList['stock_price_processed'] + $value['value'];
+                        }
+
+                    }
+
                 }
                 
-                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('- AMOUNT')) {
-                   $setting_key['-'] = $setting_key['-'] - $value['value'];
-                }
-
-                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('+ AMOUNT')) {
-                   $setting_key['+'] = $setting_key['+'] + $value['value'];
-                }
-
-                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('- %')) {
-                   $setting_key['-'] = $setting_key['-'] - MathHelper::VAT($value['value'], $setupList['order_sub_total']);
-                }
-
-                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('+ %')) {
-                   $setting_key['+'] = $setting_key['+'] + MathHelper::VAT($value['value'], $setupList['order_sub_total']);
-                }
-
-                if ($value['setting_key_type'] == collect(KeyHelper::Transaction())->search('DELIVERY')) {
-                   $setting_key['+'] = $setting_key['+'] + $value['value'];
-                }
+                $count++;
                 
             }
+
 
         }
        
         
-       
-        foreach ($setting_key as $setting_key_key => $setting_key_item) {
-            $setupList['setting_key_total'] = $setupList['setting_key_total'] + $setting_key_item;
-        }
-
         return $setupList;
 
     }
@@ -644,7 +654,7 @@ class Setting extends Model
        
         $setupList['stock_setting_offer'] = $stockOffer;
         $setupList['stock_setting_offer_total'] = collect($settingCurrentSettingOfferType)->sum('discount_value');
-        $setupList['stock_price_offer'] = $setupList['stock_price_offer'] - $setupList['stock_setting_offer_total'];
+        $setupList['stock_price_processed'] = $setupList['stock_price'] - $setupList['stock_setting_offer_total'];
         return $setupList;
 
     }

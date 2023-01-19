@@ -4,22 +4,22 @@
     use App\Helpers\MathHelper;
     use App\Models\Setting;
  
+    
 @endphp
 
-@if ($setting_key > 0)
-   
-                
-    @foreach ($setting_key as $setting_key_key => $setting_key_item)
+@if ( $data['setupList']['setting_key'] > 0)
+         
+    @foreach ( $data['setupList']['setting_key'] as $setting_key_key => $setting_key_item)
         @foreach ($setting_key_item as $setting_key_item_key => $setting_key_item_item)
-            <div>
+            <div class="uk-text-small">
 
                 <input id="setting-key-{{$setting_key_key}}" class="uk-checkbox" type="checkbox"  onclick="SettingKey('@isset($stockItem['stock_id']) {{$stockItem['stock_id']}} @endisset', {{$setting_key_item_key}}')">
                 
                 <label for="setting-key-{{$setting_key_key}}">
                     <span>
-                        {{ KeyHelper::Type()[ $setting_key_item_item['setting_key_group'] ][$setting_key_item_item['setting_key_type']]}}
+                        {{ KeyHelper::Type()[ $setting_key_item_item['setting_key_group'] ][$setting_key_item_item['setting_key_type']] }}
                     </span>
-                    <span class="uk-text-bold uk-margin-left">{{$setting_key_item_item['value']}}</span>
+                    <span class="uk-text-bold">{{$setting_key_item_item['value']}}</span>
                 </label>
             
             </div>

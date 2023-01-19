@@ -82,7 +82,7 @@
                                 Session::put('user-session-'.Auth::user()->user_id.'.setupList', $data['setupList']);
             
                                 $cartList = Session::pull('user-session-'.Auth::user()->user_id.'.cartList');
-                                /* $cartList[$loop->index]['stock_price'] = $data['setupList']['stock_price_offer']; */
+                                /* $cartList[$loop->index]['stock_price'] = $data['setupList']['stock_price_total']; */
                                 Session::put('user-session-'.Auth::user()->user_id.'.cartList', $cartList);
 
                                 $gain_points = collect($stockItem['stock_setting_offer'])->where('gain_points')->sum();
@@ -113,12 +113,8 @@
                                                 
                                             @endif
 
-                                            @php
-                                                $stock_vat_total = MathHelper::VAT(collect($data['setupList']['stock_setting_vat'])->sum('rate'), $data['setupList']['stock_price_offer'] );
-                                                $stock_price_processed = $data['setupList']['stock_price_offer'] + $stock_vat_total;
-                                            @endphp
-
-                                            <span>{{MathHelper::FloatRoundUp( $stock_price_processed, 2)}}</span>
+                                          
+                                            <span>{{MathHelper::FloatRoundUp( $data['setupList']['stock_price_total'], 2)}}</span>
                                            
                                             
                                         </span>
@@ -154,7 +150,7 @@
             </li>
 
             <li>
-                @if ( count( $data['setupList']['order_setting_key']) > 0 )
+                @if ( count( $data['setupList']['order_setting_key']) > 0 && $data['setupList']['setting_key_amount_total'])
                    
                     <span class="uk-text-bold">
                         KEY {{$currency}}
@@ -164,7 +160,7 @@
                             <button uk-icon="triangle-right" type="button"></button>
                             <div class="uk-overflow-auto uk-height-medium" uk-dropdown="mode: click; pos: right-top">
 
-                                @include('home.partial.settingKeyPartial', [ 'setting_key' => $data['setupList']['order_setting_key'] ])
+                                @include('home.partial.settingKeyPartial')
                                
                             </div>
                         </div>
@@ -185,13 +181,13 @@
 
             <li>
                 @if ( $data['setupList']['order_sub_total'] > 0)
+
                     <span class="uk-text-bold">VAT %</span>
                     <span uk-icon="triangle-right"></span> {{ MathHelper::FloatRoundUp( collect($data['settingModel']->setting_vat)->where('default', 0)->sum('rate'), 2 ) }} 
                     <span uk-icon="triangle-up"></span> {{ MathHelper::FloatRoundUp( $data['setupList']['stock_vat_rate_total'], 2 ) }}
                     
-                    
                     <span class="uk-align-right">
-                        <span uk-icon="triangle-right"></span>{{ MathHelper::FloatRoundUp($data['setupList']['order_vat_amount_total'], 2) }}
+                        <span uk-icon="triangle-right"></span>{{ MathHelper::FloatRoundUp( $data['setupList']['order_vat_amount_total'], 2) }}
                         <span uk-icon="triangle-up"></span>{{ MathHelper::FloatRoundUp( $data['setupList']['stock_vat_amount_total'], 2 ) }}
                     </span>
                     
@@ -206,8 +202,7 @@
             
             </li>
 
-            
-
         </ul>
    </div>
+
 </form>

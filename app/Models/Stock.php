@@ -369,7 +369,7 @@ class Stock extends Model
         $stock_price = MathHelper::FloatRoundUp(Stock::StockPriceDefault($stockInitialize['stock_price'], $setupList), 2);
 
         $setupList['stock_price'] = $stock_price;
-        $setupList['stock_price_offer'] = $stock_price;
+        $setupList['stock_price_total'] = $stock_price;
 
         $setupList['stock_price'] = MathHelper::FloatRoundUp(Stock::StockPriceCustomer($stockInitialize['stock_price']), 2);
         //check if customer has price
@@ -383,19 +383,39 @@ class Stock extends Model
         if ( count($stockInitialize['stock_setting_offer']) > 0) {
             //find discount
             $setupList = Setting::SettingOffer($stockInitialize, $setupList);
-              
-            /* $stockPriceMin = Stock::StockPriceMin($settingCurrentOffer);
-            $discount_value = Setting::SettingOffer( $stockPriceMin, $setupList['stock']['stock_price'] );
-            $setupList['stock']['stock_price_offer'] = $discount_value - Stock::StockPriceMin($stockOffer); */
         }
 
         if ( count($stockInitialize['stock_setting_key']) > 0 ) {
             $setupList = Setting::SettingKey( $setupList, $stockInitialize['stock_setting_key'] );
+           // $setupList['stock_setting_key_total'] = $setupList['stock_setting_key_total'] + $setupList['setting_key_amount_total'];
+            $setupList['setting_key'] = $stockInitialize['stock_setting_key'];
+            $setupList['stock_setting_key'] = $stockInitialize['stock_setting_key'];
+           
         }
         
+
+        
+       $setupList['stock_price_processed'] = Stock::StockPriceQuantity( $setupList['stock_price_processed'], $stockInitialize['stock_quantity']);
+      
+
        if ( count($stockInitialize['stock_setting_vat']) > 0 ) {
+            
             $setupList['stock_setting_vat'] = Stock::StockVAT($stockInitialize['stock_setting_vat']); //vat on this item
+            $setupList['stock_vat_rate'] = collect($setupList['stock_setting_vat'])->sum('rate');
+            $setupList['stock_vat_rate_total'] = $setupList['stock_vat_rate_total'] + $setupList['stock_vat_rate'];
+            $stock_vat_amount_total = MathHelper::VAT($setupList['stock_vat_rate'], $setupList['stock_price_processed'] );
+            $setupList['stock_vat_amount_total'] = $setupList['stock_vat_amount_total'] + $stock_vat_amount_total;
+       
+        }else{
+
+            $setupList['stock_vat_rate'] = collect($data['settingModel']->setting_vat)->where('default', 0)->first()['rate'];
+            $stock_vat_amount_total = MathHelper::VAT($setupList['stock_vat_rate'], $setupList['stock_price_processed'] );
+            $data['setupList']['order_vat_amount_total'] = $data['setupList']['order_vat_amount_total'] + $stock_vat_amount_total;
        }
+
+
+       $setupList['stock_price_total'] = $setupList['stock_price_processed'] + $stock_vat_amount_total;
+     
        
         return $setupList;
     }

@@ -39,7 +39,7 @@ class UserFactory extends Factory
             'user_type' => $this->faker->numberBetween($min = 0, $max = 3),
             'user_is_disabled' => 0,
             'user_is_notifiable' => 1,
-            'email' => $this->faker->safeEmail,
+            'email' => 'test@test.com',
             'email_verified_at' => now(),
             'password' => bcrypt('test1234'), // password
             'user_auth_check' => $user_auth_check,

@@ -103,7 +103,7 @@ class DashboardController extends Controller
         $this->eat_in_eat_out = $datePeriod['eat_in_eat_out'];
 
         $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)
-        ->whereBetween('order.created_at', [$datePeriod['started'], $datePeriod['ended']])
+        // ->whereBetween('order.created_at', [$datePeriod['started'], $datePeriod['ended']])
         ->limit(10)
         ->get();
 

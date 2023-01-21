@@ -164,11 +164,11 @@ class Stock extends Model
 
          foreach ($data['settingModel']->setting_stock_set as $key => $value) {
 
-         
 
             if ($value['type'] == $type) {
 
                 $quantity = 0;
+                $totalCostPrice = 0;
 
                 foreach ($data['orderList'] as $orderList) {
 
@@ -182,6 +182,10 @@ class Stock extends Model
                             $price = json_decode($orderList->receipt_stock_price, true);
                             $totalPrice = $totalPrice + head($price)['price'] * $orderList->receipt_quantity;
                             $quantity = $quantity + $orderList->receipt_quantity;
+
+                            if($quantity != 0)
+                            $totalCostPrice = $totalCostPrice + $price * $quantity;
+
                             
                         }
 

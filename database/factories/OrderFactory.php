@@ -4,6 +4,7 @@
 namespace Database\Factories;
 
 use App\Models\Order;
+use App\Helpers\KeyHelper;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -20,11 +21,23 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
-        for ($i = 0; $i < 5; $i++) {
+        $order_setting_key = Null;
+        $count = $this->faker->numberBetween($min = 1, $max = 5);
+
+        for ($i= 0; $i < $count; $i++) { 
+            
+            $j = $this->faker->numberBetween($min = 0, $max = KeyHelper::Type());
+
             $order_setting_key[$i + 1] = [
-                'ref' => $this->faker->numberBetween($min = 1, $max = 7),
-                'total' => $this->faker->numberBetween($min = 50, $max = 200),
+                "setting_key_group"  => $this->faker->numberBetween($min = 0, $max = 4),
+                "setting_key_type" => $this->faker->numberBetween( $min = 0, $max = count(KeyHelper::Type()[ $j ]) ), 
+                "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
+                "name"=> $this->faker->word,
+                "status" => $this->faker->numberBetween($min = 0, $max = 1),
+                "description" => '',
+                "image" => ''
             ];
+
         }
 
         $vat = $this->faker->randomElement($array = array (NULL, $this->faker->numberBetween($min = 1, $max = 3) ));

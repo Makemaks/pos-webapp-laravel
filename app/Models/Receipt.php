@@ -22,12 +22,14 @@ class Receipt extends Model
     public $timestamps = true;
 
     protected $attributes = [
-        "receipt_setting_key" => '{}'
+        "receipt_setting_key" => '{}',
+        "receipt_stock_price" => '{}'
     ];
 
     protected $casts = [
       
-        "receipt_setting_key" => 'array'
+        "receipt_setting_key" => 'array',
+        "receipt_stock_price" => 'array',
     ];
 
     public static function List($column,  $filter){

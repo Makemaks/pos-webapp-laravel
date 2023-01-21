@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 use App\Models\Receipt;
+use App\Helpers\KeyHelper;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -18,6 +19,25 @@ class ReceiptFactory extends Factory
      */
     public function definition()
     {
+
+        $receipt_setting_key = Null;
+        $count = $this->faker->numberBetween($min = 1, $max = 5);
+
+        for ($i= 0; $i < $count; $i++) { 
+            
+            $j = $this->faker->numberBetween($min = 0, $max = KeyHelper::Type());
+
+            $receipt_setting_key[$i + 1] = [
+                "setting_key_group"  => $this->faker->numberBetween($min = 0, $max = 4),
+                "setting_key_type" => $this->faker->numberBetween( $min = 0, $max = count(KeyHelper::Type()[ $j ]) ), 
+                "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
+                "name"=> $this->faker->word,
+                "status" => $this->faker->numberBetween($min = 0, $max = 1),
+                "description" => '',
+                "image" => ''
+            ];
+
+        }
 
 
         $count = 1;
@@ -45,7 +65,7 @@ class ReceiptFactory extends Factory
             'receipt_user_id' => $this->faker->numberBetween($min = 1, $max = 2),
             'receipt_stock_price' => $receipt_stock_price,
             'receipt_order_id' => $this->faker->numberBetween($min = 1, $max = 10),
-            'receipt_setting_key' => $this->faker->numberBetween($min = 1, $max = 5),
+            'receipt_setting_key' => $receipt_setting_key,
             'receipt_setting_pos_id' => $this->faker->numberBetween($min = 1, $max = 5)
         ];
     }

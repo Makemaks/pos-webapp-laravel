@@ -33,8 +33,8 @@
                         <label class="uk-form-label" for="form-stacked-text">{{Str::upper($stockkey)}}</label>
                         <select class="uk-select" id="form-stacked-select" name="form[setting_key][{{$key}}][{{$stockkey}}]">
                             <option value="" selected disabled>SELECT ...</option>
-                            @if ($data['settingModel']->setting_key_type)
-                                @foreach ($data['settingModel']->setting_key_type  as $key_setting_key_type  => $item_setting_key_type)
+                            @if ($data['settingModel']->setting_key)
+                                @foreach ($data['settingModel']->setting_key  as $key_setting_key_type  => $item_setting_key_type)
                                         
                                     <option value="{{$key_setting_key_type}}" @if($key_setting_key_type == $stock) selected @endif>
                                         {{$item_setting_key_type}}
@@ -74,7 +74,7 @@
 @endforeach
 
 
-@if (Session::get('setting_finalise_key') == 'cash')
+@if (Session::get('setting_setting_key') == 'cash')
 
     @php
         $setting_key_type = collect($data['settingModel']->setting_key)->where('setting_key_type', 1);

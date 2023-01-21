@@ -26,8 +26,7 @@ class Setting extends Model
 
     protected $attributes = [
 
-        'setting_logo' => '{}',
-
+      
 
         'setting_stock_set' => '{
             "1": {
@@ -40,7 +39,7 @@ class Setting extends Model
         'setting_stock_label' => '{
 
             "SHELF": {
-                "CUSTOM TEMPLATES": [],
+                "CUSTOM TEMPLATES": {},
                 "DEFAULT TEMPLATES": {
                     "A4": "A4 (24 labels [3x8], 60x30mm) - 210mm x 297mm",
                     "GK420t": "GK420t (Single label feed, 48.5 x 35mm) - 49mm x 35mm",
@@ -56,7 +55,7 @@ class Setting extends Model
                 }
             },
             "STOCK": {
-                "CUSTOM TEMPLATES": [],
+                "CUSTOM TEMPLATES": {},
                 "DEFAULT TEMPLATES": {
                     "DK-1201": "DK-1201 - 90mm x 29mm",
                     "SLP-MRL": "SLP-MRL - 51mm x 28mm",
@@ -103,51 +102,50 @@ class Setting extends Model
         }', */
 
 
-       
-        'setting_expense_type' => '{
-            "1": {
-                "budget": "",
-                "type": ""
-            }
+        'setting_expense_budget' => '{}',
+        'setting_expense_type' => '{}',
+
+
+        'setting_pos' => '{
+            "name":"",
+            "cash":"0",
+            "credit":"0"
         }',
 
 
-        'setting_pos' => '{"name":"","cash":"0","credit":"0"}',
-
-
-        'setting_receipt' => '{
+       'setting_receipt' => '{
             "1": {
                 "default": 1,
                 "sig strip": {
-                    "",
-                    "",
-                    "Employee / Manager RRsignature",
-                    ".......................John"
+                    "1":"",
+                    "2":"",
+                    "3":"Employee / Manager RRsignature",
+                    "4":".......................John"
                 },
                 "vat number": "VAT No: 787655678",
                 "bottom message": {
-                    "Thank You For Your Custom",
-                    "See You Soon",
-                    "MERRY CHRISTMAS",
-                    "www.theepsomclub.com"
+                    "1":"Thank You For Your Custom",
+                    "2":"See You Soon",
+                    "3":"MERRY CHRISTMAS",
+                    "4":"www.theepsomclub.com"
                 },
                 "receipt header": {
-                    "The TESTING CLUB",
-                    "Tel: 061 319SS66  VAT: GB3158927S",
-                    "41-43 Chruch Street",
-                    "Epsom KT17 4QW"
+                    "1":"The TESTING CLUB",
+                    "2":"Tel: 061 319SS66  VAT: GB3158927S",
+                    "3":"41-43 Chruch Street",
+                    "4":"Epsom KT17 4QW"
                 },
                 "report message": {
-                    "",
-                    "",
-                    "",
-                    ""
+                    "1":"",
+                    "2":"",
+                    "3":"",
+                    "4":""
                 },
                 "commercial message": {
-                    "The Club is Open 1000-2200 Daily",
-                    "",
-                    "",
-                    ""
+                    "1":"The Club is Open 1000-2200 Daily",
+                    "2":"",
+                    "3":"",
+                    "4":""
                 }
             }
         }',
@@ -239,7 +237,8 @@ class Setting extends Model
                 "integer": {
                     "set_menu":"",
                     "quantity":"",
-                    "stock_cost":""
+                    "stock_price":"",
+                    "priority":""
                 },
 
                 "boolean": {
@@ -300,67 +299,45 @@ class Setting extends Model
 
         'setting_key' => '{
             "1": {
-                "group": "",
+                "setting_key_group": "",
+                "setting_key_type": "",
+                "name": "",
                 "status": "",
                 "description": "",
                 "value": "",
-                "group": "",
-                "setting_key_type": ""
+                "image": ""
             }
         }',
 
-        'setting_key_type' => '{}',
-
         'setting_group' => '{
-            "country": "",
-            "currency": {},
+            "default_country": "",
+            "default_currency": {},
             "logo": {},
-            "stock_cost_group": "",
-            "special_stock_cost_group": ""
+            "stock_price_group": "",
+            "special_stock_price_group": ""
         }',
 
         'setting_customer' => '{
-            "1": {
-                "name": "",
-                "loyalty_type": "",
-                "customer_stock_cost": "",
-                "customer_credit": "",
-                "customer_print": {},
-                "customer_marketing": {},
-                "points":{
-                    is_subtotal:"",
-                    is_whole:"",
-                    All products  
-	
-                    Selective Item 1  
-	
-                    Selective Item 2  
-	
-                    Selective Item 3  
-	
-                    Selective Item 4  
-	
-                    Award points on whole pounds only?
-
-                }
-            }
+            "customer_stock_price": "",
+            "customer_credit": "",
+            "customer_print": {},
+            "customer_marketing": {}
         }',
-        'setting_stock_cost' => '{
+        
+        'setting_stock_price' => '{
             "1": {
                 "name": "",
                 "description": ""
             }
         }',
 
+        'setting_building' => '{}'
     ];
 
     protected $casts = [
 
-       
-
-        'setting_logo' => 'array',
-
-        'setting_stock_cost' => 'array',
+        'setting_stock_set' => 'array',
+        'setting_stock_price' => 'array',
         'setting_stock_set' => 'array',
 
         'setting_stock_label'  => 'array',
@@ -377,7 +354,7 @@ class Setting extends Model
         'setting_vat' => 'array',
 
 
-       
+        'setting_expense_budget' => 'array',
         'setting_expense_type' => 'array',
 
         'setting_pos' => 'array',
@@ -398,11 +375,13 @@ class Setting extends Model
         "setting_api" => 'array',
 
         'setting_key' => 'array',
-        'setting_key_type' => 'array',
+       
         'setting_group' => 'array',
         'setting_customer' => 'array',
         'setting_preset_message' => 'array',
+        'setting_building' => 'array',
         /* 'setting_price_level_scheduler' => 'array' */
+        'setting_building' => 'array',
     ];
 
     public static function SettingTable(){
@@ -533,7 +512,7 @@ class Setting extends Model
 
     public static function SettingKey($setting, $value){
 
-        $key = array_search($value, $setting->setting_key_type);
+        $key = array_search($value, $setting->setting_key);
 
         return collect($setting->setting_key)->where('setting_key_type', $key)->first();
     }
@@ -549,9 +528,12 @@ class Setting extends Model
 
     public static function SettingKeyGroup(){
         return [
-            'finalise', //coupons
-            'status', //one offs
-            'transaction'
+            'finalise',
+            'status',
+            'transaction',
+            'character',
+            'totaliser',
+            'menu'
         ];
     }
 
@@ -560,8 +542,8 @@ class Setting extends Model
 
         //$data['request'] = ['type' => null];
 /*
-        if ($data['request']->session()->has('setting_finalise_key')) {
-            $data['request'] = $data['request']->session()->get('setting_finalise_key');
+        if ($data['request']->session()->has('setting_setting_key')) {
+            $data['request'] = $data['request']->session()->get('setting_setting_key');
         } */
 
 

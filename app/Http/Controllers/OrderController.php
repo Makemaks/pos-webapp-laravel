@@ -91,8 +91,8 @@ class OrderController extends Controller
             return view('order.billIndex', ['data' => $this->Data(), 'tillData' => $tillData]);
         }
 
-        if ($request->session()->has('setting_finalise_key')) {
-            $request->session()->reflash('order_finalise_key');
+        if ($request->session()->has('setting_setting_key')) {
+            $request->session()->reflash('order_setting_key');
             $this->store($request);
         }
 

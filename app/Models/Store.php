@@ -114,7 +114,7 @@ class Store extends Model
     public static function DatePeriod(Request $request)
     {   
         $user_id = null;
-        $started_at = '0000-00-00 00:00:00';
+        $started_at = Carbon::now()->startOfDay()->toDateTimeString();
         $ended_at = Carbon::now()->toDateTimeString();
         $title = '';
         $table = '';
@@ -235,6 +235,7 @@ class Store extends Model
             // searching by user, date or user , date_period
             $request->user_id = $user_id;
             $userModel = User::Person('user_id', $request->user_id)->first();
+
         }
 
         if ($request->date_period) {
@@ -281,6 +282,8 @@ class Store extends Model
                 $started_at = Carbon::now()->startOfQuarter()->subQuarter()->setTime(0, 0, 0)->toDateTimeString();
                 $ended_at = Carbon::now()->endOfQuarter()->subQuarter()->setTime(23, 59, 59)->toDateTimeString();
             }
+
+            
         }
 
         if ($request->ended_at && $request->started_at) {
@@ -292,8 +295,8 @@ class Store extends Model
       
         $userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
 
-        $orderList =  Store::Order('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])
-        ->limit(10)
+        $orderList =  Store::Order('store_id',  $userModel->store_id)
+        ->whereBetween('order.created_at', [$started_at, $ended_at])
         ->orWhere('user_id', $user_id)
         ->get();
         

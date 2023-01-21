@@ -16,8 +16,8 @@ use App\Helpers\DateTimeHelper;
 
         $storeModel = Store::Account('store_id', $userModel->store_id)->first();
         $storeList = Store::List('root_store_id', $storeModel->store_id)
-            ->orWhere('store_id', $storeModel->store_id)
-            ->get();
+        ->orWhere('store_id', $storeModel->store_id)
+        ->get();
     }
 
     $count = 0;

@@ -216,12 +216,12 @@ function addRefund(element){
 
 }
 
-function settingFinaliseKey(setting_finalise_key){
+function settingFinaliseKey(setting_setting_key){
    
     var cartCountID = document.getElementById('cartCountID'); 
 
    if (cartCountID.innerText > 0) {
-        if (setting_finalise_key == 'cancel') {
+        if (setting_setting_key == 'cancel') {
             document.getElementById('payButtonID').hidden = false;
             document.getElementById('cancelButtonID').hidden = true;
             document.getElementById('confirmButtonID').hidden = true;
@@ -231,7 +231,7 @@ function settingFinaliseKey(setting_finalise_key){
                 url:"/cart-api",
                 method: 'GET',
                 data: {
-                    setting_finalise_key: setting_finalise_key
+                    setting_setting_key: setting_setting_key
                 },      
                 success:function(data){
                     document.getElementById('contentID').innerHTML = data['html']; 

@@ -32,14 +32,30 @@ class Order extends Model
 
     protected $attributes = [
 
-        "order_setting_vat" => '{}',
-        "order_status" => 0,
-        "order_finalise_key" => '{}'
+        "order_setting_vat" => '{
+            "1": {
+                "name": "",
+                "rate": "",
+                "default": ""
+            }
+        }',
+        
+        "order_setting_key" => '{
+            "1": {
+                "setting_key_group": "",
+                "setting_key_type": "",
+                "name": "",
+                "status": "",
+                "description": "",
+                "value": "",
+                "image": ""
+            }
+        }'
 
     ];
 
     protected $casts = [
-        "order_finalise_key" => 'array',
+        "order_setting_key" => 'array',
         "order_setting_vat" => 'array'
     ];
 
@@ -135,7 +151,6 @@ class Order extends Model
 
     public static function Total($sessionCartList)
     {
-
         $totalPrice = 0;
 
         foreach ($sessionCartList as $cartValue => $cartItem) {
@@ -241,7 +256,7 @@ class Order extends Model
         if ($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'finaliseKeyList')) {
             if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'finaliseKeyList') ) > 0) {
                 $orderData += [
-                    'order_finalise_key' => $request->session()->get('order_finalise_key')
+                    'order_setting_key' => $request->session()->get('order_setting_key')
                 ];
             }
         }
@@ -249,7 +264,7 @@ class Order extends Model
         if ($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'offerList')) {
             if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'offerList') ) > 0) {
                 $orderData += [
-                    'order_offer' => $request->session()->get('order_finalise_key')
+                    'order_offer' => $request->session()->get('order_setting_key')
                 ];
             }
         }

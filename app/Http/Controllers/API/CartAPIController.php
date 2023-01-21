@@ -72,15 +72,15 @@ class CartAPIController extends Controller
             return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
         }
 
-        elseif($request->has('setting_finalise_key')){
-            $request->session()->flash('setting_finalise_key', $request['setting_finalise_key']);
+        elseif($request->has('setting_setting_key')){
+            $request->session()->flash('setting_setting_key', $request['setting_setting_key']);
             
             $this->html = view('home.partial.settingFinaliseKeyPartial', ['data' => $this->Data()])->render();
             return response()->json(['success'=>'Got Simple Ajax Request.', 'html' => $this->html]);
         }
         //voucher
-        elseif ($request->has('searchInputID') && $request->session()->has('setting_finalise_key')) {
-            $request->session()->reflash('setting_finalise_key');
+        elseif ($request->has('searchInputID') && $request->session()->has('setting_setting_key')) {
+            $request->session()->reflash('setting_setting_key');
             $request->session()->flash('searchInputID', $request['searchInputID']);
 
             $this->html = view('home.partial.settingFinaliseKeyPartial', ['data' => $this->Data()])->render();
@@ -139,7 +139,7 @@ class CartAPIController extends Controller
         $action = '';
 
         //add product to list
-        if ($request->has('searchInputID') && $request->session()->has('setting_finalise_key') == false) {
+        if ($request->has('searchInputID') && $request->session()->has('setting_setting_key') == false) {
 
              $this->stockModel = Stock::
              where('stock_merchandise->outer_barcode', $request['searchInputID'])

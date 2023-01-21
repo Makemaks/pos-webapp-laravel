@@ -76,6 +76,7 @@ class DashboardController extends Controller
 
     private function init()
     {
+      
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
            
@@ -115,14 +116,12 @@ class DashboardController extends Controller
         $accountList = $this->accountList;
 
         $this->expenseList = Expense::User()
-            ->whereIn('expense_user_id', $accountList->pluck('user_id'))
-            ->get();
+        ->whereIn('expense_user_id', $accountList->pluck('user_id'))
+        ->get();
 
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
 
         $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->get();
-
-        
 
         // If its export PDF / CSV
         if ($request->fileName) {

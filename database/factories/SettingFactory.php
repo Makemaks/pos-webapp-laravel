@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Helpers\ConfigHelper;
 use App\Helpers\CountryHelper;
+use App\Helpers\KeyHelper;
 use App\Models\Setting;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -115,7 +116,7 @@ class SettingFactory extends Factory
                 "integer" => [
                     "set_menu" => $this->faker->numberBetween($min = 1, $max = 5),
                     "quantity" => $this->faker->numberBetween($min = 1, $max = 200),
-                    "stock_cost" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
+                    "stock_price" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
                 ],
 
                 "boolean" => [
@@ -154,49 +155,38 @@ class SettingFactory extends Factory
                 "link" => $this->faker->randomElement($array = array (NULL,$this->faker->url)),
                 "default" => 1,
             ];
-
-           
         }
 
+      
+
+        $count = 0;
+        for ($i= 0; $i < count(Setting::SettingKeyGroup()); $i++) { 
+            
+            foreach (KeyHelper::Type()[$i] as $key => $value) {
+                $count++;
+                $setting_key[$count] = [
+                    "setting_key_group"  => $i,
+                    "setting_key_type" => $key, 
+                    "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
+                    "name"=> $this->faker->word,
+                    "status" => $this->faker->numberBetween($min = 0, $max = 1),
+                    "description" => '',
+                    "image" => ''
+                ];
+            }
+    
+        }
+
+        
         for ($i=0; $i < 20; $i++) { 
             $setting_stock_set[$i+1] = [
                 "name"=> $this->faker->word,
                 "code"=> $this->faker->numberBetween($min = 1111, $max = 9999),
-                "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::plu::brand
-            ];
-
-
-            $a = $this->faker->numberBetween($min = 1, $max = 7);
-            if ($a == 1) {
-                $value =  $this->faker->randomElement($array = array('5', '10', '20', '100'));
-            } else {
-                $value = null;
-            }
-
-            $setting_key[$i + 1] = [
-                "status" => $this->faker->numberBetween($min = 0, $max = 1),
-                "description" => $this->faker->sentence(),
-                "value" => $value,
-                "setting_key_type" => $this->faker->numberBetween($min = 1, $max = 7),
+                "type"=> $this->faker->numberBetween($min = 0, $max = 3) //category::group::brand::plu
             ];
         }
 
-
-
-        $array = [
-            "CASH",
-            "CREDIT",
-            "NO FUNCTION",
-            "ACCOUNT",
-            "EFT",
-            "HOTEL_TRANSFER",
-            "VOUCHER",
-        ];
-
-        for ($i = 0; $i < count($array); $i++) {
-            $setting_key_type[$i + 1] = $array[$i];
-        }
-
+        
         for ($i=0; $i < count(ConfigHelper::Nutrition()); $i++) { 
             $stock_nutrition[$i + 1] = ConfigHelper::Nutrition()[$i]['name'];
         }
@@ -207,34 +197,58 @@ class SettingFactory extends Factory
     
         $isoCount = count(CountryHelper::ISO());
         $setting_group = [
-            'default_country' => $this->faker->numberBetween($min = 0, $max = $isoCount - 1)
+            'default_country' => '',
+            'default_currency' => [],
+            'logo' => [],
+            'special_stock_price_group' => 2,
+            'stock_price_group' => 5 //column
         ];
 
-       
+        $setting_stock_price = [
+            'name' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+            "description" =>  $this->faker->sentence,
+        ];
+
         for ($i = 0; $i < $this->faker->numberBetween($min = 1, $max = 10); $i++) {
             $customer_print[$i + 1] = $this->faker->numberBetween($min = 1, $max = 10);
         }
-        $customer_stock_cost[$this->faker->numberBetween($min = 1, $max = 5)] = [$this->faker->numberBetween($min = 1, $max = 10)];
+       
+      
+        $customer_stock_price[$this->faker->numberBetween($min = 1, $max = 5)] = [$this->faker->numberBetween($min = 1, $max = 10)];
         $setting_customer = [
-            "customer_stock_cost" => $customer_stock_cost,
+            "customer_stock_price" => $customer_stock_price,
             "customer_credit" =>  $this->faker->numberBetween($min = 0, $max = 200),
             "customer_print" => $customer_print, //ConfigHelper::SettingCustomerPrint(),
             "customer_marketing" => $this->faker->numberBetween($min = 0, $max = 1),
         ];
 
-        $setting_building = [
-            'address_id' => $this->faker->numberBetween($min = 1, $max = 20),
-            'status' => $this->faker->numberBetween($min = 0, $max = 1),
-            'capacity' =>  $this->faker->numberBetween($min = 20, $max = 100),
-            'name' => $this->faker->word,
-            'description' => $this->faker->sentence,
-            'note'=> [$this->faker->sentence],
-            'room' => [],
-        ];
+        for ($i = 0; $i < 10; $i++) {
+            $setting_preset_message[$i+1] = [
+                "message" => $this->faker->word,
+            ];
+
+            /* $setting_price_level_scheduler[$i+1] = [
+                "time" => $this->faker->dateTimeBetween('1 years', '2 years', $timezone = null)->format('Y-m-d H:i:s'),
+                "price_level" => $this->faker->numberBetween($min = 1, $max = 10),
+            ];
+
+            'setting_price_level_scheduler' => $setting_price_level_scheduler, */
+
+            $setting_building[$i+1] = [
+                'address_id' => $this->faker->numberBetween($min = 1, $max = 20),
+                'status' => $this->faker->numberBetween($min = 0, $max = 1),
+                'capacity' =>  $this->faker->numberBetween($min = 20, $max = 100),
+                'name' => $this->faker->word,
+                'description' => $this->faker->sentence,
+                'note'=> [$this->faker->sentence]
+            ];
+        }
+
+      
 
         return [
             
-            'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 20),
+            'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company', 'Organisation')),
             'setting_api' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
@@ -253,10 +267,13 @@ class SettingFactory extends Factory
             'setting_receipt' => $setting_receipt,
             
             'setting_key' => $setting_key,
-            'setting_key_type' => $setting_key_type,
+            
             'setting_group' => $setting_group,
             'setting_customer' => $setting_customer,
-            'setting_building' => json_encode($setting_building)
+            'setting_stock_tag_group' => $setting_stock_tag_group,
+            'setting_preset_message' => $setting_preset_message,
+            'setting_stock_price' => $setting_stock_price,
+            'setting_building' => $setting_building
            
             
         ];

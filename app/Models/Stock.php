@@ -184,7 +184,7 @@ class Stock extends Model
                             $quantity = $quantity + $orderList->receipt_quantity;
 
                             if($quantity != 0)
-                            $totalCostPrice = $totalCostPrice + $price * $quantity;
+                            $totalCostPrice = $totalCostPrice + head($price)['price'] * $quantity;
 
                         }
 

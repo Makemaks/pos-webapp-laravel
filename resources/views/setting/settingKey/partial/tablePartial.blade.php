@@ -44,7 +44,7 @@
             <div class="uk-form-controls">
                 <select class="uk-select" id="form-horizontal-select" name="form[setting_key][{{$keyItemSettingKey}}]" onchange="IndexSetting()">
                 
-                    <option value="" selected>SELECT ...</option>
+                    <option value="" selected disabled>SELECT ...</option>
                     
                     @foreach (Setting::SettingKeyGroup() as $keySettingKeyGroup =>$valueSettingKeyGroup)
                     

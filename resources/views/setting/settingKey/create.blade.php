@@ -29,7 +29,6 @@
     <div>
         
         @foreach ($data['settingModel']->setting_key as $key => $setting_key)
-        
                 @include('setting.settingKey.partial.tablePartial')
             @break
         @endforeach

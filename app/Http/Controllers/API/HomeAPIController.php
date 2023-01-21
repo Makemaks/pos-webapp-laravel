@@ -79,7 +79,7 @@ class HomeAPIController extends Controller
             $this->orderList = Receipt::Order('order_store_id', $this->userModel->store_id)
             ->orderByDesc('order_id')
             ->groupBy('order_id')
-            ->paginate(24);
+            ->paginate(20);
            
             $this->html = view('order.partial.indexPartial', ['data' => $this->Data()])->render();
         }

@@ -49,4 +49,4 @@
   
 @endphp
 
-@include('receipt.partial.tablePartial')
+{{-- @include('receipt.partial.tablePartial') --}}

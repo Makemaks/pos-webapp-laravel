@@ -67,7 +67,7 @@ class StockAPIController extends Controller
                 $this->stockList = Stock::Warehouse('warehouse_store_id', $this->userModel->store_id)
                 ->groupBy('stock_id')
                 //->where('warehouse_stock_quantity', '>', 0)
-                ->paginate(24);
+                ->paginate(20);
     
                 $this->html = view('home.partial.stockPartial', ['data' => $this->Data()])->render();
            }

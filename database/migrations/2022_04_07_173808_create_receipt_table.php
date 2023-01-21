@@ -19,20 +19,19 @@ return new class extends Migration
             
             $table->bigInteger('receipttable_id');
             $table->string('receipttable_type');
-
-            $table->json('receipt_setting_vat')->nullable(); 
+            $table->json('receipt_stock_price')->nullable(); //customer
+            //$table->json('receipt_setting_vat')->nullable(); 
            
-            $table->float('receipt_stock_cost');
-            $table->json('receipt_discount')->nullable();
+           
 
             $table->smallInteger('receipt_quantity')->default(1); 
-            $table->tinyInteger('receipt_status')->comment('processed::cancelled::refunded')->default(0);
+            //$table->tinyInteger('receipt_status')->nullable()->comment('processed::cancelled::refunded');
             $table->bigInteger('receipt_order_id');
             $table->bigInteger('receipt_user_id')->comment('added_by');
-            $table->bigInteger('receipt_stock_offer')->nullable(); //customer
+            $table->json('receipt_setting_key')->nullable(); //customer
             
            
-            $table->text('receipt_note')->nullable();
+            //$table->text('receipt_note')->nullable();
 
             $table->tinyInteger('receipt_setting_pos_id');
 

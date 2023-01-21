@@ -6,11 +6,11 @@ $orderList = $data['orderList'];
 $orderList = $orderList->groupBy('order_id');
 
 
-
-foreach ($orderList as $key => $setting) {
-    foreach ( json_decode($setting->first()->order_setting_key) as $order_setting_key ) {
-       if ( $order_setting_key->value ) {
-            $array[ $order_setting_key->setting_key_group ][] = [
+foreach ($orderList as $key => $order) {
+  
+    foreach ( json_decode($order->first()->order_setting_key) as $order_setting_key ) {
+       if ( $order_setting_key->value && $order_setting_key->setting_key_group == 0 ) {
+            $array[ $order_setting_key->name ][] = [
                 'name' => $order_setting_key,
                 'quantity' => 0,
                 'total' => 0,
@@ -77,7 +77,7 @@ foreach ($orderList as $key => $setting) {
                     @isset($array)
                         @foreach ($array as $keyarray => $itemarray)
                             <tr>
-                                <td>{{$keyarray}}</td>
+                                <td>{{head($itemarray)['name']->name}}</td>
                                 <td>{{count($itemarray)}}</td>
                                 <td>{{collect($itemarray)->flatten()->sum('value')}}</td>
                             </tr>

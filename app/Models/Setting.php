@@ -7,11 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Session;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Collection;
+use Illuminate\Support\Arr;
+use App\Helpers\KeyHelper;
 use App\Models\Expertise;
 use App\Models\User;
 
 use App\Helpers\MathHelper;
+
+use App\Helpers\CurrencyHelper;
 use Carbon\Carbon;
 
 class Setting extends Model
@@ -224,8 +228,8 @@ class Setting extends Model
             "1": {
 
                 "decimal": {
-                    "gain": "",
-                    "collect": "",
+                    "gain_points": "",
+                    "collect_points_value": "",
                     "discount_type": "",
                     "discount_value": ""
                 },
@@ -305,7 +309,8 @@ class Setting extends Model
                 "status": "",
                 "description": "",
                 "value": "",
-                "image": ""
+                "image": "",
+                "setting_vat_id": ""
             }
         }',
 
@@ -313,8 +318,7 @@ class Setting extends Model
             "default_country": "",
             "default_currency": {},
             "logo": {},
-            "stock_price_group": "",
-            "special_stock_price_group": ""
+            
         }',
 
         'setting_customer' => '{
@@ -324,10 +328,10 @@ class Setting extends Model
             "customer_marketing": {}
         }',
         
-        'setting_stock_price' => '{
+        'setting_stock_price_level' => '{
             "1": {
                 "name": "",
-                "description": ""
+                "description": "",
             }
         }',
 
@@ -337,7 +341,7 @@ class Setting extends Model
     protected $casts = [
 
         'setting_stock_set' => 'array',
-        'setting_stock_price' => 'array',
+        'setting_stock_price_level' => 'array',
         'setting_stock_set' => 'array',
 
         'setting_stock_label'  => 'array',
@@ -424,23 +428,7 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingKeyType()
-    {
-
-        return [
-            "VOUCHER",
-            "CASH",
-            "CREDIT",
-            "TERMINAL",
-
-            //"DISCOUNT",
-            //"DELIVERY"
-        ];
-
-
-    }
-
-    public static function SettingOfferType()
+    public static function SettingSettingOfferType()
     {
         return [
             "percentage",
@@ -509,24 +497,18 @@ class Setting extends Model
         ];
     }
 
-
-    public static function SettingKey($setting, $value){
-
-        $key = array_search($value, $setting->setting_key);
-
-        return collect($setting->setting_key)->where('setting_key_type', $key)->first();
-    }
-
-    public static function OfferType(){
+    public static function SettingOfferType(){
         return [
             'voucher', //coupons
             'discount', //one offs
-            'multiple-buy',
-            'mix-match'
+            'multi-buy',
+            'mix-match',
+            'gift-card'
         ];
     }
 
     public static function SettingKeyGroup(){
+        //see key helper in helpers
         return [
             'finalise',
             'status',
@@ -538,274 +520,160 @@ class Setting extends Model
     }
 
     //session and grand total
-    public static function SettingFinaliseKey($data, $receipt = null){
+    public static function SettingKey($setupList, $setting_key_list){
 
-        //$data['request'] = ['type' => null];
-/*
-        if ($data['request']->session()->has('setting_setting_key')) {
-            $data['request'] = $data['request']->session()->get('setting_setting_key');
-        } */
+        $count = 0;
 
+        if (count( $setting_key_list ) > 0) {
+            
+              //$setting_key = collect($setting_key_list)->collapse()->where('setting_key_group', $value['setting_key_group']);
 
-        $setupList = [];
-        $setupList = $data['request']->session()->pull('user-session-'.Auth::user()->user_id.'.'.'setupList');
-
-
-        //cash
-        if ($data['request']->session()->get('type') == 'cash' && $data['request']['value']) {
-            $setupList[$data['request']][] = [
-                'value' => $data['request']['value'],
-                'type' => $data['request']->session()->get('type')
-            ];
-        }
-
-        //credit
-        if ($data['request']->session()->get('type') == 'credit' && $data['request']['value']){
-            $customer =  $setupList['customer'];
-            $this->personModel = Person::find($customer['value']);
-
-            $setupList[$data['request']][] = [
-                'value' => $data['request']['value'],
-                'type' => $data['request']->session()->get('type')
-            ];
-
-        }
-
-          //delivery
-        if ($data['request']->session()->get('type') == 'delivery' && $data['request']['value']){
-
-            $setupList[$data['request']->session()->get('type')][] = [
-                'value' => $data['request']['value'],
-                'type' => $data['request']->session()->get('type')
-            ];
-        }
-
-        //voucher
-        if ($data['request']->session()->get('type') == 'voucher' && $data['request']['value']){
-            foreach ($data['settingModel']->setting_offer as $key => $value) {
-                if ($value['string']['barcode'] === $data['request']->session()->get('searchInputID') &&
-                $value['date']['end_date'] > Carbon::now() &&
-                array_search( Carbon::now()->dayOfWeek, $value['available_day']) ) {
-
-                    $data['settingModel']->setting_offer = [ $key => $value ];
-                    $setupList[$data['request']->session()->get('type')][] = [
-                        'discount_type' => $value['decimal']['discount_type'],
-                        'discount_value' => $value['decimal']['discount_value']
-                    ];
-                    break;
-
-                }
-            }
-        }
-
-        //discount
-        if ($data['request']->session()->get('type') == 'discount' && $data['request']['value']){
-
-            if ( Str::contains($data['request']['value'], '%') ) {
-                $discountValue = Str::remove('%', $data['request']['value']);
-                $discount_type = 0;
-                $setupList[$data['request']->session()->get('type')][] = ['discount_type' => $discount_type, 'discount_value' => $discountValue];
-            }
-            elseif($data['request']['value'] != null) {
-                $discountValue = $data['request']['value'];
-                $discount_type = 1;
-                $setupList[$data['request']->session()->get('type')][] = ['discount_type' => $discount_type, 'discount_value' => $discountValue];
+            if ($setupList['order_sub_total']) {
+                $setupList['stock_price_processed'] = $setupList['order_sub_total'];
             }
 
-        }
+            //$setting_key = collect($setting_key_list)->collapse()->where('setting_key_group', $value['setting_key_group']);
+           
+            foreach ( $setting_key_list as $key => $value) {
 
+                $value = head($value);
+                $setting_key_type = KeyHelper::Type()[ $value['setting_key_group'] ][ $value['setting_key_type'] ];
 
-        $data['request']->session()->put('user-session-'.Auth::user()->user_id.'.'.'setupList', $setupList);
+                /*  
+                $setting_key_value = collect($settingModel->setting_key)->where('setting_key_group', $value['setting_key_group'] )
+                ->where('setting_key_type', $value['setting_key_type'] )
+                ->first()['value']; */
+                if ( Str::contains( $setting_key_type, '%') || Str::contains( $setting_key_type, '+') || Str::contains( $setting_key_type, '-')) {
 
-
-
-        return Setting::ReCalculate($receipt, $setupList);
-
-    }
-
-
-    //recalculate receipt
-    public static function ReCalculate($receipt, $setupList){
-
-        if ($receipt && $setupList) {
-
-            //discount
-            if (count($setupList[ 'discount' ]) > 0) {
-
-                foreach ( $setupList[ 'discount' ] as $key => $value) {
-
-                    //check if value has percentage
-                    if ($value['discount_type'] == array_search('percentage', Setting::SettingOfferType()) ) {
-                        $receipt['totalPrice'] = MathHelper::Discount($value['discount_value'], $receipt['totalPrice']);
-                        $receipt['discountPercentageTotal'] = $receipt['discountPercentageTotal'] + $value['discount_value'];
-                    } else {
-                        $receipt['totalPrice'] = $receipt['totalPrice'] - $value['discount_value'];
-                        $receipt['discountAmountTotal'] = $receipt['discountAmountTotal'] + $value['discount_value'];
+                    if($count == 0){
+                       $setupList['setting_key_amount_total'] = $value['value'];
                     }
-                }
+                    else{
 
-
-            }
-
-
-            if ( count($setupList[ 'delivery' ]) > 0 ) {
-                $receipt['deliveryTotal'] = $receipt['deliveryTotal'] + collect($setupList[ 'delivery' ])->sum('value');
-                $receipt['totalPrice'] = $receipt['totalPrice'] + $receipt['deliveryTotal'];
-            }
-
-            if (count($setupList[ 'voucher' ]) > 0) {
-                foreach ($setupList[ 'voucher' ] as $key => $value) {
-
-
-                    //check if value has percentage
-                    if ($value['discount_type'] == array_search('percentage', Setting::SettingOfferType()) ) {
-                        $receipt['totalPrice'] = MathHelper::Discount($value['discount_value'], $receipt['totalPrice']);
-                        $receipt['voucherPercentageTotal'] = $receipt['voucherPercentageTotal'] + $value['discount_value'];
-                    } else {
-                        $receipt['totalPrice'] = $receipt['totalPrice'] - $value['discount_value'];
-                        $receipt['voucherAmountTotal'] = $receipt['voucherAmountTotal'] + $value['discount_value'];
-                    }
-                }
-
-            }
-
-
-
-            //customer
-            if ( count($setupList['customer']) > 0 ){
-
-                $customer = $setupList['customer'];
-                $personModel = Person::find($customer['value']);
-                $companyModel = Company::find($personModel->persontable_id);
-
-                if ($personModel) {
-                    $settingModel = Setting::SettingTable()
-                    ->where('setting.settingtable_id', $companyModel->company_id)
-                    ->first();
-                }
-
-                if ($companyModel) {
-                    $settingModel = Setting::SettingTable()
-                    ->where('setting.settingtable_id', $personModel->person_id)
-                    ->first();
-                }
-
-
-
-                if ($settingModel) {
-                    if ( $settingModel->setting_customer) {
-
-                        if ($settingModel->setting_customer['customer_stock_cost']) {
-                            # code...
+                        if( Str::contains( $setting_key_type, '%') ){
+                            $setting_key_amount = MathHelper::VAT($value['value'], $setupList['stock_price_processed']);
+                            $value['value'] =  $setting_key_amount;
+                        }
+                        
+                        if ( Str::contains($setting_key_type, '+' ) ) {
+                            $setupList['setting_key_amount_total'] = $setupList['setting_key_amount_total'] + $value['value'];
+                            $setupList['stock_price_processed'] = $setupList['stock_price_processed'] + $value['value'];
+                        }
+                        elseif( Str::contains( $setting_key_type, '-' ) ){
+                            $setupList['setting_key_amount_total'] = $setupList['setting_key_amount_total'] + $value['value'];
+                            $setupList['stock_price_processed'] = $setupList['stock_price_processed'] + $value['value'];
                         }
 
-                       /* foreach ($settingModel->setting_customer as $setting_customer) {
-                           
-                            if (Setting::SettingOfferType()[$setting_offer['decimal']['discount_type']] == 'percentage') {
-                                $value =  MathHelper::Discount($setting_offer['decimal']['discount_value'], $receipt['totalPrice']); //percentage to amount
-                                $percentage = $setting_offer['decimal']['discount_value'];
-                            } else{
-                                $value = $setting_offer['decimal']['discount_value'];
-                                $percentage = MathHelper::PercentageDifference($setting_offer['decimal']['discount_value'], $receipt['subTotal']);
-                            }
-        
-                            $receipt['customerDiscount'] = [
-                                'discount_type' => $setting_offer['decimal']['discount_type'], 
-                                'discount_value' => $setting_offer['decimal']['discount_value'], 
-                                'converted_value' => $value, 'converted_percentage' => $percentage 
-                            ];
-        
-                            $receipt['totalPrice'] = $receipt['totalPrice'] - $value;
-                        } */
-                    }
-                }
-
-            }
-
-
-            if (count($setupList['credit']) > 0) {
-                $receipt['creditTotal'] = $receipt['creditTotal'] + collect()->sum('value');
-                $receipt['totalPriceVAT'] = $receipt['totalPriceVAT'] - $receipt['creditTotal'];
-            }
-
-            if ( count($setupList[ 'cash' ]) > 0 ) {
-                $receipt['cashTotal'] = $receipt['cashTotal'] + collect()->sum('value');
-                $receipt['totalPriceVAT'] = $receipt['totalPriceVAT'] - $receipt['cashTotal'];
-            }
-
-        }
-
-        return $receipt;
-    }
-
-    //compare current
-    public static function SettingCurrentOffer($stock, $offerType){
-
-        $stockOffer = [];
-
-
-        if ($stock->stock_merchandise['setting_offer_id']) {
-
-            $userModel = User::Account('account_id', Auth::user()->user_account_id)
-            ->first();
-
-            $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
-
-            $setting_offer = collect($settingModel->setting_offer)->only( $stock->stock_merchandise['setting_offer_id'] );
-
-            //filter offer by date
-            foreach ($setting_offer as $stock_offer_key => $stock_offer_value) {
-                if ( $stock_offer_value['date']['start_date'] >= Carbon::now() && $offerType == $stock_offer_value['boolean']['type']) {
-
-                    //discount days
-                    if (array_search( Carbon::now()->dayOfWeek, $stock_offer_value['available_day'] )) {
-                        $stockOffer[$stock_offer_key] = $stock_offer_value;
                     }
 
                 }
+                
+                $count++;
+                
             }
-        }
 
-        return $stockOffer;
+
+        }
+       
+        
+        return $setupList;
+
     }
 
 
     //stock
-    public static function SettingCurrentOfferType($settingCurrentOffer, $price){
+    public static function SettingOffer($stockInitialize, $setupList){
 
-
-
-        $settingCurrentOfferType = 0;
+        $settingCurrentSettingOfferType = [];
         $total = [];
+        $price = $setupList['stock_price'];
+        $stockOffer = [];
 
-        foreach ($settingCurrentOffer as $settingCurrentOfferKey => $settingCurrentOfferValue) {
+        $userModel = User::Account('account_id', Auth::user()->user_account_id)
+        ->first();
 
-            if (Setting::SettingOfferType()[$settingCurrentOfferValue['decimal']['discount_type']] == 'percentage') {
+        $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
 
-                $settingCurrentOfferType = ['price'  => MathHelper::Discount($settingCurrentOfferValue['decimal']['discount_value'], $price)];
+        foreach ($stockInitialize['stock_setting_offer']  as $key => $setting_offer_id) {
+            $stock_setting_offer = $settingModel->setting_offer[ $setting_offer_id ];
 
-            } else {
-                $settingCurrentOfferType = ['price' => $price - $settingCurrentOfferValue['decimal']['discount_value'] ];
+                if ($stock_setting_offer['date']['end_date'] > Carbon::now() &&
+                array_search( Carbon::now()->dayOfWeek, $stock_setting_offer['available_day']) ) {
 
-            }
+                    //discount
+                    if ( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'voucher' ) {
 
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
 
-            if (count($settingCurrentOfferType) > 0) {
-                $total[$settingCurrentOfferKey] = $settingCurrentOfferValue;
-                $total[$settingCurrentOfferKey] += ['total' => $settingCurrentOfferType];
-            }
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $stock_setting_offer['decimal']['discount_value'] ];
+                        }
 
+                    }
+                    elseif( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'discount' ){
+
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
+
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $stock_setting_offer['decimal']['discount_value'] ];
+                        }
+                    }
+                    elseif( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'multi-buy' ){
+
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
+
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $stock_setting_offer['decimal']['discount_value'] ];
+                        }
+
+                    }
+                    
+                    elseif( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'mix-match' ){
+                        
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
+
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $stock_setting_offer['decimal']['discount_value'] ];
+                        }
+                    }
+
+                    $stockOffer[$key] = $stock_setting_offer;
+                }
+           
         }
 
-        //collect($settingCurrentOfferType)->min('price')
+        
+       
+        $setupList['stock_setting_offer'] = $stockOffer;
+        $setupList['stock_setting_offer_total'] = collect($settingCurrentSettingOfferType)->sum('discount_value');
+        $setupList['stock_price_processed'] = $setupList['stock_price'] - $setupList['stock_setting_offer_total'];
+        return $setupList;
 
-
-
-        return $total;
     }
 
     
+    public static function SettingCurrency($data){
+        $currencySymbol = '£';
 
+        $setting_default_currency =  collect($data['settingModel']->setting_group['default_currency'])
+        ->where('default', 0)
+        ->first();
+
+        if ($setting_default_currency) {
+            $currency = CountryHelper::ISO()[$setting_default_currency->currency_id]['currencies'][0];
+            $currencySymbol = CountryHelper::CurrencySymbol()[$currency];
+        }
+    
+        return $currencySymbol;
+    }
 
 
 }

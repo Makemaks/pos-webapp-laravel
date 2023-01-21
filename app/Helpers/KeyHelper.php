@@ -15,6 +15,20 @@ class KeyHelper{
         ];
     }
 
+    public static function Count(){
+        $countArray = 
+            //group and type
+            count(KeyHelper::Finalise()) +
+            count(KeyHelper::Status()) +
+            count(KeyHelper::Transaction()) +
+            count(KeyHelper::Character()) +
+            count(KeyHelper::Totaliser()) +
+            count(KeyHelper::Menu()) ;
+        
+
+        return $countArray;
+    }
+
     public static function Status(){
         return [
             

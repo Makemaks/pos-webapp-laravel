@@ -91,8 +91,6 @@ class SettingFactory extends Factory
                 "default" => $this->faker->numberBetween($min = 0, $max = 1)
             ];
 
-            
-
             $setting_stock_tag_group[$i + 1] = [
                 "name" => $this->faker->word
             ];
@@ -101,8 +99,8 @@ class SettingFactory extends Factory
 
             $setting_offer[$i + 1] = [
                 "decimal" => [
-                    "gain" => $this->faker->numberBetween($min = 1, $max = 500),
-                    "collect" => $this->faker->numberBetween($min = 1, $max = 500),
+                    "gain_points" => $this->faker->numberBetween($min = 1, $max = 500),
+                    "collect_points_value" => $this->faker->numberBetween($min = 1, $max = 500),
                     "discount_type" => $this->faker->numberBetween($min = 0, $max = 1),
                     "discount_value" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 1, $max = 5),
                 ],
@@ -157,8 +155,6 @@ class SettingFactory extends Factory
             ];
         }
 
-      
-
         $count = 0;
         for ($i= 0; $i < count(Setting::SettingKeyGroup()); $i++) { 
             
@@ -171,7 +167,8 @@ class SettingFactory extends Factory
                     "name"=> $this->faker->word,
                     "status" => $this->faker->numberBetween($min = 0, $max = 1),
                     "description" => '',
-                    "image" => ''
+                    "image" => '',
+                    'setting_vat_id' => $this->faker->numberBetween($min = 0, $max = 1)
                 ];
             }
     
@@ -200,14 +197,14 @@ class SettingFactory extends Factory
             'default_country' => '',
             'default_currency' => [],
             'logo' => [],
-            'special_stock_price_group' => 2,
-            'stock_price_group' => 5 //column
         ];
 
-        $setting_stock_price = [
-            'name' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
-            "description" =>  $this->faker->sentence,
-        ];
+        for ($i=0; $i < 10; $i++) { 
+            $setting_stock_price_level[$i + 1] = [
+                'name' => $this->faker->word,
+                "description" =>  $this->faker->sentence,
+            ];
+        }
 
         for ($i = 0; $i < $this->faker->numberBetween($min = 1, $max = 10); $i++) {
             $customer_print[$i + 1] = $this->faker->numberBetween($min = 1, $max = 10);
@@ -272,7 +269,9 @@ class SettingFactory extends Factory
             'setting_customer' => $setting_customer,
             'setting_stock_tag_group' => $setting_stock_tag_group,
             'setting_preset_message' => $setting_preset_message,
-            'setting_stock_price' => $setting_stock_price,
+            'setting_stock_price_level' => $setting_stock_price_level,
+            'setting_stock_price_group' => $this->faker->numberBetween($min = 5, $max = 5),
+            'setting_stock_price_group_special' => $this->faker->numberBetween($min = 5, $max = 5),
             'setting_building' => $setting_building
            
             

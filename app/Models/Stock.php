@@ -186,7 +186,6 @@ class Stock extends Model
                             if($quantity != 0)
                             $totalCostPrice = $totalCostPrice + $price * $quantity;
 
-                            
                         }
 
                     }

@@ -41,6 +41,7 @@ use App\Http\Controllers\ContactManagerController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MenuBuilderController;
 use App\Http\Controllers\WarehouseController;
 
 use App\Http\Controllers\API\HomeAPIController;
@@ -140,6 +141,8 @@ Route::get('menu/stock/', [MenuController::class,'Stock'])->name('menu.stock');
 Route::get('menu/setting/', [MenuController::class,'Setting'])->name('menu.setting');
 Route::get('menu/order/', [MenuController::class,'Order'])->name('menu.order');
 Route::get('menu/customer/', [MenuController::class,'Customer'])->name('menu.customer');
+
+Route::get('menu-builder', [MenuBuilderController::class, 'index'])->name('menu-builder.index');
 
 Route::get('menu/home/', [MenuController::class,'Home'])->name('menu.home');
 

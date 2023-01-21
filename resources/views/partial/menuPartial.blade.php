@@ -66,6 +66,7 @@
                 "company"
             ],
             "event" => [],
+            "menu-builder" => [],
 
 
         ];

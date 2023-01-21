@@ -11,14 +11,14 @@ if ($action === 'index') {
     $action = 'update';
 }
 
-$routeList = ['authentication', 'home', 'dashboard', 'receipt', 'order'];
+$routeList = ['authentication', 'home', 'dashboard', 'receipt', 'order', 'menu-builder'];
 
 @endphp
 
 
 
 @if (array_search($route, $routeList) == NULL)
-       
+
         @if ($action == 'index' || $action == 'create')
             <div class="uk-navbar-item">
                 <a href="{{route($route.'.'.$action)}}" class="uk-border-rounded uk-button uk-button-default uk-text-danger" uk-icon="plus"></a>
@@ -36,5 +36,5 @@ $routeList = ['authentication', 'home', 'dashboard', 'receipt', 'order'];
             </div>
         @endif
 
-       
+
 @endif

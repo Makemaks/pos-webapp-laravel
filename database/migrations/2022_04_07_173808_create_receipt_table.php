@@ -19,7 +19,7 @@ return new class extends Migration
             
             $table->bigInteger('receipttable_id');
             $table->string('receipttable_type');
-
+            $table->json('receipt_stock_price')->nullable(); //customer
             //$table->json('receipt_setting_vat')->nullable(); 
            
            

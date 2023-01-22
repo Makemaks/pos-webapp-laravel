@@ -232,6 +232,10 @@ class MenuController extends Controller
 
                 break;
 
+            case 'keyboard-allocation':
+                return view('menu.setting.keyboard-allocation');
+                break;
+
             default:
                 echo "i is not equal to 0, 1 or 2";
         endswitch;

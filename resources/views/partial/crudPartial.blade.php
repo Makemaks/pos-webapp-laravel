@@ -11,7 +11,7 @@ if ($action === 'index') {
     $action = 'update';
 }
 
-$routeList = ['authentication', 'home', 'dashboard', 'receipt', 'order', 'menu-builder'];
+$routeList = ['authentication', 'home', 'dashboard', 'receipt', 'order'];
 
 @endphp
 

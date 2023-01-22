@@ -142,8 +142,6 @@ Route::get('menu/setting/', [MenuController::class,'Setting'])->name('menu.setti
 Route::get('menu/order/', [MenuController::class,'Order'])->name('menu.order');
 Route::get('menu/customer/', [MenuController::class,'Customer'])->name('menu.customer');
 
-Route::get('menu-builder', [MenuBuilderController::class, 'index'])->name('menu-builder.index');
-
 Route::get('menu/home/', [MenuController::class,'Home'])->name('menu.home');
 
 Route::apiResources([

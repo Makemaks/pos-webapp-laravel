@@ -66,9 +66,6 @@
                 "company"
             ],
             "event" => [],
-            "menu-builder" => [],
-
-
         ];
    } else {
         $arrayAdminMenu = [

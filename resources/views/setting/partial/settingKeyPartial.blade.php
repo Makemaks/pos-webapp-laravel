@@ -24,14 +24,14 @@
     <ul class="uk-switcher uk-margin">
         <li>
            
-                @include('setting.settingKey.index')
+                @include('setting.key.index')
             
         </li>
 
         <li>
            
             
-                @include('setting.settingKey.create')
+                @include('setting.key.create')
             
         </li>
     </ul>

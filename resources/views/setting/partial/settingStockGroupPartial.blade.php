@@ -43,7 +43,7 @@
                                     <select class="uk-select" name="setting_stock_set[{{$keysetting_stock_set}}][{{$key}}]">
                                         <option selected="selected" disabled>SELECT ...</option>
                                     
-                                        @foreach (Setting::SettingStockGroup() as $key => $setting_group)
+                                        @foreach (Setting::SettingStockSet() as $key => $setting_group)
                                                 
                                             <option @if($key == $setting_stock_set['type']) selected @endif value="{{$key}}">
                                                 {{Str::upper($setting_group)}}

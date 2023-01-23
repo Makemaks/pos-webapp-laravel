@@ -80,7 +80,11 @@ class Receipt extends Model
     public static function SessionInitialize($request){
 
         $request = Receipt::Empty($request);
-        $requestInput = ['setting_stock_price_level' => 1, 'setting_stock_price_group' => 1];
+        $requestInput = [
+            'setting_stock_price_level' => 1, 
+            'setting_stock_price_group' => 1,
+            'setting_key_group' => 5
+        ];
 
         if ( count($request->all()) > 0) {
             $requestInput = $request->all();
@@ -98,11 +102,11 @@ class Receipt extends Model
                 'stock_price_processed' => 0,
                 'stock_price_total' => 0,
                 'stock_setting_offer_total' => 0,
-                
                 'stock_setting_vat' => [],
                 'stock_vat_rate' => 0,
                 'stock_vat_rate_total' => 0,
                 'stock_vat_amount_total' => 0,
+                'stock_vat_amount' => 0,
                 'setting_offer' => [],
                 'order_vat_amount_total' => 0,
                 'order_price_total' => 0,
@@ -110,6 +114,7 @@ class Receipt extends Model
                 'order_setting_key' => [],
                 'order_setting_key_total' => 0,
                 'requestInput' => $requestInput,
+                
             ];
             
             $request->session()->put('user-session-'.Auth::user()->user_id.'.setupList', $setupList);
@@ -121,7 +126,7 @@ class Receipt extends Model
         return $setupList;
     }
 
-    public static function SessionCartInitialize($cartList, $setupList){
+    public static function SessionCartInitialize($cartList, $data){
         
         $stockList = [];
 
@@ -130,7 +135,7 @@ class Receipt extends Model
             $stock = Stock::find($sessionCart['stock_id']);
             $store = Store::find($sessionCart['store_id']);
          
-            $stockList[] = Stock::StockInitialize($stock, $store, $setupList);
+            $stockList[] = Stock::StockInitialize($stock, $store, $data);
 
         } 
 
@@ -151,7 +156,7 @@ class Receipt extends Model
            $stock = Stock::find($sessionCart['stock_id']);
            $store = Store::find($sessionCart['store_id']);
         
-           $stockList[] = Stock::StockInitialize($stock, $store, $setupList);
+           $stockList[] = Stock::StockInitialize($stock, $store, $data);
         } 
 
         return $stockList;
@@ -186,9 +191,9 @@ class Receipt extends Model
            
             //order setting key
             if ( count($data['setupList']['order_setting_key'])  > 0) {
-                $data['setupList'] = Setting::SettingKey( $data['setupList'], $data['setupList']['order_setting_key'] );
+                $data = Setting::SettingKey( $data, $data['setupList']['order_setting_key'] );
                 $data['setupList']['setting_key'] = $data['setupList']['order_setting_key'];
-                $data['setupList']['order_setting_key_total'] = $setupList['setting_key_amount_total'];
+                $data['setupList']['order_setting_key_total'] = $data['setupList']['setting_key_amount_total'];
             }
             
             $data['setupList']['order_setting_key_total'] = $data['setupList']['order_setting_key_total'] + $data['setupList']['setting_key_amount_total'];

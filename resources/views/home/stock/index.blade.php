@@ -18,9 +18,10 @@
     <script src="{{ asset('js/stock.js') }}"></script>
 @endpush
 
-@include('stock.partial.groupPartial')
+{{-- @include('stock.partial.groupPartial') --}}
    
 <form action="" id="stockFormID" method="POST">
+    
     <div>
         
         <div class="uk-child-width-1-4@s uk-child-width-1-5@l uk-grid-small" uk-grid>
@@ -32,10 +33,10 @@
                         $text_success = '';
                         $image =  'stock/'.$stockItem->stock_store_id.'/'.$stockItem->image;
                         
-                        //$data['setupList'] = Stock::StockPriceProcessed($stockItem, $data['setupList']);
+                        //$data['setupList'] = Stock::StockPriceProcessed($stockItem, $data);
                       
-                        $stockInitialize = Stock::StockInitialize($stockItem, $data['storeModel'], $data['setupList']);
-                        $data['setupList'] = Stock::StockPriceProcessed($stockInitialize, $data['setupList']);
+                        $stockInitialize = Stock::StockInitialize($stockItem, $data['storeModel'], $data);
+                        $data = Stock::StockPriceProcessed($stockInitialize, $data, $loop);
 
                         $data['warehouseList'] = Warehouse::List('warehouse_stock_id', $stockItem->stock_id)
                         ->where('warehouse_store_id', $stockItem->warehouse_store_id)
@@ -77,33 +78,12 @@
                             {{-- <div>
                                 @include('receipt.partial.controlPartial')
                             </div> --}}
+                          
 
                             <div class="uk-grid-small uk-margin-small"  uk-grid>
                                 
                                 <div>
-                                    @include('home.partial.settingOffer')
-                                </div>
-                                
-                                <div>
-                                    <button type="button" uk-icon="database"></button>
-                                        <div uk-dropdown="mode: click;pos:bottom-right">
-                                            <ul class="uk-list uk-list-collapse uk-list-divider">
-                                                @foreach ($data['warehouseStoreList'] as $warehouseStoreKey => $warehouseStore)
-                                                
-                                                    <li>
-                                                        <span>
-                                                            <button onclick="Add('{{$stockItem->stock_id}}', '{{$warehouseStore->first()->warehouse_store_id}}')" title="{{$stockItem->stock_id}}" class="uk-button uk-button-default uk-border-rounded uk-button-small" type="button">
-                                                                <span uk-icon="icon: cart"></span>
-                                                                {{-- <span uk-icon="icon: plus"></span> --}}
-                                                            </button>
-                                                        </span>
-                                                        {{$warehouseStore->first()->store_name}} - {{$warehouseStore->sum('warehouse_stock_quantity')}}
-
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    </button>  
+                                    @include('home.stock.dropdown')
                                 </div>
 
                             </div>
@@ -130,4 +110,6 @@
         </div>
         
     </div>
+
+   
 </form>

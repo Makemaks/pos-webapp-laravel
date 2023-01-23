@@ -11,7 +11,7 @@
 
 <div  class="uk-card uk-card-default uk-padding">
 <h3>GENERAL</h3>
-    @include('menu.partial.settingStockGroupPartial')
+    @include('menu.partial.SettingStockSetPartial')
 </div>
 
 

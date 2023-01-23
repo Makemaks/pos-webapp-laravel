@@ -12,7 +12,7 @@ use App\Models\Project;
         @csrf
         @method('PATCH')
         
-        @include('menu.partial.settingStockGroupPartial')
+        @include('menu.partial.SettingStockSetPartial')
    </form>
 @endsection
 

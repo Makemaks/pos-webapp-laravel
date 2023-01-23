@@ -127,7 +127,7 @@ class CartAPIController extends Controller
                 $store = Store::find(1);
                 $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList');
     
-                $this->requestInput = Stock::StockInitialize($stock, $store, $setupList);
+                $this->requestInput = Stock::StockInitialize($stock, $store, $data);
 
                 $request->session()->push('user-session-'.Auth::user()->user_id.'.cartList', $this->requestInput);
                 $value = $request->session()->get('user-session-'.Auth::user()->user_id.'.cartList');

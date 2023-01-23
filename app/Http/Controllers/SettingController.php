@@ -138,7 +138,7 @@ class SettingController extends Controller
             $request->session()->reflash();
             $this->settingModel['setting_stock_set'] = $this->settingModel['setting_stock_set'][$request->index];
             $this->settingModel['edit'] = true;
-            return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
+            return view('menu.setting.SettingStockSet', ['data' => $this->Data()]);
         } else if($request->stock_setting_offer['index']) {
             $this->settingModel['setting_offer'] = $this->settingModel['setting_offer'][$request->stock_setting_offer['index']];
             $this->settingModel['edit'] = true;
@@ -167,7 +167,7 @@ class SettingController extends Controller
 
                 $setting_stock_set = $this->DeleteColumnIndex($request->setting_stock_set_delete, $setting_stock_sets);
                 $this->settingModel->setting_stock_set = $setting_stock_set;
-                $view = 'menu.setting.settingStockGroup';
+                $view = 'menu.setting.SettingStockSet';
             } else if($request->setting_key_delete) {
                 $setting_keys = $this->settingModel->setting_key;
 
@@ -306,7 +306,7 @@ class SettingController extends Controller
                 //$stockModel->stock_merchandise['category_id']
             }
 
-            return view('menu.setting.settingStockGroup', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
+            return view('menu.setting.SettingStockSet', ['data' => $this->Data()])->with('success', 'Setting Deleted Successfuly');
         } else {
             Setting::destroy($setting);
         } */

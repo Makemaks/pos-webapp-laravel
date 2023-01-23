@@ -7,7 +7,7 @@
     
 @endphp
 
-@if ( $data['setupList']['setting_key'] > 0)
+@if ( count($data['setting_key']) > 0)
          
     @foreach ( $data['setupList']['setting_key'] as $setting_key_key => $setting_key_item)
         @foreach ($setting_key_item as $setting_key_item_key => $setting_key_item_item)

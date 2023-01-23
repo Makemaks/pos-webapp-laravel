@@ -44,7 +44,7 @@
    
     if(Session::has('user-session-'.Auth::user()->user_id.'.cartList')){
         $stockList = Session::get('user-session-'.Auth::user()->user_id.'.cartList');
-        // /$stockList = Receipt::SessionCartInitialize($data['cartList'], $data['setupList']);
+        // /$stockList = Receipt::SessionCartInitialize($data['cartList'], $data);
     }
 
     $gain_points = 0;
@@ -72,21 +72,21 @@
                 <ul class="uk-list uk-list-collapse uk-list-divider" id="cartListID">
                     @isset ($stockList)
                 
-                        @foreach ($stockList as $stockKey => $stockItem)
+                        @foreach ($stockList as $stockKey => $stockInitialize)
                             @php
 
-                                $data['setupList'] = Stock::StockPriceProcessed($stockItem, $data['setupList']);
+                                $data = Stock::StockPriceProcessed($stockInitialize, $data, $loop);
 
-                                $data = Receipt::Calculate( $data, $stockItem, $loop );
-                                Session::pull('user-session-'.Auth::user()->user_id.'.setupList');
+                                $data = Receipt::Calculate( $data, $stockInitialize, $loop );
+                                $setupList = Session::pull('user-session-'.Auth::user()->user_id.'.setupList');
                                 Session::put('user-session-'.Auth::user()->user_id.'.setupList', $data['setupList']);
             
                                 $cartList = Session::pull('user-session-'.Auth::user()->user_id.'.cartList');
                                 /* $cartList[$loop->index]['stock_price'] = $data['setupList']['stock_price_total']; */
                                 Session::put('user-session-'.Auth::user()->user_id.'.cartList', $cartList);
 
-                                $gain_points = collect($stockItem['stock_setting_offer'])->where('gain_points')->sum();
-                                $collect_points_value  = collect($stockItem['stock_setting_offer'])->where('gain_points')->sum();
+                                $gain_points = collect($stockInitialize['stock_setting_offer'])->where('gain_points')->sum();
+                                $collect_points_value  = collect($stockInitialize['stock_setting_offer'])->where('gain_points')->sum();
 
                             @endphp
                             
@@ -96,19 +96,18 @@
                                             <input type="checkbox" name="receipt_stock_id[]" value="{{$stockKey}}" class="uk-checkbox">
                                         </span>
                                         
-                                        <span> {{$stockItem['stock_name']}} </span>
+                                        <span> {{$stockInitialize['stock_name']}} </span>
 
             
-                                        @if ($stockItem['stock_quantity'] > 1)
-                                            <span class="uk-text-meta uk-text-top"> {{$stockItem['stock_quantity']}}</span>
+                                        @if ($stockInitialize['stock_quantity'] > 1)
+                                            <span class="uk-text-meta uk-text-top"> {{$stockInitialize['stock_quantity']}}</span>
                                         @endif
 
                                         <span class="uk-align-right">
 
-                                            @include('home.partial.settingOffer')
-
+                                            @include('home.stock.dropdown')
                                             
-                                            @if ( count($stockItem['stock_setting_vat']) > 0 || count($stockItem['stock_setting_offer']) > 0)
+                                            @if ( count($stockInitialize['stock_setting_vat']) > 0 || count($stockInitialize['stock_setting_offer']) > 0)
                                                 <del>{{ CurrencyHelper::Format( $data['setupList']['stock_price'] ) }} </del>
                                                 
                                             @endif
@@ -122,7 +121,7 @@
                                         {{-- @include('receipt.partial.controlPartial',
                                         [
                                             'cartValue' => $loop->index,
-                                            'quantity' => $stockItem['stock_quantity']
+                                            'quantity' => $stockInitialize['stock_quantity']
                                         ]) --}}
                                         
                                 </li>
@@ -195,9 +194,11 @@
             </li>
 
             <li>
-                @if ( $data['setupList']['order_price_total'] > 0 )
+                @if ( $data['setupList']['order_price_total'] >= 0 )
                     <span class="uk-text-bold">TOTAL {{$currency}}</span>
-                    <span class="uk-align-right uk-text-bold">{{CurrencyHelper::Format($data['setupList']['order_price_total'])}}</span>
+                    <span class="uk-align-right uk-text-bold">{{CurrencyHelper::Format( $data['setupList']['order_price_total'])}}</span>
+                @else
+                    <h3>Negative</h3>
                 @endif
             
             </li>

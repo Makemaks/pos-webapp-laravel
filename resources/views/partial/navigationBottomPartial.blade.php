@@ -66,7 +66,7 @@ use App\Helpers\StringHelper;
 
           
 
-            <div class="uk-navbar-item" id="confirmButtonID" hidden>
+            <div class="uk-navbar-item" id="confirmButtonID">
                <form id="order-store" action="{{route( 'order.store') }}" method="POST">
                     @csrf
                </form>
@@ -76,7 +76,7 @@ use App\Helpers\StringHelper;
             </div>
 
           
-            <div class="uk-navbar-item" id="payButtonID">
+            <div class="uk-navbar-item" id="payButtonID" hidden>
                 <button class="uk-button uk-border-rounded uk-button-large uk-light" onclick="StoreSettingKey()" type="button" style="background-color: #{{StringHelper::getColor()}}">
                     <span uk-icon="tag"></span>
                 </button>

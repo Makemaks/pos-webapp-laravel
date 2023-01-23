@@ -8,7 +8,7 @@
             
     <div class="uk-grid-small uk-child-width-1-4@s uk-button" uk-grid>
 
-        @foreach (Setting::SettingStockGroup() as $item)
+        @foreach (Setting::SettingStockSet() as $item)
             <div>
                 <div onclick="stockGroup({{$loop->iteration}}, '{{$item}}', null)">
             
@@ -40,7 +40,7 @@
             
             
                     @php
-                        $setting_stock_type = Setting::SettingStockGroup()[$item_setting_stock_set['type']];
+                        $setting_stock_type = Setting::SettingStockSet()[$item_setting_stock_set['type']];
                         $where = 'stock_merchandise->'.$setting_stock_type.'_id';
                         $count = Stock::where($where, $key_setting_stock_set)->count();
                     @endphp

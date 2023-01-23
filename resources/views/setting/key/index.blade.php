@@ -19,7 +19,7 @@
     
    
     
-    /* if( isset($data['setupList']) ){
+    /* if( isset($data) ){
 
         if ( count($data['setupList']['order_setting_key']) == 0 ) {
             $settingModel = new Setting();

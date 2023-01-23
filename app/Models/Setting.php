@@ -476,7 +476,7 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingStockGroup(){
+    public static function SettingStockSet(){
 
         return [
             "category",
@@ -520,7 +520,7 @@ class Setting extends Model
     }
 
     //session and grand total
-    public static function SettingKey($setupList, $setting_key_list){
+    public static function SettingKey($data, $setting_key_list){
 
         $count = 0;
 
@@ -528,8 +528,8 @@ class Setting extends Model
             
               //$setting_key = collect($setting_key_list)->collapse()->where('setting_key_group', $value['setting_key_group']);
 
-            if ($setupList['order_sub_total']) {
-                $setupList['stock_price_processed'] = $setupList['order_sub_total'];
+            if ($data['setupList']['order_sub_total']) {
+                $data['setupList']['stock_price_processed'] = $data['setupList']['order_sub_total'];
             }
 
             //$setting_key = collect($setting_key_list)->collapse()->where('setting_key_group', $value['setting_key_group']);
@@ -546,22 +546,22 @@ class Setting extends Model
                 if ( Str::contains( $setting_key_type, '%') || Str::contains( $setting_key_type, '+') || Str::contains( $setting_key_type, '-')) {
 
                     if($count == 0){
-                       $setupList['setting_key_amount_total'] = $value['value'];
+                       $data['setupList']['setting_key_amount_total'] = $value['value'];
                     }
                     else{
 
                         if( Str::contains( $setting_key_type, '%') ){
-                            $setting_key_amount = MathHelper::VAT($value['value'], $setupList['stock_price_processed']);
+                            $setting_key_amount = MathHelper::VAT($value['value'], $data['setupList']['stock_price_processed']);
                             $value['value'] =  $setting_key_amount;
                         }
                         
                         if ( Str::contains($setting_key_type, '+' ) ) {
-                            $setupList['setting_key_amount_total'] = $setupList['setting_key_amount_total'] + $value['value'];
-                            $setupList['stock_price_processed'] = $setupList['stock_price_processed'] + $value['value'];
+                            $data['setupList']['setting_key_amount_total'] = $data['setupList']['setting_key_amount_total'] + $value['value'];
+                            $data['setupList']['stock_price_processed'] = $data['setupList']['stock_price_processed'] + $value['value'];
                         }
                         elseif( Str::contains( $setting_key_type, '-' ) ){
-                            $setupList['setting_key_amount_total'] = $setupList['setting_key_amount_total'] + $value['value'];
-                            $setupList['stock_price_processed'] = $setupList['stock_price_processed'] + $value['value'];
+                            $data['setupList']['setting_key_amount_total'] = $data['setupList']['setting_key_amount_total'] + $value['value'];
+                            $data['setupList']['stock_price_processed'] = $data['setupList']['stock_price_processed'] + $value['value'];
                         }
 
                     }
@@ -576,17 +576,17 @@ class Setting extends Model
         }
        
         
-        return $setupList;
+        return $data;
 
     }
 
 
     //stock
-    public static function SettingOffer($stockInitialize, $setupList){
+    public static function SettingOffer($stockInitialize, $data){
 
         $settingCurrentSettingOfferType = [];
         $total = [];
-        $price = $setupList['stock_price'];
+        $price = $data['setupList']['stock_price'];
         $stockOffer = [];
 
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
@@ -652,10 +652,10 @@ class Setting extends Model
 
         
        
-        $setupList['stock_setting_offer'] = $stockOffer;
-        $setupList['stock_setting_offer_total'] = collect($settingCurrentSettingOfferType)->sum('discount_value');
-        $setupList['stock_price_processed'] = $setupList['stock_price'] - $setupList['stock_setting_offer_total'];
-        return $setupList;
+        $data['setupList']['stock_setting_offer'] = $stockOffer;
+        $data['setupList']['stock_setting_offer_total'] = collect($settingCurrentSettingOfferType)->sum('discount_value');
+        $data['setupList']['stock_price_processed'] = $data['setupList']['stock_price'] - $data['setupList']['stock_setting_offer_total'];
+        return $data;
 
     }
 

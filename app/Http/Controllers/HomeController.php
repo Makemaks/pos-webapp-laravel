@@ -49,6 +49,8 @@ class HomeController extends Controller
          //setup new
        
         $this->setupList = Receipt::SessionInitialize($request);
+
+        $a = $this->Data();
         
         $this->userList = User::Store('person_user_id', $this->userModel->user_id)
         ->orderBy('person_name->person_firstname')
@@ -60,7 +62,7 @@ class HomeController extends Controller
         ->orderBy('person_name->person_firstname', 'asc')
         ->get();
 
-        $this->settingModel->setting_stock_set = collect($this->settingModel->setting_stock_set)->where('type', 0);
+        //$this->settingModel->setting_stock_set = collect($this->settingModel->setting_stock_set)->where('type', 0);
         $settingModel = new Setting();
       
         $this->settingModel->setting_key = $settingModel->setting_key;
@@ -78,7 +80,7 @@ class HomeController extends Controller
         $this->personList = Person::Address('person_organisation_id', $this->userModel->organisation_id)
         ->paginate(20);
 
- 
+        $a = $this->Data();
  
       
         return view('home.index', ['data' => $this->Data()]);

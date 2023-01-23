@@ -5,7 +5,7 @@
 @endphp
 
 
-<ul class="uk-subnav uk-subnav-pill" uk-switcher="{{$active}}">
+<ul class="uk-subnav uk-subnav-pill" uk-switcher="active:{{$active}}">
     <li>
        
         <a href="#">
@@ -70,7 +70,7 @@
                     </div>
                 </form>
             @else
-               @include('setting.partial.settingStockGroupPartial')
+               @include('setting.partial.SettingStockSetPartial')
             @endif
             
     </li>

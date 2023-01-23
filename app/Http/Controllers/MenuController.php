@@ -117,13 +117,13 @@ class MenuController extends Controller
         }
 
         switch ($request->view):
-            case (in_array($request->view, Setting::SettingStockGroup())):
+            case (in_array($request->view, Setting::SettingStockSet())):
             
-                $type = array_search( $request->view, Setting::SettingStockGroup());
+                $type = array_search( $request->view, Setting::SettingStockSet());
                 $request->session()->flash('type', $type);
                 $request->session()->flash('view', $request->view);
 
-                return view('menu.setting.settingStockGroup', ['data' => $this->Data()]);
+                return view('menu.setting.SettingStockSet', ['data' => $this->Data()]);
 
                 break;
           

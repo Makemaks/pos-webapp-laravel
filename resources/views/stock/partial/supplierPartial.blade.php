@@ -28,7 +28,7 @@
 <h3>SUPPLIERS</h3>
                   
 
-<ul class="uk-subnav uk-subnav-pill" uk-switcher="{{$active}}">
+<ul class="uk-subnav uk-subnav-pill" uk-switcher="active:{{$active}}">
     <li><a href="#" uk-icon="list"></a></li>
     <li><a href="#" uk-icon="plus"></a></li>
 </ul>

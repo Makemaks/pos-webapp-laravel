@@ -11,7 +11,7 @@
    
         <div>
             <div class="uk-card uk-card-default uk-padding">
-                <ul class="uk-subnav uk-subnav-pill" uk-switcher="{{$active}}">
+                <ul class="uk-subnav uk-subnav-pill" uk-switcher="active:{{$active}}">
                     <li><a href="#" uk-icon="list"></a></li>
                     <li><a href="#" uk-icon="plus"></a></li>
                 </ul>

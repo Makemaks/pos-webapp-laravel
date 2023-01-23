@@ -47,9 +47,9 @@ class UserAPIController extends Controller
         }
 
         elseif ($request->has('action') && $request['action'] == 'removeCustomer') {
-            $setupList = $request->session()->pull('user-session-'.Auth::user()->user_id.'.setupList');
-            $setupList['customer'] = [];
-            $request->session()->put('user-session-'.Auth::user()->user_id.'.setupList', $setupList);
+            $data['setupList'] = $request->session()->pull('user-session-'.Auth::user()->user_id.'.setupList');
+            $data['setupList']['customer'] = [];
+            $request->session()->put('user-session-'.Auth::user()->user_id.'.setupList', $data);
 
             $this->html = view('receipt.partial.indexPartial', ['data' => $this->Data()])->render();
         }

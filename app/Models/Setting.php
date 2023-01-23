@@ -421,22 +421,19 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingKeyType()
-    {
-
+    public static function SettingKeyGroup(){
+        //see key helper in helpers
         return [
-            "VOUCHER",
-            "CASH",
-            "CREDIT",
-            "TERMINAL",
-
-            //"DISCOUNT",
-            //"DELIVERY"
+            'finalise',
+            'status',
+            'transaction',
+            'character',
+            'totaliser',
+            'menu'
         ];
-
-
     }
 
+    
     public static function SettingOfferType()
     {
         return [

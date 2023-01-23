@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Helpers\ConfigHelper;
 use App\Helpers\CountryHelper;
+use App\Helpers\KeyHelper;
 use App\Models\Setting;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -172,16 +173,27 @@ class SettingFactory extends Factory
             } else {
                 $value = null;
             }
-
-            $setting_key[$i + 1] = [
-                "status" => $this->faker->numberBetween($min = 0, $max = 1),
-                "description" => $this->faker->sentence(),
-                "value" => $value,
-                "setting_key_type" => $this->faker->numberBetween($min = 1, $max = 7),
-            ];
         }
 
 
+        $count = 0;
+        for ($i= 0; $i < count(Setting::SettingKeyGroup()); $i++) { 
+            
+            foreach (KeyHelper::Type()[$i] as $key => $value) {
+                $count++;
+                $setting_key[$count] = [
+                    "setting_key_group"  => $i,
+                    "setting_key_type" => $key, 
+                    "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
+                    "name"=> $this->faker->word,
+                    "status" => $this->faker->numberBetween($min = 0, $max = 1),
+                    "description" => '',
+                    "image" => '',
+                    'setting_vat_id' => $this->faker->numberBetween($min = 0, $max = 1)
+                ];
+            }
+    
+        }
 
         $array = [
             "CASH",

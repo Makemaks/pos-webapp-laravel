@@ -43,15 +43,16 @@ class DashboardController extends Controller
     {
 
         $this->init();
+
         if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin') {
             $this->Admin($request);
-           
+
             return view('dashboard.admin.index', ['data' => $this->Data()]);
         } else {
             $this->User($request);
             return view('dashboard.user.index', ['data' => $this->Data()]);
         }
-        
+
     }
 
     public function Create()
@@ -76,10 +77,10 @@ class DashboardController extends Controller
 
     private function init()
     {
-      
+
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
-           
+
         $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
     }
 
@@ -87,6 +88,8 @@ class DashboardController extends Controller
         $datePeriod = Store::DatePeriod($request);
 
         $this->userModel = $datePeriod['userModel'];
+
+
 
         $this->clerkBreakdownOption = $datePeriod['clerkBreakdownOption'];
 
@@ -144,7 +147,7 @@ class DashboardController extends Controller
             $request->session()->forget('date');
             $request->session()->forget('user');
 
-            // New Session, If user Filter 
+            // New Session, If user Filter
             if ($datePeriod['user_id']) {
 
                 $request->session()->flash('user', [
@@ -172,7 +175,7 @@ class DashboardController extends Controller
     }
 
     private function User(Request $request){
-        
+
     }
 
     private function Data()

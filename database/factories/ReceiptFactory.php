@@ -39,14 +39,13 @@ class ReceiptFactory extends Factory
 
         }
 
-        $receipt_stock_price = NULL;
+
         $receipt_stock_price[1] = [
             "price" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
             "setting_stock_price_level" => $this->faker->numberBetween($min = 1, $max = 5),
             "setting_stock_price_group" => $this->faker->numberBetween($min = 1, $max = 10),
             "is_special_price" => $this->faker->numberBetween($min = 0, $max = 1),
-            ];
-
+        ];
 
 
         return [

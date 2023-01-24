@@ -34,7 +34,7 @@ class Store extends Model
             ->orderBy('store.store_name', 'desc');
     }
 
-   
+
 
     public static function Setting($column,  $filter)
     {
@@ -112,7 +112,7 @@ class Store extends Model
     }
 
     public static function DatePeriod(Request $request)
-    {   
+    {
         $user_id = null;
         $started_at = Carbon::now()->startOfDay()->toDateTimeString();
         $ended_at = Carbon::now()->toDateTimeString();
@@ -283,7 +283,7 @@ class Store extends Model
                 $ended_at = Carbon::now()->endOfQuarter()->subQuarter()->setTime(23, 59, 59)->toDateTimeString();
             }
 
-            
+
         }
 
         if ($request->ended_at && $request->started_at) {
@@ -292,24 +292,25 @@ class Store extends Model
             $ended_at = $request->ended_at;
         }
 
-      
+
         $userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
 
         $orderList =  Store::Order('store_id',  $userModel->store_id)
         ->whereBetween('order.created_at', [$started_at, $ended_at])
         ->orWhere('user_id', $user_id)
+        ->whereNotNull('receipt_id')
         ->get();
-        
+
 
         $orderListASC = $orderList;
 
         $orderHourly = $orderListASC;
-            
+
         $orderListLimited100 = $orderListASC;
 
         $clerkBreakdown = $orderList;
 
-       
+
 
         // Address
         $addressCompany = User::Company('store_id',  $userModel->store_id)
@@ -356,7 +357,7 @@ class Store extends Model
         $orderSettingList = Store::Setting('store_id',  $userModel->store_id)->orWhereBetween('order.created_at', [$started_at, $ended_at])->limit(10);
         $eat_in_eat_out = Order::where('order_store_id', $userModel->store_id)->orderBy('order.created_at', 'desc')->orWhereBetween('order.created_at', [$started_at, $ended_at])->get();
 
-        
+
 
         return [
             'orderList' => $orderList,
@@ -381,7 +382,7 @@ class Store extends Model
             'attendanceModel' => $attendanceModel,
             'settingModel' => $settingModel,
             'clerkList' => $clerkList,
-           
+
         ];
     }
 }

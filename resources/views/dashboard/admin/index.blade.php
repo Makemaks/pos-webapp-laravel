@@ -5,14 +5,14 @@
 
 @php
     $route = Str::before(Request::route()->getName(), '.');
-   
+
 @endphp
 
 
 @section('content')
     <div class="">
-        
-     
+
+
         <div class="uk-margin">
             @include('partial.reportPartial')
         </div>
@@ -24,6 +24,14 @@
                 <div class="uk-card uk-card-default uk-card-body">
                     @include('dashboard.partial.fixedTotalPartial')
                     @include('document.button', ['table' => 'fixedTotalPartial'])
+                </div>
+            </div>
+
+            {{-- web totals --}}
+            <div>
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.webPartial')
+                    @include('document.button', ['table' => 'webPartial'])
                 </div>
             </div>
 

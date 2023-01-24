@@ -22,11 +22,11 @@ if (count($customerTop) > 0) {
         ];
     }
 } else {
-    $arraycustomerTop[] = [
+    /* $arraycustomerTop[] = [
         'Account Num' => '',
         'Name' => '',
         'total' => '',
-    ];
+    ]; */
 }
 
 @endphp
@@ -36,19 +36,19 @@ if (count($customerTop) > 0) {
         <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
             <thead>
                 <tr>
-                    @foreach ($arraycustomerTop[0] as $key => $item)
+                   {{--  @foreach ($arraycustomerTop[0] as $key => $item)
                         <th>{{ $key }}</th>
-                    @endforeach
+                    @endforeach --}}
                 </tr>
             </thead>
             <tbody>
-                @foreach ($arraycustomerTop as $keyarraycustomerTop => $itemarraycustomerTop)
+                {{-- @foreach ($arraycustomerTop as $keyarraycustomerTop => $itemarraycustomerTop)
                     <tr>
                         @foreach ($itemarraycustomerTop as $key => $item)
                             <td>{{ $item }}</td>
                         @endforeach
                     </tr>
-                @endforeach
+                @endforeach --}}
             </tbody>
         </table>
         

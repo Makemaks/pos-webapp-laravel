@@ -388,10 +388,10 @@ class Setting extends Model
         'setting_building' => 'array',
     ];
 
-    public static function SettingTable(){
+    public static function setting_account(){
         return Setting::
-        rightJoin('person', 'person.person_id', 'setting.settingtable_id');
-        rightJoin('company', 'company.company_id', 'setting.settingtable_id');
+        rightJoin('person', 'person.person_id', 'setting.setting_account_id');
+        rightJoin('company', 'company.company_id', 'setting.setting_account_id');
     }
 
 
@@ -404,7 +404,7 @@ class Setting extends Model
     public static function List($column, $filter)
     {
 
-        return Setting::leftJoin('store', 'store.store_id', '=', 'setting.settingtable_id');
+        return Setting::leftJoin('store', 'store.store_id', '=', 'setting.setting_account_id');
     }
 
     public static function Account($column, $filter)
@@ -592,7 +592,7 @@ class Setting extends Model
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 
-        $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
+        $settingModel = Setting::where('setting_account_id', $userModel->store_id)->first();
 
         foreach ($stockInitialize['stock_setting_offer']  as $key => $setting_offer_id) {
             $stock_setting_offer = $settingModel->setting_offer[ $setting_offer_id ];

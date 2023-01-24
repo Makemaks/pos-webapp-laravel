@@ -29,7 +29,7 @@ class SessionMiddleware
   
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-        $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
+        $settingModel = Setting::where('setting_account_id', $userModel->store_id)->first();
 
 
         if ($request->session()->has('id') && $request->session()->has('view') && $request->session()->has('type')) {

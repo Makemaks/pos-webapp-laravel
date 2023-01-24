@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('setting', function (Blueprint $table) {
             $table->bigIncrements('setting_id');
             
-            $table->bigInteger('settingtable_id');
-            $table->string('settingtable_type')->comment('company::person::organisation');
+            $table->bigInteger('setting_account_id');
+          
 
             $table->json('setting_stock_set')->nullable()->comment('group::category::plu::brand');
 

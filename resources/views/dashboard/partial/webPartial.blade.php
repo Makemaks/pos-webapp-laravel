@@ -8,7 +8,6 @@ $totalCredit = 0;
 
 $totalPrice = App\Models\Stock::OrderTotal($data['orderList']);
 
-
 $expenseTotal = $totalPrice - $data['expenseList']->sum('expense_amount');
 
 for ($i = 1; $i < count($data['settingModel']->setting_pos); $i++) {
@@ -33,8 +32,9 @@ $totaliser = [
 
 @endphp
 
+
 <div>
-    <h3 class="uk-card-title">FIXED TOTAL</h3>
+    <h3 class="uk-card-title">WEB TOTAL</h3>
     <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
         <thead>
             <tr>
@@ -54,7 +54,7 @@ $totaliser = [
         </tbody>
     </table>
 
-    
+
 </div>
 
 

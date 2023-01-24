@@ -25,10 +25,10 @@ class Order extends Model
 
     protected $table = 'order';
     protected $primaryKey = 'order_id';
-    
+
     public $timestamps = true;
 
-   
+
 
     protected $attributes = [
 
@@ -39,7 +39,7 @@ class Order extends Model
                 "default": ""
             }
         }',
-        
+
         "order_setting_key" => '{
             "1": {
                 "setting_key_group": "",
@@ -102,9 +102,9 @@ class Order extends Model
             ->leftJoin('event', 'event.event_id', '=', 'receipt.receipttable_id');
     }
 
-  
 
-   
+
+
     public static function AverageSale($service_cost_sum, $service_cost_count)
     {
 
@@ -192,14 +192,14 @@ class Order extends Model
 
     // add to db
     public static function Process($request, $data){
-       
+
         $receipt = [];
         $receipt['priceVAT'] = 0;
         $receipt['totalPrice'] = 0;
         $receipt['discountTotal'] = 0;
         $orderData = [];
         $receiptData = [];
-      
+
 
         //get receipt stock
         if($request->session()->has('user-session-'.Auth::user()->user_id. '.cartList')){
@@ -220,7 +220,7 @@ class Order extends Model
 
         $userModel = User::Person('user_person_id', Auth::user()->user_person_id)
             ->first();
-        
+
         //order type
         if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && User::UserType()[Auth::User()->user_type] == 'Admin') {
 
@@ -228,7 +228,7 @@ class Order extends Model
                 'order_store_id' => $userModel->user_store_id,
                 'order_type' => array_search('In-Store', Order::OrderType())
             ];
-           
+
         }else{
             $orderData += [
                 'order_type' => array_search('Online', Order::OrderType())
@@ -236,14 +236,14 @@ class Order extends Model
         }
 
         //customer details
-        if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && User::UserType()[Auth::User()->user_type] == 'Admin' && 
+        if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && User::UserType()[Auth::User()->user_type] == 'Admin' &&
         $request->session()->has('user-session-'.Auth::user()->user_id.'.'.'customerList')) {
 
             $orderData += [
                 'ordertable_id' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'customerList')[0],
                 'ordertable_type' => 'Person'
             ];
-           
+
         }else{
             $orderData += [
                 'ordertable_id' => $userModel->person_id,
@@ -251,7 +251,7 @@ class Order extends Model
             ];
         }
 
-     
+
         //add finalise key
         if ($request->session()->has('user-session-'.Auth::user()->user_id.'.'.'finaliseKeyList')) {
             if ( count( $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'finaliseKeyList') ) > 0) {
@@ -268,7 +268,7 @@ class Order extends Model
                 ];
             }
         }
-        
+
         //store order
         $orderData = [
 
@@ -282,8 +282,8 @@ class Order extends Model
         $loop = (object)['last' => false];
         //store receipt
         foreach ($sessionCartList as $key => $sessionCartList) {
-           
-           
+
+
             if($key >= count($sessionCartList)){
                 $loop->last = true;
             }
@@ -291,13 +291,13 @@ class Order extends Model
            if (array_key_exists('receipt_discount', $sessionCartList)) {
                 $receiptData += $sessionCartList['receipt_discount'];
            }
-           
+
             $receipt = Receipt::Calculate($data, $sessionCartList, $loop, $receipt);
-            
+
             //decrement stock from table
             $warehouseStock = Warehouse::Available( $sessionCartList['stock_id'] );
             $warehouse_quantity = $warehouseStock->warehouse_quantity - $sessionCartList['stock_quantity'];
-            
+
             Warehouse::where( 'warehouse_id', $warehouseStock->warehouse_id)
             ->update(['warehouse_quantity' => $warehouse_quantity]);
 
@@ -310,14 +310,14 @@ class Order extends Model
                     'receipt_stock_cost' => $receipt['price'],
                     'receipt_setting_pos_id' => 1,
                     'receipt_warehouse_id' => $warehouseStock->warehouse_id,
-                   
+
             ];
-         
+
             Receipt::insert($receiptData);
         }
 
-      
-       
+
+
         //empty sessions
         Receipt::Empty($request);
     }
@@ -331,5 +331,5 @@ class Order extends Model
         return $this->hasOne(Store::class,'order_store_id','store_id');
     }
 
-   
+
 }

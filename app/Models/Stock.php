@@ -49,7 +49,7 @@ class Stock extends Model
                 "code": "",
                 "unit_cost": "",
                 "case_cost": ""
-              
+
             }
         }',
 
@@ -76,7 +76,7 @@ class Stock extends Model
             "recipe_link": "",
             "case_size": "",
             "plu_id": {},
-            
+
             "alternative_text": "",
             "current_stock": "",
             "days_to_order": "",
@@ -84,14 +84,14 @@ class Stock extends Model
             "minimum_stock": "",
             "outer_barcode": "",
             "qty_adjustment": "",
-            
+
             "setting_stock_vat": "",
             "stock_name": "",
             "stock_description": "",
             "stock_image": "",
             "stock_tag": "",
             "stock_type": "",
-            
+
         }',
 
 
@@ -118,7 +118,7 @@ class Stock extends Model
             "value": "",
             "measurement": ""
         }',
-        
+
 
         "stock_setting_offer" => '{}',
         "stock_setting_vat" => '{}',
@@ -174,7 +174,7 @@ class Stock extends Model
 
                     $stock_merchandise = json_decode($orderList->stock_merchandise, true);
 
-                
+
                     if ($orderList->receipt_id != null) {
 
                         if ($stock_merchandise[$stock_merchandise_key] == $key) {
@@ -189,8 +189,8 @@ class Stock extends Model
                         }
 
                     }
-                        
-                   
+
+
                 }
 
 
@@ -210,7 +210,7 @@ class Stock extends Model
 
         $price = 0;
         $totalPrice = 0;
-        
+
         foreach ($orderList as $receiptList) {
             $totalPrice = Stock::ReceiptTotal($receiptList, $totalPrice);
         }
@@ -224,12 +224,15 @@ class Stock extends Model
 
         $price = 0;
         $stock_price = $receiptList->receipt_stock_price;
+        if(!$receiptList->receipt_stock_price){
+            dd($receiptList);
+        }
 
         if ($receiptList->receipt_discount) {
 
             $price = Stock::Discount($stock_price, $receiptList->receipt_discount)['total'];
         }
-       
+
         $price = $price * $receiptList->receipt_quantity;
         $totalPrice = $totalPrice + $price;
 
@@ -246,23 +249,23 @@ class Stock extends Model
             if (Receipt::ReceiptPriceOverrideType()[ $valueDiscount->type ] == 'percentage') {
                 //percentage at checkout
                 $price = $price + MathHelper::Discount($discount_value, $stock_price)['total'];
-                
-            } 
+
+            }
             elseif(Receipt::ReceiptPriceOverrideType()[ $valueDiscount->type ] == 'amount') {
                 //minus the amount at checkout
                 $price = $price + $stock_price - $discount_value;
             }
         }
-        
+
         return $price;
     }
 
     public static function GrossProfitTotal($orderList){
-    
+
        $stockModel = New Stock();
 
        $orderList->groupBy('stock_id');
-       
+
         foreach ($orderList as $receiptList) {
 
             foreach ($stockModel->stock_gross_profit as $key => $value) {
@@ -277,18 +280,18 @@ class Stock extends Model
 
     }
 
-    
 
-    
+
+
     public static function StockVAT($stock_setting_vat){
-    //get vat 
+    //get vat
 
         $stock_vat = [];
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 
         $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
-        
+
         foreach ($stock_setting_vat as $key => $stock_setting_vat_item) {
             $stock_vat[$stock_setting_vat_item] = $settingModel->setting_vat[$stock_setting_vat_item];
         }
@@ -296,32 +299,32 @@ class Stock extends Model
         return $stock_vat;
     }
 
-   
+
     public static function StockPriceDefault($stock_price, $setupList){
-    
+
         $price = 0;
-        
+
         $collection = collect($stock_price)->where('setting_stock_price_level', $setupList['requestInput']['setting_stock_price_level'])
         ->where('setting_stock_price_group', $setupList['requestInput']['setting_stock_price_group']);
-     
+
        if ($collection->count() > 0) {
             $price = $collection->first()['price'];
        }
 
        return $price;
-       
+
     }
 
     public static function StockPriceCustomer($stock_price){
-    
+
         $price = 0;
 
          //get customer id from session
         if (Session::has('user-session-'.Auth::user()->user_id.'.customerCartList')) {
             $customer = Session::get('user-session-'.Auth::user()->user_id.'.customerCartList')[0]['value'];
-        
 
-          
+
+
                 $personModel = Person::find($customer);
                 $companyModel = Company::find($personModel->persontable_id);
 
@@ -335,22 +338,22 @@ class Stock extends Model
                     ->where('setting.settingtable_id', $personModel->person_id)
                     ->first();
                 }
-                
-                
+
+
 
                 foreach ($settingModel->setting_customer['customer_stock_price'] as $key => $value) {
                     //column row
                     $price = $stock_price[ $key ][ $value ]['price'];
                 }
-       } 
+       }
 
        //find discount-show on till button and checkout
        //mix and match-check out only
        //see variance to stock
        return $price;
-       
+
     }
-    
+
 
     public static function StockPriceQuantity($stock_price, $stock_quantity){
         return $stock_price * intval($stock_quantity);
@@ -391,22 +394,22 @@ class Stock extends Model
            // $setupList['stock_setting_key_total'] = $setupList['stock_setting_key_total'] + $setupList['setting_key_amount_total'];
             $setupList['setting_key'] = $stockInitialize['stock_setting_key'];
             $setupList['stock_setting_key'] = $stockInitialize['stock_setting_key'];
-           
-        }
-        
 
-        
+        }
+
+
+
        $setupList['stock_price_processed'] = Stock::StockPriceQuantity( $setupList['stock_price_processed'], $stockInitialize['stock_quantity']);
-      
+
 
        if ( count($stockInitialize['stock_setting_vat']) > 0 ) {
-            
+
             $setupList['stock_setting_vat'] = Stock::StockVAT($stockInitialize['stock_setting_vat']); //vat on this item
             $setupList['stock_vat_rate'] = collect($setupList['stock_setting_vat'])->sum('rate');
             $setupList['stock_vat_rate_total'] = $setupList['stock_vat_rate_total'] + $setupList['stock_vat_rate'];
             $stock_vat_amount_total = MathHelper::VAT($setupList['stock_vat_rate'], $setupList['stock_price_processed'] );
             $setupList['stock_vat_amount_total'] = $setupList['stock_vat_amount_total'] + $stock_vat_amount_total;
-       
+
         }else{
 
             $setupList['stock_vat_rate'] = collect($data['settingModel']->setting_vat)->where('default', 0)->first()['rate'];
@@ -416,8 +419,8 @@ class Stock extends Model
 
 
        $setupList['stock_price_total'] = $setupList['stock_price_processed'] + $stock_vat_amount_total;
-     
-       
+
+
         return $setupList;
     }
 
@@ -434,20 +437,20 @@ class Stock extends Model
             'stock_setting_offer' => $stock->stock_setting_offer,
             'stock_setting_key' => [],
         ];
-      
+
         return $stockInitialize;
     }
 
     public static function ReceiptInitialize($stock, $store, $setupList){
 
-       
+
         $setupList['stock']['stock_id'] = $stock->stock_id;
         $setupList['stock']['stock_name'] = $stock->stock_merchandise['stock_name'];
         $setupList['stock']['store_id'] = $store->store_id;
         $setupList['stock']['store_name'] = Store::find($store->store_id)->store_name;
         $setupList['stock']['stock_quantity'] = 1;
         $setupList = Stock::StockPriceProcessed($stock, $setupList);
-       
+
         return $setupList;
     }
 

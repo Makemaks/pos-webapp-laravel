@@ -41,7 +41,7 @@ if (count($stockList) > 0) {
                 <input class="uk-search-input" type="search" placeholder="Search">
             </form>
         </div>
-        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll-search">
+        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive uk-height-large scroll-search">
             <thead>
                 <tr>
                     @foreach ($arraystockSearch[0] as $key => $item)

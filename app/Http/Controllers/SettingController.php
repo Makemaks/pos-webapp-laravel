@@ -34,7 +34,7 @@ class SettingController extends Controller
 
 
         if ($request->session()->has('view')) {
-            $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)
+            $this->settingModel = Setting::where('setting_account_id', $this->userModel->store_id)
                 ->first();
             $request->session()->keep('view');
 

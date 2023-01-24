@@ -67,10 +67,7 @@ class HomeController extends Controller
       
         $this->settingModel->setting_key = $settingModel->setting_key;
 
-        //$a = Stock::paginate(20);
-
         $this->stockList = Stock::Warehouse('warehouse_store_id', $this->userModel->store_id)
-        ->groupBy('stock_id')
         //->where('warehouse_stock_quantity', '>', 0)
         ->paginate(30);
 
@@ -99,8 +96,8 @@ class HomeController extends Controller
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
         $this->storeModel = Store::find($this->userModel->store_id);
-        $this->settingModel = Setting::where('settingtable_id',  $this->userModel->store_id)->first();
-        $this->settingList = Setting::where('settingtable_id', $this->userModel->store_id);
+        $this->settingModel = Setting::where('setting_account_id',  $this->userModel->store_id)->first();
+        $this->settingList = Setting::where('setting_account_id', $this->userModel->store_id);
     }
 
     private function Session(Request $request){

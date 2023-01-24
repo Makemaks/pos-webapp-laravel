@@ -182,7 +182,7 @@ class Order extends Model
 
         if ($request->session()->has('user-session-'.Auth::user()->user_id.'.setupList')) {
 
-            $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList');
+            $data['setupList'] = $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList');
 
             if ( $data['setupList']['order_price_total'] ) {
 
@@ -218,8 +218,6 @@ class Order extends Model
                     ];
                 }
 
-            
-                $a = User::UserType()[Auth::User()->user_type];
 
                 //order type
                 if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin') {
@@ -251,42 +249,22 @@ class Order extends Model
                     ];
                 }
 
+               
+                
+                //setting_key
+                $data = Setting::SettingKeyProcessed($data, 'order_price_total', 'order_setting_key');
+                
                 //add finalise key
-                if ( count( $this->setupList['order_setting_key'] ) > 0) {
-
-                    //find finalise
-                    $setting_key = $this->settingModel->setting_key->where('setting_key_group', 0)
-                    ->where('setting_key_group', 0);
-
-                    $setting_key['value'] = $this->setupList['order_vat_amount_total'];
-
-                  
-
-                    $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList');
-                    $this->setupList['order_setting_key'] = $setting_key;
-
-                    $orderData += [
-                        'order_setting_key' => $this->setupList['order_setting_key']
-                    ];
-                }
+                $orderData += [
+                    'order_setting_key' => json_encode($data['setupList']['order_setting_key'])
+                ];
 
             
                 $orderID = Order::insertGetId($orderData);
-                $loop = (object)['last' => false];
+                
                 //store receipt
-            
                 foreach ($sessionCartListUser as $key => $sessionCartList) {
                 
-                
-                    if($key >= count($sessionCartListUser)){
-                        $loop->last = true;
-                    }
-
-                    if (array_key_exists('receipt_discount', $sessionCartList)) {
-                            $receiptData += $sessionCartList['receipt_discount'];
-                    }
-                
-                    
                     //decrement stock from table
                     $warehouseStock = Warehouse::List('warehouse_stock_id', $sessionCartList['stock_id'])
                     ->where('warehouse_store_id', $sessionCartList['store_id'])
@@ -299,18 +277,22 @@ class Order extends Model
                     Warehouse::where( 'warehouse_id', $warehouseStock->warehouse_id)
                     ->update(['warehouse_stock_quantity' => $warehouse_quantity]);
 
-                    
+                    //setting_key
+                  
+                    $data = Setting::SettingKeyProcessed($data, 'stock_price_total', 'stock_setting_key');
 
                         $receiptData = [
                             'receipttable_id' => $sessionCartList['stock_id'],
                             'receipttable_type' => 'Stock',
-                            'receipt_warehouse_id' => $sessionCartList['warehouse_id'],
+                            'receipt_warehouse_id' => $sessionCartList['warehouse_store_id'],
                             'receipt_order_id' =>  $orderID,
                             'receipt_user_id' => $sessionCartList['user_id'],
-                            'receipt_stock_price' => $sessionCartList['stock_price'],
+                            'receipt_stock_price' => json_encode($sessionCartList['stock_price']),
+                            'receipt_setting_vat' => json_encode($sessionCartList['stock_setting_vat']),
+                            'receipt_setting_offer' => json_encode($sessionCartList['stock_setting_vat']),
                             'receipt_setting_pos_id' => 1,
                             'receipt_warehouse_id' => $warehouseStock->warehouse_id,
-                            'receipt_setting_key' => $this->setupList['stock_setting_key']
+                            'receipt_setting_key' => json_encode($data['setupList']['stock_setting_key'])
                         ];
                 
                 

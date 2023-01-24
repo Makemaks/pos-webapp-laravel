@@ -215,8 +215,10 @@ class KeyHelper{
     }
 
     public static function Menu(){
-        return [
-            
-        ];
+        for ($i=0; $i < 50; $i++) { 
+            $menu[ $i + 1 ] = 'LEVEL '.$i + 1;
+        }
+
+        return $menu;
     }
 }

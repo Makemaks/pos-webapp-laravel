@@ -139,7 +139,7 @@ class OrderController extends Controller
     {
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('setting_account_id', $this->userModel->store_id)->first();
     }
 
     private function Data()
@@ -175,8 +175,8 @@ class OrderController extends Controller
         //update order - process
         if ($order && $request->has('warehouse_id')) {
             foreach ($request->warehouse_id as $wareHouseKey => $warehouseId) {
-                $warehouse = Warehouse::find($request->receipt_quantity[$wareHouseKey]);
-                $warehouse_quantity = $warehouse->warehouse_quantity - $request->receipt_quantity[$wareHouseKey];
+                $warehouse = Warehouse::find($request->receipt_stock_quantity[$wareHouseKey]);
+                $warehouse_quantity = $warehouse->warehouse_quantity - $request->receipt_stock_quantity[$wareHouseKey];
                 Warehouse::where('warehouse_id', $warehouseId)->update(['warehouse_stock_quantity' => $warehouse_quantity]);
                 Receipt::where('receipt_id', $request->receipt_id[$wareHouseKey])->update(['receipt_status' => 0]);
             }

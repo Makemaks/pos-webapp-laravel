@@ -129,7 +129,7 @@ function Add(stock_id, store_id){
          method: 'POST',
          data: {
             stock_id: stock_id, 
-            store_id:store_id, 
+            store_id:store_id
          },      
          success:function(data){
            /* alert(data.success);

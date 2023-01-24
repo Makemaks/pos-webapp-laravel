@@ -77,7 +77,7 @@ class DashboardController extends Controller
     {
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('setting_account_id', $this->userModel->store_id)->first();
     }
 
     private function Admin(Request $request){
@@ -118,7 +118,7 @@ class DashboardController extends Controller
 
         //dd($this->userModel);
 
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('setting_account_id', $this->userModel->store_id)->first();
 
         $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->get();
 

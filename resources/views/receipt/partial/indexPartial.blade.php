@@ -87,7 +87,7 @@
 
                                 $gain_points = collect($stockInitialize['stock_setting_offer'])->where('gain_points')->sum();
                                 $collect_points_value  = collect($stockInitialize['stock_setting_offer'])->where('gain_points')->sum();
-
+                                $data = Stock::StockWarehouse($data, $stockInitialize);
                             @endphp
                             
                                 <li id="cartItemID-{{$loop->index}}" {{-- uk-toggle="target: #toggle-stock-{{$loop->index}}" --}}>

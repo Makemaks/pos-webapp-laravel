@@ -27,7 +27,7 @@
                     <input type="text" name="receipt_id[]" value="{{$orderList->receipt_id}}" hidden>
                 </td>
                 <td>{{json_decode($orderList->stock_merchandise)->stock_name}}</td>
-                <td>{{$orderList->receipt_quantity}}</td>
+                <td>{{$orderList->receipt_stock_quantity}}</td>
                 <td>
                     @if ($orderList->receipt_status)
                         {{Receipt::ReceiptStatus()[$orderList->receipt_status]}}
@@ -61,7 +61,7 @@
                                     <td>{{$warehouse->warehouse_quantity}}</td>
                                     <td>{{Warehouse::WarehouseType()[$warehouse->warehouse_type]}}</td>
                                     <td>
-                                        <input type="number" class="uk-input"  max="{{$orderList->warehouse_quantity}}"  min="0" name="receipt_quantity[]" value="{{$orderList->receipt_quantity}}">
+                                        <input type="number" class="uk-input"  max="{{$orderList->warehouse_quantity}}"  min="0" name="receipt_stock_quantity[]" value="{{$orderList->receipt_stock_quantity}}">
                                     </td>
                                     <td> 
                                         <input name="warehouse_id[]" class="uk-checkbox" value="{{$warehouse->warehouse_id}}" type="checkbox" @if($warehouse->warehouse_store_id == $data['userModel']->store_id) checked @endif>

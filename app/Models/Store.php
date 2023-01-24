@@ -46,7 +46,7 @@ class Store extends Model
         return Store::leftJoin('order', 'order.order_store_id', '=', 'store.store_id')
             ->leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
-            ->leftJoin('setting', 'setting.settingtable_id', '=', 'store.store_id')
+            ->leftJoin('setting', 'setting.setting_account_id', '=', 'store.store_id')
             ->where($column,  $filter)
             ->orderBy('order.created_at', 'desc');
     }
@@ -59,7 +59,7 @@ class Store extends Model
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
             ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id')
-            ->leftJoin('setting', 'setting.settingtable_id', '=', 'store.store_id')
+            ->leftJoin('setting', 'setting.setting_account_id', '=', 'store.store_id')
             ->select('order.*', 'receipt.*', 'stock.*', 'store.*', 'user.*', 'person.*', 'setting.*', 'order.created_at as order_created_at')
             ->where($column,  $filter)
             ->orderBy('order.created_at', 'desc');
@@ -338,7 +338,7 @@ class Store extends Model
             ->orWhereBetween('attendance.created_at', [$started_at, $ended_at])->orWhere('user_id', $user_id)->get();
 
         // dept average
-        $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
+        $settingModel = Setting::where('setting_account_id', $userModel->store_id)->first();
 
         // dropdown clerk option
         $clerkBreakdownOption = User::Account('store_id', $userModel->store_id)->get();

@@ -68,7 +68,7 @@ class MenuController extends Controller
             $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
                     
-            $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+            $this->settingModel = Setting::where('setting_account_id', $this->userModel->store_id)->first();
             return view('menu.setting.settingCaseSize', ['data' => $this->Data()]);
 
             // return redirect()->route('setting.index');
@@ -80,7 +80,7 @@ class MenuController extends Controller
             $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
             ->first();
                     
-            $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+            $this->settingModel = Setting::where('setting_account_id', $this->userModel->store_id)->first();
             return view('menu.setting.settingRecipe', ['data' => $this->Data()]);
             
 
@@ -90,7 +90,7 @@ class MenuController extends Controller
 
         case 'stock-variance':
 
-            $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+            $this->settingModel = Setting::where('setting_account_id', $this->userModel->store_id)->first();
             
 
             return redirect()->route('setting.index');
@@ -324,7 +324,7 @@ class MenuController extends Controller
 
       $this->companyList  = Company::Store('company_store_id', $this->userModel->store_id)->get();
 
-      $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+      $this->settingModel = Setting::where('setting_account_id', $this->userModel->store_id)->first();
       $this->settingModel = Setting::find($this->settingModel->setting_id);
 
       $this->categoryList = $this->settingModel->setting_stock_category;

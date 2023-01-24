@@ -17,17 +17,17 @@
         <ul class="uk-switcher uk-margin uk-padding-remove">
             <li>@include('home.stock.menu')</li>
             <li>
-                @isset($data['warehouseStoreList'])
+                @isset($data['warehouseList'])
                     <ul class="uk-list uk-list-collapse uk-list-divider">
-                        @foreach ($data['warehouseStoreList'] as $warehouseStoreKey => $warehouseStore)
+                        @foreach ($data['warehouseList'] as $warehouseStoreKey => $warehouseStore)
                         
                             <li>
                                 <span>
                                     <button onclick="Add('{{$stockItem->stock_id}}', '{{$warehouseStore->first()->warehouse_store_id}}')" title="{{$stockItem->stock_id}}" class="uk-button uk-button-default uk-border-rounded uk-button-small" type="button">
-                                        <span uk-icon="icon: cart"></span>
+                                        {{$warehouseStore->sum('warehouse_stock_quantity')}}
                                     </button>
                                 </span>
-                                {{$warehouseStore->first()->store_name}} - {{$warehouseStore->sum('warehouse_stock_quantity')}}
+                                {{$warehouseStore->first()->store_name}}
 
                             </li>
                         @endforeach

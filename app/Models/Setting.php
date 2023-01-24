@@ -310,7 +310,6 @@ class Setting extends Model
                 "description": "",
                 "value": "",
                 "image": "",
-                "setting_vat_id": ""
             }
         }',
 
@@ -321,7 +320,7 @@ class Setting extends Model
             
         }',
 
-        'setting_customer' => '{
+        'setting_credit' => '{
             "customer_stock_price": "",
             "customer_credit": "",
             "customer_print": {},
@@ -381,44 +380,24 @@ class Setting extends Model
         'setting_key' => 'array',
        
         'setting_group' => 'array',
-        'setting_customer' => 'array',
+        'setting_credit' => 'array',
         'setting_preset_message' => 'array',
         'setting_building' => 'array',
         /* 'setting_price_level_scheduler' => 'array' */
         'setting_building' => 'array',
     ];
 
-    public static function SettingTable(){
+    public static function Account(){
         return Setting::
-        rightJoin('person', 'person.person_id', 'setting.settingtable_id');
-        rightJoin('company', 'company.company_id', 'setting.settingtable_id');
+        rightJoin('account', 'account.account_id', 'setting.setting_account_id');
     }
 
 
-    /* public static function SettingKey()
-    {
-        //  0 , 1 , 2
-        return ['finalise', 'status', 'transtype'];
-    }
- */
     public static function List($column, $filter)
     {
-
-        return Setting::leftJoin('store', 'store.store_id', '=', 'setting.settingtable_id');
+        return Setting::leftJoin('store', 'store.store_id', '=', 'setting.setting_account_id');
     }
 
-    public static function Account($column, $filter)
-    {
-
-        $setting = Setting::where($column, $filter)
-            ->first();
-
-        if ($setting) {
-            return $setting;
-        } else {
-            return new Setting();
-        }
-    }
 
     public static function SettingOfferStatus()
     {
@@ -592,7 +571,7 @@ class Setting extends Model
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 
-        $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
+        $settingModel = Setting::where('setting_account_id', $userModel->store_id)->first();
 
         foreach ($stockInitialize['stock_setting_offer']  as $key => $setting_offer_id) {
             $stock_setting_offer = $settingModel->setting_offer[ $setting_offer_id ];
@@ -673,6 +652,22 @@ class Setting extends Model
         }
     
         return $currencySymbol;
+    }
+
+
+    public static function SettingKeyProcessed($data, $data_array_key_A, $data_array_key_B){
+        $setting_key = collect( $data['settingModel']->setting_key )->where('setting_key_group', 0)
+        ->where('setting_key_type', 0)->toArray();
+
+        $setting_key['value'] = $data['setupList'][$data_array_key_A];
+
+        if ( count( $data['setupList'][$data_array_key_B] ) > 0) {
+            $data['setupList'][$data_array_key_B] += $setting_key;
+        } else {
+            $data['setupList'][$data_array_key_B][1] = $setting_key;
+        }
+
+        return $data;
     }
 
 

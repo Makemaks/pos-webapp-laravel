@@ -18,7 +18,7 @@ return new class extends Migration
             $table->json('stock_price')->nullable(); // as array
             $table->json('stock_price_quantity')->nullable(); // as array
             $table->bigInteger('stock_quantity')->default(0); // as array
-            $table->bigInteger('root_stock_id')->nullable()->comment('parent'); 
+            
             $table->json('stock_supplier')->nullable(); // as array
             $table->json('stock_setting_offer')->nullable();
             $table->json('stock_merchandise')->nullable();

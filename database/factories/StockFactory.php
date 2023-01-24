@@ -150,11 +150,10 @@ class StockFactory extends Factory
 
         return [
 
-
             'stock_price' => $stock_price,
             'stock_supplier' => $stock_supplier,
             'stock_store_id' => $this->faker->numberBetween($min = 1, $max = 10),
-            'root_stock_id' => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 10) ) ),
+            
             'stock_gross_profit' => $stock_gross_profit,
             'stock_quantity' => $this->faker->numberBetween($min = 100, $max = 500),
             'stock_merchandise' => $stock_merchandise,

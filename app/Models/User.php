@@ -144,7 +144,7 @@ class User extends Authenticatable
 
             'userModel' => User::Account('account_id', Auth::user()->user_account_id)->first(),
             'companyList'  => Company::Store('company_store_id', $this->userModel->store_id)->get(),
-            'settingModel' => Setting::where('settingtable_id', $this->userModel->store_id)->first()
+            'settingModel' => Setting::where('setting_account_id', $this->userModel->store_id)->first()
 
         ];
 

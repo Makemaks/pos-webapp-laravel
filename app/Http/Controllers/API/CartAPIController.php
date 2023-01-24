@@ -13,6 +13,7 @@ use App\Models\Setting;
 
 use App\Models\Stock;
 use App\Models\Store;
+use App\Models\Warehouse;
 use App\Helpers\MathHelper;
 
 class CartAPIController extends Controller
@@ -141,11 +142,16 @@ class CartAPIController extends Controller
 
             //add to cart
             $this->cartList = $request->session()->get('user-session-'.Auth::user()->user_id.'.cartList');
-            $stock = Stock::find($request['stock_id']);
+            $stock = Stock::Warehouse('warehouse_store_id', $this->userModel->store_id)
+            ->where('warehouse_stock_id', $request['stock_id'])
+            ->where('warehouse_stock_quantity', '>', 0)
+            //->where('warehouse_type', 2)
+            ->first();
+
             $store = Store::find($request['store_id']);
             $this->setupList = $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList');
 
-            $this->requestInput = Stock::StockInitialize($stock, $store,  $this->setupList);
+            $this->requestInput = Stock::StockInitialize($stock, $store,  $this->Data());
 
             
             $request->session()->push('user-session-'.Auth::user()->user_id.'.cartList', $this->requestInput);
@@ -300,7 +306,7 @@ class CartAPIController extends Controller
     private function init(){
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('setting_account_id', $this->userModel->store_id)->first();
 
         
     }

@@ -32,43 +32,10 @@
                     @php
                         $text_success = '';
                         $image =  'stock/'.$stockItem->stock_store_id.'/'.$stockItem->image;
-                        
-                        //$data['setupList'] = Stock::StockPriceProcessed($stockItem, $data);
-                      
+
                         $stockInitialize = Stock::StockInitialize($stockItem, $data['storeModel'], $data);
                         $data = Stock::StockPriceProcessed($stockInitialize, $data, $loop);
-
-                        $data['warehouseList'] = Warehouse::List('warehouse_stock_id', $stockItem->stock_id)
-                        ->where('warehouse_store_id', $stockItem->warehouse_store_id)
-                        ->where('warehouse_stock_quantity', '>', 0)
-                        //->where('warehouse_type', 2)
-                        ->get();
-
-                        //get stock from other stores
-                        $storeList = Store::List('store_id', $stockItem->warehouse_store_id)
-                        ->orWhere('root_store_id', $stockItem->warehouse_store_id)
-                        ->select('store_id')
-                        ->get();
-
-
-                        $data['warehouseStoreList'] = Warehouse::List('warehouse_stock_id', $stockItem->stock_id)
-                        ->whereIn('warehouse_store_id', $storeList->toArray())
-                        ->where('warehouse_stock_quantity', '>', 0)
-                        ->orderBy('warehouse_store_id')
-                        //->where('warehouse_type', 2)
-                        ->get()
-                        ->groupBy('warehouse_store_id');
-
-                        
-
-                        if ($data['warehouseStoreList']) {
-                            if($data['warehouseStoreList']->sum('warehouse_stock_quantity') > 0) {
-                                $text_success = 'uk-text-success';
-                            }
-                        }
-
-                       
-
+                        $data = stock::StockWarehouse($data, $stockItem->toArray());
                     @endphp
 
                     <div>
@@ -78,7 +45,6 @@
                             {{-- <div>
                                 @include('receipt.partial.controlPartial')
                             </div> --}}
-                          
 
                             <div class="uk-grid-small uk-margin-small"  uk-grid>
                                 
@@ -89,7 +55,7 @@
                             </div>
                             
                             <div>
-                                <div onclick="Add('{{$stockItem->stock_id}}', '{{$stockItem->warehouse_store_id}}')" title="{{$stockItem->stock_id}}">
+                                <div onclick="Add('{{$stockItem->stock_id}}', '{{$stockItem->store_id}}')" title="{{$stockItem->stock_id}}">
                                     {{Str::limit($stockItem->stock_merchandise['stock_name'], 10)}}
                                 </div>
                             </div>

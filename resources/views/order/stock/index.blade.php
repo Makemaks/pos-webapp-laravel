@@ -28,7 +28,7 @@
                
                     <tr>
                         <td>{{json_decode($order->stock_merchandise)->stock_name}}</td>
-                        <td>{{$orderList->sum('receipt_quantity')}}</td>
+                        <td>{{$orderList->sum('receipt_stock_quantity')}}</td>
                         <td>
                             <table class="uk-table uk-table-small uk-table-divider">
                                 <thead>
@@ -57,17 +57,17 @@
                                                 <td>{{$warehouse->warehouse_quantity}}</td>
                                                 <td>
                                                          
-                                                   @if ($warehouse->warehouse_quantity > $orderList->sum('receipt_quantity'))
-                                                        <input type="number" class="uk-input"  max="{{$warehouse->warehouse_quantity}}"  min="0" name="receipt_quantity[]" value="{{$orderList->sum('receipt_quantity')}}">
+                                                   @if ($warehouse->warehouse_quantity > $orderList->sum('receipt_stock_quantity'))
+                                                        <input type="number" class="uk-input"  max="{{$warehouse->warehouse_quantity}}"  min="0" name="receipt_stock_quantity[]" value="{{$orderList->sum('receipt_stock_quantity')}}">
                                                    @else
-                                                        <input type="number" class="uk-input"  max="{{$warehouse->warehouse_quantity}}"  min="0" name="receipt_quantity[]" value="{{$warehouse->warehouse_quantity}}">
+                                                        <input type="number" class="uk-input"  max="{{$warehouse->warehouse_quantity}}"  min="0" name="receipt_stock_quantity[]" value="{{$warehouse->warehouse_quantity}}">
                                                    @endif
                                                     
                                                 </td>
                                                 <td>
                                                     @php
                                                     
-                                                        if ($warehouse->warehouse_quantity > $order->receipt_quantity  && $checked != 'checked' && $available == false) {
+                                                        if ($warehouse->warehouse_quantity > $order->receipt_stock_quantity  && $checked != 'checked' && $available == false) {
                                                             $checked = 'checked';
                                                             $available = true;
                                                         }else{

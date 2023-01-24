@@ -16,9 +16,7 @@ return new class extends Migration
         Schema::create('setting', function (Blueprint $table) {
             $table->bigIncrements('setting_id');
             
-            $table->bigInteger('settingtable_id');
-            $table->string('settingtable_type')->comment('company::person::organisation');
-
+            $table->bigInteger('setting_account_id');
             $table->json('setting_stock_set')->nullable()->comment('group::category::plu::brand');
 
 
@@ -34,7 +32,7 @@ return new class extends Migration
 
             $table->json('setting_stock_price_level')->nullable();
             $table->tinyInteger('setting_stock_price_group')->nullable();
-            $table->tinyInteger('setting_stock_price_group_special')->nullable();
+            
 
             
 
@@ -62,7 +60,7 @@ return new class extends Migration
             $table->json('setting_reason')->nullable();
             
             $table->json('setting_group')->nullable();
-            $table->json('setting_customer')->nullable();
+            $table->json('setting_credit')->nullable();
 
             $table->json('setting_preset_message')->nullable();
            

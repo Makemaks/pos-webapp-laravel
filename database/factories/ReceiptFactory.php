@@ -39,23 +39,13 @@ class ReceiptFactory extends Factory
 
         }
 
-
-        $count = 1;
-        $receipt_stock_price = [];
-        for ($j=0; $j < 5; $j++) { 
-                
-            for ($i=0; $i < 10; $i++) { 
-                $receipt_stock_price[$count] = [
-                    "price" =>  $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
-                    "setting_stock_price_level" => $i + 1,
-                    "setting_stock_price_group" => $j,
-                    "is_special_price" => $this->faker->numberBetween($min = 0, $max = 1),
-                ];
-                $count++;
-            }
-           
-        }
-
+        
+        $receipt_stock_price[1] = [
+            "price" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
+            "setting_stock_price_level" => $this->faker->numberBetween($min = 1, $max = 5),
+            "setting_stock_price_group" => $this->faker->numberBetween($min = 1, $max = 10),
+            "is_special_price" => $this->faker->numberBetween($min = 0, $max = 1),
+        ];
         
      
         return [

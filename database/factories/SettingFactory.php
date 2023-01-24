@@ -167,8 +167,7 @@ class SettingFactory extends Factory
                     "name"=> $this->faker->word,
                     "status" => $this->faker->numberBetween($min = 0, $max = 1),
                     "description" => '',
-                    "image" => '',
-                    'setting_vat_id' => $this->faker->numberBetween($min = 0, $max = 1)
+                    "image" => ''
                 ];
             }
     
@@ -211,14 +210,6 @@ class SettingFactory extends Factory
         }
        
       
-        $customer_stock_price[$this->faker->numberBetween($min = 1, $max = 5)] = [$this->faker->numberBetween($min = 1, $max = 10)];
-        $setting_customer = [
-            "customer_stock_price" => $customer_stock_price,
-            "customer_credit" =>  $this->faker->numberBetween($min = 0, $max = 200),
-            "customer_print" => $customer_print, //ConfigHelper::SettingCustomerPrint(),
-            "customer_marketing" => $this->faker->numberBetween($min = 0, $max = 1),
-        ];
-
         for ($i = 0; $i < 10; $i++) {
             $setting_preset_message[$i+1] = [
                 "message" => $this->faker->word,
@@ -245,8 +236,7 @@ class SettingFactory extends Factory
 
         return [
             
-            'settingtable_id' => $this->faker->numberBetween($min = 1, $max = 10),
-            'settingtable_type' => $this->faker->randomElement($array = array ('Person', 'Company', 'Organisation')),
+            'setting_account_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'setting_api' => $setting_payment_gateway,
             'setting_pos' => $setting_pos,
             'setting_stock_set'  => $setting_stock_set,
@@ -266,12 +256,12 @@ class SettingFactory extends Factory
             'setting_key' => $setting_key,
             
             'setting_group' => $setting_group,
-            'setting_customer' => $setting_customer,
+           
             'setting_stock_tag_group' => $setting_stock_tag_group,
             'setting_preset_message' => $setting_preset_message,
             'setting_stock_price_level' => $setting_stock_price_level,
             'setting_stock_price_group' => $this->faker->numberBetween($min = 5, $max = 5),
-            'setting_stock_price_group_special' => $this->faker->numberBetween($min = 5, $max = 5),
+            
             'setting_building' => $setting_building
            
             

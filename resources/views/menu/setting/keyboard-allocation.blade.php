@@ -36,11 +36,15 @@
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="form-stacked-select">File</label>
                                 <div class="uk-form-controls">
-                                    <select class="uk-select" id="function" name="file">
-                                        @foreach(Setting::SettingKeyGroup() as $key => $setting_key_group)
+                                    <select class="uk-select" id="function" name="file" onchange="javascript: initDropdown($(this).val());">
+                                        @php
+                                        $setting_key_groups = Setting::SettingKeyGroup();
+                                        unset($setting_key_groups[array_search('menu', $setting_key_groups)])
+                                        @endphp
+                                        @foreach($setting_key_groups as $key => $setting_key_group)
                                             <option value="{{ $key }}">{{ $setting_key_group }}</option>
                                         @endforeach
-                                            <option value="{{ $key+1 }}">Plu</option>
+                                            <option value="plu" selected>Plu</option>
                                     </select>
                                 </div>
                             </div>
@@ -50,17 +54,6 @@
                                 <div class="uk-form-controls">
                                     <div id="record" value="0" name="record"></div>
                                 </div>
-                                <script>
-                                    addEventListener('DOMContentLoaded', (event) => {
-                                        jSuites.dropdown(document.getElementById('record'), {
-                                            url: '{{ route('menu.stock.get_list') }}',
-                                            remoteSearch: true,
-                                            autocomplete: true,
-                                            lazyLoading: true,
-                                            width: '280px'
-                                        });
-                                    });
-                                </script>
                             </div>
 
                             <div class="uk-margin">
@@ -291,6 +284,27 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function initDropdown(setting_key_group = '') {
+            let url = '{{ route('menu.stock.get_list') }}';
+            if (setting_key_group && setting_key_group !== 'plu') {
+                url = '{{ route('menu.stock.get_setting_key') }}?setting_key_group=' + setting_key_group
+            }
+            jSuites.dropdown(document.getElementById('record'), {
+                url: url,
+                remoteSearch: true,
+                autocomplete: true,
+                lazyLoading: true,
+                width: '280px'
+            });
+        }
+
+        addEventListener('DOMContentLoaded', (event) => {
+            initDropdown();
+        });
+    </script>
+
 @endsection
 
 

@@ -513,6 +513,10 @@ class Setting extends Model
 
                 //$value = head($value);
                 $a = count(KeyHelper::Type()[ $value['setting_key_group'] ]);
+
+                if (!array_key_exists(  $value['setting_key_type'], KeyHelper::Type()[ $value['setting_key_group'] ] ) ) {
+                    $a = 0;
+                }
                 $setting_key_type = KeyHelper::Type()[ $value['setting_key_group'] ][ $value['setting_key_type'] ];
 
                 /*  
@@ -526,7 +530,7 @@ class Setting extends Model
                     }
                     else{
 
-                        if( Str::contains( $setting_key_type, '%') ){
+                        if( Str::contains( $setting_key_type, '%') && $value['value'] ){
                             $setting_key_amount = MathHelper::VAT($value['value'], $data['setupList']['stock_price_processed']);
                             $value['value'] =  $setting_key_amount;
                         }

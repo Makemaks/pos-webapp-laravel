@@ -13,7 +13,7 @@ if (count($customerTop) > 0) {
         $personName = json_decode($person);
 
 
-        $totalPrice = Stock::OrderTotal($receiptList);
+        $totalPrice = Receipt::ReceiptCartInitialize($receiptList);
 
         $arraycustomerTop[] = [
             'Account Num' => $receiptList->first()->company_store_id,

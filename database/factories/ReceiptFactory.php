@@ -39,14 +39,13 @@ class ReceiptFactory extends Factory
 
         }
 
-        $receipt_stock_price = NULL;
+
         $receipt_stock_price[1] = [
             "price" => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 20),
             "setting_stock_price_level" => $this->faker->numberBetween($min = 1, $max = 5),
             "setting_stock_price_group" => $this->faker->numberBetween($min = 1, $max = 10),
             "is_special_price" => $this->faker->numberBetween($min = 0, $max = 1),
-            ];
-
+        ];
 
 
         return [
@@ -55,7 +54,7 @@ class ReceiptFactory extends Factory
             'receipt_warehouse_id' => $this->faker->randomElement($array = array (NULL, $this->faker->numberBetween($min = 1, $max = 10))),
             'receipt_user_id' => $this->faker->numberBetween($min = 1, $max = 2),
             'receipt_stock_price' => $receipt_stock_price,
-            'receipt_order_id' => $this->faker->numberBetween($min = 1, $max = 10),
+            'receipt_order_id' => $this->faker->numberBetween($min = 1, $max = 20),
             'receipt_setting_key' => $receipt_setting_key,
             'receipt_setting_pos_id' => $this->faker->numberBetween($min = 1, $max = 5)
         ];

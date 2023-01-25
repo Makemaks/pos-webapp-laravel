@@ -33,7 +33,7 @@ use App\Models\User;
                     @foreach ($data['orderList'] as $orderKey =>  $order)
                         @php
                             $orderList = Order::Receipt('order_id', $order->order_id)->get();
-                            $orderTotal = Stock::OrderTotal($orderList);
+                            $orderTotal = Receipt::ReceiptCartInitialize($orderList);
                             $userPerson = User::Person('user_id', $order->receipt_user_id)->first();
                         @endphp
                     <tr>

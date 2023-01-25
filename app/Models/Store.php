@@ -296,11 +296,11 @@ class Store extends Model
         $userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
 
         $orderList =  Store::Order('store_id',  $userModel->store_id)
-        ->whereBetween('order.created_at', [$started_at, $ended_at])
-        ->orWhere('user_id', $user_id)
+        //->whereBetween('order.created_at', [$started_at, $ended_at])
+        //->orWhere('user_id', $user_id)
         ->get();
 
-
+        
         $orderListASC = $orderList;
 
         $orderHourly = $orderListASC;

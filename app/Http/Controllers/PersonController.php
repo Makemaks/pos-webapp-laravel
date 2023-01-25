@@ -74,7 +74,7 @@ class PersonController extends Controller
         $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
         ->first();
 
-        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('setting_account_id', $this->userModel->store_id)->first();
        
     }
 

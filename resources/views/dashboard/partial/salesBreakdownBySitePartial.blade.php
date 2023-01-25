@@ -10,7 +10,7 @@ $orderList = $orderList->groupBy('store_id');
 if (count($orderList) > 0) {
     foreach ($orderList as $receiptList) {
        
-        $totalPrice = Stock::OrderTotal($receiptList);
+        $totalPrice = Receipt::ReceiptCartInitialize($receiptList);
 
         $arraySiteBreakdown[] = [
             'Number' => $receiptList->first()->store_id,

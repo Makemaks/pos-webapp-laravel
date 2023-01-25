@@ -11,7 +11,7 @@ if (count($stockList) > 0) {
                 $stockNameJson = json_decode($receipt->stock_merchandise, true);
                 $stockName = $stockNameJson['stock_name'];
 
-                $totalPrice = \App\Models\Stock::OrderTotal($receiptList);
+                $totalPrice = \App\Models\Receipt::ReceiptCartInitialize($receiptList);
                 $quantity_each_stock = $receiptList->count();
 
                 $arraystockSearch[] = [

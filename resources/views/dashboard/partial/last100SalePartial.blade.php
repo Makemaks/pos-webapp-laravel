@@ -10,7 +10,7 @@ if (count($orderList) > 0) {
         $price = 0;
         $current_created_at = App\Models\Order::find($receiptList->first()->order_id)->created_at;
 
-        $totalPrice = Stock::OrderTotal($receiptList);
+        $totalPrice = Receipt::ReceiptCartInitialize($receiptList);
 
         $array100Sale[] = [
             'time' => $current_created_at,

@@ -13,7 +13,7 @@ if (count($clerkBreakdown) > 0) {
         $personName = json_decode($person);
 
 
-        $totalPrice = Stock::OrderTotal($receiptList);
+        $totalPrice = Receipt::ReceiptCartInitialize($receiptList);
 
         $arrayclerkBreakdown[] = [
             'Number' => $receiptList->first()->receipt_user_id,

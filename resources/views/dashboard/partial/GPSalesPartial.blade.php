@@ -10,7 +10,7 @@ if (count($orderList) > 0) {
     foreach ($orderList as $receiptList) {
     
 
-        $totalPrice = Stock::OrderTotal($receiptList);
+        $totalPrice = Receipt::ReceiptCartInitialize($receiptList);
 
         $quantity = $receiptList->count();
 

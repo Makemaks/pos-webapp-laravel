@@ -37,7 +37,7 @@ if (count($orderList) > 0) {
                 $current_order_minute_carbon = Carbon\Carbon::parse($current_order_minute);
 
                 if ($current_order_minute_carbon->gte($previous_minute) && $current_order_minute_carbon->lt($current_minute)) {
-                    $price_each_order = App\Models\Stock::OrderTotal($receiptList);
+                    $price_each_order = App\Models\Receipt::ReceiptCartInitialize($receiptList);
                     $quantity_each_order = $receiptList->count();
                     $totalQuantity = $totalQuantity + $quantity_each_order;
                     $totalPrice = $totalPrice + $price_each_order;

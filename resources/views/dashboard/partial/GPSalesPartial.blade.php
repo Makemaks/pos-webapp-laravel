@@ -7,29 +7,8 @@ $orderList = $data['orderList']->groupBy('stock_id');
 
 
 if (count($orderList) > 0) {
-    foreach ($orderList as $receiptList) {
     
-
-        $totalPrice = Receipt::ReceiptCartInitialize($receiptList);
-
-        $quantity = $receiptList->count();
-
-        if (json_decode($receiptList->first()->stock_gross_profit)) {
-            $rrptotalPrice = $quantity * json_decode($receiptList->first()->stock_gross_profit)->rrp;
-
-            $totalGP = $rrptotalPrice - $totalPrice;
-
-            $GPpercentage = ($totalGP / $quantity) * 100;
-
-            $arrayGPList[] = [
-                'Number' => $receiptList->first()->stock_id,
-                'Descriptor' => json_decode($receiptList->first()->stock_merchandise)->stock_name,
-                'Profit' => App\Helpers\MathHelper::FloatRoundUp($totalGP, 2),
-                'GP' => App\Helpers\MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
-            ];
-        }
-       
-    }
+    $arrayGPList = Stock::StockGrossProfit( $orderList, $data );
 
     $sortarraytopGPList = collect($arrayGPList)
         ->sortBy('Profit')
@@ -59,6 +38,7 @@ if (count($orderList) > 0) {
 }
 
 @endphp
+
 <div>
         <h3 class="uk-card-title">GP SALES</h3>
 

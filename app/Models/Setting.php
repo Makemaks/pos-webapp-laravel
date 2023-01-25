@@ -310,7 +310,6 @@ class Setting extends Model
                 "description": "",
                 "value": "",
                 "image": "",
-                "setting_vat_id": ""
             }
         }',
 
@@ -321,7 +320,7 @@ class Setting extends Model
             
         }',
 
-        'setting_customer' => '{
+        'setting_credit' => '{
             "customer_stock_price": "",
             "customer_credit": "",
             "customer_print": {},
@@ -381,44 +380,24 @@ class Setting extends Model
         'setting_key' => 'array',
        
         'setting_group' => 'array',
-        'setting_customer' => 'array',
+        'setting_credit' => 'array',
         'setting_preset_message' => 'array',
         'setting_building' => 'array',
         /* 'setting_price_level_scheduler' => 'array' */
         'setting_building' => 'array',
     ];
 
-    public static function setting_account(){
+    public static function Account(){
         return Setting::
-        rightJoin('person', 'person.person_id', 'setting.setting_account_id');
-        rightJoin('company', 'company.company_id', 'setting.setting_account_id');
+        rightJoin('account', 'account.account_id', 'setting.setting_account_id');
     }
 
 
-    /* public static function SettingKey()
-    {
-        //  0 , 1 , 2
-        return ['finalise', 'status', 'transtype'];
-    }
- */
     public static function List($column, $filter)
     {
-
         return Setting::leftJoin('store', 'store.store_id', '=', 'setting.setting_account_id');
     }
 
-    public static function Account($column, $filter)
-    {
-
-        $setting = Setting::where($column, $filter)
-            ->first();
-
-        if ($setting) {
-            return $setting;
-        } else {
-            return new Setting();
-        }
-    }
 
     public static function SettingOfferStatus()
     {
@@ -476,7 +455,7 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingStockGroup(){
+    public static function SettingStockSet(){
 
         return [
             "category",
@@ -520,23 +499,20 @@ class Setting extends Model
     }
 
     //session and grand total
-    public static function SettingKey($setupList, $setting_key_list){
+    public static function SettingKey($data, $setting_key_list){
 
         $count = 0;
 
         if (count( $setting_key_list ) > 0) {
             
-              //$setting_key = collect($setting_key_list)->collapse()->where('setting_key_group', $value['setting_key_group']);
-
-            if ($setupList['order_sub_total']) {
-                $setupList['stock_price_processed'] = $setupList['order_sub_total'];
+            if ($data['setupList']['order_sub_total']) {
+                $data['setupList']['stock_price_processed'] = $data['setupList']['order_sub_total'];
             }
-
-            //$setting_key = collect($setting_key_list)->collapse()->where('setting_key_group', $value['setting_key_group']);
            
             foreach ( $setting_key_list as $key => $value) {
 
-                $value = head($value);
+                //$value = head($value);
+                $a = count(KeyHelper::Type()[ $value['setting_key_group'] ]);
                 $setting_key_type = KeyHelper::Type()[ $value['setting_key_group'] ][ $value['setting_key_type'] ];
 
                 /*  
@@ -546,22 +522,22 @@ class Setting extends Model
                 if ( Str::contains( $setting_key_type, '%') || Str::contains( $setting_key_type, '+') || Str::contains( $setting_key_type, '-')) {
 
                     if($count == 0){
-                       $setupList['setting_key_amount_total'] = $value['value'];
+                       $data['setupList']['setting_key_amount_total'] = $value['value'];
                     }
                     else{
 
                         if( Str::contains( $setting_key_type, '%') ){
-                            $setting_key_amount = MathHelper::VAT($value['value'], $setupList['stock_price_processed']);
+                            $setting_key_amount = MathHelper::VAT($value['value'], $data['setupList']['stock_price_processed']);
                             $value['value'] =  $setting_key_amount;
                         }
                         
                         if ( Str::contains($setting_key_type, '+' ) ) {
-                            $setupList['setting_key_amount_total'] = $setupList['setting_key_amount_total'] + $value['value'];
-                            $setupList['stock_price_processed'] = $setupList['stock_price_processed'] + $value['value'];
+                            $data['setupList']['setting_key_amount_total'] = $data['setupList']['setting_key_amount_total'] + $value['value'];
+                            $data['setupList']['stock_price_processed'] = $data['setupList']['stock_price_processed'] + $value['value'];
                         }
                         elseif( Str::contains( $setting_key_type, '-' ) ){
-                            $setupList['setting_key_amount_total'] = $setupList['setting_key_amount_total'] + $value['value'];
-                            $setupList['stock_price_processed'] = $setupList['stock_price_processed'] + $value['value'];
+                            $data['setupList']['setting_key_amount_total'] = $data['setupList']['setting_key_amount_total'] + $value['value'];
+                            $data['setupList']['stock_price_processed'] = $data['setupList']['stock_price_processed'] + $value['value'];
                         }
 
                     }
@@ -576,17 +552,17 @@ class Setting extends Model
         }
        
         
-        return $setupList;
+        return $data;
 
     }
 
 
     //stock
-    public static function SettingOffer($stockInitialize, $setupList){
+    public static function SettingOffer($stockInitialize, $data){
 
         $settingCurrentSettingOfferType = [];
         $total = [];
-        $price = $setupList['stock_price'];
+        $price = $data['setupList']['stock_price'];
         $stockOffer = [];
 
         $userModel = User::Account('account_id', Auth::user()->user_account_id)
@@ -652,10 +628,10 @@ class Setting extends Model
 
         
        
-        $setupList['stock_setting_offer'] = $stockOffer;
-        $setupList['stock_setting_offer_total'] = collect($settingCurrentSettingOfferType)->sum('discount_value');
-        $setupList['stock_price_processed'] = $setupList['stock_price'] - $setupList['stock_setting_offer_total'];
-        return $setupList;
+        $data['setupList']['stock_setting_offer'] = $stockOffer;
+        $data['setupList']['stock_setting_offer_total'] = collect($settingCurrentSettingOfferType)->sum('discount_value');
+        $data['setupList']['stock_price_processed'] = $data['setupList']['stock_price'] - $data['setupList']['stock_setting_offer_total'];
+        return $data;
 
     }
 
@@ -673,6 +649,22 @@ class Setting extends Model
         }
     
         return $currencySymbol;
+    }
+
+
+    public static function SettingKeyProcessed($data, $data_array_key_A, $data_array_key_B){
+        $setting_key = collect( $data['settingModel']->setting_key )->where('setting_key_group', 0)
+        ->where('setting_key_type', 0)->toArray();
+
+        $setting_key['value'] = $data['setupList'][$data_array_key_A];
+
+        if ( count( $data['setupList'][$data_array_key_B] ) > 0) {
+            $data['setupList'][$data_array_key_B] += $setting_key;
+        } else {
+            $data['setupList'][$data_array_key_B][1] = $setting_key;
+        }
+
+        return $data;
     }
 
 

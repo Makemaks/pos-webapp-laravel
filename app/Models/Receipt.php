@@ -95,6 +95,7 @@ class Receipt extends Model
 
         if ( $request->session()->has('user-session-'.Auth::user()->user_id.'.setupList') == false) {
             $setupList = [
+                'user' => [],
                 'customer' => [],
                 'setting_key' => [],
                 'setting_key_amount_total' => 0,
@@ -129,27 +130,28 @@ class Receipt extends Model
         return $request;
     }
 
-    public static function ReceiptCartInitialize($data){
-        $loop = collect([
+    public static function ReceiptCartInitialize( $orderList, $data){
+        $stockItem = Null;
+      
+        $loop = (object)[
             'first' => true,
             'last' => false
-        ]);
+        ];
 
-        $lastElement = end($data['orderList']);
+        $lastElement = end($orderList);
 
-        foreach ($data['orderList'] as $receipt) {
+        foreach ($orderList as $receipt) {
            
-            $store = Store::find($receipt->store_id);
-            $stock = Stock::find($receipt->stock_id);
+            $stockInititalize = Stock::ReceiptInitialize($receipt);
 
-            $stockInititalize = Stock::StockInitialize($stock, $store, $data);
-
-            if($lastElement == $receipt) {
+            if(end($orderList) == $receipt) {
                 $loop->last = true;
             }
 
            $data = Stock::StockPriceProcessed($stockInititalize, $data, $loop);
            $data = Receipt::Calculate($data, $stockItem, $loop);
+
+           $loop->first = false;
         }
 
         return $data;
@@ -157,6 +159,7 @@ class Receipt extends Model
 
     //data , stock , loop
     public static function Calculate($data, $stockItem, $loop){
+       
        
 
         if ($loop->first) {

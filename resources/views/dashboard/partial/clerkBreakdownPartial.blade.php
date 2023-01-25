@@ -13,12 +13,12 @@ if (count($clerkBreakdown) > 0) {
         $personName = json_decode($person);
 
 
-        $totalPrice = Receipt::ReceiptCartInitialize($receiptList);
+        $data = Receipt::ReceiptCartInitialize($clerkBreakdown, $data);
 
         $arrayclerkBreakdown[] = [
             'Number' => $receiptList->first()->receipt_user_id,
             'Name' => $receiptList->first()->person_firstname,
-            'total' => App\Helpers\MathHelper::FloatRoundUp($totalPrice, 2),
+            'total' => App\Helpers\MathHelper::FloatRoundUp($data['order_price_total'], 2),
         ];
     }
 } else {

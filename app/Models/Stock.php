@@ -342,49 +342,55 @@ class Stock extends Model
         $data['setupList']['stock_price_total'] = $stock_price;
 
         //find discount
-        if ( count($stockInitialize['stock_setting_offer']) > 0) {
-            //find discount
-            $data = Setting::SettingOffer($stockInitialize, $data);
+        if ($stockInitialize['stock_setting_offer']) {
+            if ( count($stockInitialize['stock_setting_offer']) > 0) {
+                //find discount
+                $data = Setting::SettingOffer($stockInitialize, $data);
+            }
         }
 
-        if ( count($stockInitialize['stock_setting_key']) > 0 ) {
-            $data = Setting::SettingKey( $data['setupList'], $stockInitialize['stock_setting_key'] );
-           // $data['setupList']['stock_setting_key_total'] = $data['setupList']['stock_setting_key_total'] + $data['setupList']['setting_key_amount_total'];
-            $data['setupList']['setting_key'] = $stockInitialize['stock_setting_key'];
-            $data['setupList']['stock_setting_key'] = $stockInitialize['stock_setting_key'];
-           
+        if ($stockInitialize['stock_setting_key']) {
+            if ( count($stockInitialize['stock_setting_key']) > 0 ) {
+                $data = Setting::SettingKey( $data, $stockInitialize['stock_setting_key'] );
+               // $data['setupList']['stock_setting_key_total'] = $data['setupList']['stock_setting_key_total'] + $data['setupList']['setting_key_amount_total'];
+                $data['setupList']['setting_key'] = $stockInitialize['stock_setting_key'];
+                $data['setupList']['stock_setting_key'] = $stockInitialize['stock_setting_key'];
+               
+            }
         }
         
         
        $data['setupList']['stock_price_processed'] = Stock::StockPriceQuantity( $data['setupList']['stock_price_processed'], $stockInitialize['stock_quantity']);
       
 
-       if ( count($stockInitialize['stock_setting_vat']) > 0 ) {
-            if ($loop->first) {
-                $data['setupList']['stock_vat_amount_total'] = 0;
+       if ($stockInitialize['stock_setting_vat']) {
+            if ( count($stockInitialize['stock_setting_vat']) > 0 ) {
+                if ($loop->first) {
+                    $data['setupList']['stock_vat_amount_total'] = 0;
+                }
+
+                $data['setupList']['stock_setting_vat'] = Stock::StockVAT($stockInitialize['stock_setting_vat']); //vat on this item
+                $data['setupList']['stock_vat_rate'] = collect($data['setupList']['stock_setting_vat'])->sum('rate');
+                $data['setupList']['stock_vat_rate_total'] = $data['setupList']['stock_vat_rate_total'] + $data['setupList']['stock_vat_rate'];
+                $data['setupList']['stock_vat_amount'] = MathHelper::VAT($data['setupList']['stock_vat_rate'], $data['setupList']['stock_price_processed'] );
+                $data['setupList']['stock_vat_amount_total'] = $data['setupList']['stock_vat_amount_total'] + $data['setupList']['stock_vat_amount'];
+        
+            }else{
+
+                $data['setupList']['stock_vat_rate'] = collect($data['settingModel']->setting_vat)->where('default', 0)->first()['rate'];
+                $data['setupList']['stock_vat_amount'] = MathHelper::VAT($data['setupList']['stock_vat_rate'], $data['setupList']['stock_price_processed'] );
+                $data['setupList']['order_vat_amount_total'] = $data['setupList']['order_vat_amount_total'] + $data['setupList']['stock_vat_amount'];
             }
 
-            $data['setupList']['stock_setting_vat'] = Stock::StockVAT($stockInitialize['stock_setting_vat']); //vat on this item
-            $data['setupList']['stock_vat_rate'] = collect($data['setupList']['stock_setting_vat'])->sum('rate');
-            $data['setupList']['stock_vat_rate_total'] = $data['setupList']['stock_vat_rate_total'] + $data['setupList']['stock_vat_rate'];
-            $data['setupList']['stock_vat_amount'] = MathHelper::VAT($data['setupList']['stock_vat_rate'], $data['setupList']['stock_price_processed'] );
-            $data['setupList']['stock_vat_amount_total'] = $data['setupList']['stock_vat_amount_total'] + $data['setupList']['stock_vat_amount'];
-       
-        }else{
 
-            $data['setupList']['stock_vat_rate'] = collect($data['settingModel']->setting_vat)->where('default', 0)->first()['rate'];
-            $data['setupList']['stock_vat_amount'] = MathHelper::VAT($data['setupList']['stock_vat_rate'], $data['setupList']['stock_price_processed'] );
-            $data['setupList']['order_vat_amount_total'] = $data['setupList']['order_vat_amount_total'] + $data['setupList']['stock_vat_amount'];
+            $data['setupList']['stock_price_total'] = $data['setupList']['stock_price_processed'] + $data['setupList']['stock_vat_amount'];
        }
-
-
-       $data['setupList']['stock_price_total'] = $data['setupList']['stock_price_processed'] + $data['setupList']['stock_vat_amount'];
      
        
         return $data;
     }
 
-    public static function StockInitialize($stock, $store, $data){
+    public static function StockInitialize($stock, $store, $user, $data){
 
         $stockInitialize = [
             
@@ -397,24 +403,33 @@ class Stock extends Model
             'stock_setting_vat' => $stock->stock_setting_vat,
             'stock_setting_offer' => $stock->stock_setting_offer,
             'stock_setting_key' => [],
-            'warehouse_store_id' => $stock->warehouse_id,
-            'user_id' => Auth::user()->user_id
+            'warehouse_id' => $stock->warehouse_id,
+            'user_id' => $user->user_id
         ];
       
         return $stockInitialize;
     }
 
-    public static function ReceiptInitialize($stock, $store, $data){
+    public static function ReceiptInitialize($receipt){
 
+        //$warehouse = Warehouse::find($receipt->receipt_warehouse_id);
        
-        $data['setupList']['stock']['stock_id'] = $stock->stock_id;
-        $data['setupList']['stock']['stock_name'] = $stock->stock_merchandise['stock_name'];
-        $data['setupList']['stock']['store_id'] = $store->store_id;
-        $data['setupList']['stock']['store_name'] = Store::find($store->store_id)->store_name;
-        $data['setupList']['stock']['stock_quantity'] = 1;
-        $data['setupList'] = Stock::StockPriceProcessed($stock, $data);
-       
-        return $data;
+        $stockInitialize = [
+            
+            'stock_id' => $receipt->receipt_stock_id,
+            'stock_price' => json_decode($receipt->receipt_stock_price, true),
+            'stock_name' =>  '',
+            'store_id' =>  '',
+            'store_name' =>  '',
+            'stock_quantity' =>  $receipt->receipt_stock_quantity,
+            'stock_setting_vat' => json_decode($receipt->receipt_setting_vat, true),
+            'stock_setting_offer' => json_decode($receipt->receipt_setting_offer, true),
+            'stock_setting_key' => json_decode($receipt->receipt_setting_key, true),
+            'warehouse_id' => $receipt->receipt_warehouse_id,
+            'user_id' => $receipt->receipt_user_id
+        ];
+
+        return $stockInitialize;
     }
 
     public static function StockOffer(){
@@ -456,6 +471,31 @@ class Stock extends Model
 
         return $data;
     }
+
+    public static function StockGrossProfit( $orderList, $data ){
+
+        foreach ($orderList as $receiptList) {
+    
+            $quantity = $receiptList->count();
+    
+            if (json_decode($receiptList->first()->stock_gross_profit)) {
+                $rrptotalPrice = $quantity * json_decode($receiptList->first()->stock_gross_profit)->rrp;
+    
+                $totalGP = $rrptotalPrice - $data['order_price_total'];
+    
+                $GPpercentage = ($totalGP / $quantity) * 100;
+    
+                $arrayGPList[] = [
+                    'Number' => $receiptList->first()->stock_id,
+                    'Descriptor' => json_decode($receiptList->first()->stock_merchandise)->stock_name,
+                    'Profit' => App\Helpers\MathHelper::FloatRoundUp($totalGP, 2),
+                    'GP' => App\Helpers\MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
+                ];
+            }
+           
+        }
+
+    } 
 
 
 }

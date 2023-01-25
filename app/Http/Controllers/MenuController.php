@@ -246,6 +246,21 @@ class MenuController extends Controller
 
    }
 
+    public function getSettingKeyList(Request $request)
+    {
+        $this->Init();
+        $setting_key_group = $request->get('setting_key_group');
+        $setting_keys = array_filter($this->Data()['settingModel']->setting_key, function ($item) use ($setting_key_group) {
+            return $item['setting_key_group'] == $setting_key_group;
+        });
+        $values = [];
+        foreach ($setting_keys as $key => $item) {
+            $values[] = ['text' => $item['name'], 'value' => $key];
+        }
+
+        return response()->json($values);
+    }
+
    public function order(Request $request){
 
     $request->session()->flash('view', $request->view);

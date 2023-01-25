@@ -20,7 +20,7 @@ class ExpenseFactory extends Factory
             
             'expense_user_id' => $this->faker->numberBetween($min=1, $max=10),
             'expense_name' => $this->faker->sentence,
-            'expense_description' => $this->faker->paragraph,
+           
             'expense_amount' => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 2000),
             'expense_frequency' =>  $this->faker->randomElement($array = array (NULL,$this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = 50))),
             'expense_frequency_period_id' =>  $this->faker->randomElement($array = array (NULL,$this->faker->numberBetween($min=1, $max=100))),

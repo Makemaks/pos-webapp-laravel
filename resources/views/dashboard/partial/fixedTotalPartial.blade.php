@@ -8,9 +8,9 @@ $totalCredit = 0;
 
 
 
-$order_price_total = App\Models\Receipt::ReceiptCartInitialize( $data['orderList'], $data);
+$data = App\Models\Receipt::ReceiptCartInitialize( $data['orderList'], $data);
 
-$expenseTotal = $order_price_total - $data['expenseList']->sum('expense_amount');
+
 
 for ($i = 1; $i < count($data['settingModel']->setting_pos); $i++) {
     $totalCashQuantity = $totalCash + $data['settingModel']->setting_pos[$i]['cash']['quantity'];
@@ -20,7 +20,7 @@ for ($i = 1; $i < count($data['settingModel']->setting_pos); $i++) {
     $totalCreditAmount = $totalCredit + $data['settingModel']->setting_pos[$i]['credit']['amount'];
 }
 $totaliser = [
-    'NET sales' => ['Quantity' => $data['orderList']->count(), 'Total' => App\Helpers\MathHelper::FloatRoundUp($expenseTotal, 2)],
+    'NET sales' => ['Quantity' => $data['orderList']->count(), 'Total' => App\Helpers\MathHelper::FloatRoundUp($data['setupList']['order_price_total'], 2)],
     'GROSS Sales' => ['Quantity' => $data['orderList']->count(), 'Total' => App\Helpers\MathHelper::FloatRoundUp($order_price_total, 2)],
     'CASH in Drawer' => ['Quantity' => $totalCashQuantity, 'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCashAmount, 2)],
     'CREDIT in Drawer' => ['Quantity' => $totalCreditQuantity, 'Total' => App\Helpers\MathHelper::FloatRoundUp($totalCreditAmount, 2)],

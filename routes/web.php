@@ -144,6 +144,8 @@ Route::get('menu/customer/', [MenuController::class,'Customer'])->name('menu.cus
 
 Route::get('menu/home/', [MenuController::class,'Home'])->name('menu.home');
 
+Route::get('menu/stock/get-list/', [StockController::class,'getStockList'])->name('menu.stock.get_list');
+
 Route::apiResources([
     'home-api' => HomeAPIController::class,
     'gateway-api' => GatewayAPIController::class,

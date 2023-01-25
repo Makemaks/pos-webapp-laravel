@@ -233,7 +233,11 @@ class MenuController extends Controller
                 break;
 
             case 'keyboard-allocation':
-                return view('menu.setting.keyboard-allocation');
+                if ($this->settingModel == null) {
+                    $this->settingModel = new Setting();
+                }
+
+                return view('menu.setting.keyboard-allocation', ['data' => $this->Data()]);
                 break;
 
             default:

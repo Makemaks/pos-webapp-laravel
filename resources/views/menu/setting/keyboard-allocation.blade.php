@@ -1,5 +1,14 @@
 @extends('layout.master')
 
+@php
+    use App\Models\Setting;
+
+    $setting_key_group = array_search('menu', Setting::SettingKeyGroup());
+    $setting_keys = array_filter($data['settingModel']->setting_key, function($item) use ($setting_key_group) {
+        return $item['setting_key_group'] == $setting_key_group;
+    });
+@endphp
+
 @section('content')
     <div class="header">
         <h1 class="uk-heading-line uk-text-center"><span>{{ __('Menu Builder') }}</span></h1>
@@ -17,9 +26,9 @@
                                 <label class="uk-form-label" for="level">Level</label>
                                 <div class="uk-form-controls">
                                     <select class="uk-select" id="level" name="level">
-                                        @for($i = 1; $i < 11; $i++)
-                                            <option value="{{ $i }}">Level {{ $i }}</option>
-                                        @endfor
+                                        @foreach($setting_keys as $key => $setting_key)
+                                            <option value="{{ $key }}">{{ $setting_key['name'] }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -28,32 +37,30 @@
                                 <label class="uk-form-label" for="form-stacked-select">File</label>
                                 <div class="uk-form-controls">
                                     <select class="uk-select" id="function" name="file">
-                                        <option value="">No Function</option>
+                                        @foreach(Setting::SettingKeyGroup() as $key => $setting_key_group)
+                                            <option value="{{ $key }}">{{ $setting_key_group }}</option>
+                                        @endforeach
+                                            <option value="{{ $key+1 }}">Plu</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="uk-margin">
-                                <div uk-grid class="uk-margin-remove">
-                                    <div class="uk-padding-remove uk-width-1-4">
-                                        <div class="uk-margin uk-margin-small-right">
-                                            <label class="uk-form-label" for="record">Record</label>
-                                            <div class="uk-form-controls">
-                                                <input class="uk-input" id="record" type="text" value="0" name="record">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="uk-padding-remove uk-width-3-4">
-                                        <div class="uk-margin uk-margin-small-left">
-                                            <label class="uk-form-label" for="record-select">&nbsp;</label>
-                                            <div class="uk-form-controls">
-                                                <select class="uk-select" id="record-select" name="record_select">
-                                                    <option value=""></option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <label class="uk-form-label" for="record">Record</label>
+                                <div class="uk-form-controls">
+                                    <div id="record" value="0" name="record"></div>
                                 </div>
+                                <script>
+                                    addEventListener('DOMContentLoaded', (event) => {
+                                        jSuites.dropdown(document.getElementById('record'), {
+                                            url: '{{ route('menu.stock.get_list') }}',
+                                            remoteSearch: true,
+                                            autocomplete: true,
+                                            lazyLoading: true,
+                                            width: '280px'
+                                        });
+                                    });
+                                </script>
                             </div>
 
                             <div class="uk-margin">
@@ -107,28 +114,14 @@
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="text_colour">Text Colour</label>
                                 <div class="uk-form-controls">
-                                    <select class="uk-select" id="text_colour" name="text_colour">
-                                        <option value="black">Black</option>
-                                        <option value="red">Red</option>
-                                        <option value="white">White</option>
-                                        <option value="blue">Blue</option>
-                                        <option value="yellow">Yellow</option>
-                                        <option value="grey">Grey</option>
-                                    </select>
+                                    <jsuites-color value="#000000" id="text_colour" name="text_colour"></jsuites-color>
                                 </div>
                             </div>
 
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="text_colour">Background Colour</label>
                                 <div class="uk-form-controls">
-                                    <select class="uk-select" id="background_colour" name="background_colour">
-                                        <option value="black">Black</option>
-                                        <option value="red">Red</option>
-                                        <option value="white">White</option>
-                                        <option value="blue">Blue</option>
-                                        <option value="yellow">Yellow</option>
-                                        <option value="grey">Grey</option>
-                                    </select>
+                                    <jsuites-color value="#000000" id="background_colour" name="background_colour"></jsuites-color>
                                 </div>
                             </div>
 

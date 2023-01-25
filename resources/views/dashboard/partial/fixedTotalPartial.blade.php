@@ -6,9 +6,9 @@ $price = 0;
 $totalCash = 0;
 $totalCredit = 0;
 
-$totalPrice = App\Models\Receipt::ReceiptCartInitialize($data['orderList']);
 
-$totalPrice = App\Models\Receipt::ReceiptCartInitialize($data['orderList']);
+
+$totalPrice = App\Models\Receipt::ReceiptCartInitialize($data);
 
 $expenseTotal = $totalPrice - $data['expenseList']->sum('expense_amount');
 

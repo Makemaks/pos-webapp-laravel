@@ -298,6 +298,7 @@ class Store extends Model
         $orderList =  Store::Order('store_id',  $userModel->store_id)
         //->whereBetween('order.created_at', [$started_at, $ended_at])
         //->orWhere('user_id', $user_id)
+        ->whereNotNull('receipt_id')
         ->get();
 
         

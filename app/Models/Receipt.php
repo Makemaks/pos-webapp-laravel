@@ -5,11 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Session;
 
 use App\Models\Setting;
+use App\Models\Store;
+use App\Models\Stock;
 use App\Helpers\MathHelper;
 
 class Receipt extends Model
@@ -123,66 +126,69 @@ class Receipt extends Model
 
         $setupList =  $request->session()->get('user-session-'.Auth::user()->user_id.'.setupList');
 
-        return $setupList;
+        return $request;
     }
 
-    public static function SessionCartInitialize($cartList, $data){
+    public static function ReceiptCartInitialize($data){
+        $loop = collect([
+            'first' => true,
+            'last' => false
+        ]);
 
-        $stockList = [];
+        $lastElement = end($data['orderList']);
 
-        foreach ($cartList as $sessionCart) {
-
-            $stock = Stock::find($sessionCart['stock_id']);
-            $store = Store::find($sessionCart['store_id']);
-
-            $stockList[] = Stock::StockInitialize($stock, $store, $data);
-
-        }
-
-        return $stockList;
-    }
-
-    public static function ReceiptCartInitialize($orderList){
-        //reinitialise session values for cart
-        $receipt_setting_vat = NULL;
-        $stockList = [];
-
-        foreach ($orderList as $stockInititalize) {
+        foreach ($data['orderList'] as $receipt) {
            
-           $data = Stock::StockPriceProcessed($stockInititalize->toArray(), $data, $loop);
+            $store = Store::find($receipt->store_id);
+            $stock = Stock::find($receipt->stock_id);
+
+            $stockInititalize = Stock::StockInitialize($stock, $store, $data);
+
+            if($lastElement == $receipt) {
+                $loop->last = true;
+            }
+
+           $data = Stock::StockPriceProcessed($stockInititalize, $data, $loop);
+           $data = Receipt::Calculate($data, $stockItem, $loop);
         }
 
-        return $stockList;
+        return $data;
     }
 
     //data , stock , loop
     public static function Calculate($data, $stockItem, $loop){
-        //convert sting to val
-        //$data['setupList']['stock_vat_rate'] = 0;
-        $stock = Stock::find($stockItem['stock_id']);
-        $setting_key_total = 0;
+       
 
         if ($loop->first) {
-
+            
             $data['setupList']['order_sub_total'] = 0;
             $data['setupList']['order_price_total'] = 0;
         }
+  
+      
 
         $data['setupList']['order_sub_total'] = $data['setupList']['order_sub_total'] + $data['setupList']['stock_price_processed'];
+
+        //stock vat
+
         $data['setupList']['order_price_total'] = $data['setupList']['order_price_total'] + $data['setupList']['stock_price_total'];
+
+        
 
         //setting_key
         if ($loop->last) {
+            
+           
             //order setting key
             if ( count($data['setupList']['order_setting_key'])  > 0) {
                 $data = Setting::SettingKey( $data, $data['setupList']['order_setting_key'] );
                 $data['setupList']['setting_key'] = $data['setupList']['order_setting_key'];
                 $data['setupList']['order_setting_key_total'] = $data['setupList']['setting_key_amount_total'];
             }
-
+            
             $data['setupList']['order_setting_key_total'] = $data['setupList']['order_setting_key_total'] + $data['setupList']['setting_key_amount_total'];
             $data['setupList']['order_price_total'] = $data['setupList']['order_price_total'] + $data['setupList']['order_setting_key_total'];
-
+           
         }
 
         return $data;

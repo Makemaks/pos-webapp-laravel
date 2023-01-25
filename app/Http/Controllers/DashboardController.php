@@ -36,12 +36,15 @@ class DashboardController extends Controller
     private $accountList;
     private $pdfView;
     private $csvView;
+    private $setupList;
 
     public function Index(Request $request)
     {
 
         $this->init();
-        $request = SessionInitialize($request);
+        $request = Receipt::SessionInitialize($request);
+        $this->setupList =  $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'setupList');
+
         if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin') {
             $this->Admin($request);
 
@@ -197,7 +200,8 @@ class DashboardController extends Controller
             'settingModel' => $this->settingModel ?? null,
             'pdfView' => $this->pdfView ?? null,
             'csvView' => $this->csvView ?? null,
-            'stockList' => $this->stockList ?? null
+            'stockList' => $this->stockList ?? null,
+            'setupList' => $this->setupList
         ];
     }
 }

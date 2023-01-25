@@ -19,7 +19,8 @@ return new class extends Migration
             $table->bigInteger('expensetable_id')->nullable();
             $table->string('expensetable_type')->nullable();
             $table->bigInteger('expense_store_id')->comment('added_by'); 
-            $table->text('expense_description');
+            $table->string('expense_name');
+            $table->text('expense_note')->nullable();
             $table->float('expense_amount');
             $table->float('expense_vat');
             $table->tinyInteger('expense_frequency')->nullable();

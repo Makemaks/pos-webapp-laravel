@@ -41,7 +41,7 @@ class DashboardController extends Controller
     {
 
         $this->init();
-
+        $request = SessionInitialize($request);
         if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin') {
             $this->Admin($request);
 

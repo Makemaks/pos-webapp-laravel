@@ -147,11 +147,9 @@ class Receipt extends Model
         $receipt_setting_vat = NULL;
         $stockList = [];
 
-        foreach ($orderList as $receipt) {
-
-            $stockList = Stock::StockInitialize($stock, $store, $data);
-            $stockList = Stock::StockInitialize($stock, $store, $data);
-
+        foreach ($orderList as $stockInititalize) {
+           
+           $data = Stock::StockPriceProcessed($stockInititalize->toArray(), $data, $loop);
         }
 
         return $stockList;

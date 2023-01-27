@@ -26,25 +26,25 @@
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">NAME</label> 
                 
-                @isset ($data['stockModel']->stock_merchandise['stock_name'])
-                    <input class="uk-input" type="text" value="{{  old('stock_merchandise[stock_name]', $data['stockModel']->stock_merchandise['stock_name'] ) }}" name="stock_merchandise[stock_name]">
+                @isset ($data['stockModel']->stock_set['stock_name'])
+                    <input class="uk-input" type="text" value="{{  old('stock_set[stock_name]', $data['stockModel']->stock_set['stock_name'] ) }}" name="stock_set[stock_name]">
                 @else
-                    <input class="uk-input" type="text" value="{{  old('stock_merchandise[stock_name]') }}" name="stock_merchandise[stock_name]">
+                    <input class="uk-input" type="text" value="{{  old('stock_set[stock_name]') }}" name="stock_set[stock_name]">
                 @endisset
             </div>
 
           
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">GROUP</label>
-                <select class="uk-select" name="stock_merchandise[group_id]">
+                <select class="uk-select" name="stock_set[group_id]">
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_set)
                         @foreach ($data['settingModel']->setting_stock_set as $key => $group)
                             @if ( $group['type'] == 1 )
-                                @isset ($data['stockModel']->stock_merchandise['group_id'])
-                                    <option value="{{$key}}" @if($key == old('stock_merchandise[group_id]', $data['stockModel']->stock_merchandise['group_id']) ) selected @endif>{{$group['name']}}</option>
+                                @isset ($data['stockModel']->stock_set['group_id'])
+                                    <option value="{{$key}}" @if($key == old('stock_set[group_id]', $data['stockModel']->stock_set['group_id']) ) selected @endif>{{$group['name']}}</option>
                                 @else
-                                    <option value="{{$key}}" @if($key == old('stock_merchandise[group_id]') ) selected @endif>{{$group['name']}}</option>
+                                    <option value="{{$key}}" @if($key == old('stock_set[group_id]') ) selected @endif>{{$group['name']}}</option>
                                 @endisset
                             @endif
                         @endforeach
@@ -55,17 +55,17 @@
             <div class="uk-margin">
                 
                 <label class="uk-form-label" for="form-stacked-text">DEPARTMENT</label>
-                <select class="uk-select" name="stock_merchandise[category_id]">
+                <select class="uk-select" name="stock_set[category_id]">
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_set)
                         @foreach ($data['settingModel']->setting_stock_set as $key => $category)
                             @if ($category['type'] == 0)
-                                @isset ($data['stockModel']->stock_merchandise['category_id'])
-                                    <option value="{{$key}}" @if($key == old( 'stock_merchandise[category_id]', $data['stockModel']->stock_merchandise['category_id']) ) selected @endif>
+                                @isset ($data['stockModel']->stock_set['category_id'])
+                                    <option value="{{$key}}" @if($key == old( 'stock_set[category_id]', $data['stockModel']->stock_set['category_id']) ) selected @endif>
                                         {{$category['description']}}
                                     </option>
                                 @else
-                                    <option value="{{$key}}" @if($key == old( 'stock_merchandise[category_id]') ) selected @endif>
+                                    <option value="{{$key}}" @if($key == old( 'stock_set[category_id]') ) selected @endif>
                                         {{$category['description']}}
                                     </option>
                                
@@ -78,15 +78,15 @@
         
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">PLU</label>
-                <select class="uk-select" name="stock_merchandise[plu_id]">
+                <select class="uk-select" name="stock_set[plu_id]">
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_set)
                         @foreach ($data['settingModel']->setting_stock_set as $key => $plu)
                             @if ($plu['type'] == 2)
-                                    @isset($data['stockModel']->stock_merchandise['plu_id'])
-                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]', $data['stockModel']->stock_merchandise['plu_id']) ) selected @endif>{{$plu['description']}}</option>
+                                    @isset($data['stockModel']->stock_set['plu_id'])
+                                        <option value="{{$key}}"  @if($key == old( 'stock_set[plu_id]', $data['stockModel']->stock_set['plu_id']) ) selected @endif>{{$plu['description']}}</option>
                                     @else
-                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]') ) selected @endif>{{$plu['description']}}</option>
+                                        <option value="{{$key}}"  @if($key == old( 'stock_set[plu_id]') ) selected @endif>{{$plu['description']}}</option>
                                     @endisset
                             @endif
                         @endforeach
@@ -96,16 +96,16 @@
 
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">BRAND</label>
-                <select class="uk-select" name="stock_merchandise[brand_id]">
+                <select class="uk-select" name="stock_set[brand_id]">
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_set)
                         @foreach ($data['settingModel']->setting_stock_set as $key => $plu)
                             @if ($plu['type'] == 3)
                             
-                                @isset($data['stockModel']->stock_merchandise['brand_id'])
-                                    <option value="{{$key}}" @if($key == old('stock_merchandise[brand_id]', $data['stockModel']->stock_merchandise['brand_id'])) selected @endif>{{$plu['description']}}</option>
+                                @isset($data['stockModel']->stock_set['brand_id'])
+                                    <option value="{{$key}}" @if($key == old('stock_set[brand_id]', $data['stockModel']->stock_set['brand_id'])) selected @endif>{{$plu['description']}}</option>
                                 @else
-                                    <option value="{{$key}}" @if($key == old('stock_merchandise[brand_id]')) selected @endif>{{$plu['description']}}</option>
+                                    <option value="{{$key}}" @if($key == old('stock_set[brand_id]')) selected @endif>{{$plu['description']}}</option>
                                 @endisset
                             @endif
                         @endforeach
@@ -116,10 +116,10 @@
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">DESCRIPTION</label>
 
-                @isset($data['stockModel']->stock_merchandise['stock_description'])
-                    <textarea class="uk-textarea" type="text" name="stock_merchandise[stock_description]">{{old('stock_merchandise[stock_description]', $data['stockModel']->stock_merchandise['stock_description'])}}</textarea>
+                @isset($data['stockModel']->stock_set['stock_description'])
+                    <textarea class="uk-textarea" type="text" name="stock_set[stock_description]">{{old('stock_set[stock_description]', $data['stockModel']->stock_set['stock_description'])}}</textarea>
                 @else
-                    <textarea class="uk-textarea" type="text" name="stock_merchandise[stock_description]">{{old('stock_merchandise[stock_description]')}}</textarea>
+                    <textarea class="uk-textarea" type="text" name="stock_set[stock_description]">{{old('stock_set[stock_description]')}}</textarea>
                 @endisset
                 
             </div>
@@ -127,10 +127,10 @@
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">VAT</label>
                 
-                @isset($data['stockModel']->stock_merchandise['stock_vat_id'])
-                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_merchandise[stock_vat_id]', $data['stockModel']->stock_merchandise['stock_vat_id'])}}" name="stock_merchandise[stock_vat_id]">
+                @isset($data['stockModel']->stock_set['stock_vat_id'])
+                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_set[stock_vat_id]', $data['stockModel']->stock_set['stock_vat_id'])}}" name="stock_set[stock_vat_id]">
                     @else
-                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_merchandise[stock_vat_id]')}}" name="stock_merchandise[stock_vat_id]">
+                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_set[stock_vat_id]')}}" name="stock_set[stock_vat_id]">
                 @endisset
                 
             </div>

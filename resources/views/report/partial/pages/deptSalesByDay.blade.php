@@ -9,12 +9,12 @@ $array = [];
 foreach ($settingModel as $key => $value) {
     if ($value['type'] == 1) {
         foreach ($data['orderList']->sortBy('order_created_at') as $orderList) {
-            $stock_merchandise = json_decode($orderList->stock_merchandise, true);
+            $stock_merchandise =   json_decode($orderList->stock_set, true);
 
-            if ($stock_merchandise) {
-                if ($stock_merchandise['category_id'] == $key) {
+            if ($stock_set) {
+                if ($stock_set['category_id'] == $key) {
                     $day = Carbon\Carbon::parse($orderList->order_created_at)->format('l');
-                    $price = json_decode($orderList->stock_cost, true)[$stock_merchandise['category_id']]['price'];
+                    $price = json_decode($orderList->stock_cost, true)[$stock_set['category_id']]['price'];
                     $totalCostPrice += $price;
                     $quantity++;
 

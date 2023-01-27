@@ -10,23 +10,23 @@ foreach ($data['settingModel']->setting_stock_set_category_plu as $key => $value
     if ($valueDepartment['type'] == 2) {
         foreach ($dataModel as $user_id => $value) {
             foreach ($value as $key => $values) {
-                $stock_merchandise = json_decode($values->stock_merchandise, true);
+                $stock_merchandise =   json_decode($values->stock_set, true);
 
-                if (array_key_exists($stock_merchandise['plu_id'], $arrays)) {
-                    $arrays[$stock_merchandise['plu_id']] = [
-                        'PLU' => $stock_merchandise['plu_id'],
-                        'Name' => $stock_merchandise['stock_name'],
+                if (array_key_exists($stock_set['plu_id'], $arrays)) {
+                    $arrays[$stock_set['plu_id']] = [
+                        'PLU' => $stock_set['plu_id'],
+                        'Name' => $stock_set['stock_name'],
                         'Department' => $valueDepartment['description'],
-                        'Quantity' => $arrays[$stock_merchandise['plu_id']]['Quantity'] + 1,
-                        'Total' => App\Helpers\MathHelper::FloatRoundUp($arrays[$stock_merchandise['plu_id']]['Total'] + json_decode($values->stock_cost, true)[$stock_merchandise['plu_id']]['price'], 2),
+                        'Quantity' => $arrays[$stock_set['plu_id']]['Quantity'] + 1,
+                        'Total' => App\Helpers\MathHelper::FloatRoundUp($arrays[$stock_set['plu_id']]['Total'] + json_decode($values->stock_cost, true)[$stock_set['plu_id']]['price'], 2),
                     ];
                 } else {
-                    $arrays[$stock_merchandise['plu_id']] = [
-                        'PLU' => $stock_merchandise['plu_id'],
-                        'Name' => $stock_merchandise['stock_name'],
+                    $arrays[$stock_set['plu_id']] = [
+                        'PLU' => $stock_set['plu_id'],
+                        'Name' => $stock_set['stock_name'],
                         'Department' => $valueDepartment['name'],
                         'Quantity' => 1,
-                        'Total' => json_decode($values->stock_cost, true)[$stock_merchandise['plu_id']]['price'],
+                        'Total' => json_decode($values->stock_cost, true)[$stock_set['plu_id']]['price'],
                     ];
                 }
             }

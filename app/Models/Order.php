@@ -75,7 +75,7 @@ class Order extends Model
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
-            ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
+            ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id')
             ->where($column,  $filter);
             //->select('order.*', 'receipt.*', 'stock.*', 'user.*', 'person.*', 'order.created_at as order_created_at');
@@ -85,7 +85,7 @@ class Order extends Model
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
             ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
-            ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
+            ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id');
     }
 
@@ -213,7 +213,7 @@ class Order extends Model
 
             $personModel = Person::find($customerCartList[0]['value']);
             $orderData += [
-                'ordertable_id' => $personModel->person_id,
+                'order_account_id' => $personModel->person_id,
                 'ordertable_type' => 'Person',
             ];
         }
@@ -240,13 +240,13 @@ class Order extends Model
         $request->session()->has('user-session-'.Auth::user()->user_id.'.'.'customerList')) {
 
             $orderData += [
-                'ordertable_id' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'customerList')[0],
+                'order_account_id' => $request->session()->get('user-session-'.Auth::user()->user_id.'.'.'customerList')[0],
                 'ordertable_type' => 'Person'
             ];
 
         }else{
             $orderData += [
-                'ordertable_id' => $userModel->person_id,
+                'order_account_id' => $userModel->person_id,
                 'ordertable_type' => 'Person'
             ];
         }

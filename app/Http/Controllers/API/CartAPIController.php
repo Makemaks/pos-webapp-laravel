@@ -142,14 +142,14 @@ class CartAPIController extends Controller
         if ($request->has('searchInputID') && $request->session()->has('setting_setting_key') == false) {
 
              $this->stockModel = Stock::
-             where('stock_merchandise->outer_barcode', $request['searchInputID'])
-             ->orWhere('stock_merchandise->outer_barcode', 'like', '%'.$request['searchInputID'].'%')
+             where('stock_set->outer_barcode', $request['searchInputID'])
+             ->orWhere('stock_set->outer_barcode', 'like', '%'.$request['searchInputID'].'%')
              ->first();
             
             if ($this->stockModel) {
                 $requestInput['stock_id'] = $this->stockModel->stock_id;
                 $requestInput['user_id'] = $this->stockModel->user_id;
-                $requestInput['stock_name'] = $this->stockModel->stock_merchandise['stock_name'];
+                $requestInput['stock_name'] = $this->stockModel->stock_set['stock_name'];
                 $requestInput['stock_cost'] = $this->stockModel->stock_cost[1][1]['price'];
                 $requestInput['stock_quantity'] = 1;
                 $requestInput['stock_discount'] = 0;

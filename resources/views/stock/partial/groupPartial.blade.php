@@ -49,7 +49,7 @@
             
                     @php
                         $setting_stock_type = Setting::SettingStockGroup()[$item_setting_stock_set['type']];
-                        $where = 'stock_merchandise->'.$setting_stock_type.'_id';
+                        $where = 'stock_set->'.$setting_stock_type.'_id';
                         $count = Stock::where($where, $key_setting_stock_set)->count();
                     @endphp
             

@@ -8,7 +8,7 @@ if (count($stockList) > 0) {
     foreach ($stockList as $key => $receiptList) {
         foreach ($receiptList as $receipt) {
             if ($receipt->receipt_id) {
-                $stockNameJson = json_decode($receipt->stock_merchandise, true);
+                $stockNameJson = json_decode($receipt->stock_set, true);
                 $stockName = $stockNameJson['stock_name'];
 
                 $totalPrice = \App\Models\Receipt::ReceiptCartInitialize($receiptList);
@@ -33,15 +33,17 @@ if (count($stockList) > 0) {
 }
 
 @endphp
-<div>
-    <h3 class="uk-card-title">STOCK SEARCH</h3>
-        <div class="uk-margin search-form">
-            <form class="uk-search uk-search-default">
-                <a href="" class="uk-search-icon-flip" uk-search-icon></a>
-                <input class="uk-search-input" type="search" placeholder="Search">
-            </form>
-        </div>
-        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive uk-height-large scroll-search">
+
+<h3 class="uk-card-title">STOCK SEARCH</h3>
+<div class="uk-margin search-form">
+    <form class="uk-search uk-search-default">
+        <a href="" class="uk-search-icon-flip" uk-search-icon></a>
+        <input class="uk-search-input" type="search" placeholder="Search">
+    </form>
+</div>
+<div class="uk-height-large uk-overflow-auto">
+    
+        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
             <thead>
                 <tr>
                     @foreach ($arraystockSearch[0] as $key => $item)

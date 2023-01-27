@@ -146,7 +146,7 @@
 
                                                     <td>
                                                         @isset($data['stockModel'])
-                                                            <input class="uk-radio" type="radio" name="stock_merchandise[stock_offer]" value="{{$keyStockoffer}}" @if(isset($data['stockModel']->stock_merchandise['stock_offer']) == $keyStockoffer) checked @endif>
+                                                            <input class="uk-radio" type="radio" name="stock_set[stock_offer]" value="{{$keyStockoffer}}" @if(isset($data['stockModel']->stock_set['stock_offer']) == $keyStockoffer) checked @endif>
                                                         @endisset
                                                     </td>
                                                                 

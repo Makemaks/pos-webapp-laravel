@@ -17,18 +17,18 @@
            
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">NON STOCK</label>
-                <input name="stock_merchandise[non_stock]" value="0" class="uk-checkbox" type="checkbox" @if (isset($data['stockModel']->stock_merchandise['non_stock']) == 0)checked @endif>
+                <input name="stock_set[non_stock]" value="0" class="uk-checkbox" type="checkbox" @if (isset($data['stockModel']->stock_set['non_stock']) == 0)checked @endif>
             </div>
         
             
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper('plu_id')}}</label>
-                <select class="uk-select" name="stock_merchandise[stock_plu_id]">
+                <select class="uk-select" name="stock_set[stock_plu_id]">
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_set)
                         @foreach ($data['settingModel']->setting_stock_set as $key => $plu)
                             @if ($plu['type'] == 2)
-                                <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['plu_id']) selected @endif>{{$plu['description']}}</option>
+                                <option value="{{$key}}" @if($key == $data['stockModel']->stock_set['plu_id']) selected @endif>{{$plu['description']}}</option>
                             @endif
                         @endforeach
                     @endif
@@ -37,11 +37,11 @@
 
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper('case size')}}</label>
-                <select class="uk-select" name="stock_merchandise[case_size]">
+                <select class="uk-select" name="stock_set[case_size]">
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_case_size)
                         @foreach ($data['settingModel']->setting_stock_case_size as $key => $stock_case_size)
-                            <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_merchandise['case_size'])) selected @endif>{{$stock_case_size['description']}}</option>
+                            <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_set['case_size'])) selected @endif>{{$stock_case_size['description']}}</option>
                             
                         @endforeach
                     @endif
@@ -50,11 +50,11 @@
         
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper('recipe link')}}</label>
-                <select class="uk-select" name="stock_merchandise[recipe_link]">
+                <select class="uk-select" name="stock_set[recipe_link]">
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_recipe)
                         @foreach ($data['settingModel']->setting_stock_recipe as $key => $stock_recipe_link)
-                            <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_merchandise['recipe_link'])) selected @endif>{{$stock_recipe_link['name']}}</option>
+                            <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_set['recipe_link'])) selected @endif>{{$stock_recipe_link['name']}}</option>
                             
                         @endforeach
                     @endif
@@ -63,11 +63,11 @@
             
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">{{Str::upper('set menu')}}</label>
-                <select class="uk-select" name="stock_merchandise[set_menu]">
+                <select class="uk-select" name="stock_set[set_menu]">
                     <option selected="selected" disabled>SELECT ...</option>
                     @if ($data['settingModel']->setting_stock_set_menu)
                         @foreach ($data['settingModel']->setting_stock_set_menu as $key => $stock_set_menu)
-                            <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_merchandise['set_menu'])) selected @endif>{{$stock_set_menu['name']}}</option>
+                            <option value="{{$key}}" @if($key == isset($data['stockModel']->stock_set['set_menu'])) selected @endif>{{$stock_set_menu['name']}}</option>
                             
                         @endforeach
                     @endif
@@ -83,12 +83,12 @@
                
                
 
-                @foreach ((array)$data['stockModel']->stock_merchandise as  $key => $stock_merchandise)
+                @foreach ((array)$data['stockModel']->stock_set as  $key => $stock_set)
 
                     @if (in_array($key, $exclude) == false)
                         <div class="uk-margin">
                             <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                            <input class="uk-input" name="stock_merchandise[{{$key}}]" type="number" value="{{$stock_merchandise}}">
+                            <input class="uk-input" name="stock_set[{{$key}}]" type="number" value="{{$stock_set}}">
                         </div>
                     @endif
                 @endforeach

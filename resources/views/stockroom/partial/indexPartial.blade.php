@@ -36,36 +36,36 @@
            @foreach ($data['stockList'] as $stock)
                 <tr>
                     <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock->stock_id}}</a></td>
-                    <td>{{$stock->stock_merchandise['stock_name']}}</td>
-                    <td>{{$stock->stock_merchandise['master_plu']}}</td>
-                    <td>{{$stock->stock_merchandise['random_code']}}</td>
+                    <td>{{$stock->stock_set['stock_name']}}</td>
+                    <td>{{$stock->stock_set['master_plu']}}</td>
+                    <td>{{$stock->stock_set['random_code']}}</td>
                     
                     <td>
                        {{--  @foreach ($data['settingModel']->setting_stock_set as $item)
-                            @if ($item['type'] == 1 && $stock->stock_merchandise['group_id'])
-                                {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['group_id']]['name']}}
+                            @if ($item['type'] == 1 && $stock->stock_set['group_id'])
+                                {{$data['settingModel']->setting_stock_set[$stock->stock_set['group_id']]['name']}}
                             @endif
                         @endforeach --}}
-                        {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['group_id']]['name']}}
+                        {{$data['settingModel']->setting_stock_set[$stock->stock_set['group_id']]['name']}}
                     </td>
                     <td>
                         {{-- dept --}}
                        {{--  @foreach ($data['settingModel']->setting_stock_set as $item)
-                            @if ($item['type'] == 0 && $stock->stock_merchandise['category_id'])
-                                {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['category_id']]['name']}}
+                            @if ($item['type'] == 0 && $stock->stock_set['category_id'])
+                                {{$data['settingModel']->setting_stock_set[$stock->stock_set['category_id']]['name']}}
                             @endif
                         @endforeach --}}
-                        {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['category_id']]['name']}}
+                        {{$data['settingModel']->setting_stock_set[$stock->stock_set['category_id']]['name']}}
                     </td>
                     <td>
-                       @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
+                       @if ($stock->stock_set['stock_vat_id'] == 'null')
                             @foreach ($data['settingModel']->setting_vat as $item)
                                 @if ($item['default'] == 0)
                                     {{$item['rate']}}
                                 @endif
                             @endforeach
                        @else
-                            {{$stock->stock_merchandise['stock_vat_id']}}
+                            {{$stock->stock_set['stock_vat_id']}}
                        @endif
 
                     </td>
@@ -79,7 +79,7 @@
                         @endphp
                        {{$cost}}
                     </td>
-                    <td>{{$stock->stock_merchandise['stock_quantity']}}</td>
+                    <td>{{$stock->stock_set['stock_quantity']}}</td>
                 </tr>
            @endforeach
         </tbody>

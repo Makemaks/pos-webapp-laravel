@@ -3,13 +3,13 @@
 
 @endphp
 
-
-<div>
+<h3 class="uk-card-title">SPECIALS MANAGER</h3>
+<div class=" uk-overflow-auto uk-height-large">
     @if ($data['stockList']->whereNotNULL('stock_special_manager'))
         <div>
-            <h3 class="uk-card-title">SPECIALS MANAGER</h3>
+            
 
-            <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
+            <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
                 <thead>
                     <tr>
                        
@@ -40,7 +40,7 @@
                                 </td>
 
                                 <td>
-                                    {{$stockModel->stock_merchandise['stock_name']}}
+                                    {{$stockModel->stock_set['stock_name']}}
                                 </td>
 
                                 @for ($j=0; $j < count($stockModel->stock_manager_special); $j++)
@@ -54,7 +54,7 @@
                                 @endfor
                                        
                                 <td>
-                                    {{$data['settingModel']->setting_stock_set[$stockModel->stock_merchandise['category_id']]['name']}}
+                                    {{$data['settingModel']->setting_stock_set[$stockModel->stock_set['category_id']]['name']}}
                                 </td>
                             
                             </tr>

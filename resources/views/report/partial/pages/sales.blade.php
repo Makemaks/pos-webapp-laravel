@@ -49,7 +49,7 @@ foreach ($settingModel as $key => $value) {
 
                 // if hour of order is equal to period time (0-23)
                 if ($hour == $i) {
-                    $stock_merchandise = json_decode($orderList->stock_merchandise, true);
+                    $stock_merchandise =   json_decode($orderList->stock_set, true);
 
                     // get price
                     if ($orderList->receipt_id) {

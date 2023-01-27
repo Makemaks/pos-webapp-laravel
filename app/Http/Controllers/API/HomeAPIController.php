@@ -88,7 +88,7 @@ class HomeAPIController extends Controller
             $this->settingModel->setting_stock_set = $setting_stock_set;
 
             
-            $where = 'stock_merchandise->'.$request->session()->get('type').'_id';
+            $where = 'stock_set->'.$request->session()->get('type').'_id';
             
             $this->stockList = Stock::Warehouse($where, $this->userModel->store_id)
             ->groupBy('stock_id')
@@ -163,7 +163,7 @@ class HomeAPIController extends Controller
             ->where('warehouse_quantity', '>', 0);
 
            if ($request->has('view')) {
-                $this->stockList = $this->stockList->orWhere('stock_merchandise->stock_name', 'like', '%'.$request['value'].'%');
+                $this->stockList = $this->stockList->orWhere('stock_set->stock_name', 'like', '%'.$request['value'].'%');
            }
            
            $this->stockList = $this->stockList->paginate(20);

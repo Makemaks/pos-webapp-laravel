@@ -60,14 +60,14 @@ class StockFactory extends Factory
         }
 
 
-        $stock_merchandise = [
+        for ($i=0; $i < 3; $i++) { 
+            $stock_set[$i+1] = $this->faker->numberBetween($min = 1, $max = 20);
+        }
+
+        $stock_merchandise =   [
 
             "recipe_link" => $this->faker->numberBetween($min = 1, $max = 5),
             "case_size" => $this->faker->numberBetween($min = 1, $max = 5),
-
-            "group_id" => $this->faker->numberBetween($min = 1, $max = 20),
-            "category_id" => $this->faker->numberBetween($min = 1, $max = 5),
-            "brand_id" => $this->faker->numberBetween($min = 1, $max = 20),
 
             'random_code' => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 20000, $max = 50000))),
             'expiration_date' => 0,
@@ -77,14 +77,13 @@ class StockFactory extends Factory
             "minimum_stock" => $this->faker->numberBetween($min = 1, $max = 50),
             "maximum_stock" => $this->faker->numberBetween($min = 50, $max = 100),
             "days_to_order" => $this->faker->numberBetween($min = 1, $max = 5),
-            "plu_id" => $setting_plu,
+            
             "qty_adjustment" => $this->faker->numberBetween($min = 100, $max = 800),
 
             "unit_size" => $this->faker->numberBetween($min = 1, $max = 20),
 
             "outer_barcode" => $this->faker->ean13,
-            'stock_name' => $this->faker->word,
-            'stock_description' => $this->faker->paragraph,
+            
             "set_menu" => $this->faker->numberBetween($min = 1, $max = 5),
             "stock_tag" => $this->faker->numberBetween($min = 1, $max = 5),
            
@@ -150,14 +149,15 @@ class StockFactory extends Factory
 
         return [
 
-
+            'stock_name' => $this->faker->word,
+            'stock_description' => $this->faker->paragraph,
             'stock_price' => $stock_price,
             'stock_supplier' => $stock_supplier,
             'stock_store_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'root_stock_id' => $this->faker->randomElement($array = array(NULL, $this->faker->numberBetween($min = 1, $max = 10) ) ),
             'stock_gross_profit' => $stock_gross_profit,
             'stock_quantity' => $this->faker->numberBetween($min = 100, $max = 500),
-            'stock_merchandise' => $stock_merchandise,
+            'stock_set' => $stock_set,
             'stock_setting_vat' =>  $stock_setting_vat,
 
             'stock_terminal_flag' => $stock_terminal_flag,
@@ -165,7 +165,7 @@ class StockFactory extends Factory
             'stock_nutrition' => $stock_nutrition,
             'stock_allergen' => $stock_allergen,
             'stock_price_quantity' => $stock_price_quantity,
-           
+            'stock_merchandise' => $stock_merchandise,
             'stock_setting_offer' => $stock_setting_offer
 
         ];

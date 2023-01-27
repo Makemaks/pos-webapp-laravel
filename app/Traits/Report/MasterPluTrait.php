@@ -28,10 +28,10 @@ trait MasterPluTrait
             }
         }
         foreach($collectPluIds as $key => $collectPluId) {
-            $stock = Stock::whereJsonContains('stock_merchandise', ['plu_id' => $collectPluId['plu_id']])->first();
+            $stock = Stock::whereJsonContains('stock_set', ['plu_id' => $collectPluId['plu_id']])->first();
             $warehouseQuantity = Warehouse::where('warehouse_stock_id', $stock->stock_id)->sum('warehouse_quantity');
-            $collectPluIds[$key]['linked_to_master_plu'] = '['.Stock::whereJsonContains('stock_merchandise', ['plu_id' => $collectPluId['plu_id']])->count().']' .' '. $collectPluId['linked_to_master_plu'];
-            $collectPluIds[$key]['name'] = $stock->stock_merchandise['stock_name'];
+            $collectPluIds[$key]['linked_to_master_plu'] = '['.Stock::whereJsonContains('stock_set', ['plu_id' => $collectPluId['plu_id']])->count().']' .' '. $collectPluId['linked_to_master_plu'];
+            $collectPluIds[$key]['name'] = $stock->stock_set['stock_name'];
             $collectPluIds[$key]['master_plu_qty'] = $warehouseQuantity;
         }
         return $collectPluIds;

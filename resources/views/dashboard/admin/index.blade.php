@@ -28,7 +28,7 @@
             {{-- category 1 sales / DEPARTMEN TOTAL --}}
            <div>
                 <div class="uk-card uk-card-default uk-card-body">
-                   {{--  @include('dashboard.partial.departmentTotalPartial') --}}
+                    @include('dashboard.partial.settingStockSetPartial', ['type' => 0])
                     @include('document.button', ['table' => 'departmentTotalPartial'])
                 </div>
            </div>
@@ -36,7 +36,15 @@
             {{-- group 0 sales --}}
             <div>
                 <div class="uk-card uk-card-default uk-card-body">
-                    {{-- @include('dashboard.partial.groupTotalPartial') --}}
+                    @include('dashboard.partial.settingStockSetPartial', ['type' => 1])
+                    @include('document.button', ['table' => 'groupTotalPartial'])
+                </div>
+            </div>
+
+             {{-- brand 0 sales --}}
+             <div>
+                <div class="uk-card uk-card-default uk-card-body">
+                    @include('dashboard.partial.settingStockSetPartial', ['type' => 2])
                     @include('document.button', ['table' => 'groupTotalPartial'])
                 </div>
             </div>
@@ -44,7 +52,7 @@
              {{-- Plu 0 sales --}}
              <div>
                 <div class="uk-card uk-card-default uk-card-body">
-                   {{--  @include('dashboard.partial.pluSalesPartial') --}}
+                    @include('dashboard.partial.settingStockSetPartial', ['type' => 3])
                     @include('document.button', ['table' => 'pluSalesPartial'])
                 </div>
             </div>
@@ -52,7 +60,7 @@
             {{-- TOP CUSTOMERS --}}
             <div>
                 <div class="uk-card uk-card-default uk-card-body">
-                    {{-- @include('dashboard.partial.topCustomerPartial') --}}
+                    @include('dashboard.partial.topCustomerPartial')
                     @include('document.button', ['table' => 'topCustomerPartial'])
                 </div>
             </div>
@@ -60,7 +68,7 @@
             {{-- Transaction Key --}}
             <div>
                 <div class="uk-card uk-card-default uk-card-body">
-                    {{-- @include('dashboard.partial.transactionKeyPartial') --}}
+                    @include('dashboard.partial.settingKeyPartial', ['type' => 2])
                     @include('document.button', ['table' => 'transactionKeyPartial'])
                 </div>
             </div>
@@ -68,23 +76,23 @@
             {{-- Clerk Breakdown --}}
             <div>
                 <div class="uk-card uk-card-default uk-card-body">
-                    {{-- @include('dashboard.partial.clerkBreakdownPartial') --}}
+                    @include('dashboard.partial.clerkBreakdownPartial')
                     @include('document.button', ['table' => 'clerkBreakdownPartial'])
                 </div>
             </div>
 
             {{-- FINALISE Key --}}
-            {{-- <div>
+            <div>
                 <div class="uk-card uk-card-default uk-card-body">
-                    @include('dashboard.partial.finaliseKeyPartial')
+                    @include('dashboard.partial.settingKeyPartial', ['type' => 2])
                     @include('document.button', ['table' => 'finaliseKeyPartial'])
                 </div>
-            </div> --}}
+            </div>
 
             {{-- last 100 sales --}}
             <div>
                 <div class="uk-card uk-card-default uk-card-body">
-                    {{-- @include('dashboard.partial.last100SalePartial') --}}
+                    @include('dashboard.partial.last100SalePartial')
                     @include('document.button', ['table' => 'last100SalePartial'])
                 </div>
             </div>
@@ -92,7 +100,7 @@
             {{-- Specials Manager --}}
             <div>
                 <div class="uk-card uk-card-default uk-card-body">
-                    {{-- @include('dashboard.partial.specialsManagerPartial') --}}
+                    @include('dashboard.partial.specialsManagerPartial')
                     @include('document.button', ['table' => 'specialsManagerPartial'])
                 </div>
             </div>
@@ -100,7 +108,7 @@
             {{-- EMPLOYEE TIME AND ATTENDANCE --}}
             <div>
                 <div class="uk-card uk-card-default uk-card-body">
-                    {{-- @include('dashboard.partial.employeePartial') --}}
+                    @include('dashboard.partial.employeePartial')
                     @include('document.button', ['table' => 'employeePartial'])
                 </div>
             </div>

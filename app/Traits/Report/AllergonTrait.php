@@ -28,7 +28,7 @@ trait AllergonTrait
             }
         }
         foreach($collectPluIds as $key => $collectPluId) {
-            $stock = Stock::whereJsonContains('stock_merchandise', ['plu_id' => $collectPluId['plu_id']])->first();
+            $stock = Stock::whereJsonContains('stock_set', ['plu_id' => $collectPluId['plu_id']])->first();
             $settingAllergen = Setting::where('setting_id', $collectPluId['setting_id'])->pluck('setting_stock_allergen')->first();
             foreach($stock->stock_allergen as $allergenKey => $stockAllergenValue) {
                 $exchangedValue[] = $settingAllergen[$stockAllergenValue];

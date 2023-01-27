@@ -1,53 +1,33 @@
 @php
 
-use App\Models\Stock;
-$totalPrice = 0;
-$price = 0;
-
-$clerkBreakdown = $data['clerkBreakdown'];
-$clerkBreakdown = $clerkBreakdown->groupBy('user_id');
-
-if (count($clerkBreakdown) > 0) {
-    foreach ($clerkBreakdown as $receiptList) {
-        $person = $receiptList[0]->person_name;
-        $personName = json_decode($person);
+use App\Models\Receipt;
 
 
-        $data = Receipt::ReceiptCartInitialize($clerkBreakdown, $data);
-
-        $arrayclerkBreakdown[] = [
-            'Number' => $receiptList->first()->receipt_user_id,
-            'Name' => $receiptList->first()->person_firstname,
-            'total' => App\Helpers\MathHelper::FloatRoundUp($data['order_price_total'], 2),
-        ];
-    }
-} else {
-    $arrayclerkBreakdown[] = [
-        'Number' => '',
-        'Name' => '',
-        'total' => '',
-    ];
-}
 @endphp
 
 
-<div>
-    <h3 class="uk-card-title">CLERK BREAKDOWN</h3>
+<h3 class="uk-card-title">CLERK BREAKDOWN</h3>
+<div class="uk-overflow-auto uk-height-large">
 
-        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
+        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive uk-overflow-auto uk-height-large">
             <thead>
                 <tr>
-                    @foreach ($arrayclerkBreakdown[0] as $key => $item)
+                  {{--   @foreach ($arrayclerkBreakdown[0] as $key => $item)
                         <th>{{ $key }}</th>
-                    @endforeach
+                    @endforeach --}}
                 </tr>
             </thead>
             <tbody>
-                @foreach ($arrayclerkBreakdown as $keyarrayclerkBreakdown => $itemarrayclerkBreakdown)
+                @foreach ($data['orderList']->groupBy('order_user_id') as $orderList)
+                    @php
+                         $data = Receipt::ReceiptCartInitialize( $orderList, $data);
+                    @endphp
                     <tr>
-                        @foreach ($itemarrayclerkBreakdown as $key => $item)
-                            <td>{{ $item }}</td>
-                        @endforeach
+                       
+                        <td>{{ json_decode($orderList->first()->person_name, true)['person_firstname'] }}</td>
+                        <td>{{ $orderList->count() }}</td>
+                        <td>{{ $data['setupList']['order_price_total'] }}</td>
+                        
                     </tr>
                 @endforeach
             </tbody>

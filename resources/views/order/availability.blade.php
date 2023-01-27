@@ -17,7 +17,7 @@
         <tbody>
             @foreach($data['orderList'] as $orderList)
             <tr>
-                <td>{{json_decode($orderList->stock_merchandise)->stock_name}}</td>
+                <td>{{json_decode($orderList->stock_set)->stock_name}}</td>
                 <td>{{$orderList->receipt_quantity}}</td>
                 <td>
                     <table class="uk-table uk-table-small uk-table-divider">

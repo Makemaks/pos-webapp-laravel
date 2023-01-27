@@ -21,7 +21,7 @@ use App\Models\Person;
             <select class="uk-select" name="department" id="form-stacked-select">
                 <option>Choose One Department</option>
                 @foreach($stocks as $stock)
-                    <option>{{$stock->stock_merchandise['category_id']}}</option>
+                    <option>{{$stock->stock_set['category_id']}}</option>
                 @endforeach
             </select>
         </div>

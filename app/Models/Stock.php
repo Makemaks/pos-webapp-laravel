@@ -63,9 +63,7 @@ class Stock extends Model
 
 
         "stock_merchandise" => '{
-            "group_id": "",
-            "category_id":"",
-            "brand_id":"",
+           
 
             "random_code": "",
             "expiration_date": "",
@@ -75,7 +73,7 @@ class Stock extends Model
             "unit_size": "",
             "recipe_link": "",
             "case_size": "",
-            "plu_id": {},
+            
             
             "alternative_text": "",
             "current_stock": "",
@@ -122,11 +120,13 @@ class Stock extends Model
 
         "stock_setting_offer" => '{}',
         "stock_setting_vat" => '{}',
+        "stock_set" => '{}',
 
     ];
 
 
     protected $casts = [
+        'stock_set' => 'array',
         'stock_price' => 'array',
         'stock_price_quantity' => 'array',
         'stock_setting_vat' => 'array',
@@ -155,56 +155,6 @@ class Stock extends Model
 
         return Stock::leftJoin('store', 'store.store_id', '=', 'stock.stock_store_id');
     }
-
-    public static function GroupCategoryBrandPlu($data, $type, $stock_merchandise_key)
-    {
-
-        $totalPrice = 0;
-        $price = 0;
-        $departmentTotal = [];
-
-         foreach ($data['settingModel']->setting_stock_set as $key => $value) {
-
-
-            if ($value['type'] == $type) {
-
-                $quantity = 0;
-                $totalCostPrice = 0;
-
-                foreach ($data['orderList'] as $orderList) {
-
-                    $stock_merchandise = json_decode($orderList->stock_merchandise, true);
-
-                
-                    if ($orderList->receipt_id != null) {
-
-                        if ($stock_merchandise[$stock_merchandise_key] == $key) {
-
-                            $price = json_decode($orderList->receipt_stock_price, true);
-                            $totalPrice = $totalPrice + head($price)['price'] * $orderList->receipt_stock_quantity;
-                            $quantity = $quantity + $orderList->receipt_stock_quantity;
-
-                            if($quantity != 0)
-                            $totalCostPrice = $totalCostPrice + head($price)['price'] * $quantity;
-
-                        }
-
-                    }
-                        
-                   
-                }
-
-
-                $departmentTotal[] = [
-                    'name' => $value['name'],
-                    'Quantity' => $quantity,
-                    'Total' => MathHelper::FloatRoundUp($totalPrice, 2),
-                ];
-            }
-        }
-        return $departmentTotal;
-    }
-
 
     public static function OrderTotal($orderList)
     {
@@ -291,7 +241,7 @@ class Stock extends Model
         $settingModel = Setting::where('setting_account_id', $userModel->store_id)->first();
         
         foreach ($stock_setting_vat as $key => $stock_setting_vat_item) {
-            $stock_vat[$stock_setting_vat_item] = $settingModel->setting_vat[$stock_setting_vat_item];
+            $stock_vat[$key] = $settingModel->setting_vat[$key];
         }
 
         return $stock_vat;
@@ -340,7 +290,8 @@ class Stock extends Model
 
         $data['setupList']['stock_price'] = $stock_price;
         $data['setupList']['stock_price_total'] = $stock_price;
-
+        $data['setupList']['stock_price_processed'] = $stock_price;
+        
         //find discount
         if ($stockInitialize['stock_setting_offer']) {
             if ( count($stockInitialize['stock_setting_offer']) > 0) {
@@ -363,6 +314,8 @@ class Stock extends Model
        $data['setupList']['stock_price_processed'] = Stock::StockPriceQuantity( $data['setupList']['stock_price_processed'], $stockInitialize['stock_quantity']);
       
 
+       $a = $stockInitialize['stock_setting_vat'];
+       
        if ($stockInitialize['stock_setting_vat']) {
             if ( count($stockInitialize['stock_setting_vat']) > 0 ) {
                 if ($loop->first) {
@@ -375,16 +328,11 @@ class Stock extends Model
                 $data['setupList']['stock_vat_amount'] = MathHelper::VAT($data['setupList']['stock_vat_rate'], $data['setupList']['stock_price_processed'] );
                 $data['setupList']['stock_vat_amount_total'] = $data['setupList']['stock_vat_amount_total'] + $data['setupList']['stock_vat_amount'];
         
-            }else{
-
-                $data['setupList']['stock_vat_rate'] = collect($data['settingModel']->setting_vat)->where('default', 0)->first()['rate'];
-                $data['setupList']['stock_vat_amount'] = MathHelper::VAT($data['setupList']['stock_vat_rate'], $data['setupList']['stock_price_processed'] );
-                $data['setupList']['order_vat_amount_total'] = $data['setupList']['order_vat_amount_total'] + $data['setupList']['stock_vat_amount'];
             }
 
-
-            $data['setupList']['stock_price_total'] = $data['setupList']['stock_price_processed'] + $data['setupList']['stock_vat_amount'];
        }
+
+       $data['setupList']['stock_price_total'] = $data['setupList']['stock_price_processed'] + $data['setupList']['stock_vat_amount'];
      
        
         return $data;
@@ -396,7 +344,7 @@ class Stock extends Model
             
             'stock_id' => $stock->stock_id,
             'stock_price' => Stock::StockPriceDefault($stock->stock_price, $data),
-            'stock_name' =>  $stock->stock_merchandise['stock_name'],
+            'stock_name' =>  $stock->stock_set['stock_name'],
             'store_id' =>  $store->store_id,
             'store_name' =>  Store::find($store->store_id)->store_name,
             'stock_quantity' =>  1,
@@ -487,7 +435,7 @@ class Stock extends Model
     
                 $arrayGPList[] = [
                     'Number' => $receiptList->first()->stock_id,
-                    'Descriptor' => json_decode($receiptList->first()->stock_merchandise)->stock_name,
+                    'Descriptor' => json_decode($receiptList->first()->stock_set)->stock_name,
                     'Profit' => App\Helpers\MathHelper::FloatRoundUp($totalGP, 2),
                     'GP' => App\Helpers\MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
                 ];

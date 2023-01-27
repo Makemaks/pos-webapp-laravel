@@ -31,10 +31,10 @@ $totaliser = [
 
 @endphp
 
-
-<div>
-    <h3 class="uk-card-title">WEB TOTAL</h3>
-    <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
+<h3 class="uk-card-title">WEB TOTAL</h3>
+<div class="uk-overflow-auto uk-height-large">
+    
+    <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
         <thead>
             <tr>
                 <th>Totaliser</th>

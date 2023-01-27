@@ -49,7 +49,7 @@ class OrderController extends Controller
 
             if(isset($request->department)) {
                 foreach($stocks as $stock) {
-                    if($stock->stock_merchandise['category_id'] == $request->department) {
+                    if($stock->stock_set['category_id'] == $request->department) {
                         $stockStoreId = $stock->stock_store_id;
                         break;
                     }

@@ -27,7 +27,7 @@ class SearchAPIController extends Controller
           
             if ($request['search_element_type'] == 'user') {
                 $this->stockList = Stock::Store()
-                            ->where('stock_merchandise->stock_name', 'like', '%'.$request['search_element'].'%')
+                            ->where('stock_set->stock_name', 'like', '%'.$request['search_element'].'%')
                             
                             ->get();
                 
@@ -35,7 +35,7 @@ class SearchAPIController extends Controller
             } 
             elseif ($request['search_element_type'] == 'product') {
                 $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)
-                            ->where('stock_merchandise->stock_name', 'like', '%'.$request['search_element'].'%')
+                            ->where('stock_set->stock_name', 'like', '%'.$request['search_element'].'%')
                             
                             ->get();
                 

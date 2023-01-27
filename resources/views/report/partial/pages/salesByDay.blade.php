@@ -9,9 +9,9 @@ $array = [];
 foreach ($settingModel as $key => $value) {
     if ($value['type'] == 1) {
         foreach ($data['orderList']->sortBy('order_created_at') as $orderList) {
-            $stock_merchandise = json_decode($orderList->stock_merchandise, true);
+            $stock_merchandise =   json_decode($orderList->stock_set, true);
 
-            if ($stock_merchandise) {
+            if ($stock_set) {
                 if ($orderList->receipt_id) {
                     $day = Carbon\Carbon::parse($orderList->order_created_at)->format('l');
                     $price = json_decode($orderList->stock_cost, true)[$orderList->receipt_stock_cost]['price'];

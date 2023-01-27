@@ -43,12 +43,14 @@ class AccountFactory extends Factory
             "blocked_access" => []
         ];
 
-
+      
         return [
             'account_system_id' => $this->faker->numberBetween($min = 1, $max = 2),
             'accountable_id' => $this->faker->numberBetween($min = 1, $max = 10),
             'accountable_type' => $accountable_type,
             'account_type' => $account_type,
+            'account_ref' => $this->faker->randomElement($array = array(NULL, $this->faker->lexify )),
+            'account_name' => $this->faker->randomElement($array = array( $this->faker->name($gender = 'male'|'female'),  $this->faker->company )),
             'account_description' => $this->faker->sentence,
             'account_blacklist' => $this->faker->randomElement($array = array(NULL, $account_blacklist))
         ];

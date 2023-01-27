@@ -48,29 +48,29 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
            @foreach ($data['stockList'] as $stock)
                 <tr>
                     <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock->stock_id}}</a></td>
-                    <td>{{$stock->stock_merchandise['stock_name']}}</td>
+                    <td>{{$stock->stock_set['stock_name']}}</td>
 
                     <td>
-                        @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_set) )
-                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['plu_id']]['name']}}
+                        @if ( array_key_exists($stock->stock_set['plu_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_set['plu_id']]['name']}}
                         @endif
                     </td>
 
-                    <td>{{$stock->stock_merchandise['random_code']}}</td>
+                    <td>{{$stock->stock_set['random_code']}}</td>
                     <td>
-                        @if ( array_key_exists($stock->stock_merchandise['group_id'], $data['settingModel']->setting_stock_set) )
-                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['group_id']]['name']}}
+                        @if ( array_key_exists($stock->stock_set['group_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_set['group_id']]['name']}}
                         @endif
                     </td>
                     <td>
                         {{-- dept --}}
-                        @if ( array_key_exists($stock->stock_merchandise['category_id'], $data['settingModel']->setting_stock_set) )
-                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['category_id']]['name']}}
+                        @if ( array_key_exists($stock->stock_set['category_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_set['category_id']]['name']}}
                         @endif
                     </td>
                     <td>
-                       @if ($stock->stock_merchandise['stock_vat_id'])
-                         {{$stock->stock_merchandise['stock_vat_id']}}
+                       @if ($stock->stock_set['stock_vat_id'])
+                         {{$stock->stock_set['stock_vat_id']}}
                        @else
                             @foreach ($data['settingModel']->setting_vat as $item)
                                 @if ($item['default'] == 0)
@@ -88,7 +88,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                         @endphp
                        {{$price}}
                     </td>
-                    {{-- <td>{{$stock->stock_merchandise['stock_quantity']}}</td> --}}
+                    {{-- <td>{{$stock->stock_set['stock_quantity']}}</td> --}}
                 </tr>
            @endforeach
         </tbody>
@@ -125,7 +125,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                         }
 
                         //find discount
-                        if ($stock->stock_merchandise['setting_offer_id']) {
+                        if ($stock->stock_set['setting_offer_id']) {
                             $stockCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::OfferType()));
                             $stockOffer = Setting::SettingCurrentOfferType( $stockCurrentOffer, $price );
                         }
@@ -138,7 +138,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
     
                     <div>
 
-                        <div class="uk-padding-small uk-background-muted uk-border-rounded" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
+                        <div class="uk-padding-small uk-background-muted uk-border-rounded" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_set['stock_name']}}','{{$price}}')">
                             <div class="">
                                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                                     <div class="uk-width-auto" title="{{$stock->stock_id}}" >
@@ -155,15 +155,15 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                                     </div>
                                     <div class="uk-width-expand" title="VAT">
                                         <span class="uk-text-small uk-text-warning">
-                                            @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
+                                            @if ($stock->stock_set['stock_vat_id'] == 'null')
                                                 @foreach ($data['settingModel']->setting_vat as $item)
                                                     @if ($item['default'] == 0)
                                                         {{ MathHelper::FloatRoundUp($item['rate'], 2) }}
                                                     @endif
                                                 @endforeach
                                             @else
-                                                @if (array_key_exists( $stock->stock_merchandise['stock_vat_id'], $data['settingModel']->setting_vat) )
-                                                        {{ MathHelper::FloatRoundUp($data['settingModel']->setting_vat[ $stock->stock_merchandise['stock_vat_id'] ]['rate'], 2) }}
+                                                @if (array_key_exists( $stock->stock_set['stock_vat_id'], $data['settingModel']->setting_vat) )
+                                                        {{ MathHelper::FloatRoundUp($data['settingModel']->setting_vat[ $stock->stock_set['stock_vat_id'] ]['rate'], 2) }}
                                                 @endif
                                             @endif    
                                         </span>
@@ -177,7 +177,7 @@ User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
                             </div>
 
                             <div class="">
-                                {{Str::ucfirst($stock->stock_merchandise['stock_name'])}}
+                                {{Str::ucfirst($stock->stock_set['stock_name'])}}
                             </div>
 
                             <div>

@@ -49,11 +49,11 @@ foreach ($settingModel as $key => $value) {
 
                 // if hour of order is equal to period time (0-23)
                 if ($hour == $i) {
-                    $stock_merchandise = json_decode($orderList->stock_merchandise, true);
+                    $stock_merchandise =   json_decode($orderList->stock_set, true);
 
                     // get price
-                    if ($stock_merchandise['category_id'] == $key) {
-                        $price = json_decode($orderList->stock_cost, true)[$stock_merchandise['category_id']]['price'];
+                    if ($stock_set['category_id'] == $key) {
+                        $price = json_decode($orderList->stock_cost, true)[$stock_set['category_id']]['price'];
 
                         // creating variable for array
                         if ($currentDay === 'Monday') {

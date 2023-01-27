@@ -15,7 +15,7 @@ $action = Str::after(Request::route()->getName(), '.');
 
         @foreach ($data['stockList'] as $stock)
         <option value="{{$stock->stock_id}}" class="uk-input">
-            {{$stock->stock_merchandise['stock_name']}}
+            {{$stock->stock_set['stock_name']}}
         </option>
         @endforeach
 

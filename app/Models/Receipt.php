@@ -26,6 +26,7 @@ class Receipt extends Model
 
     protected $attributes = [
         "receipt_setting_key" => '{}',
+        "receipt_setting_vat" => '{}',
         "receipt_stock_price" => '{}'
     ];
 
@@ -33,6 +34,7 @@ class Receipt extends Model
 
         "receipt_setting_key" => 'array',
         "receipt_stock_price" => 'array',
+        "receipt_setting_vat" => 'array',
     ];
 
     public static function List($column,  $filter){
@@ -48,7 +50,7 @@ class Receipt extends Model
         leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
             ->leftJoin('order', 'order.order_id', '=', 'receipt.receipt_order_id')
             ->leftJoin('store', 'store.store_id', '=', 'order.order_store_id')
-            ->leftJoin('user', 'user.user_id', '=', 'order.ordertable_id')
+            ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
             ->where($column,  $filter);
     }
 
@@ -131,27 +133,30 @@ class Receipt extends Model
     }
 
     public static function ReceiptCartInitialize( $orderList, $data){
-        $stockItem = Null;
       
         $loop = (object)[
             'first' => true,
             'last' => false
         ];
 
-        $lastElement = end($orderList);
+       
 
-        foreach ($orderList as $receipt) {
+        foreach ($orderList as $key => $receipt) {
            
             $stockInititalize = Stock::ReceiptInitialize($receipt);
 
-            if(end($orderList) == $receipt) {
+            if($key == count($orderList)-1){
                 $loop->last = true;
             }
+            elseif($key == 1){
+                $loop->first = false;
+            }
+
 
            $data = Stock::StockPriceProcessed($stockInititalize, $data, $loop);
-           $data = Receipt::Calculate($data, $stockItem, $loop);
+           $data = Receipt::Calculate($data, NULL, $loop);
 
-           $loop->first = false;
+           
         }
 
         return $data;
@@ -191,7 +196,10 @@ class Receipt extends Model
             
             $data['setupList']['order_setting_key_total'] = $data['setupList']['order_setting_key_total'] + $data['setupList']['setting_key_amount_total'];
             $data['setupList']['order_price_total'] = $data['setupList']['order_price_total'] + $data['setupList']['order_setting_key_total'];
-           
+            
+            $data['setupList']['stock_price_total'] =  MathHelper::FloatRoundUp( $data['setupList']['stock_price_total'], 2);
+            $data['setupList']['order_sub_total'] =  MathHelper::FloatRoundUp( $data['setupList']['order_sub_total'], 2);
+            $data['setupList']['order_price_total'] = MathHelper::FloatRoundUp( $data['setupList']['order_price_total'], 2);
         }
 
         return $data;

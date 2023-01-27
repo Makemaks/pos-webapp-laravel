@@ -47,7 +47,7 @@ class StockController extends Controller
     public function Create()
     {
         $this->stockModel = new Stock();
-        $a = $this->stockModel->stock_merchandise;
+        $a = $this->stockModel->stock_set;
         
         $this->Init();
 
@@ -116,8 +116,8 @@ class StockController extends Controller
             $stockModel['stock_cost_quantity'][$keystock_cost_quantity] =  $stock_cost_quantity;
         }
  
-        foreach ((array)$request['stock_merchandise'] as $keystock_merchandise  => $stock_merchandise) {
-             $stockModel['stock_merchandise'][$keystock_merchandise]  = $stock_merchandise;
+        foreach ((array)$request['stock_set'] as $keystock_set  => $stock_set) {
+             $stockModel['stock_set'][$keystock_set]  = $stock_set;
         }
  
         foreach ((array)$request['stock_gross_profit'] as $keygross_profit  => $gross_profit) {

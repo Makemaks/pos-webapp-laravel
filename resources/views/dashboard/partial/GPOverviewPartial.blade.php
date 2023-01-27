@@ -21,7 +21,7 @@ if (count($orderList) > 0) {
 
         $arrayGPList[] = [
             'Number' => $receiptList->first()->stock_id,
-            'Descriptor' => json_decode($receiptList->first()->stock_merchandise)->stock_name,
+            'Descriptor' => json_decode($receiptList->first()->stock_set)->stock_name,
             'Profit' => App\Helpers\MathHelper::FloatRoundUp($totalGP, 2),
             'GP' => App\Helpers\MathHelper::FloatRoundUp($GPpercentage, 2) . '%',
         ];
@@ -58,7 +58,7 @@ if (count($orderList) > 0) {
 <div>
         <h3 class="uk-card-title">GP OVERVIEW</h3>
 
-        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive scroll">
+        <table class="uk-table uk-table-small uk-table-divider uk-table-responsive uk-overflow-auto uk-height-large">
 
        
             <thead>

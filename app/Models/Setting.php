@@ -458,7 +458,7 @@ class Setting extends Model
     public static function SettingStockSet(){
 
         return [
-            "category",
+            "department",
             "group",
             "brand",
             "plu"
@@ -505,10 +505,6 @@ class Setting extends Model
 
         if (count( $setting_key_list ) > 0) {
             
-            if ($data['setupList']['order_sub_total']) {
-                $data['setupList']['stock_price_processed'] = $data['setupList']['order_sub_total'];
-            }
-           
             foreach ( $setting_key_list as $key => $value) {
 
                 //$value = head($value);

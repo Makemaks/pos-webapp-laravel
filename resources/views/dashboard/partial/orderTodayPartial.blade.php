@@ -1,6 +1,7 @@
 @php
     use App\Helpers\DateTimeHelper;
 @endphp
+
 <div class="uk-background-default uk-padding">
     <div class="uk-child-width-1-2" uk-grid>
         <div>

@@ -16,7 +16,7 @@ $action = Str::after(Request::route()->getName(), '.');
         <option value="" selected disabled>SELECT ...</option>
         @foreach ($data['stockList'] as $stock)
         <option value="{{$stock->stock_id}}"  @if(isset($warehouseData->warehouse_inventory['warehouse_stock_id']) && $warehouseData->warehouse_inventory['warehouse_stock_id'] == $stock->stock_id) selected  @endif class="uk-input">
-            {{$stock->stock_merchandise['stock_name']}}
+            {{$stock->stock_set['stock_name']}}
         </option>
         @endforeach
 

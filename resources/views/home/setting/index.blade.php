@@ -17,7 +17,7 @@
                 
                 <label for="setting-key-{{$setting_key_key}}">
                     <span>
-                        {{ KeyHelper::Type()[ $setting_key_item_item['setting_key_group'] ][$setting_key_item_item['setting_key_type']] }}
+                        {{ KeyHelper::Group()[ $setting_key_item_item['setting_key_group'] ][$setting_key_item_item['setting_key_type']] }}
                     </span>
                     <span class="uk-text-bold">{{$setting_key_item_item['value']}}</span>
                 </label>

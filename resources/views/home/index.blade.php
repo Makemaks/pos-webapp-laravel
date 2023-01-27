@@ -53,7 +53,7 @@
                         <div class="uk-margin-small">{{Str::upper($setting_key_item)}}</div>
                         
                         <div class="uk-child-width-1-4@s uk-grid-small" uk-grid>
-                            @foreach (KeyHelper::Type()[$setting_key_key] as $key_helper_key  => $key_helper_item)
+                            @foreach (KeyHelper::Group()[$setting_key_key] as $key_helper_key  => $key_helper_item)
                             
                                 <div>
                                     <div class="uk-box-shadow-small uk-padding-small" value="{{$key_helper_key}}">

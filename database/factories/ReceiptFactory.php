@@ -25,11 +25,11 @@ class ReceiptFactory extends Factory
 
         for ($i= 0; $i < $count; $i++) { 
             
-            $j = $this->faker->numberBetween($min = 0, $max = KeyHelper::Type());
+            $j = $this->faker->numberBetween($min = 0, $max = KeyHelper::Group());
 
             $receipt_setting_key[$i + 1] = [
                 "setting_key_group"  => $this->faker->numberBetween($min = 0, $max = 4),
-                "setting_key_type" => $this->faker->numberBetween( $min = 0, $max = count(KeyHelper::Type()[ $j ]) ), 
+                "setting_key_type" => $this->faker->numberBetween( $min = 0, $max = count(KeyHelper::Group()[ $j ]) ), 
                 "value" => $this->faker->randomElement($array = array(null, $this->faker->numberBetween($min = 1, $max = 200))),
                 "name"=> $this->faker->word,
                 "status" => $this->faker->numberBetween($min = 0, $max = 1),

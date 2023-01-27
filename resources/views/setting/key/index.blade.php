@@ -78,7 +78,7 @@
                                                 <select class="uk-select" name="setting_key[{{$key}}][{{$loop->iteration}}]" {{$disabled}}>
                                                     @if ( $value != '' )  
 
-                                                        @foreach (KeyHelper::Type()[ head( $data['settingModel']->setting_key[1])['setting_key_group'] ] as $setting_key_type_key => $setting_key_type)
+                                                        @foreach (KeyHelper::Group()[ head( $data['settingModel']->setting_key[1])['setting_key_group'] ] as $setting_key_type_key => $setting_key_type)
                                                             <option @if($setting_key_type_key == $value) selected @endif value="{{$setting_key_type_key}}">
                                                                 {{Str::upper($setting_key_type)}}
                                                             </option>

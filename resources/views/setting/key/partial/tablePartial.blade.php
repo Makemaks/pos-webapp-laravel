@@ -24,7 +24,7 @@
                 
                     @if (head( $data['settingModel']->setting_key )['setting_key_group'] != '')
                         <option value="" selected disabled>SELECT ...</option>
-                        @foreach (KeyHelper::Type()[ head( $data['settingModel']->setting_key )['setting_key_group'] ]  as $key_setting_key_type  => $item_setting_key_type)
+                        @foreach (KeyHelper::Group()[ head( $data['settingModel']->setting_key )['setting_key_group'] ]  as $key_setting_key_type  => $item_setting_key_type)
                                 
                             <option value="{{$key_setting_key_type}}" @if($key_setting_key_type == $valueItemSettingKey) selected @endif>
                                 {{$item_setting_key_type}}

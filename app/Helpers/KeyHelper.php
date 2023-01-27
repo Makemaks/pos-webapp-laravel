@@ -3,7 +3,7 @@ namespace App\Helpers;
 
 class KeyHelper{
 
-    public static function Type(){
+    public static function Group(){
         return [
             //group and type
             KeyHelper::Finalise(),

@@ -158,7 +158,7 @@ class SettingFactory extends Factory
         $count = 0;
         for ($i= 0; $i < count(Setting::SettingKeyGroup()); $i++) { 
             
-            foreach (KeyHelper::Type()[$i] as $key => $value) {
+            foreach (KeyHelper::Group()[$i] as $key => $value) {
                 $count++;
                 $setting_key[$count] = [
                     "setting_key_group"  => $i,

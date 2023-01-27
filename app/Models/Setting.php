@@ -516,7 +516,7 @@ class Setting extends Model
             foreach ( $setting_key_list as $key => $value) {
 
                 $value = head($value);
-                $setting_key_type = KeyHelper::Type()[ $value['setting_key_group'] ][ $value['setting_key_type'] ];
+                $setting_key_type = KeyHelper::Group()[ $value['setting_key_group'] ][ $value['setting_key_type'] ];
 
                 /*  
                 $setting_key_value = collect($settingModel->setting_key)->where('setting_key_group', $value['setting_key_group'] )

@@ -288,7 +288,7 @@ class Order extends Model
                             'receipt_order_id' =>  $orderID,
                             'receipt_user_id' => $sessionCartList['user_id'],
                             'receipt_stock_price' => json_encode($sessionCartList['stock_price']),
-                            'receipt_setting_vat' => json_encode($sessionCartList['stock_setting_vat']),
+                            'receipt_stock_vat' => json_encode($sessionCartList['stock_setting_vat']),
                             'receipt_setting_offer' => json_encode($sessionCartList['stock_setting_vat']),
                             'receipt_setting_pos_id' => 1,
                             'receipt_warehouse_id' => $warehouseStock->warehouse_id,

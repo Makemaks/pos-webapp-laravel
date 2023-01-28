@@ -26,7 +26,7 @@ return new class extends Migration
             $table->bigInteger('receipt_order_id');
             $table->bigInteger('receipt_user_id')->comment('added_by');
             $table->json('receipt_setting_key')->nullable(); //customer
-            $table->json('receipt_setting_vat')->nullable(); 
+            $table->json('receipt_stock_vat')->nullable(); 
             $table->json('receipt_setting_offer')->nullable(); 
             //$table->text('receipt_note')->nullable();
 

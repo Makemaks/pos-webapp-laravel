@@ -144,13 +144,13 @@ class Receipt extends Model
 
     public static function ReceiptCartInitialize($orderList){
         //reinitialise session values for cart
-        $receipt_setting_vat = NULL;
+        $receipt_stock_vat = NULL;
         $stockList = [];
         
         foreach ($orderList as $receipt) {
             
-         /*   if ($receipt->receipt_setting_vat) {
-                $receipt_setting_vat = array_sum($receipt->receipt_setting_vat);
+         /*   if ($receipt->receipt_stock_vat) {
+                $receipt_stock_vat = array_sum($receipt->receipt_stock_vat);
            } */
 
            $stock = Stock::find($sessionCart['stock_id']);

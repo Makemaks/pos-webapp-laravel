@@ -48,7 +48,7 @@ class HomeController extends Controller
         $this->init();
          //setup new
        
-        $this->setupList = Receipt::SessionInitialize($request);
+        $request = Receipt::SessionInitialize($request);
 
         $a = $this->Data();
         

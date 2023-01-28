@@ -39,7 +39,7 @@ class Receipt extends Model
 
     public static function List($column,  $filter){
         return Receipt::
-        leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+        leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipt_stock_id')
             ->leftJoin('store', 'store.store_id', '=', 'stock.stock_account_id')
             ->where($column,  $filter)
             ->orderBy('stock.created_at', 'desc');
@@ -47,7 +47,7 @@ class Receipt extends Model
 
     public static function Order($column,  $filter){
         return Receipt::
-        leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+        leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipt_stock_id')
             ->leftJoin('order', 'order.order_id', '=', 'receipt.receipt_order_id')
             ->leftJoin('store', 'store.store_id', '=', 'order.order_store_id')
             ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
@@ -58,7 +58,7 @@ class Receipt extends Model
 
     public static function Bag($column,  $filter){
         return Receipt::
-        leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+        leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipt_stock_id')
             ->leftJoin('user', 'user.user_id', 'receipt.receipt_user_id')
             ->where($column,  $filter);
     }

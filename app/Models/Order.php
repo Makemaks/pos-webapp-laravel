@@ -63,7 +63,7 @@ class Order extends Model
     public static function List($column,  $filter)
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
-            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipt_stock_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id')
             ->leftJoin('payment', 'payment.payment_id', '=', 'order.order_payment_id')
             ->where($column,  $filter)
@@ -74,7 +74,7 @@ class Order extends Model
     public static function Receipt($column,  $filter)
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
-            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipt_stock_id')
             ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id')
             ->where($column,  $filter);
@@ -84,7 +84,7 @@ class Order extends Model
     public static function HourlyReceipt()
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
-            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipt_stock_id')
             ->leftJoin('user', 'user.user_id', '=', 'order.order_user_id')
             ->leftJoin('person', 'person.person_id', '=', 'user.user_person_id');
     }
@@ -92,7 +92,7 @@ class Order extends Model
     public static function Account()
     {
         return Order::leftJoin('receipt', 'receipt.receipt_order_id', '=', 'order.order_id')
-            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipttable_id')
+            ->leftJoin('stock', 'stock.stock_id', '=', 'receipt.receipt_stock_id')
             ->orderBy('order.created_at', 'desc');
     }
 

@@ -42,6 +42,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\OrderNewStockController;
 
 use App\Http\Controllers\API\HomeAPIController;
 use App\Http\Controllers\API\GatewayAPIController;
@@ -54,8 +55,8 @@ Use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\PluController;
 
 Route::middleware(['datetimeMiddleware'])->group(function () {
-  
-    
+
+
 Route::get('/', function () {
     return view('welcome.index');
 });
@@ -80,6 +81,7 @@ Route::resource('company', CompanyController::class);
 Route::resource('person', PersonController::class);
 Route::resource('store', StoreController::class);
 Route::resource('order', OrderController::class);
+Route::resource('order-new-stock', OrderNewStockController::class);
 Route::resource('stock', StockController::class);
 // Route::resource('activity', ActivityController::class);
 // Route::resource('subscription', SubscriptionController::class);

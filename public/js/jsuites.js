@@ -11,7 +11,7 @@ $( function() {
     });
 } );
 
-document.querySelector('jsuites-calendar').addEventListener('onchange', function(e) {
+/* document.querySelector('jsuites-calendar').addEventListener('onchange', function(e) {
     console.log('New value: ' + e.target.value);
-});
+}); */
 

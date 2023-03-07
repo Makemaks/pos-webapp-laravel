@@ -1,132 +1,179 @@
 @php
-        use App\Helpers\ControllerHelper;
-        use App\Models\User;
+    use App\Helpers\ControllerHelper;
+    use App\Models\User;
+    use App\Models\Setting;
 
-       
+    $route = Str::before(Request::route()->getName(), '.');
+
+@endphp
+
+
+@php
+
+   if ($route != 'home') {
         $arrayAdminMenu = [
-            "home" => [],
+            "dashboard" => [],
             "report" => [],
-            "product" => [],
             "stock" => [
 
-                "Stock List",
-                "Orders",
-                "Transfers",
-                "Wastages",
-                "Returns",
-                "Ins &amp; Outs",
-                "Suppliers",
-                "Case Sizes",
-                "Recipes",
-                "Start StockTake",
-                "Stock Variance",
+                "stock-list",
+                "order",
+                "transfer",
+                "wastage",
+                "return",
+                "ins-&-out",
+                "supplier",
+                "case-size",
+                "recipe",
+                "inventory",
+                "variance",
+                "delivery",
 
             ],
             "clerk" => [],
             "programming" => [
-                "Departments",
-                "Groups",
-                "List PLUs",
-                "Mix &amp; Match",
-                "Mix &amp; Match 2",
-                "Finalise Keys",
-                "Status Keys,",
-                "Transaction Keys",
-                "Fixed Characters",
-                "Fixed Totalisers",
-                "Keyboard Menu Levels",
-                "Keyboard Allocation",
-                "Receipt",
-                "Tags",
-                "Tag Groups",
-                "Vouchers",
-                "Reasons",
-                "Tax",
-                "Non PLUs",
-                "KP Categories",
-                "Preset Message",
-                "Price Level Scheduler",
+                "category",
+                "group",
+                "plu",
+                "mix-&-match",
+                "mix-&-match-2",
+                "finalise-key",
+                "status-keys",
+                "transaction-key",
+                "fixed-character",
+                "fixed-totaliser",
+                "keyboard-menu-level",
+                "keyboard-allocation",
+                "receipt",
+                "tag",
+                "tag-group",
+                "voucher",
+                "reason",
+                "tax",
+                "non-plu",
+                "kp-categorie",
+                "preset-message",
+                "price-level-scheduler",
+                "floor-plan",
             ],
             "sale" => [
-                "Sales Explorer",
-				"Till Reports",
-				"Bill Reports",
+                "sale",
+                "till",
+                "bill",
             ],
             "customer" => [
-                "Customer Groups"
+                "person",
+                "company"
             ],
             "ticket" => [],
+            "reservation" => [],
+            "expense" => [],
+            "plu-report" => [],
             
 
         ];
+   } else {
+        $arrayAdminMenu = [
+         /*   
+            
+            "home" => [
+                "category",
+                "group",
+                "list-plu",
+                "mix-&-match",
+                "mix-&-match-2",
+                "tag",
+                "tag-group",
+            ],
+            
+             */
+
+        ];
+   }
+   
+
 @endphp
 
 
-<div>
-    <ul  class="uk-nav-default uk-nav-parent-icon" uk-nav>
-        
-            @foreach ( $arrayAdminMenu as $key => $arrayMenu)
+@if ($route != 'home')
+    <div>
+        <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
                 
-                @php
-                    $keyReplace = $key;
-
-                    if ($key == 'product') {
-                        $keyReplace= 'stock';
-                    }elseif($key == 'clerk'){
-                        $keyReplace = 'user';
-                    }
-                    elseif($key == 'programming'){
-                        $keyReplace = 'setting';
-                    }
-                    elseif($key == 'sale'){
-                        $keyReplace = 'order';
-                    }
-                    elseif($key == 'customer'){
-                        $keyReplace = 'person';
-                    }
-
-                @endphp
-
-                @if (count($arrayMenu) == 0)
-                    <li>
-                        <a class="uk-active" href="{{route($keyReplace.'.index')}}">
-                            {{Str::upper($key)}}
-                        </a>
-                    </li>
-                @else
-                    <li class="uk-parent">
-                        <a href="#">{{Str::upper($keyReplace)}}</a>
-
-                        <ul class="uk-nav-sub">
-                            @foreach ($arrayMenu as $item)
-                                @php
-                                    if($item == $route){
-                                        $active = 'uk-padding-small uk-box-shadow-small uk-text-danger uk-border-rounded';
-                                    }
-                                    else{
-                                        $active = '';
-                                    }
-                                @endphp
+                @foreach ( $arrayAdminMenu as $key => $arrayMenu)
                         
+                    @php
+                        $keyReplace = $key;
+
+                        if ($key == 'product') {
+                            $keyReplace= 'stock';
+                        }
+                        elseif($key == 'clerk'){
+                            $keyReplace = 'user';
+                        }
+                        elseif($key == 'programming'){
+                            $keyReplace = 'setting';
+                        }
+                        elseif($key == 'sale'){
+                            $keyReplace = 'order';
+                        }
+                    
+                        
+
+                        $uk_open ='';
+                        if(Str::lower(Session::get('action')) == $keyReplace || $keyReplace == $route){
+                            $uk_open = 'uk-open';
+                        }
                             
-                                <li>
-                                    <a class="uk-link-reset" href="{{route($keyReplace.'.index')}}">
-                                        {{Str::upper($item)}}
-                                    </a>
-                                </li>
+                    @endphp
+                    
+
+                    @if (count($arrayMenu) == 0)
+                        <li>
+                            <a href="{{route($keyReplace.'.index')}}">
+                                {{Str::upper($key)}}
+                            </a>
+                        </li>
+                    @else
+                            
+                        <li class="uk-parent {{$uk_open}}">
+                            <a href="#">{{Str::upper($keyReplace)}}</a>
+
+                            <ul class="uk-nav-sub">
+                                @foreach ($arrayMenu as $item)
+                                    @php
+                                        $active = '';
+                                        if (Session::get('view') == $item) {
+                                            $active = 'uk-text-danger';
+                                        }
+                                    @endphp
+                                        
+                                    <li>
+                                        <a href="{{route('menu.'.$keyReplace,['view' => $item])}}">
+                                            <span class="{{$active}}">{{Str::upper(Str::replace('-', ' ', $item))}}</span>
+                                        </a>
+                                    </li>
+                                        
+                                @endforeach
+                            </ul>
                                 
-                            @endforeach
-                        </ul>
-                        
-                    </li>
-                @endif
+                        </li>
+                    @endif
 
-            @endforeach
-        
-        <li class="uk-nav-divider"></li>
+                @endforeach
+                
+            <li class="uk-nav-divider"></li>
+                
+        </ul>
+    </div>
 
-        @if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'User')
-            <li><a class="uk-margin-small uk-button uk-button-default uk-text-danger" href="">ADMIN</a></li>
-        @endif
-    </ul>
-</div>
+@else
+
+
+@endif
+
+
+
+
+
+
+

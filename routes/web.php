@@ -35,16 +35,27 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PlanManagerController;
 use App\Http\Controllers\SchemeController;
 use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ContactManagerController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\OrderNewStockController;
 
+use App\Http\Controllers\API\HomeAPIController;
+use App\Http\Controllers\API\GatewayAPIController;
 use App\Http\Controllers\API\ChartAPIController;
 use App\Http\Controllers\API\CartAPIController;
 use App\Http\Controllers\API\SchemeAPIController;
 use App\Http\Controllers\API\OrderAPIController;
+
+Use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\PluController;
+
+Route::middleware(['datetimeMiddleware'])->group(function () {
+
 
 Route::get('/', function () {
     return view('welcome.index');
@@ -58,6 +69,7 @@ Route::get('login', [AuthenticationController::class, 'Login'])->name('authentic
 Route::get('forgot-password', [AuthenticationController::class, 'ForgotPassword'])->name('authentication.forgot-password');
 Route::get('reset-password/{id}', [AuthenticationController::class, 'ResetPassword'])->name('authentication.reset-password');
 Route::get('logout', [AuthenticationController::class, 'Logout'])->name('authentication.logout');
+Route::get('clock-out', [AuthenticationController::class, 'ClockOut'])->name('authentication.clock-out');
 Route::get('register', [AuthenticationController::class, 'Register'])->name('authentication.register');
 Route::get('admin-store/{store}', [AuthenticationController::class, 'adminStore'])->name('authentication.admin-store');
 
@@ -65,26 +77,38 @@ Route::get('admin-store/{store}', [AuthenticationController::class, 'adminStore'
 Route::resource('home', HomeController::class);
 Route::resource('user', UserController::class);
 Route::resource('company', CompanyController::class);
-Route::resource('address', AddressController::class);
+// Route::resource('address', AddressController::class);
 Route::resource('person', PersonController::class);
 Route::resource('store', StoreController::class);
 Route::resource('order', OrderController::class);
+Route::resource('order-new-stock', OrderNewStockController::class);
 Route::resource('stock', StockController::class);
-Route::resource('activity', ActivityController::class);
-Route::resource('subscription', SubscriptionController::class);
+// Route::resource('activity', ActivityController::class);
+// Route::resource('subscription', SubscriptionController::class);
 Route::resource('setting', SettingController::class);
 Route::resource('dashboard', DashboardController::class);
 Route::resource('reservation', ReservationController::class);
-Route::resource('scheme', SchemeController::class);
-Route::resource('plan', PlanController::class);
-Route::resource('payment', PaymentController::class);
-Route::resource('account', AccountController::class);
+// Route::resource('scheme', SchemeController::class);
+// Route::resource('plan', PlanController::class);
+
+// Route::resource('account', AccountController::class);
 Route::resource('report', ReportController::class);
 Route::resource('ticket', TicketController::class);
+Route::resource('warehouse', WarehouseController::class);
+Route::resource('receipt', ReceiptController::class);
+
+Route::resource('expense', ExpenseController::class);
+
+Route::resource('plu-report', PluController::class);
 
 
-Route::get('mail/', [MailController::class,'Index'])->name('mail.index');
-Route::post('mail/send', [MailController::class,'Send'])->name('mail.send');
+
+
+
+// Route::get('mail/', [MailController::class, 'Index'])->name('mail.index');
+// Route::post('mail/send', [MailController::class, 'Send'])->name('mail.send');
+
+
 
 /* Route::get('home/', [HomeController::class,'Index'])->name('home.index');
 Route::get('home/store', [HomeController::class,'Create'])->name('home.create');
@@ -124,7 +148,16 @@ Route::get('store-manager/branch/store/{store}', [StoreManagerController::class,
 Route::get('store-manager/order/store/{store}', [StoreManagerController::class,'Order'])->name('store-manager.order');
  */
 
+Route::get('menu/stock/', [MenuController::class,'Stock'])->name('menu.stock');
+Route::get('menu/setting/', [MenuController::class,'Setting'])->name('menu.setting');
+Route::get('menu/order/', [MenuController::class,'Order'])->name('menu.order');
+Route::get('menu/customer/', [MenuController::class,'Customer'])->name('menu.customer');
+
+Route::get('menu/home/', [MenuController::class,'Home'])->name('menu.home');
+
 Route::apiResources([
+    'home-api' => HomeAPIController::class,
+    'gateway-api' => GatewayAPIController::class,
     'chart-api' => ChartAPIController::class,
     'cart-api' => CartAPIController::class,
     'scheme-api' => SchemeAPIController::class,
@@ -136,3 +169,5 @@ Route::post('order-manager/checkin', [OrderManagerController::class, 'Checkin'])
 
 Route::get('plan-manager/plan/scheme/{type}/{id}', [PlanManagerController::class,'Scheme'])->name('plan-manager.scheme');
 Route::get('plan-manager/statistics/{stock}', [PlanManagerController::class,'Statistics'])->name('plan-manager.statistics'); */
+
+});

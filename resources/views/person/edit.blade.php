@@ -4,9 +4,6 @@
     <script src="{{asset('js/myapp.js')}}"></script> 
 @endpush
 
-@inject('htmlControlType', 'App\Enums\HTMLControlType')
-@inject('genderType', 'App\Enums\GenderType')
-@inject('encryptionHelper', 'App\Helpers\EncryptionHelper')
 @php
     $personType = ['Employee', 'Ex-Employee', 'Non-Employee'];
     $pageTipList = [

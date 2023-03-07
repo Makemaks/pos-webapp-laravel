@@ -16,12 +16,14 @@ class CreateAccountTable extends Migration
         Schema::create('account', function (Blueprint $table) {
             $table->bigIncrements('account_id');
             $table->bigInteger('account_system_id');
-            $table->bigInteger('accountable_id');
+            $table->bigInteger('accountable_id'); // company_id
             $table->string('accountable_type');
             $table->string('account_name')->nullable();
-            $table->tinyInteger('account_type')->comment('SAAS::B2B::B2B');
+            $table->tinyInteger('account_type')->comment('SAAS::B2B::B2C');
             $table->string('account_description');
             $table->bigInteger('parent_account_id')->nullable();
+            $table->json('account_blacklist')->nullable();
+            
             $table->timestamps();
         });
     }

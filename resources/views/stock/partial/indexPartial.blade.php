@@ -1,12 +1,19 @@
 @php
     use App\Helpers\CurrencyHelper;
+    use App\Helpers\CountryHelper;
     use App\Helpers\MathHelper;
     use App\Helpers\StringHelper;
-    use App\Models\Scheme;
+    use App\Models\Warehouse;
     use App\Models\User;
+    use App\Models\Stock;
+    use App\Models\Setting;
 
+    $currency = "";
     $route = Str::before(Request::route()->getName(), '.');  
-    $currency = CurrencyHelper::Currency();
+
+    $default_currency = $data['settingModel']->setting_group['default_country'];
+    $currency = CountryHelper::ISO()[$default_currency]['currencies'][0];
+    $currency = '';
 
     $tableHeader = [
         'ID',
@@ -19,11 +26,16 @@
         'Price',
         'Qty',
     ];
+
+    
 @endphp
 
 
 
-@if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'User')
+
+@if (User::UserType()[Auth::User()->user_type] == 'Super Admin' && 
+User::UserType()[Auth::User()->user_type] == 'Admin' && $route != 'home-api')
+
     <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
         <thead>
             <tr>
@@ -35,112 +47,200 @@
         <tbody>
            @foreach ($data['stockList'] as $stock)
                 <tr>
-                    <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-danger uk-border-rounded">{{$stock->stock_id}}</a></td>
+                    <td><a href="{{route('stock.edit', $stock->stock_id)}}" class="uk-button uk-button-default uk-border-rounded">{{$stock->stock_id}}</a></td>
                     <td>{{$stock->stock_merchandise['stock_name']}}</td>
-                    <td>{{$stock->stock_merchandise['master_plu']}}</td>
-                    <td>{{$stock->stock_merchandise['random_code']}}</td>
-                    
+
                     <td>
-                       {{--  @foreach ($data['settingModel']->setting_stock_group_category_plu as $item)
-                            @if ($item['type'] == 1 && $stock->stock_merchandise['group_id'])
-                                {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['group_id']]['description']}}
-                            @endif
-                        @endforeach --}}
-                        {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['group_id']]['description']}}
+                        @if ( array_key_exists($stock->stock_merchandise['plu_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['plu_id']]['name']}}
+                        @endif
+                    </td>
+
+                    <td>{{$stock->stock_merchandise['random_code']}}</td>
+                    <td>
+                        @if ( array_key_exists($stock->stock_merchandise['group_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['group_id']]['name']}}
+                        @endif
                     </td>
                     <td>
                         {{-- dept --}}
-                       {{--  @foreach ($data['settingModel']->setting_stock_group_category_plu as $item)
-                            @if ($item['type'] == 0 && $stock->stock_merchandise['category_id'])
-                                {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['category_id']]['description']}}
-                            @endif
-                        @endforeach --}}
-                        {{$data['settingModel']->setting_stock_group_category_plu[$stock->stock_merchandise['category_id']]['description']}}
+                        @if ( array_key_exists($stock->stock_merchandise['category_id'], $data['settingModel']->setting_stock_set) )
+                            {{$data['settingModel']->setting_stock_set[$stock->stock_merchandise['category_id']]['name']}}
+                        @endif
                     </td>
                     <td>
-                       @if ($stock->stock_merchandise['stock_vat'] == 'null')
+                       @if ($stock->stock_merchandise['stock_vat_id'])
+                         {{$stock->stock_merchandise['stock_vat_id']}}
+                       @else
                             @foreach ($data['settingModel']->setting_vat as $item)
                                 @if ($item['default'] == 0)
                                     {{$item['rate']}}
                                 @endif
                             @endforeach
-                       @else
-                            {{$stock->stock_merchandise['stock_vat']}}
                        @endif
 
                     </td>
                     <td>
                         @php
-                            $cost = 0;
-                            foreach ($stock->stock_cost as $stock_cost){
-                                    $cost = MathHelper::FloatRoundUp($stock_cost['price'], 2);
-                            }
+                            $price = 0;
+                            $price = MathHelper::FloatRoundUp(Stock::StockCostDefault($stock->stock_cost), 2);
                            
                         @endphp
-                       {{$cost}}
+                       {{$price}}
                     </td>
-                    <td>{{$stock->stock_merchandise['stock_quantity']}}</td>
+                    {{-- <td>{{$stock->stock_merchandise['stock_quantity']}}</td> --}}
                 </tr>
            @endforeach
         </tbody>
     </table>
 @else
+
+    <div>
+        @include('stock.partial.groupPartial')
+    </div>
+
+    <hr>
+
+    <div class="uk-overflow-auto uk-height-large" uk-height-viewport="offset-top: true; offset-bottom: 10">
+
+        <div class="uk-grid-match uk-child-width-1-4@s uk-grid-small" uk-grid>
+        
+            @isset($data['stockList'])
+                @foreach ($data['stockList'] as $stock)
     
-    <div class="uk-grid-match uk-child-width-1-4@m uk-child-width-1-4@s" uk-grid>
-        @foreach ($data['stockList'] as $stock)
+                    @php
+                        $price = 0;
+                        $storeID = $stock->stock_store_id;
+                        $image =  'stock/'.$storeID.'/'.$stock->image;   
+                        $stockOffer = [];
+                        $stockCurrentOffer = [];
+                        
+                      
 
-            @php
-                $storeID = $stock->stock_account_id;
-                $image =  'stock/'.$storeID.'/'.$stock->image;      
-                $price = CurrencyHelper::Format($stock->stock_cost);  
-                /* $schemeList = Scheme::stock('schemetable_id',  $stock->stock_id)->get(); */
-            @endphp
+                        $price = MathHelper::FloatRoundUp(Stock::StockCostCustomer($stock->stock_cost), 2);
+                        //check if customer has price
+                        if ($price == 0) {
+                           //get original price
+                            $price = MathHelper::FloatRoundUp(Stock::StockCostDefault($stock->stock_cost), 2);
+                        }
 
+                        //find discount
+                        if ($stock->stock_merchandise['setting_offer_id']) {
+                            $stockCurrentOffer = Setting::SettingCurrentOffer($stock, array_search('discount', Setting::OfferType()));
+                            $stockOffer = Setting::SettingCurrentOfferType( $stockCurrentOffer, $price );
+                        }
 
-            <div>
-                <div class="uk-card uk-card-default uk-card-small uk-card-body">
-                        @if ( $stock != null && $stock->stock_image != null && 
-                            Storage::disk('public')->has('uploads/'.$stock->stock_image))
-                                <img src="{{asset('/storage/uploads/'.$stock->stock_image)}}" class="uk-image">
-                        @else
-                            <img src="{{asset('/storage/uploads/placeholder.png')}}" class="uk-image">
-                        @endif
+                        if($stockOffer){
+                            $stockOfferMin =  Stock::StockCostMin($stockOffer);
+                        }
+
+                    @endphp
+    
                     <div>
-                        <ul class="uk-iconnav uk-padding-small">
-                            <li><a href="{{route('stock.edit', $stock->stock_id)}}" class="" uk-icon="icon: pencil"></a></li>
-                            {{-- <li><a href="{{route('init.dashboard', ['stock', $stock->stock_id])}}" uk-icon="icon: history"></a></li> --}}
-                            {{-- <li><span class="uk-card-badge uk-label">{{$stock->stock_quantity}}</span></li> --}}
-                        </ul>
-                    </div>
 
-                    <a class="uk-link-reset" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_name}}', '{{$price}}')">
-                        <div class="uk-padding-small" style="background-color: #{{StringHelper::getColor()}}">
-                            
-                            <div class="uk-text-center uk-light">
-                                <div class="uk-text-lead">{{$stock->stock_name}}</div>
-                                <div class="uk-text-meta uk-margin-remove-top">{{$stock->stock_brand}}</div>
-                                <div class="uk-text-lead">
-                                    {{CurrencyHelper::Currency()}}{{$price}}
-                                    {{-- @if ($schemeList->count() > 0)
-                                        <span class="uk-text-danger">*</span>
-                                    @endif --}}
+                        <div class="uk-padding-small uk-background-muted uk-border-rounded" onclick="Add('{{$stock->stock_id}}', '{{$stock->stock_merchandise['stock_name']}}','{{$price}}')">
+                            <div class="">
+                                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                                    <div class="uk-width-auto" title="{{$stock->stock_id}}" >
+                                        <img class="uk-border-circle" width="40" height="40" src="images/avatar.jpg">
+                                       
+                                    </div>
+                                    <div class="uk-width-auto" title="Price" >
+                                        @if (count($stockOffer) > 0)
+                                            <h3 class="uk-margin-remove-bottom"> {{$currency}} {{ MathHelper::FloatRoundUp( $stockOfferMin['total']['price'], 2) }}</h3>
+                                            
+                                        @else
+                                            <h3 class="uk-margin-remove-bottom">{{$currency}} {{$price}}</h3>
+                                        @endif
+                                    </div>
+                                    <div class="uk-width-expand" title="VAT">
+                                        <span class="uk-text-small uk-text-warning">
+                                            @if ($stock->stock_merchandise['stock_vat_id'] == 'null')
+                                                @foreach ($data['settingModel']->setting_vat as $item)
+                                                    @if ($item['default'] == 0)
+                                                        {{ MathHelper::FloatRoundUp($item['rate'], 2) }}
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                @if (array_key_exists( $stock->stock_merchandise['stock_vat_id'], $data['settingModel']->setting_vat) )
+                                                        {{ MathHelper::FloatRoundUp($data['settingModel']->setting_vat[ $stock->stock_merchandise['stock_vat_id'] ]['rate'], 2) }}
+                                                @endif
+                                            @endif    
+                                        </span>
+                                    </div>
+                                    <div>
+                                        @if (count($stockOffer) > 0)
+                                            <s class="uk-text-meta uk-margin-remove-top uk-text-danger">{{$currency}} {{$price}}</s>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
 
-                    @if ($route == 'home')
-                        <div class="uk-margin-top">
-                            @include('partial.controlsPartial', [
-                                'cartValue' => $stock->stock_id,
-                                'quantity' => 1,
-                            ])
+                            <div class="">
+                                {{Str::ucfirst($stock->stock_merchandise['stock_name'])}}
+                            </div>
+
+                            <div>
+                                <div class="uk-child-width-1-3" uk-grid title="Offer" >
+                                    <div>
+                                        @if ($stockCurrentOffer)
+                                            <span class="uk-text-success" uk-icon="icon: star; ratio: 1.5"></span>
+                                        @endif
+                                   </div>
+
+                                    <div>
+                                        @if (count($stockOffer) > 0)
+
+                                        
+                                           {{ MathHelper::FloatRoundUp( $stockOfferMin['decimal']['discount_value'], 2)}}
+                                            
+                                        
+                                        @endif
+                                    </div>
+                                    
+                                    <div>
+                                        <div class="uk-align-right">
+                                            @php
+                                                $color = '';
+                                                $warehouseStock = Warehouse::Available($stock->stock_id)->first();
+        
+                                                
+                                                if ($warehouseStock) {
+                                                    if (Warehouse::WarehouseType()[$warehouseStock->warehouse_type] == 'transfer') {
+                                                        $color = 'uk-text-warning';
+                                                    }
+                                                    else{
+                                                        $color = 'uk-text-danger';
+                                                    }
+                                                }
+                                        
+                                            @endphp
+                                            @if ($warehouseStock)
+                                                <h3 {{$color}}">{{$warehouseStock->warehouse_quantity}}</h6>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            
                         </div>
-                    @endif
-                </div>
-            </div>
+                    </div>
+   
+
+                 
+                @endforeach
+                
+            @endisset
     
-        @endforeach
+           
+        </div>
+
+      <div class="uk-margin-large">
+            @isset($data['stockList'])
+                @include('partial.paginationPartial', ['paginator' => $data['stockList']])
+            @endisset
+      </div>
     </div>
-    @include('partial.paginationPartial', ['paginator' => $data['stockList']])
+   
 @endif

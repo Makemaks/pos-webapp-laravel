@@ -5,158 +5,109 @@ $.ajaxSetup({
 });
 
 //quantity plus and minus
-function Quantity(buttonType, cartValue, price){
+function Quantity(buttonType, cartValue){
     var quantityID = document.getElementById('quantityID-'+cartValue);
-    var vatID = document.getElementById('vatID');
   
-    var receiptButtonID = document.getElementById('receiptButtonID');
-    var cartValueID = document.getElementById('cartValueID');
-    var totalPriceID = document.getElementById('totalPriceID');
-
-        if (buttonType == 0 && quantityID.value >= 2) {   
+  
+  
+    var cartCountID = document.getElementById('cartCountID');
+   
+        if (buttonType == 0 && cartCountID) {   
             //minnus        
-            quantityID.value = parseInt(quantityID.value) - 1;
-            
-            if(cartValueID){
-                cartValueID.innerText = parseInt(cartValueID.innerText) - 1;
-            }
-          
+            quantity = parseInt(cartCountID.innerText) - 1;
+            quantityID.innerText = parseInt(quantityID.innerText) - 1;
         }
-        else if (buttonType == 1 && quantityID.value >= 1) {    
+        else if (buttonType == 1 && cartCountID) {    
             //plus
-            quantityID.value = parseInt(quantityID.value) + 1; 
-           
-            if (cartValueID) {
-                cartValueID.innerText = parseInt(cartValueID.innerText) + 1;
-            }
+            quantity = parseInt(cartCountID.innerText) + 1;
+            quantityID.innerText = parseInt(quantityID.innerText) + 1;
         }
 
-        if(receiptButtonID){
-            //update total
-           
-            var total = parseFloat(receiptButtonID.innerText) - parseFloat(price);
-            receiptButtonID.innerText = total.toFixed(2);
-            totalPriceID.innerHTML = total.toFixed(2);
+        if (quantity > 1) {
 
             $.ajax({        
                 url:"cart-api/"+cartValue,
                 method: 'PATCH',
-                data: {quantityID: quantityID.value},      
+                data: {stock_quantity: quantityID.innerText},      
                 success:function(data){
-                  //alert(data.success);
-                  document.getElementById('cartCountID').innerText++;
-               }
-             });
+                    /* alert(data.success);
+                    setFocus('barcodeInputID'); */
+                    cartCountID.innerText = quantity;
+                    
+                    document.getElementById('receiptID').innerHTML = data['html'];
+                    control(0);
+                }
+            });
         }
-
-       
 }
+
+
 
 //cart controls
-function Control(type){    
-   
-    var cartListID = document.getElementById('cartListID');
-    var count = 0;
-  
+function control(type){
 
-    while (count < cartListID.children.length-3) {
-       
-        if (type == 0) {
-            //show controls hidden = true
-            document.getElementById('controlID-'+count).removeAttribute('hidden');
-     
-        } else {           
-            document.getElementById('controlID-'+count).setAttribute('hidden','');  
-        }
+    var cartCountID = document.getElementById('cartCountID');
+    var edit_cart = true;
 
-        count++;
+    if (type == 1) {
+        //hide controls hidden = true
+        edit_cart = false;
     }
 
-    if (type == 0) {
-        //show controls hidden = true
-        document.getElementById('controlHideID').removeAttribute('hidden'); 
-        document.getElementById('controlShowID').setAttribute('hidden','');      
-    } else {           
-        document.getElementById('controlShowID').removeAttribute('hidden'); 
-        document.getElementById('controlHideID').setAttribute('hidden',''); 
-       
+    if (cartCountID.innerText > 0) {
+        $.ajax({
+            url:"/cart-api",
+            method: 'GET',
+            data: {edit_cart: edit_cart},   
+            success: function (data) {
+                document.getElementById('receiptID').innerHTML = data['html'];
+            },
+            error: function (data) {
+            
+            }
+        });
     }
    
 }
 
-
-function Delete(cartCount, price){
+function Delete(row_id){
 
     //update basket count
+    var quantityID = document.getElementById('quantityID-'+row_id);
     var cartCountID = document.getElementById('cartCountID'); 
-    
-
-    //update total
-    var receiptButtonID = document.getElementById('receiptButtonID');  
-    var receiptButtonID = document.getElementById('receiptButtonID');
-    var quantityID = document.getElementById('quantityID-'+ cartCount);
-   
-   
-    //get quantity
-    if(quantityID.value != ''){
-        quantityXID.innerText = '';
-        var priceQuantity = price * parseInt(quantityID.value); 
-        cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(quantityID.value); 
-    }
-    else{
-        var priceQuantity = parseFloat(price);
-        cartCountID.innerText = parseInt(cartCountID.innerText) - 1; 
-    }
-   
-   
-
-    var total = parseFloat(receiptButtonID.innerText) - parseFloat(priceQuantity);
-    receiptButtonID.innerText = total.toFixed(2);
   
 
-    cartListID = document.getElementById('cartItemID-'+ cartCount);       
-    cartListID.remove();
-
     $.ajax({
-            type: "DELETE",
-            url: 'cart-api/' + cartCount,
-            success: function (data) {
-               
-             
-            },
-            error: function (data) {
-               
-            }
+        url:"/cart-api/" + row_id,
+        method: 'DELETE',
+        data: {
+            quantity: quantityID.innerText,
+        },   
+        success: function (data) {
+        
+            //setFocus('barcodeInputID');
+
+            cartCountID.innerText = parseInt(cartCountID.innerText) - parseInt(quantityID.innerText);
+            document.getElementById('receiptID').innerHTML = data['html'];
+            control(0);
+           
+        },
+        error: function (data) {
+        
+        }
     });
   
     
 }
 
 
-function Update(){
-    
-     //update basket count
-     var cartCountID = document.getElementById('cartCountID'); 
-
-    $.ajax({        
-        url:"/cart-api/",
-        method: 'PUT',
-        data: {product: product, name:name, price: price},      
-        success:function(data){
-          //alert(data.success);
-           cartCountID.innerText++;
-       }
-     });
-    
-}
-
-//add a product to cart
-function Add(product, name, price){
+//add a stock_id to cart
+function Add(stock_id, stock_name, stock_cost){
  
      //update basket count
      var cartCountID = document.getElementById('cartCountID'); 
-     var quantityID = document.getElementById('quantityID-'+product);
-     var quantity = quantityID.value;
+     //var stock_quantity = document.getElementById('quantityID-'+stock_id);
+     var stock_quantity = 1;
      var plan = null;
 
     
@@ -164,110 +115,24 @@ function Add(product, name, price){
      $.ajax({        
          url:"/cart-api/",
          method: 'POST',
-         data: {product: product, name:name, price: price, quantity:quantity, plan:plan },      
+         data: {
+            stock_id: stock_id, 
+            stock_name:stock_name, 
+            stock_cost: stock_cost, 
+            stock_quantity:stock_quantity, 
+           },      
          success:function(data){
-           //alert(data.success);
-            cartCountID.innerText = parseInt(cartCountID.innerText) + parseInt(quantity);
-            setFocus('barcodeinputID');
-            quantityID.value = 1;
+           /* alert(data.success);
+           setFocus('barcodeInputID'); */
+           
+            cartCountID.innerText = parseInt(cartCountID.innerText) + parseInt(stock_quantity);
+            document.getElementById('receiptID').innerHTML = data['html'];
+            setFocus('searchInputID');
         }
       });
      
     
  }
-
- //remove
-function Empty(product, name, price){
- 
-     //update basket count
-     var cartCountID = document.getElementById('cartCountID'); 
-    var quantity = 0;
- 
-     $.ajax({        
-         url:"/cart-api/",
-         method: 'POST',
-         data: {product: product, name:name, price: price},      
-         success:function(data){
-           //alert(data.success);
-            cartCountID.innerText++;
-        }
-      });
-     
-    
- }
-
-
-  //get
-function GetScheme(user_id){
-
-    $.ajax({        
-        url:"/scheme-api/",
-        method: 'GET',
-        data: {user_id:user_id},      
-        success:function(data){
-          document.getElementById('scheme-id').innerHTML = data['html']; 
-          
-       }
-     });
-}
-
-  //get
-  function ApplyScheme(scheme_id){
-    var schemeCountID = document.getElementById('schemeCountID'); 
-    var totalPriceID = document.getElementById('totalPriceID'); 
-    var receiptButtonID = document.getElementById('receiptButtonID'); 
-    var totalPrice = totalPriceID.innerText;
-
-
-    $.ajax({        
-            url:"/cart-api/",
-            method: 'GET',
-            data: {scheme_id:scheme_id, totalPrice:totalPrice},      
-            success:function(data){
-                if(schemeCountID.innerText == ""){
-                    schemeCountID.innerText = 0;
-                }
-                schemeCountID.innerText = parseInt(schemeCountID.innerText) + 1;
-                totalPriceID.innerText = data['discount'].toFixed(2);
-                receiptButtonID.innerText = data['discount'].toFixed(2);
-            }
-     });
-    
-   
-}
-
-function ApplyProductScheme(){
-    var schemePlanSelectID = document.getElementById('schemePlanSelectID-'+product);
-     var plan = null;
-     
-
-     if(schemePlanSelectID.selectedIndex > 0){
-        plan =  schemePlanSelectID.value;
-     }
-}
-
-function DiscountCode(){
-    var planCountID = document.getElementById('planCountID'); 
-    var discountCodeID = document.getElementById('discountCodeID');
-    var totalPriceID = document.getElementById('totalPriceID'); 
-    var receiptButtonID = document.getElementById('receiptButtonID'); 
-    var totalPrice = totalPriceID.innerText;
-
-    $.ajax({        
-        url:"/cart-api/",
-        method: 'GET',
-        data: { plan_discount_code: discountCodeID.value, totalPrice:totalPrice },
-        success:function(data){
-            if(planCountID.innerText == ""){
-                planCountID.innerText = 0;
-            }
-            planCountID.innerText = parseInt(planCountID.innerText) + 1;
-            totalPriceID.innerText = data['discount'].toFixed(2);
-            receiptButtonID.innerText = data['discount'].toFixed(2);
-            discountCodeID.value = "";
-       }
-     });
-}
 
 function CalculateChange(){
 
@@ -295,24 +160,193 @@ function ClearSelect(select){
     select.add(option);
 }
 
-function setFocus(element_id){
-    var element = document.getElementById(element_id);
-    element.focus;
+function setFocus(elementID){
+    document.getElementById(elementID).focus();
 }
 
-function GetInput(element)
+function searchInput(element)
 {
     var cartCountID = document.getElementById('cartCountID'); 
    
-    $.ajax({        
-        url:"/cart-api/",
-        method: 'POST',
-        data: {barcode: element.value},      
-        success:function(data){
-         
-           cartCountID.innerText++;
-           setFocus(element.id);
-       }
-     });
+   if (element.value) {
+        $.ajax({        
+            url:"/cart-api",
+            method: 'GET',
+            data: {searchInputID: element.value}, 
+            success:function(data){
+
+                if (data['view'] == 'receiptID') {
+                    document.getElementById(data['view']).innerHTML = data['html'];
+                    cartCountID.innerText++;
+                    element.value = '';
+                } else {
+                    document.getElementById(data['view']).innerHTML = data['html'];
+                    element.value = '';
+                }
+                setFocus(element.id);
+            }
+        });
+   }else{
+        alert('No input');
+   }
+
 }
+
+
+
+
+
+
+function addRefund(element){
+
+    showKeypad();
+    sessionStorage.setItem('buttonType', element.innerText);
+   
+    if (sessionStorage.getItem('buttonType') == 'Enter') {
+        $.ajax({        
+            url:"/home-api",
+            method: 'GET',
+            data: {action: 'showKeypad'},      
+            success:function(data){
+             
+               document.getElementById('contentID').innerHTML = data['html']; 
+           }
+         });
+    }
+
+}
+
+function settingFinaliseKey(setting_setting_key){
+   
+    var cartCountID = document.getElementById('cartCountID'); 
+
+   if (cartCountID.innerText > 0) {
+        if (setting_setting_key == 'cancel') {
+            document.getElementById('payButtonID').hidden = false;
+            document.getElementById('cancelButtonID').hidden = true;
+            document.getElementById('confirmButtonID').hidden = true;
+        }
+        else {
+            $.ajax({        
+                url:"/cart-api",
+                method: 'GET',
+                data: {
+                    setting_setting_key: setting_setting_key
+                },      
+                success:function(data){
+                    document.getElementById('contentID').innerHTML = data['html']; 
+                    document.getElementById('cancelButtonID').hidden = false;
+                    document.getElementById('confirmButtonID').hidden = false;
+                    document.getElementById('payButtonID').hidden = true;
+                    setFocus('searchInputID');
+                    // /emptyFields("input");
+
+                    
+                }
+            });
+        }
+   }
+  
+}   
+
+function emptyFields(elementID){
+    var elements = document.getElementsByTagName(elementID);
+    for (var ii=0; ii < elements.length; ii++) {
+        if (elements[ii].type == "text") {
+            elements[ii].value = "";
+        }
+    }
+}
+
+function update(){
+
+   
+    var searchInputID = document.getElementById('searchInputID');
+    var cartCountID = document.getElementById('cartCountID'); 
+
+   if (searchInputID.value && cartCountID.innerText > 0) {
+        $.ajax({        
+                url:"/cart-api",
+                method: 'POST',
+                data: {
+                    type: '',
+                    value: searchInputID.value,
+                },      
+                success:function(data){
+                    document.getElementById('receiptID').innerHTML = data['html'];
+                    setFocus('searchInputID');
+                    
+                    if (data['type']) {
+                        showSetupList(data['type']);
+                    }
+
+                    if (sessionStorage.getItem('openKeypad') == "true") {
+                        closeKeypad();
+                    }
+                }
+
+                
+        });
+   }else{
+        closeKeypad();
+   }
+}
+
+function addSetupList(type){
+
+    var searchInputID = document.getElementById('searchInputID');
+    var cartCountID = document.getElementById('cartCountID'); 
+
+    if (cartCountID.innerText > 0) {
+        $.ajax({        
+            url:"/cart-api",
+            method: 'POST',
+            data: {
+                type: type,
+                value: searchInputID.value,
+            },      
+            success:function(data){
+                document.getElementById('contentID').innerHTML = data['html']; 
+                //document.getElementById('receiptID').innerHTML = data['html']; 
+            }
+        });
+    }
+
+   
+}
+
+function showSetupList(type){
+    $.ajax({        
+        url:"/cart-api",
+        method: 'GET',
+        data: {
+            action: "setupList",
+            type: type
+        },      
+        success:function(data){
+            document.getElementById('contentID').innerHTML = data['html']; 
+        }
+    });
+}
+
+function deleteSetupList(id = null){
+    $.ajax({        
+        url:"/cart-api/"+id,
+        method: 'DELETE',
+        data: {
+            action: "setupList"
+           
+        },      
+        success:function(data){
+            document.getElementById('receiptID').innerHTML = data['html']; 
+            showSetupList(data['type']);
+        }
+    });
+}
+
+
+
+
+
+
 

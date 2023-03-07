@@ -6,7 +6,7 @@
             <p class="uk-text-meta uk-margin-remove-top">More than +{{$orderList->count()}}</p>
         </div>
         <div>            
-            <a class="uk-align-right uk-button uk-button-danger uk-border-rounded" href="{{route('user.create')}}">
+            <a class="uk-align-right uk-button uk-button-default uk-border-rounded" href="{{route('user.create')}}">
                 <span uk-icon="icon: plus"></span>
             </a>
             <a class="uk-align-right uk-button uk-button-default" href="">
@@ -31,13 +31,13 @@
                     {{$order->person_firstname}} {{$order->person_lastname}}
                     </td>
                     <td>{{$order->company_name}}</td>
-                    <td>{{$order->service_cost_total}}</td>
+                    <td>{{$order->service_price_total}}</td>
                     <td></td>
                     <td></td>
                 </tr>
             @endforeach
         </tbody>
     </table>
-    </div>
+    
 </div>
 @include('partial.paginationPartial', ['paginator' => $orderList])

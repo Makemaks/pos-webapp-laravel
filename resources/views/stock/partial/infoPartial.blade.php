@@ -24,18 +24,28 @@
             </div>
             
             <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">NAME</label>
-                <input class="uk-input" type="text" value="{{$data['stockModel']->stock_merchandise['stock_name']}}" name="stock_merchandise[stock_name]">
+                <label class="uk-form-label" for="form-stacked-text">NAME</label> 
+                
+                @isset ($data['stockModel']->stock_merchandise['stock_name'])
+                    <input class="uk-input" type="text" value="{{  old('stock_merchandise[stock_name]', $data['stockModel']->stock_merchandise['stock_name'] ) }}" name="stock_merchandise[stock_name]">
+                @else
+                    <input class="uk-input" type="text" value="{{  old('stock_merchandise[stock_name]') }}" name="stock_merchandise[stock_name]">
+                @endisset
             </div>
 
+          
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">GROUP</label>
                 <select class="uk-select" name="stock_merchandise[group_id]">
                     <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_group_category_plu)
-                        @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $group)
+                    @if ($data['settingModel']->setting_stock_set)
+                        @foreach ($data['settingModel']->setting_stock_set as $key => $group)
                             @if ( $group['type'] == 1 )
-                                <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['group_id']) selected @endif>{{$group['description']}}</option>
+                                @isset ($data['stockModel']->stock_merchandise['group_id'])
+                                    <option value="{{$key}}" @if($key == old('stock_merchandise[group_id]', $data['stockModel']->stock_merchandise['group_id']) ) selected @endif>{{$group['name']}}</option>
+                                @else
+                                    <option value="{{$key}}" @if($key == old('stock_merchandise[group_id]') ) selected @endif>{{$group['name']}}</option>
+                                @endisset
                             @endif
                         @endforeach
                     @endif
@@ -47,12 +57,19 @@
                 <label class="uk-form-label" for="form-stacked-text">DEPARTMENT</label>
                 <select class="uk-select" name="stock_merchandise[category_id]">
                     <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_group_category_plu)
-                        @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $category)
+                    @if ($data['settingModel']->setting_stock_set)
+                        @foreach ($data['settingModel']->setting_stock_set as $key => $category)
                             @if ($category['type'] == 0)
-                                <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['category_id']) selected @endif>
-                                    {{$category['description']}}
-                                </option>
+                                @isset ($data['stockModel']->stock_merchandise['category_id'])
+                                    <option value="{{$key}}" @if($key == old( 'stock_merchandise[category_id]', $data['stockModel']->stock_merchandise['category_id']) ) selected @endif>
+                                        {{$category['description']}}
+                                    </option>
+                                @else
+                                    <option value="{{$key}}" @if($key == old( 'stock_merchandise[category_id]') ) selected @endif>
+                                        {{$category['description']}}
+                                    </option>
+                               
+                                @endisset
                             @endif
                         @endforeach
                     @endif
@@ -61,12 +78,35 @@
         
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">PLU</label>
-                <select class="uk-select" name="stock_merchandise[master_plu]">
+                <select class="uk-select" name="stock_merchandise[plu_id]">
                     <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_group_category_plu)
-                        @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $plu)
+                    @if ($data['settingModel']->setting_stock_set)
+                        @foreach ($data['settingModel']->setting_stock_set as $key => $plu)
                             @if ($plu['type'] == 2)
-                                <option value="{{$key}}"  @if($key == $data['stockModel']->stock_merchandise['master_plu']) selected @endif>{{$plu['description']}}</option>
+                                    @isset($data['stockModel']->stock_merchandise['plu_id'])
+                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]', $data['stockModel']->stock_merchandise['plu_id']) ) selected @endif>{{$plu['description']}}</option>
+                                    @else
+                                        <option value="{{$key}}"  @if($key == old( 'stock_merchandise[plu_id]') ) selected @endif>{{$plu['description']}}</option>
+                                    @endisset
+                            @endif
+                        @endforeach
+                    @endif
+                </select>
+            </div>
+
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-stacked-text">BRAND</label>
+                <select class="uk-select" name="stock_merchandise[brand_id]">
+                    <option selected="selected" disabled>SELECT ...</option>
+                    @if ($data['settingModel']->setting_stock_set)
+                        @foreach ($data['settingModel']->setting_stock_set as $key => $plu)
+                            @if ($plu['type'] == 3)
+                            
+                                @isset($data['stockModel']->stock_merchandise['brand_id'])
+                                    <option value="{{$key}}" @if($key == old('stock_merchandise[brand_id]', $data['stockModel']->stock_merchandise['brand_id'])) selected @endif>{{$plu['description']}}</option>
+                                @else
+                                    <option value="{{$key}}" @if($key == old('stock_merchandise[brand_id]')) selected @endif>{{$plu['description']}}</option>
+                                @endisset
                             @endif
                         @endforeach
                     @endif
@@ -75,27 +115,24 @@
 
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">DESCRIPTION</label>
-                <textarea class="uk-textarea" type="text" name="stock_merchandise[stock_description]">{{$data['stockModel']->stock_merchandise['stock_description']}}</textarea>
-            </div>
-            
-            <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">BRAND</label>
-                <select class="uk-select" name="stock_merchandise[brand_id]">
-                    <option selected="selected" disabled>SELECT ...</option>
-                    @if ($data['settingModel']->setting_stock_group_category_plu)
-                        @foreach ($data['settingModel']->setting_stock_group_category_plu as $key => $plu)
-                            @if ($plu['type'] == 3)
-                            
-                                <option value="{{$key}}" @if($key == $data['stockModel']->stock_merchandise['brand_id']) selected @endif>{{$plu['description']}}</option>
-                            @endif
-                        @endforeach
-                    @endif
-                </select>
+
+                @isset($data['stockModel']->stock_merchandise['stock_description'])
+                    <textarea class="uk-textarea" type="text" name="stock_merchandise[stock_description]">{{old('stock_merchandise[stock_description]', $data['stockModel']->stock_merchandise['stock_description'])}}</textarea>
+                @else
+                    <textarea class="uk-textarea" type="text" name="stock_merchandise[stock_description]">{{old('stock_merchandise[stock_description]')}}</textarea>
+                @endisset
+                
             </div>
             
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">VAT</label>
-                <input class="uk-input" type="number" value="{{$data['stockModel']->stock_merchandise['stock_vat']}}" name="stock_merchandise[stock_vat]">
+                
+                @isset($data['stockModel']->stock_merchandise['stock_vat_id'])
+                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_merchandise[stock_vat_id]', $data['stockModel']->stock_merchandise['stock_vat_id'])}}" name="stock_merchandise[stock_vat_id]">
+                    @else
+                    <input class="uk-input" type="number" step="0.01" value="{{old( 'stock_merchandise[stock_vat_id]')}}" name="stock_merchandise[stock_vat_id]">
+                @endisset
+                
             </div>
         
             
@@ -113,88 +150,202 @@
             <ul class="uk-switcher uk-margin">
                 <li>
                     <h3>PRICE</h3>
-                    <table class="uk-table uk-table-small uk-table-divider uk-table-responsive">
-                        <thead>
-                            <tr>
-                                
-                                @foreach ($data['stockModel']->stock_cost[1] as $key => $item)
-                                    @if ($key != 'supplier_id')
-                                        <th>{{$key}}</th>
-                                    @endif
-                                @endforeach
-                                
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        
-                            
-                                @foreach ($data['stockModel']->stock_cost as $keyStockCost => $stockCost)
-                    
-                                        <tr>
-                                            
-                                            @foreach ($stockCost as $key => $stock)
-                                                
+                    <div class="uk-overflow-auto">
+                        <table class="uk-table uk-table-small uk-table-divider">
+                            <thead>
+                                <tr>
+                                    <th>REF</th>
+                                   
+                                        @for ($i = 0; $i < $data['settingModel']->setting_group['group_stock_cost']; $i++)
+                                            <th>{{$i + 1}}</th>
+                                        @endfor
+                                    
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    
+                                    
+                                    @if ($data['stockModel']->stock_cost && $data['stockModel']->stock_id)
+                                        
+                                       @for ($i = 0; $i < count($data['stockModel']->stock_cost[1]); $i++)
+                                            <tr>
                                                 <td>
-                                                    @php
-                                                        $hidden = "";
-                                                        if($key == 'supplier_id'){
-                                                            $hidden = 'hidden';
-                                                        }
-                                                    @endphp
-
-                                                    @if($key == 'default')
-                                                        <input class="uk-radio" type="radio" name="stock_cost[{{$keyStockCost}}][{{$key}}]" value="{{$stock}}" @if($stock == 0) checked @endif>
-                                                    @else
-                                                        <input class="uk-input" id="form-stacked-text" type="number" value="{{$stock}}" name="stock_cost[{{$keyStockCost}}][{{$key}}]" {{$hidden}}>
-                                                    @endif
+                                                    <button class="uk-button uk-button-default uk-border-rounded">
+                                                        {{$i + 1}}
+                                                    </button>
                                                 </td>
-                                                
-                                            @endforeach
-                                            <td>
-                                                <button class="uk-button uk-button-danger uk-border-rounded" uk-icon="trash" onclick="deleteStockCost({{$keyStockCost}})"></button>
-                                            </td>
-                                        </tr>
+                                                @for ($j=0; $j < count($data['stockModel']->stock_cost); $j++)
+                                                    <td>
+                                                        @php
+                                                           $price = $data['stockModel']->stock_cost[$j + 1][$i + 1]['price'];
+                                                        @endphp
+                                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="{{$price}}" name="stock_cost[{{$j + 1}}][{{$i + 1}}][price]">
+                                                        
+                                                    </td>
+                                                    
+                                                @endfor
+                                               
+                                              
+                                                @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['group_stock_cost']; $q++)
+                                              
+                                                    <td>
+                                                 
+                                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="stock_cost[{{$q + 1}}][{{$i + 1}}][price]">
+                                                        
+                                                    </td>
+                                                    
+                                                @endfor
+                                               
+                                            </tr>
+                                       @endfor
+                                        
+                                       
+                                    @endif
                                 
-                                @endforeach
-                        
-                            
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </li>
             
                 <li>
-            
-                    <form action="" class="uk-form-stacked">
+                    <h3>PRICE</h3>
+                    <div class="uk-overflow-auto">
                       
-                       @foreach ( $data['stockModel']->stock_cost as $keyStockCost => $stockCost )
-                            
-                            
-                           @foreach ($stockCost as $key => $stock)
-                                @if ($key != 'default')
-                                    <div class="uk-margin">
-                                        <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                                        <div class="uk-form-controls">
-                                            <input class="uk-input" id="form-stacked-text" type="number" value="" name="stock_cost[0][{{$key}}]">
-                                        </div>
-                                    </div>
-                                @endif
-                           @endforeach
+                        <table class="uk-table uk-table-small uk-table-divider">
+                            <thead>
+                                <tr>
+                                    <th>REF</th>
+                                    @for ($i = 0; $i < $data['settingModel']->setting_group['group_stock_cost']; $i++)
+                                       
+                                            <th>{{$i + 1}}</th>
+                                      
+                                    @endfor
+                                    
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    
+                                   
+
+                                    @if ($data['stockModel']->stock_cost && $data['stockModel']->stock_id)
+                                        
+                                       @for ($i = count($data['stockModel']->stock_cost[1]); $i < count($data['stockModel']->stock_cost[1]) * 2; $i++)
+                                            <tr>
+                                                <td>
+                                                    <button class="uk-button uk-button-default uk-border-rounded">
+                                                        {{$i + 1}}
+                                                    </button>
+                                                </td>
+                                                @for ($j=0; $j < count($data['stockModel']->stock_cost); $j++)
+                                                    <td>
+                                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="form[stock_cost][{{$i + 1}}][{{$j + 1}}][price]">
+                                                        
+                                                    </td>
+                                                    
+                                                @endfor
+
+                                            
+                                                @for ($q=count($data['stockModel']->stock_cost); $q < $data['settingModel']->setting_group['group_stock_cost']; $q++)
+                                            
+                                                    <td>
+                                                    
+                                                        <input class="uk-input" id="form-stacked-text" type="number" step="0.01" value="" name="form[stock_cost][{{$i + 1}}][{{$q + 1}}][price]">
+                                                        
+                                                    </td>
+                                                    
+                                                @endfor                
+                                                
+                                            </tr>
+                                       @endfor
+                                        
+                                       
+                                    @endif
+                                
+                            </tbody>
+                        </table>
+                                
             
-                           @break
-                           
-                           
-                       @endforeach
-            
-                       <button class="uk-button uk-button-danger uk-border-rounded uk-width-expand" uk-icon="push"></button>
+                       <button class="uk-button uk-button-default uk-border-rounded uk-width-expand" uk-icon="push"></button>
                          
-                    </form>
+                    </div>
                 </li>
             </ul>
             
         </div>
    </div>
    
+   <div>
+        <div class="uk-card uk-card-default uk-padding">
+           
+            <h3>QUANTITY</h3>
+           
+            <div class="uk-overflow-auto">
+                      
+                <table class="uk-table uk-table-small uk-table-divider">
+                    <thead>
+                        <tr>
+                            <th>REF</th>
+                            @for ($i = 0; $i < $data['settingModel']->setting_group['group_stock_cost']; $i++)
+                               
+                                    <th>{{$i + 1}}</th>
+                              
+                            @endfor
+                            
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            
+                            @php
+
+                            @endphp
+
+                            @if ($data['stockModel']->stock_cost && $data['stockModel']->stock_id)
+                                
+                               @for ($i = 0; $i < 1; $i++)
+                                    <tr>
+                                        <td>
+                                            <button class="uk-button uk-button-default uk-border-rounded">
+                                                {{$i + 1}}
+                                            </button>
+                                        </td>
+
+                                        @for ($j=0; $j < count($data['stockModel']->stock_cost_quantity); $j++)
+                                            <td>
+                                                <input class="uk-input" id="form-stacked-text" type="number" value="{{$data['stockModel']->stock_cost_quantity[$j + 1]}}" name="stock_cost_quantity[{{$j + 1}}]">
+                                                
+                                            </td>
+                                            
+                                        @endfor
+
+                                    
+                                    
+                                        @for ($q=count($data['stockModel']->stock_cost_quantity); $q < $data['settingModel']->setting_group['group_stock_cost']; $q++)
+                                   
+                                            <td>
+                                            
+                                                <input class="uk-input" id="form-stacked-text" type="number" value="" name="stock_cost_quantity[{{$q + 1}}]">
+                                                
+                                            </td>
+                                            
+                                        @endfor                
+                                        
+                                    </tr>
+                               @endfor
+                                
+                               
+                            @endif
+                        
+                    </tbody>
+                </table>
+               
+                 
+            </div>
+            
+        </div>
+    </div>
     
     <div>
         <div class="uk-card uk-card-default uk-padding">
@@ -204,7 +355,7 @@
                 @foreach ($data['stockModel']->stock_gross_profit as $key => $stock_gross_profit)
                     <div class="uk-margin">
                         <label class="uk-form-label" for="form-stacked-text">{{Str::upper($key)}}</label>
-                        <input name="stock_gross_profit[{{$key}}]" type="number" step="0.01" class="uk-input" value="{{$stock_gross_profit}}">
+                        <input name="form[stock_gross_profit][{{$key}}]" type="number" step="0.01" step="0.01" class="uk-input" value="{{$stock_gross_profit}}">
                     </div>
                 @endforeach
            @endif

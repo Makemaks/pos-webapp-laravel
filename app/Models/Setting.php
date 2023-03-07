@@ -4,8 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Auth;
+use Session;
+use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Arr;
+use App\Helpers\KeyHelper;
 use App\Models\Expertise;
+use App\Models\User;
+
+use App\Helpers\MathHelper;
+
+use App\Helpers\CurrencyHelper;
+use Carbon\Carbon;
 
 class Setting extends Model
 {
@@ -15,23 +26,24 @@ class Setting extends Model
     protected $primaryKey = 'setting_id';
 
     //creates default value
+    public $timestamps = true;
+
     protected $attributes = [
-        
-        'setting_logo' => '{}',
-        
-       
-        'setting_stock_group_category_plu' => '{
+
+      
+
+        'setting_stock_set' => '{
             "1": {
-                "description": "",
+                "name": "",
                 "code": "",
                 "type": ""
             }
         }',
 
         'setting_stock_label' => '{
-           
+
             "SHELF": {
-                "CUSTOM TEMPLATES": [],
+                "CUSTOM TEMPLATES": {},
                 "DEFAULT TEMPLATES": {
                     "A4": "A4 (24 labels [3x8], 60x30mm) - 210mm x 297mm",
                     "GK420t": "GK420t (Single label feed, 48.5 x 35mm) - 49mm x 35mm",
@@ -47,7 +59,7 @@ class Setting extends Model
                 }
             },
             "STOCK": {
-                "CUSTOM TEMPLATES": [],
+                "CUSTOM TEMPLATES": {},
                 "DEFAULT TEMPLATES": {
                     "DK-1201": "DK-1201 - 90mm x 29mm",
                     "SLP-MRL": "SLP-MRL - 51mm x 28mm",
@@ -59,20 +71,22 @@ class Setting extends Model
                     "DK-1201 (Alternative Text)": "DK-1201 (Alternative Text) - 90mm x 29mm"
                 }
             }
-       
+
         }',
 
-       
+
         'setting_printer' => '{}',
         'setting_stock_tag_group' => '{}',
-        
+
+        'setting_preset_message' => '{}',
+
         'setting_message_notification_category' => '{}',
-        
-        
+
+
         'setting_reason' => '{
             "1": {
                 "name": "",
-                "setting_stock_group_category_id": ""
+                "setting_stock_set": ""
             }
         }',
 
@@ -84,36 +98,65 @@ class Setting extends Model
             }
         }',
 
-        
+        /* 'setting_price_level_scheduler' => '{
+            "1": {
+                "time": "",
+                "price_level": 
+            }
+        }', */
+
+
         'setting_expense_budget' => '{}',
         'setting_expense_type' => '{}',
 
-       
-        'setting_pos' => '{"name":"","cash":"0","credit":"0"}',
-        
 
-        'setting_receipt' => '{
-            "1": {
-                "receipt header": {},
-                "commercial message": {},
-                "bottom message": {},
-                "report message": {},
-                "sig strip": {},
-                "vat number": {},
-                "default" : {}
-            }
-            
+        'setting_pos' => '{
+            "name":"",
+            "cash":"0",
+            "credit":"0"
         }',
 
-        'setting_payment_gateway' => '{}', 
 
-        'setting_keys' => '{}', 
-       
+       'setting_receipt' => '{
+            "1": {
+                "default": 1,
+                "sig strip": {
+                    "1":"",
+                    "2":"",
+                    "3":"Employee / Manager RRsignature",
+                    "4":".......................John"
+                },
+                "vat number": "VAT No: 787655678",
+                "bottom message": {
+                    "1":"Thank You For Your Custom",
+                    "2":"See You Soon",
+                    "3":"MERRY CHRISTMAS",
+                    "4":"www.theepsomclub.com"
+                },
+                "receipt header": {
+                    "1":"The TESTING CLUB",
+                    "2":"Tel: 061 319SS66  VAT: GB3158927S",
+                    "3":"41-43 Chruch Street",
+                    "4":"Epsom KT17 4QW"
+                },
+                "report message": {
+                    "1":"",
+                    "2":"",
+                    "3":"",
+                    "4":""
+                },
+                "commercial message": {
+                    "1":"The Club is Open 1000-2200 Daily",
+                    "2":"",
+                    "3":"",
+                    "4":""
+                }
+            }
+        }',
 
-        
-        
+
         "setting_stock_nutrition" => '{
-           
+
             "1": {
                 "name": "Energy",
                 "value": "",
@@ -154,13 +197,13 @@ class Setting extends Model
                 "value": "",
                 "measurement": "g"
             }
-       
+
         }',
 
-   
+
         "setting_stock_allergen" => '{
-            
-            
+
+
                 "1": "Celery",
                 "2": "Cereals Containing Gluten",
                 "3": "Crustaceans",
@@ -177,40 +220,49 @@ class Setting extends Model
                 "14": "Sulphur Dioxide and Sulphites",
                 "15": "Allergen 15",
                 "16": "Allergen 16"
-        
-            
+
+
         }',
 
-        "setting_stock_offer" => '{
+        'setting_offer' => '{
             "1": {
-                "points":{
-                    "gain": "",
-                    "collect": "",
+
+                "decimal": {
+                    "gain_points": "",
+                    "collect_points_value": "",
+                    "discount_type": "",
+                    "discount_value": ""
                 },
-                "date":{
+                "date": {
                     "end_date": "",
-                    "start_date": "",
-                },
-                "default":{
-                    "type": "",
-                    "exception": {},
+                    "start_date": ""
                 },
 
-                "set_menu":"",
-                "number":"",
+                "integer": {
+                    "set_menu":"",
+                    "quantity":"",
+                    "stock_price":"",
+                    "priority":""
+                },
 
-                "type": "",
+                "boolean": {
+                    "type":"",
+                    "status":"",
+                    "prompt":""
+                },
 
-                "description": "",
-                "name": "",
+                "string": {
+                    "name":"",
+                    "description":"",
+                    "code":"",
+                    "barcode":""
+                },
+                "available_day":{},
+                "usage": {
+                    "per_person": "",
+                    "per_usage": ""
+                }
 
-                "value":"",
-                "status":""
-                
-                "quantity": "",
-                "discount(%)": "",
-                
-                
             }
         }',
 
@@ -226,97 +278,169 @@ class Setting extends Model
 
         'setting_stock_case_size' => '{
             "1": {
-                "size": 9817,
-                "default": 1,
-                "description": "corporis"
+                "size": "",
+                "default": "",
+                "description": ""
             }
         }',
+
         "setting_stock_tag" => '{
             "1": {
                 "tag": "",
                 "name": "",
-                "stock_tag_group_id": ""
+                "setting_stock_tag_group_id": ""
             }
         }',
-       
+
+        "setting_api" => '{
+            "1": {
+                "name": "",
+                "type": "",
+                "key": "",
+                "value": ""
+            }
+        }',
+
+        'setting_key' => '{
+            "1": {
+                "setting_key_group": "",
+                "setting_key_type": "",
+                "name": "",
+                "status": "",
+                "description": "",
+                "value": "",
+                "image": "",
+                "setting_vat_id": ""
+            }
+        }',
+
+        'setting_group' => '{
+            "default_country": "",
+            "default_currency": {},
+            "logo": {},
+            
+        }',
+
+        'setting_customer' => '{
+            "customer_stock_price": "",
+            "customer_credit": "",
+            "customer_print": {},
+            "customer_marketing": {}
+        }',
+        
+        'setting_stock_price_level' => '{
+            "1": {
+                "name": "",
+                "description": "",
+            }
+        }',
+
+        'setting_building' => '{}'
     ];
 
     protected $casts = [
 
-        'setting_logo' => 'array',
-        'setting_keys' => 'array',
-       
-        'setting_stock_group_category_plu' => 'array',
-        
+        'setting_stock_set' => 'array',
+        'setting_stock_price_level' => 'array',
+        'setting_stock_set' => 'array',
+
         'setting_stock_label'  => 'array',
-        
-        
+
+
         'setting_printer' => 'array',
         'setting_stock_tag_group' => 'array',
 
         'setting_message_notification_category' => 'array',
-        'setting_message_group' => 'array',
+        //'setting_message_group' => 'array',
 
-       
+
         'setting_reason' => 'array',
         'setting_vat' => 'array',
 
-        
+
         'setting_expense_budget' => 'array',
         'setting_expense_type' => 'array',
-        
+
         'setting_pos' => 'array',
-        
 
         'setting_receipt' => 'array',
-        'setting_payment_gateway' => 'array',
 
-        
 
         'setting_stock_allergen' => 'array',
         'setting_stock_nutrition' => 'array',
-        'setting_stock_offer' => 'array',
+        'setting_offer' => 'array',
         "setting_stock_set_menu" => 'array',
 
         "setting_stock_recipe" => 'array',
         "setting_stock_case_size" => 'array',
-       
+
         "setting_stock_tag" => 'array',
+
+        "setting_api" => 'array',
+
+        'setting_key' => 'array',
+       
+        'setting_group' => 'array',
+        'setting_customer' => 'array',
+        'setting_preset_message' => 'array',
+        'setting_building' => 'array',
+        /* 'setting_price_level_scheduler' => 'array' */
+        'setting_building' => 'array',
     ];
 
-    public static function List($column, $filter){
-
+    public static function SettingTable(){
         return Setting::
-        leftJoin('store', 'store.store_id', '=', 'setting.setting_store_id');
-       
+        rightJoin('person', 'person.person_id', 'setting.settingtable_id');
+        rightJoin('company', 'company.company_id', 'setting.settingtable_id');
     }
 
-    public static function Account($column, $filter){
 
-        $setting = Setting::
-        where($column, $filter)
-        ->first();
+    /* public static function SettingKey()
+    {
+        //  0 , 1 , 2
+        return ['finalise', 'status', 'transtype'];
+    }
+ */
+    public static function List($column, $filter)
+    {
 
-        if($setting){
+        return Setting::leftJoin('store', 'store.store_id', '=', 'setting.settingtable_id');
+    }
+
+    public static function Account($column, $filter)
+    {
+
+        $setting = Setting::where($column, $filter)
+            ->first();
+
+        if ($setting) {
             return $setting;
-        }else{
+        } else {
             return new Setting();
         }
     }
 
-    public static function SettingClass(){
+    public static function SettingOfferStatus()
+    {
         return [
-            'Person',
-            'stock',
-            'Project',
-            'Company',
+            'Enabled',
+            'Disabled'
         ];
     }
 
-    public static function SettingExpertise(){
-       
+    public static function SettingSettingOfferType()
+    {
+        return [
+            "percentage",
+            "amount",
+        ];
+    }
 
-        foreach ( Expertise::ExpertiseType() as $expertise) {
+    public static function SettingExpertise()
+    {
+
+
+        foreach (Expertise::ExpertiseType() as $expertise) {
             $settingExpertiseList[] = [
                 'expertise_name' => $expertise,
                 'expertise_image' => NULL,
@@ -327,8 +451,15 @@ class Setting extends Model
         return $settingExpertiseList;
     }
 
+    public static function SettingAPI(){
+        return [
+            'system',
+            'payment'
+        ];
+    }
 
-    public static function SettingPaymentGateway(){
+    public static function SettingPaymentGateway()
+    {
         return [
             'stripe',
             'apple',
@@ -336,13 +467,8 @@ class Setting extends Model
         ];
     }
 
-    public static function SettingPaymentGatewayAPI(){
-        return [
-            ['name' => 'stripe', 'key' => '', 'secret' => ''],
-        ];
-    }
-
-    public static function SettingEventLoactaion(){
+    public static function SettingEventLoactaion()
+    {
         return [
             'event_location_name',
             'event_room',
@@ -350,7 +476,204 @@ class Setting extends Model
         ];
     }
 
+    public static function SettingStockGroup(){
 
+        return [
+            "category",
+            "group",
+            "brand",
+            "plu"
+        ];
+    }
+
+    public static function SettingReason(){
+        return [
+            "Delivery",
+            "Wastage",
+            "Adjustment",
+            "Transfer In",
+            "Transfer Out",
+            "Other",
+        ];
+    }
+
+    public static function SettingOfferType(){
+        return [
+            'voucher', //coupons
+            'discount', //one offs
+            'multi-buy',
+            'mix-match',
+            'gift-card'
+        ];
+    }
+
+    public static function SettingKeyGroup(){
+        //see key helper in helpers
+        return [
+            'finalise',
+            'status',
+            'transaction',
+            'character',
+            'totaliser',
+            'menu'
+        ];
+    }
+
+    //session and grand total
+    public static function SettingKey($setupList, $setting_key_list){
+
+        $count = 0;
+
+        if (count( $setting_key_list ) > 0) {
+            
+              //$setting_key = collect($setting_key_list)->collapse()->where('setting_key_group', $value['setting_key_group']);
+
+            if ($setupList['order_sub_total']) {
+                $setupList['stock_price_processed'] = $setupList['order_sub_total'];
+            }
+
+            //$setting_key = collect($setting_key_list)->collapse()->where('setting_key_group', $value['setting_key_group']);
+           
+            foreach ( $setting_key_list as $key => $value) {
+
+                $value = head($value);
+                $setting_key_type = KeyHelper::Type()[ $value['setting_key_group'] ][ $value['setting_key_type'] ];
+
+                /*  
+                $setting_key_value = collect($settingModel->setting_key)->where('setting_key_group', $value['setting_key_group'] )
+                ->where('setting_key_type', $value['setting_key_type'] )
+                ->first()['value']; */
+                if ( Str::contains( $setting_key_type, '%') || Str::contains( $setting_key_type, '+') || Str::contains( $setting_key_type, '-')) {
+
+                    if($count == 0){
+                       $setupList['setting_key_amount_total'] = $value['value'];
+                    }
+                    else{
+
+                        if( Str::contains( $setting_key_type, '%') ){
+                            $setting_key_amount = MathHelper::VAT($value['value'], $setupList['stock_price_processed']);
+                            $value['value'] =  $setting_key_amount;
+                        }
+                        
+                        if ( Str::contains($setting_key_type, '+' ) ) {
+                            $setupList['setting_key_amount_total'] = $setupList['setting_key_amount_total'] + $value['value'];
+                            $setupList['stock_price_processed'] = $setupList['stock_price_processed'] + $value['value'];
+                        }
+                        elseif( Str::contains( $setting_key_type, '-' ) ){
+                            $setupList['setting_key_amount_total'] = $setupList['setting_key_amount_total'] + $value['value'];
+                            $setupList['stock_price_processed'] = $setupList['stock_price_processed'] + $value['value'];
+                        }
+
+                    }
+
+                }
+                
+                $count++;
+                
+            }
+
+
+        }
+       
+        
+        return $setupList;
+
+    }
+
+
+    //stock
+    public static function SettingOffer($stockInitialize, $setupList){
+
+        $settingCurrentSettingOfferType = [];
+        $total = [];
+        $price = $setupList['stock_price'];
+        $stockOffer = [];
+
+        $userModel = User::Account('account_id', Auth::user()->user_account_id)
+        ->first();
+
+        $settingModel = Setting::where('settingtable_id', $userModel->store_id)->first();
+
+        foreach ($stockInitialize['stock_setting_offer']  as $key => $setting_offer_id) {
+            $stock_setting_offer = $settingModel->setting_offer[ $setting_offer_id ];
+
+                if ($stock_setting_offer['date']['end_date'] > Carbon::now() &&
+                array_search( Carbon::now()->dayOfWeek, $stock_setting_offer['available_day']) ) {
+
+                    //discount
+                    if ( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'voucher' ) {
+
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
+
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $stock_setting_offer['decimal']['discount_value'] ];
+                        }
+
+                    }
+                    elseif( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'discount' ){
+
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
+
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $stock_setting_offer['decimal']['discount_value'] ];
+                        }
+                    }
+                    elseif( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'multi-buy' ){
+
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
+
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $stock_setting_offer['decimal']['discount_value'] ];
+                        }
+
+                    }
+                    
+                    elseif( Setting::SettingOfferType()[$stock_setting_offer['boolean']['type']] == 'mix-match' ){
+                        
+                        if (Setting::SettingSettingOfferType()[$stock_setting_offer['decimal']['discount_type']] == 'percentage') {
+
+                            $settingCurrentSettingOfferType[] = ['discount_value'  => MathHelper::Discount($stock_setting_offer['decimal']['discount_value'], $price) ];
+            
+                        } else {
+                            $settingCurrentSettingOfferType[] = ['discount_value' => $stock_setting_offer['decimal']['discount_value'] ];
+                        }
+                    }
+
+                    $stockOffer[$key] = $stock_setting_offer;
+                }
+           
+        }
+
+        
+       
+        $setupList['stock_setting_offer'] = $stockOffer;
+        $setupList['stock_setting_offer_total'] = collect($settingCurrentSettingOfferType)->sum('discount_value');
+        $setupList['stock_price_processed'] = $setupList['stock_price'] - $setupList['stock_setting_offer_total'];
+        return $setupList;
+
+    }
+
+    
+    public static function SettingCurrency($data){
+        $currencySymbol = '£';
+
+        $setting_default_currency =  collect($data['settingModel']->setting_group['default_currency'])
+        ->where('default', 0)
+        ->first();
+
+        if ($setting_default_currency) {
+            $currency = CountryHelper::ISO()[$setting_default_currency->currency_id]['currencies'][0];
+            $currencySymbol = CountryHelper::CurrencySymbol()[$currency];
+        }
+    
+        return $currencySymbol;
+    }
 
 
 }

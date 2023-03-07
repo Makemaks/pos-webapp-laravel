@@ -19,17 +19,17 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'user_account_id' => $this->faker->numberBetween($min=1, $max=10),
+            'user_account_id' => $this->faker->numberBetween($min = 1, $max = 1),
             'user_person_id' => $this->faker->unique(true)->numberBetween(1, 10),
-            'user_type' => $this->faker->numberBetween($min=0, $max=3),
+            'user_type' => $this->faker->numberBetween($min = 0, $max = 3),
             'user_is_disabled' => 0,
             'user_is_notifiable' => 1,
             'email' => $this->faker->safeEmail,
             'email_verified_at' => now(),
             'password' => bcrypt('test1234'), // password
             'remember_token' => Str::random(10),
-            
-        ]; 
+
+        ];
     }
 
     /**

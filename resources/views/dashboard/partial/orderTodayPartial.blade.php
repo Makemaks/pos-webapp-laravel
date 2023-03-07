@@ -8,7 +8,7 @@
             <p class="uk-text-meta uk-margin-remove-top">More than +{{$data['orderList']->count()}}</p>
         </div>
         <div>
-            <a class="uk-align-right uk-button uk-button-danger uk-border-rounded" href="{{route('order.create')}}">
+            <a class="uk-align-right uk-button uk-button-default uk-border-rounded" href="{{route('order.create')}}">
                 <span uk-icon="icon: plus"></span>
             </a>
         </div>
@@ -28,7 +28,7 @@
                         {{$order->person_firstname}} {{$order->person_lastname}}
                     </td>
                     <td>{{DateTimeHelper::DateTime($order->created_at)['time']}}</td>
-                    <td>{{$order->order_total_cost}}</td>
+                    <td>{{$order->order_total_price}}</td>
                 </tr>
             @endforeach
         </tbody>

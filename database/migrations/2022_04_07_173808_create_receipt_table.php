@@ -15,21 +15,26 @@ return new class extends Migration
     {
         Schema::create('receipt', function (Blueprint $table) {
             $table->bigIncrements('receipt_id');
-            $table->bigInteger('receipt_stock_transfer_id')->nullable(); //has id if transffered
+            $table->bigInteger('receipt_warehouse_id')->nullable(); //has id if transffered
             
             $table->bigInteger('receipttable_id');
             $table->string('receipttable_type');
-
-            $table->tinyInteger('receipt_stock_cost_id')->comment('stock_merchandise');
-            
+            $table->json('receipt_stock_price')->nullable(); //customer
+            //$table->json('receipt_setting_vat')->nullable(); 
+           
+           
 
             $table->smallInteger('receipt_quantity')->default(1); 
-            $table->tinyInteger('receipt_status')->comment('processed::cancelled::refunded')->default(0);
-            $table->bigInteger('receipt_order_id')->nullable();
-            $table->bigInteger('receipt_user_id')->comment('user');
-            $table->bigInteger('receipt_stock_plan_id')->nullable(); //customer
+            //$table->tinyInteger('receipt_status')->nullable()->comment('processed::cancelled::refunded');
+            $table->bigInteger('receipt_order_id');
+            $table->bigInteger('receipt_user_id')->comment('added_by');
+            $table->json('receipt_setting_key')->nullable(); //customer
             
-            
+           
+            //$table->text('receipt_note')->nullable();
+
+            $table->tinyInteger('receipt_setting_pos_id');
+
             $table->timestamps();
         });
     }
@@ -41,6 +46,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('receipts');
+        Schema::dropIfExists('receipt');
     }
 };
+
+

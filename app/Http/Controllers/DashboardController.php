@@ -14,11 +14,14 @@ use App\Models\Order;
 use App\Models\Receipt;
 use App\Models\Expense;
 use App\Models\Setting;
+use App\Models\Stock;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\App;
 
 class DashboardController extends Controller
 {
-    
-   
+
+
     private $categoryList;
     private $storeList;
     private $expenseList;
@@ -28,67 +31,172 @@ class DashboardController extends Controller
     private $settingModel;
     private $paymentModel;
     private $cartItem = [];
-    private $cartAwaitingList = [];
+    private $awaitingCartList = [];
     private $authenticatedUser;
-   
-    
-     
-    public function Index(Request $request){
+    private $accountList;
+    private $pdfView;
+    private $csvView;
 
-       
 
-        $this->authenticatedUser = Auth::user();
-        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)->first();
-       
-        $this->orderList = Store::Sale('store_id',  $this->userModel->store_id)->get();
 
-       
-                    
+    public function Index(Request $request)
+    {
+
+        $this->init();
+        if (User::UserType()[Auth::User()->user_type] == 'Super Admin' || User::UserType()[Auth::User()->user_type] == 'Admin') {
+            $this->Admin($request);
+           
+            return view('dashboard.admin.index', ['data' => $this->Data()]);
+        } else {
+            $this->User($request);
+            return view('dashboard.user.index', ['data' => $this->Data()]);
+        }
+        
+    }
+
+    public function Create()
+    {
+    }
+
+    public function Store(Request $request)
+    {
+    }
+
+    public function show()
+    {
+    }
+
+    public function Update()
+    {
+    }
+
+    public function Destroy()
+    {
+    }
+
+    private function init()
+    {
+      
+        $this->userModel = User::Account('account_id', Auth::user()->user_account_id)
+            ->first();
+           
+        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
+    }
+
+    private function Admin(Request $request){
+        $datePeriod = Store::DatePeriod($request);
+
+        $this->userModel = $datePeriod['userModel'];
+
+        $this->clerkBreakdownOption = $datePeriod['clerkBreakdownOption'];
+
+        $this->clerkBreakdown = $datePeriod['clerkBreakdown'];
+
+        $this->orderList = $datePeriod['orderList'];
+
+        $this->orderListASC = $datePeriod['orderListASC'];
+
+        $this->orderSettingList = $datePeriod['orderSettingList'];
+
+        $this->orderHourly = $datePeriod['orderHourly'];
+
+        $this->eat_in_eat_out = $datePeriod['eat_in_eat_out'];
+
+        $this->customerTop = Store::Company('store_id',  $this->userModel->store_id)
+        // ->whereBetween('order.created_at', [$datePeriod['started'], $datePeriod['ended']])
+        ->limit(10)
+        ->get();
+
         $this->storeList = Store::get();
 
-        //get the system owner account
-        $accountList = User::Account('store_id',  $this->userModel->store_id)
-        ->where('person_type', 0)
-        ->get();
+        $this->accountList = User::Account('store_id',  $this->userModel->store_id)
+            ->where('person_type', 0)
+            ->get();
+
+        $accountList = $this->accountList;
 
         $this->expenseList = Expense::User()
         ->whereIn('expense_user_id', $accountList->pluck('user_id'))
         ->get();
 
-        $this->settingModel = Setting::where('setting_store_id', $this->userModel->store_id)->first();
+        $this->settingModel = Setting::where('settingtable_id', $this->userModel->store_id)->first();
 
-     
-        return view('dashboard.index', ['data' => $this->Data()]);
+        $this->stockList = Stock::List('stock_store_id', $this->userModel->store_id)->get();
+
+        // If its export PDF / CSV
+        if ($request->fileName) {
+
+            // If PDF
+            if ($request->format === 'pdf') {
+                $this->pdfView = view('dashboard.partial.' . $request->fileName, ['data' => $this->Data()])->render();
+                $render = \view('dashboard.create', ['data' => $this->Data()])->render();
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->loadHTML($render)->setPaper('a4', 'portrait')->setWarnings(false)->save('myfile.pdf');
+                return $pdf->stream();
+            } else {
+
+                // IF CSV
+
+            }
+        } else {
+
+            // flushing sessions
+            $request->session()->forget('date');
+            $request->session()->forget('user');
+
+            // New Session, If user Filter 
+            if ($datePeriod['user_id']) {
+
+                $request->session()->flash('user', [
+                    'started_at' => $datePeriod['started'],
+                    'ended_at' => $datePeriod['ended'],
+                    'user_id' => $datePeriod['user_id'],
+                    'title' => $datePeriod['title'],
+                ]);
+            } elseif ($request->started_at && $request->ended_at) {
+
+                // if period/date range only
+                $request->session()->flash('date', [
+                    'started_at' => $datePeriod['started'],
+                    'ended_at' => $datePeriod['ended'],
+                    'title' => $datePeriod['title'],
+                ]);
+            } else {
+                // No Filters
+                $request->session()->flash('title', [
+                    'title' => $datePeriod['title'],
+                ]);
+            }
+
+        }
     }
 
-    public function Create(){
-       
+    private function User(Request $request){
+        
     }
 
-    public function Store(){
-       
-    }
+    private function Data()
+    {
 
-    public function Edit(){
-        return view('dashboard.edit', ['data' => $this->Data()]);
-    }
-
-    public function Update(){
-
-    }
-
-    public function Destroy(){
-
-    }
-
-    private function Data(){
         return [
-           
-            'orderList' => $this->orderList,
-            'storeList' => $this->storeList,
-            'expenseList' => $this->expenseList,
-            'settingModel' => $this->settingModel
+
+            'eat_in_eat_out' => $this->eat_in_eat_out ?? null,
+            'userModel' => $this->userModel ?? null,
+            'accountList' => $this->accountList ?? null,
+            'orderHourly' => $this->orderHourly ?? null,
+            'orderList' => $this->orderList ?? null,
+            'orderSettingList' => $this->orderSettingList ?? null,
+            'orderListASC' => $this->orderListASC ?? null,
+            'orderListLimited100' => $this->orderListLimited100 ?? null,
+            'storeList' => $this->storeList ?? null,
+            'customerTop' => $this->customerTop ?? null,
+            'clerkBreakdownOption' => $this->clerkBreakdownOption ?? null,
+            'clerkBreakdown' => $this->clerkBreakdown ?? null,
+            'expenseList' => $this->expenseList ?? null,
+            'settingModel' => $this->settingModel ?? null,
+            'pdfView' => $this->pdfView ?? null,
+            'csvView' => $this->csvView ?? null,
+            'stockList' => $this->stockList ?? null
         ];
     }
-    
 }
